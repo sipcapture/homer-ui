@@ -1,4 +1,5 @@
 # homer-ui
 
-PUBLIC BETA1 (codename Xenophon)
+### HOMER 5 User-Interface
+PUBLIC BETA1
 
