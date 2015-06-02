@@ -1,0 +1,22 @@
+
+<div id="login-page"  ng-hide="$root.loggedIn">
+	<div class="alert alert-danger" role="alert" ng-show="invalidLogin">Email and password combination not recognised</div>
+	<br>
+	<form class="form-signin" role="form" ng-submit="login()">
+	    <center><img src="/img/homer_smallkey.png" style="margin-bottom:30px;" alt="HOMER5"/>
+		<!--	<h1 class="form-signin-heading">HOMER</h1> -->
+	    </center>
+		    <input type="text" name="username" id="username" class="form-control" placeholder="Username" required="" autofocus="" ng-model="loginModel.username">
+		    <br>
+		    <input type="password"name="password" id="password" class="form-control" placeholder="Password" required="" ng-model="loginModel.password">
+		<br>	   
+	    <button id="login_buton" class="btn btn-sm btn-primary" type="submit">
+	        <i class="fa" ng-class="{'fa-cog fa-spin': isBusy, 'fa-sign-in': !isBusy}"></i>
+	        <span>Sign in</span>
+	    </button>
+	    <br>
+	</form>
+	<br>
+	    <center><font size="-2" style="color:#ccc;">Homer &copy; sipcapture.org, All Rights Reserved</font></center>
+</div>
+

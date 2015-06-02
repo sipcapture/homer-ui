@@ -1,0 +1,24 @@
+<div class="text-center">
+  <div class="alert alert-info" ng-if="!data">
+    Please insert an IP/AS the widget configuration
+  </div>
+  <div class="ripesearch" ng-if="data">
+    <h3>AS Visibility
+	<center>
+          <input type="location" class="form-control" id="location" ng-model="config.location" placeholder="Enter IP or AS" style="font-size:16pt;border:0px;width:50%;text-align:center;">
+        </center>
+    </h3>
+    <dl ng-repeat="attr in data.data.visibilities | orderBy:'-ipv4_full_table_peer_count'" ng-if="$index < data.config.rscount" style="margin-bottom:5px;">
+      <dt>{{attr.probe.ixp}} @ {{attr.probe.city}}, {{attr.probe.country}}:</dt>
+      <dd ng-if="attr.ipv4_full_table_peers_not_seeing.asn"><font color=red>Missing ASN: {{attr.ipv4_full_table_peers_not_seeing.asn}} IP: {{attr.ipv4_full_table_peers_not_seeing.ip}} ({{attr.ipv4_full_table_peers_not_seeing.prefix_count}})</font></dd>
+      <dd>Peers: {{attr.probe.ipv4_peer_count}} v4, {{attr.probe.ipv6_peer_count}} v6</dd>
+    </dl>
+<!--
+    <div style="width:80%;overflow:none;" ng-if="data.data.related_prefixes">
+	    <center>
+	      <span ng-repeat="prefx in data.data.related_prefixes" ng-if="$index < data.config.rscount" style="margin-right:3px;">{{prefx}}</span>
+	    </center>
+    </div>
+-->
+  </div>
+</div>

@@ -1,0 +1,149 @@
+<div access="admins" access-permission-type="AtLeastOne" class="row" ng-show="showtable" style="width:101%;float:right;">
+      <div class="box-homer-admin">
+	<tabset>
+	<tab active="activeMainTab" disabled="activeTab === false" select="tabShown = !tabShown" deselect="tabShown = !tabShown">
+	<tab-heading><i class="fa fa-users"> Local Nodees</i></tab-heading>
+               <div style="margin-top:8px;">
+		 <div id="grid1" ng-if="activeMainTab" ui-grid="gridOptions" class="gridWidgetsStyle" ui-grid-edit ui-grid-row-edit ui-grid-cellNav ui-grid-auto-resize resize ></div>
+               </div>
+	</tab>
+	<tab ng-if="activeMainTab === true" active="disabled" deselect="activeMainTab">
+            <tab-heading ng-click="newNode()"><a ng-click="newNode()" href=''> <i class="fa fa-plus"> Add Node</i></a></tab-heading>
+        </tab>
+
+	<tab ng-if="newTab" active="activeNewTab" >
+	<tab-heading><i class="fa fa-user"> New Node</i>  &nbsp; <a ng-click="removeNodeTab()" href=''><i class="fa fa-times"></i></a></tab-heading>
+		<div style="padding:15px;">
+	 	<div role="alert">
+		      <span class="error" ng-show="errorNewNodeShow">{{errorNewNodeForm}}</span>
+		</div>
+		<form name="newNodeForm">
+                        <div style="width:40%;float:left;" class="form-group input-group-lg">
+                                <p>
+					<div class="form-group" ng-class="{ 'has-error' : newNodeForm.name.$invalid && !newNodeForm.nodename.$pristine }">
+					<label>Node</label>
+						<input type="text" name="name" class="form-control" ng-model="newnode.name" ng-minlength="3" ng-maxlength="200" required>
+						<p ng-show="newNodeForm.name.$error.minlength" class="help-block">Node is too short.</p>
+						<p ng-show="newNodeForm.name.$error.maxlength" class="help-block">Node is too long.</p>
+					</div>
+                                </p>
+                                <p>
+					<div class="form-group" ng-class="{ 'has-error' : newNodeForm.host.$invalid && !newNodeForm.host.$pristine }">
+					<label>Host</label>
+						<input type="text" name="host" class="form-control" ng-model="newnode.host" required>
+					</div>
+                                </p>
+                                <p>
+                                        <label class="control-label" for="dashboardname">Port:</label>
+                                        <input type="text" class="form-control" name="dbport" id="dbport" ng-model="newnode.dbport">
+                                </p>
+                                <p>
+					<div class="form-group" ng-class="{ 'has-error' : newNodeForm.dbname.$invalid && !newNodeForm.dbname.$pristine }">
+					<label>DB Name</label>
+						<input type="text" name="dbname" class="form-control" ng-model="newnode.dbname" required>
+					</div>
+                                </p>
+                                <p>
+					<div class="form-group" ng-class="{ 'has-error' : newNodeForm.dbusername.$invalid && !newNodeForm.dbusername.$pristine }">
+					<label>DB Username</label>
+						<input type="text" name="dbusername" class="form-control" ng-model="newnode.dbusername" required>
+					</div>
+                                </p>
+                                <p>
+					<div class="form-group" ng-class="{ 'has-error' : newNodeForm.dbpassword.$invalid && !newNodeForm.dbpassword.$pristine }">
+					<label>DB Password</label>
+						<input type="text" name="dbpassword" class="form-control" ng-model="newnode.dbpassword" required>
+					</div>
+                                </p>
+                                <p>
+					<div class="form-group" ng-class="{ 'has-error' : newNodeForm.dbtables.$invalid && !newNodeForm.dbtables.$pristine }">
+					<label>DB Tables</label>
+						<input type="text" name="dbtables" class="form-control" ng-model="newnode.dbtables" required>
+					</div>
+                                </p>
+				<p>
+                                        <label class="control-label" for="dashboardname">Active:</label>
+					<input ng-model="newnode.status" ng-value="true" type="checkbox" ng-init="newnode.status=1" ng-true-value="1" ng-false-value="0"> 
+                                </p>
+			</div>
+			<div style="clear:both;"></div>
+                </form>
+                	<div class="modal-footer">
+                	        <button class="btn btn-warning" ng-click="removeNodeTab()">Cancel</button>
+                	        <button class="btn btn-success" ng-click="addNewNode()" ng-disabled="newNodeForm.$invalid">Create Node</button>
+                	</div>
+                </div>
+	</tab>
+
+	<tab ng-if="editTab === true" active="editTab ? true : false">
+	<tab-heading><i class="fa fa-edit"> Edit Node</i>  &nbsp; <a ng-click="removeNodeTab()" href=''><i class="fa fa-times"></i></a></tab-heading>
+		<div style="padding:15px;">
+                <div role="alert">
+                      <span class="help-block error" ng-show="errorEditNodeShow">{{errorEditNodeForm}}</span>
+                </div>
+		<form name="editNodeForm">
+                        <div style="width:40%;float:left;" class="form-group input-group-lg">
+                                <p>
+					<div class="form-group" ng-class="{ 'has-error' : newNodeForm.name.$invalid && !newNodeForm.nodename.$pristine }">
+					<label>Node</label>
+						<input type="text" name="name" class="form-control" ng-model="noderec.name" ng-minlength="3" ng-maxlength="200" required>
+						<p ng-show="newNodeForm.name.$error.minlength" class="help-block">Node is too short.</p>
+						<p ng-show="newNodeForm.name.$error.maxlength" class="help-block">Node is too long.</p>
+					</div>
+                                </p>
+                                <p>
+					<div class="form-group" ng-class="{ 'has-error' : newNodeForm.host.$invalid && !newNodeForm.host.$pristine }">
+					<label>Host</label>
+						<input type="text" name="host" class="form-control" ng-model="noderec.host" required>
+					</div>
+                                </p>
+                                <p>
+                                        <label class="control-label" for="dashboardname">Port:</label>
+                                        <input type="text" class="form-control" name="dbport" id="dbport" ng-model="noderec.dbport">
+                                </p>
+                                <p>
+					<div class="form-group" ng-class="{ 'has-error' : newNodeForm.dbname.$invalid && !newNodeForm.dbname.$pristine }">
+					<label>DB Name</label>
+						<input type="text" name="dbname" class="form-control" ng-model="noderec.dbname" required>
+					</div>
+                                </p>
+                                <p>
+					<div class="form-group" ng-class="{ 'has-error' : newNodeForm.dbusername.$invalid && !newNodeForm.dbusername.$pristine }">
+					<label>DB Username</label>
+						<input type="text" name="dbusername" class="form-control" ng-model="noderec.dbusername" required>
+					</div>
+                                </p>
+                                <p>
+					<div class="form-group" ng-class="{ 'has-error' : newNodeForm.dbpassword.$invalid && !newNodeForm.dbpassword.$pristine }">
+					<label>DB Password</label>
+						<input type="text" name="dbpassword" class="form-control" ng-model="noderec.dbpassword" required>
+					</div>
+                                </p>
+                                <p>
+					<div class="form-group" ng-class="{ 'has-error' : newNodeForm.dbtables.$invalid && !newNodeForm.dbtables.$pristine }">
+					<label>DB Tables</label>
+						<input type="text" name="dbtables" class="form-control" ng-model="noderec.dbtables" required>
+					</div>
+                                </p>
+				<p>
+                                        <label class="control-label" for="dashboardname">Active:</label>
+					<input ng-model="noderec.status" ng-value="true" type="checkbox" ng-init="noderec.status=1" ng-true-value="1" ng-false-value="0"> 
+                                </p>
+			</div>
+			<div style="clear:both;"></div>
+                </form>
+                	<div class="modal-footer">
+                	        <button class="btn btn-danger" ng-click="doDeleteNode();">Delete Node</button>
+                	        <button class="btn btn-warning" ng-click="removeNodeTab()">Cancel</button>
+                	        <button class="btn btn-success" ng-click="doEditNode();removeNodeTab();" ng-disabled="editNodeForm.$invalid">Save Changes</button>
+                	</div>
+                </div>
+
+
+	<tab>
+
+
+	</tabset>
+
+      </div><!-- /.box-body external-scopes="gridHandlers" -->
+</div>

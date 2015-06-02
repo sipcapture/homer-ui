@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html ng-app="homerApp"  ng-controller="homerShareAppController" ng-cloak="" scroll>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>HOMER5 Dev</title>
+
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../css/font-awesome.css" />
+    <link rel="stylesheet" href="../css/homer.css" />
+    <link rel="stylesheet" href="../css/dialogs.min.css" />
+    <link rel="stylesheet" href="../lib/jquery-ui/themes/base/jquery-ui.min.css" />
+    <link rel="stylesheet" href="../css/app.css" />
+    <link rel="stylesheet" href="../css/homerModal.css" />    
+
+    <link rel="icon" href="../css/favicon.ico" type="image/x-icon"/>
+    <link rel="shortcut icon" href="../css/favicon.ico" type="image/x-icon"/>
+
+    <!--[if lt IE 9]>
+    <script src="../https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="../https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body style="min-height: 800px;" ng-class="{hiddenMenu:boolLeftMenu}" class="skin-black menu-on-top  pace-done">
+
+<div ng-show="showError"> {{ErrorLoad}}</div>
+<div id="sharemain" role="main" auto-height ng-show="showPage">
+		<div class="modal-header homer-modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="closeModal()" style="margin-right:4px;">&times;</button>
+        		<h4 class="modal-title" style="font-size:14px;margin-left:4px;">{{msgCallId}}</h4> 
+		</div>
+		<div ng-show="dataLoading">
+			<div id="loadingWidget" class="row-fluid ui-corner-all" style="padding: 0 .7em;">
+        			<div class="loadingContent"><p><img alt="Loading  Content" src="../img/ajax-loader.gif" /> Loading</p></div>
+        	</div>
+		</div>
+
+		<div class="body" id="shareit">
+			<div class="modal-body-buttons">
+
+		<tabset>
+		     <tab>
+		     <tab-heading><i class="glyphicon glyphicon-transfer"></i> Call-Flow </tab-heading>	     	     
+		      <canvas id="cflowcanv" class="cflow" canvasclick></canvas>
+		     </tab>
+		     <tab>
+		     <tab-heading><i class="glyphicon glyphicon-transfer"></i> RTCP/Reports </tab-heading>	     	     
+				{{rtcpreport}}
+		     </tab>	     
+		     <tab>
+		     <tab-heading><i class="glyphicon glyphicon-transfer"></i> Logs </tab-heading>	     	     
+				{{logreport}}
+		     </tab>
+		     <tab>
+		     <tab-heading><i class="glyphicon glyphicon-info-sign"></i> Export</tab-heading>
+			<button class="btn btn-normal" ng-click="exportPCAP()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;">Export PCAP</button>
+			<button class="btn btn-normal" ng-click="exportTEXT()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;">Export TEXT</button>
+			<button class="btn btn-normal" ng-click="exportCanvas()" data-placement="top-right" style="margin-top:18px;margin-left:8px;">Export PNG</button>			
+			<br><br>
+			<p>
+			{{sharelink}}
+			</p>
+		     </tab>
+		  </tabset>
+	</div>
+</div>
+
+
+<!-- SCRIPTS -->
+
+<script type="application/javascript" src="../lib/jquery/jquery.min.js"></script>
+<script type="application/javascript" src="../lib/jquery/jquery-ui.min.js"></script> 
+<script type="application/javascript" src="../lib/angular/angular.js"></script>  
+<script type="application/javascript" src="../lib/angular/angular-animate.min.js"></script>
+<script type="application/javascript" src="../lib/angular/angular-cookies.min.js"></script>
+<script type="application/javascript" src="../lib/angular/angular-sanitize.min.js"></script>
+<script type="application/javascript" src="../lib/angular-third/dialog-service.js"></script>
+<script type="application/javascript" src="../lib/sortable/Sortable.min.js"></script>
+<script type="application/javascript" src="../lib/angular-ui-sortable/sortable.min.js"></script>
+<script type="application/javascript" src="../lib/bootstrap/ui-bootstrap-0.12.0.min.js"></script>
+<script type="application/javascript" src="../lib/bootstrap/ui-bootstrap-tpls-0.12.0.js"></script>
+<script type="application/javascript" src="../lib/angular-third/dialogs-default-translations.min.js"></script>
+<script type="application/javascript" src="../lib/angular-third/dialogs.min.js"></script>
+
+<script type="application/javascript" src="../lib/angular-third/homerModal.js"></script>
+<script type="application/javascript" src="../lib/angular-third/homerCflow.js"></script>
+<script type="application/javascript" src="../lib/filesaver/FileSaver.min.js"></script>  
+
+<!-- DATA -->
+<script type="application/javascript" src="../js/homer.js"></script>
+<script type="application/javascript" src="../lib/highcharts/highcharts.js"></script>
+<script type="application/javascript" src="../lib/highcharts/highcharts-3d.js"></script>
+<script type="application/javascript" src="../lib/highcharts/exporting.js"></script>
+<script type="application/javascript" src="../lib/highcharts/highcharts-ng.js"></script>
+
+<!-- APP -->
+<script type="application/javascript" src="search.js"></script>
+<script type="application/javascript" src="app.js"></script>
+<script type="application/javascript" src="controller.js"></script>
+
+</body>
+</html>

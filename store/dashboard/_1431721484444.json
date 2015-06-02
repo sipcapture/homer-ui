@@ -1,0 +1,1 @@
+{"title":"Alarms","structure":"12","rows":[{"columns":[{"styleClass":"col-md-12","widgets":[{"type":"alarmlist","config":[],"title":"Alarm List","wid":16},{"type":"alarm","config":[],"title":"Alarm Settings","wid":17}],"cid":5}]}],"selectedItem":"fa-warning","protect":true,"alias":"alarms","weight":"20"}

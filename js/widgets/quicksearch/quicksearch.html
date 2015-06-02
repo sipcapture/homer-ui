@@ -1,0 +1,91 @@
+<div>
+	<div ng-repeat="field in qsearch.fields">    
+	  <ng-form name="form">
+	  <!-- TEXT FIELDS -->
+
+	   <div ng-if="field.selection=='2B2B CID'">
+			 <div class="form-group">
+                                        <label>B2B CID:</label>
+                                        <div class="input-group">
+                                                <i class="fa fa-phone"> {{field.selection}}</i>
+                                        </div>
+                                            <input type="checkbox" ng-model="newObject[field.name]"/>
+                         </div>
+
+	   </div>
+	   <div ng-if="field.selection=='B2B CID'">
+	    		<div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-phone"> {{field.selection}}</i>
+                                            </div>
+                                            <input type="checkbox" class="btn" style="margin-left: 5px;" ng-model="newObject.searchValues[field.name]"/>
+                                        </div>
+	    		</div>
+	   </div>
+	   <div ng-if="field.selection=='Transaction'">
+	    		<div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-search"> {{field.selection}}</i>
+                                            </div>
+					<select style="height:61px;width:100%;" ng-model="newTransaction[field.name]" multiple ng-options="tr as tr.value for tr in type_transaction track by tr.value"></select>
+                                        </div>
+	    		</div>
+	   </div>
+
+	   <div ng-if="field.selection=='Result Type'">
+	    		<div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-search"> {{field.selection}}</i>
+                                            </div>
+					<select style="height:33px;width:100%;" ng-model="newResult[field.name]" ng-selected="$index==0" data-ng-options="tr as tr.value for tr in type_result track by tr.value"></select>
+                                        </div>
+	    		</div>
+	   </div>
+
+	   <div ng-if="field.selection=='DB Node'">
+	    		<div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-search"> {{field.selection}}</i>
+                                            </div>
+					<select style="height:61px;width:100%;" ng-model="newNode[field.name]" multiple ng-options="tr as tr.name for tr in db_node track by tr.name"></select>
+                                        </div>
+	    		</div>
+	   </div>
+
+
+
+	   <div ng-if="field.selection!='B2B CID' && field.selection!='Transaction' && field.selection!='Result Type' && field.selection!='DB Node'">
+	    <div ng-if="field.selection" class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+					     <div ng-switch on="field.name">
+                                                <i ng-switch-when="from_user" class="fa fa-phone"> {{field.selection}}</i>
+                                                <i ng-switch-when="to_user" class="fa fa-phone"> {{field.selection}}</i>
+                                                <i ng-switch-when="ruri_user" class="fa fa-phone"> {{field.selection}}</i>
+                                                <i ng-switch-when="callid" class="fa fa-phone"> {{field.selection}}</i>
+                                                <i ng-switch-when="contact_user" class="fa fa-phone"> {{field.selection}}</i>
+                                                <i ng-switch-default class="fa fa-search"> {{field.selection}}</i>
+                                                <i ng-switch-when="source_ip" class="fa fa-laptop"> {{field.selection}}</i>
+                                                <i ng-switch-when="source_port" class="fa fa-laptop"> {{field.selection}}</i>
+                                                <i ng-switch-when="destination_ip" class="fa fa-laptop"> {{field.selection}}</i>
+                                                <i ng-switch-when="destination_port" class="fa fa-laptop"> {{field.selection}}</i>
+                                             </div>
+                                            </div>                                            
+                                            <input type="text" ng-enter="processSearchForm();" ng-focus="nullSafe(field.name)" class="form-control" ng-model="newObject[field.name]"/>
+                                        </div>
+	    </div>
+	   </div>
+
+
+        </div>
+
+	<div class="form-group" ng-show="config.searchbutton">
+                <button type="submit" ng-click="processSearchForm();" class="btn btn-primary" style="float:right;" ng-disabled="false"> Search </button>                
+                <button type="submit" ng-click="clearSearchForm();" class="btn btn-warning" style="float:right;margin-right: 10px" ng-disabled="false"> Clear </button>
+        </div><!-- /.box -->
+</div>
+

@@ -1,0 +1,23 @@
+<div access="users" access-permission-type="AtLeastOne">
+        <h1>
+        SIP
+        <small>Signaling</small>
+        <button ng-show="!dataLoading" id="mainSipSearch" ng-class="searchClass" type="submit" ng-click="processSearchResult();" style="margin-left: 10px;" ng-disabled="false"> Search </button>
+        <button ng-show="dataLoading" id="mainSipSearchWait" ng-class="searchClass" type="submit" ng-click="processSearchResult();" style="margin-left: 10px;" ng-disabled="true"> Wait.. </button>
+	<a href="javascript:history.back();" ng-show="!dataLoading">
+                     <em class="fa fa-step-backward" style="font-size: 20pt;"></em>
+        </a>
+
+        </h1>
+        
+        <div ng-show="dataLoading">
+		<div id="loadingWidget" class="row-fluid ui-corner-all" style="padding: 0 .7em;">
+        		<div class="loadingContent"><p><img alt="Loading  Content" src="img/ajax-loader.gif" /> </p></div>
+		</div>
+	</div>
+	<div class="row" ng-show="showtable">
+		<div class="box-homer-results">
+                	<div id="grid1" ui-grid="gridOpts" class="gridStyle" ui-grid-auto-resize ui-grid-selection ui-grid-pagination resize></div>
+		</div><!-- /.box-body external-scopes="gridHandlers" -->
+	</div>
+</div>

@@ -1,0 +1,141 @@
+<div id="header" access="users" access-permission-type="AtLeastOne">
+
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-default navbar-top" role="navigation">
+ 		
+ 		<div class="navbar-header">            
+ 			<a href class="navbar-brand" ng-click="expandLeftMenu();">
+	                  <div class="my-logo">
+        	            <img src="img/homer_key.png" alt="Homer Sipcapture" class="logo">
+  			  </div>
+			</a> 		
+	        </div>
+		<div class="nav-wrapper">
+            <!-- START Left navbar-->
+            <ul class="nav navbar-nav">
+               <li>
+                  <!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
+                  <a tooltip-placement="bottom" tooltip="Show/Hide menu" tooltip-popup-delay='1000' ng-click="changeClass();" data-toggle-state="aside-collapsed" data-persists="true" class="hidden-xs">
+                     <em class="fa fa-navicon"></em>
+                  </a>
+               </li>
+               <li>
+                  <!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
+                  <a tooltip-placement="bottom" tooltip="Add new Panel" tooltip-popup-delay='1000' ng-click="addDashBoard();" data-toggle-state="aside-collapsed" data-persists="true" class="hidden-xs">
+                     <em class="fa fa-plus-square"></em>
+                  </a>
+               </li>
+               <!-- START Messages menu (dropdown-list)-->             
+               <!--
+               <li class="dropdown dropdown-list">
+                  <a href="javascript:void(0);" data-toggle="dropdown" data-play="fadeIn" class="dropdown-toggle">
+                     <em class="fa fa-envelope-o"></em>
+                     <div class="label label-danger">21</div>
+                  </a>
+               </li>
+               -->
+               <li>
+                  <!-- Button to clear all site options stored option from browser storage-->
+                  <a tooltip-placement="bottom" tooltip="Reload" tooltip-popup-delay='1000' href="javascript:location.reload(true)" data-toggle="reset">
+                     <em class="fa fa-refresh" alt="refresh"></em>
+                  </a>
+               </li>
+            </ul>
+            <!-- END Left navbar-->
+            <!-- START Right Navbar-->
+            <ul class="nav navbar-nav navbar-right">
+               <!-- Search icon-->
+               <span ng-controller="HomerDatepickerCtrl">
+               <li>               
+                       <span class="timerange-info"><i class="fa fa-chevron-circle-right"></i></span>
+		       <span ng-click="launch();" class="timerange-info">{{timerange.from | date:'yyyy-MM-dd HH:mm:ss Z' }}</span>
+                       <span class="timerange-info"><i class="fa fa-arrow-right"></i></span>
+		       <span ng-click="launch();"  class="timerange-info">{{timerange.to | date:'yyyy-MM-dd HH:mm:ss Z' }}</span>	       
+	       </li>
+
+               <li class="dropdown" ng-class="{open:boolDropDownLastMenu}">               	                            
+                      <a tooltip-placement="bottom" tooltip="Range Select" ng-click="showLastMenuBox();" data-play="fadeIn" class="dropdown-toggle">
+	                     <em class="fa fa-calendar"></em>
+        	      </a>
+                  <!-- START Dropdown menu-->
+                  <ul class="dropdown-menu dropdown-color">
+                     <li><a href ng-click="showLastMenuBox();last(10);">Last 10 Minutes</a>
+                     </li>
+                     <li><a href ng-click="showLastMenuBox();last(30);">Last 30 Minutes</a>
+                     </li>
+                     <li><a href ng-click="showLastMenuBox();last(60);">Last 1 Hour</a>
+                     </li>
+                     <li><a href ng-click="showLastMenuBox();last(180);">Last 3 Hours</a>
+                     </li>
+                     <li><a href ng-click="showLastMenuBox();last(360);">Last 6 Hours</a>
+                     </li>
+                     <li><a href ng-click="showLastMenuBox();last(720);">Last 12 Hours</a>
+                     </li>
+                     <li><a href ng-click="showLastMenuBox();last(1440);">Last 24 Hours</a>
+                     </li>
+                     <li><a href ng-click="launch();showLastMenuBox();" >Custom Range...</a>
+                     </li>
+                  </ul>
+                  <!-- END Dropdown menu-->
+
+               </li>
+
+
+               <li class="dropdown" ng-class="{open:boolDropDownRefreshMenu}">               	                            
+                      <a tooltip-placement="bottom" tooltip="Auto Refresh" ng-click="showRefreshMenuBox();" data-play="fadeIn" class="dropdown-toggle">
+	                     <em class="fa fa-clock-o" ng-class="{timeractive:activeInterval}"></em>
+        	      </a>
+                  <!-- START Dropdown menu-->
+                  <ul class="dropdown-menu dropdown-color">
+                     <li><a href ng-click="showRefreshMenuBox();refresh(0);">Manual</a>
+                     </li>
+                     <li><a href ng-click="showRefreshMenuBox();refresh(2);">Refresh @ 2 seconds</a></li>
+                     <li><a href ng-click="showRefreshMenuBox();refresh(5);">Refresh @ 5 seconds</a></li>
+                     <li><a href ng-click="showRefreshMenuBox();refresh(10);">Refresh @ 10 seconds</a></li>
+                     <li><a href ng-click="showRefreshMenuBox();refresh(30);">Refresh @ 30 seconds</a></li>
+                     <li><a href ng-click="showRefreshMenuBox();refresh(60);">Refresh @ 1 minute</a></li>
+                     <li><a href ng-click="showRefreshMenuBox();refresh(300);">Refresh @ 5 minutes</a></li>
+                     <li><a href ng-click="showRefreshMenuBox();refresh(600);">Refresh @ 10 minutes</a></li>
+                     <li><a href ng-click="showRefreshMenuBox();refresh(1800);">Refresh @ 30 minutes</a></li>
+                     <li><a href ng-click="showRefreshMenuBox();refresh(3600);">Refresh @ 60 minutes</a></li>
+                     <li><a href ng-click="showRefreshMenuBox();cancelRefresh(1);">Cancel</a>
+                     </li>
+                  </ul>
+               </li>
+
+               <li>
+                  <a tooltip-placement="bottom" tooltip="Refresh Now" tooltip-popup-delay='1000' ng-click="refresh(0);" >
+                     <em class="fa fa-rotate-right"></em>
+                  </a>
+               </li>
+
+
+               </span>
+               <li>
+                  <a tooltip-placement="bottom" tooltip="Search box" tooltip-popup-delay='1000' ng-click="showSearchBox();" ui-sref="search" href="#/search">
+                     <em class="fa fa-search"></em>
+                  </a>
+               </li>
+               <li class="dropdown" ng-class="{open:boolDropDownUserMenu}">
+                  <a ng-click="showUserMenuBox();" data-play="fadeIn" class="dropdown-toggle">
+                     <em class="fa fa-user"></em>
+                  </a>
+                  <ul class="dropdown-menu dropdown-color">
+                     <li><a ng-click="showUserMenuBox();void(0);">Profile</a>
+                     </li>
+                     <li><a ng-click="showUserMenuBox();void(0);">Settings</a>
+                     </li>
+                     <li><a ng-click="showUserMenuBox();void(0);">Notifications<div class="label label-info pull-right">0</div></a>
+                     </li>
+                     <li><a ng-click="showUserMenuBox();void(0);">Messages<div class="label label-danger pull-right">0</div></a>
+                     </li>
+                     <li><a ng-click="showUserMenuBox();doLogout();">Logout</a>
+                     </li>
+                  </ul>
+               </li>
+            </ul>
+         </div>
+
+       </nav>
+</div>
+

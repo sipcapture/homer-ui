@@ -1,0 +1,97 @@
+<script type="text/ng-template" id="reports_renderer.html">
+  <div nodrag>
+    <a class="btn btn-success btn-xs" nodrag ng-click="toggleTree(report.id)">
+    <span class="glyphicon"
+        ng-class="{
+          'glyphicon-chevron-right': !collapsed[report.id],
+          'glyphicon-chevron-down': collapsed[report.id]
+        }"></span></a>
+    {{report.date}}: [{{report.correlation_id}}]
+  </div>
+  <ol ng-model="report.msg" ng-class="{hidden: !collapsed[report.id]}" nodrag>
+    <li ng-repeat="(property, value) in report.msg">
+      <div class="tree-report tree-report-content" nodrag> {{property}}:</div>
+	  <ol  ng-model="value" nodrag>
+		<li ng-repeat="(p, v) in value">{{p}}: {{v}}</li>
+	  </ol>                 
+    </li>
+  </ol>
+</script>
+
+<div class="modal-header homer-modal-header" style="border-bottom:0;" >
+	<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="closeModal()" style="margin-right:4px;">&times;</button>
+
+        	<h4 class="modal-title" style="font-size:14px;margin-left:4px;">{{msgCallId}}</h4> 
+</div>
+<div ng-show="dataLoading">
+	<div id="loadingWidget" class="row-fluid ui-corner-all" style="padding: 0 .7em;">
+        	<div class="loadingContent"><p><img alt="Loading  Content" src="img/ajax-loader.gif" /> Loading</p></div>
+        </div>
+</div>
+
+<div class="modal-body homer-modal-body">
+		<div class="modal-body-buttons">
+
+	<tabset>
+	     <tab>
+	     <tab-heading><i class="glyphicon glyphicon-transfer"></i> Call-Flow </tab-heading>	     	     
+	      <canvas id="cflowcanv" class="cflow" canvasclick></canvas>
+	     </tab>
+	     <tab>
+	     <tab-heading><i class="glyphicon glyphicon-transfer"></i> RTCP/Reports </tab-heading>	     	     
+			<div id="xrtp-root" ng-if="enableXRTPReport">				
+				<p>X-RTP:</p>
+				<ol ng-model="xrtpreport">
+					<li ng-repeat="report in xrtpreport">
+						<div>
+						    <a class="btn btn-success btn-xs" nodrag ng-click="toggleTree(report.id)">
+						    <span class="glyphicon" ng-class="{'glyphicon-chevron-right': !collapsed[report.id], 'glyphicon-chevron-down': collapsed[report.id]}"></span></a>
+						    {{report.date}}: Call-ID: [{{report.callid}}] Method:[{{report.method}}]
+						</div>
+						<ol ng-model="report.report" ng-class="{hidden: !collapsed[report.id]}" nodrag>
+						    Source IP: {{report.source}}
+						    <li ng-repeat="(property, value) in report.report">{{property}}: {{value}}</li>
+						</ol>															
+					</li>
+				</ol>
+			</div>				
+			
+			<div id="rtcp-root" ng-if="enableRTCPReport">				
+				<p>RTCP:</p>
+				<ol ng-model="rtcpreport">
+					<li ng-repeat="report in rtcpreport" ng-include="'reports_renderer.html'"></li>
+				</ol>
+			</div>							
+									
+			<div id="tree-root" ng-if="enableQualityReport">				
+				<p>Reports:</p>
+				<ol ng-model="qualityreport">
+					<li ng-repeat="report in qualityreport" ng-include="'reports_renderer.html'"></li>
+				</ol>
+			</div>				
+	     </tab>	     
+	     <tab>
+	     <tab-heading><i class="glyphicon glyphicon-transfer"></i> Logs </tab-heading>	     	     
+			<div id="log-root" ng-if="enableLogReport">				
+				<p>Log:</p>
+				<ol ng-model="logreport">
+					<li ng-repeat="report in logreport" ng-include="'reports_renderer.html'"></li>
+				</ol>
+			</div>				
+
+
+	     </tab>
+	     <tab>
+	     <tab-heading><i class="glyphicon glyphicon-info-sign"></i> Export</tab-heading>
+			<button class="btn btn-normal" ng-click="exportPCAP()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;">Export PCAP</button>
+			<button class="btn btn-normal" ng-click="exportTEXT()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;">Export TEXT</button>
+			<button class="btn btn-normal" ng-click="exportCanvas()" data-placement="top-right" style="margin-top:18px;margin-left:8px;">Export PNG</button>			
+			<button class="btn btn-normal" ng-click="exportShare()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;">Share Link</button>
+			<br><br>
+			<p>
+			{{sharelink}}
+			</p>
+	     </tab>
+	  </tabset>
+</div>
+

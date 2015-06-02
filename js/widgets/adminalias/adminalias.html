@@ -1,0 +1,101 @@
+<div access="admins" class="row" ng-show="showtable" style="width:101%;float:right;">
+      <div class="box-homer-admin">
+	<tabset>
+	<tab active="activeMainTab" disabled="activeTab === false" select="tabShown = !tabShown" deselect="tabShown = !tabShown">
+	<tab-heading><i class="fa fa-users"> Local Aliases</i></tab-heading>
+               <div style="margin-top:8px;">
+		 <div id="grid1" ng-if="activeMainTab" ui-grid="gridOptions" class="gridWidgetsStyle" ui-grid-edit ui-grid-row-edit ui-grid-cellNav ui-grid-auto-resize resize ></div>
+               </div>
+	</tab>
+	<tab ng-if="activeMainTab === true" active="disabled" deselect="activeMainTab">
+            <tab-heading ng-click="newAlias()"><a ng-click="newAlias()" href=''> <i class="fa fa-plus"> Add Alias</i></a></tab-heading>
+        </tab>
+
+	<tab ng-if="newTab" active="activeNewTab" >
+	<tab-heading><i class="fa fa-user"> New Alias</i>  &nbsp; <a ng-click="removeAliasTab()" href=''><i class="fa fa-times"></i></a></tab-heading>
+		<div style="padding:15px;">
+	 	<div role="alert">
+		      <span class="error" ng-show="errorNewAliasShow">{{errorNewAliasForm}}</span>
+		</div>
+		<form name="newAliasForm">
+                        <div style="width:40%;float:left;" class="form-group input-group-lg">
+                                <p>
+					<div class="form-group" ng-class="{ 'has-error' : newAliasForm.aliasname.$invalid && !newAliasForm.aliasname.$pristine }">
+					<label>Alias</label>
+						<input type="text" name="alias" class="form-control" ng-model="newalias.alias" ng-minlength="3" ng-maxlength="200" required>
+						<p ng-show="newAliasForm.alias.$error.minlength" class="help-block">Alias is too short.</p>
+						<p ng-show="newAliasForm.alias.$error.maxlength" class="help-block">Alias is too long.</p>
+					</div>
+                                </p>
+                                <p>
+					<div class="form-group" ng-class="{ 'has-error' : newAliasForm.ip.$invalid && !newAliasForm.ip.$pristine }">
+					<label>IP</label>
+						<input type="text" name="ip" class="form-control" ng-model="newalias.ip" required>
+					</div>
+                                </p>
+                                <p>
+                                        <label class="control-label" for="dashboardname">Port:</label>
+                                        <input type="text" class="form-control" name="port" id="port" ng-model="newalias.port">
+                                </p>
+				<p>
+                                        <label class="control-label" for="dashboardname">Active:</label>
+					<input ng-model="newalias.status" ng-value="true" type="checkbox" ng-init="newalias.status=1" ng-true-value="1" ng-false-value="0"> 
+                                </p>
+			</div>
+			<div style="clear:both;"></div>
+                </form>
+                	<div class="modal-footer">
+                	        <button class="btn btn-warning" ng-click="removeAliasTab()">Cancel</button>
+                	        <button class="btn btn-success" ng-click="addNewAlias()" ng-disabled="newAliasForm.$invalid">Create Alias</button>
+                	</div>
+                </div>
+	</tab>
+
+	<tab ng-if="editTab === true" active="editTab ? true : false">
+	<tab-heading><i class="fa fa-edit"> Edit Alias</i>  &nbsp; <a ng-click="removeAliasTab()" href=''><i class="fa fa-times"></i></a></tab-heading>
+		<div style="padding:15px;">
+                <div role="alert">
+                      <span class="help-block error" ng-show="errorEditAliasShow">{{errorEditAliasForm}}</span>
+                </div>
+		<form name="editAliasForm">
+                        <div style="width:40%;float:left;" class="form-group input-group-lg">
+                                <p>
+					<div class="form-group" ng-class="{ 'has-error' : editAliasForm.aliasname.$invalid && !editAliasForm.aliasname.$pristine }">
+					<label>Alias</label>
+						<input type="text" name="alias" class="form-control" ng-model="arec.alias" ng-minlength="3" ng-maxlength="200" required>
+						<p ng-show="editAliasForm.arec.$error.minlength" class="help-block">Alias is too short.</p>
+						<p ng-show="editAliasForm.arec.$error.maxlength" class="help-block">Alias is too long.</p>
+					</div>
+                                </p>
+                                <p>
+					<div class="form-group" ng-class="{ 'has-error' : editAliasForm.ip.$invalid && !editAliasForm.ip.$pristine }">
+					<label>IP</label>
+						<input type="text" name="ip" class="form-control" ng-model="arec.ip" required>
+					</div>
+                                </p>
+                                <p>
+                                        <label class="control-label" for="dashboardname">Port:</label>
+                                        <input type="text" class="form-control" name="port" id="port" ng-model="arec.port">
+                                </p>
+				<p>
+                                        <label class="control-label" for="dashboardname">Active:</label>
+					<input ng-model="arec.status" ng-value="true" type="checkbox" ng-true-value="1" ng-false-value="0"> 
+                                </p>
+			</div>
+			<div style="clear:both;"></div>
+                </form>
+                	<div class="modal-footer">
+                	        <button class="btn btn-danger" ng-click="doDeleteAlias();">Delete Alias</button>
+                	        <button class="btn btn-warning" ng-click="removeAliasTab()">Cancel</button>
+                	        <button class="btn btn-success" ng-click="doEditAlias();removeAliasTab();" ng-disabled="editAliasForm.$invalid">Save Changes</button>
+                	</div>
+                </div>
+
+
+	<tab>
+
+
+	</tabset>
+
+      </div><!-- /.box-body external-scopes="gridHandlers" -->
+</div>

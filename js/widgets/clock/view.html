@@ -1,0 +1,44 @@
+<div class="clock">
+<!--
+  <div class="clock-time">{{clock.time}}</div>
+  <div class="clock-date">{{clock.date}}</div>
+-->
+<table width="100%">
+<tr>
+<td align="center" ng-repeat="clock in clocks">
+	<b>{{clock.name}}</b>
+	<div class="clock-date">
+		<span style="color: grey">{{clock.time}}</span>	
+	</div>
+</td>
+
+</tr>
+<tr>
+<td align="center" ng-repeat="t in tz">
+  <object data="js/widgets/clock/station-clock.svg" type="image/svg+xml"
+  width="120" height="120">
+  <param name="dial"               value="din 41091.4"/>
+  <param name="hourHand"           value="din 41092.3"/>
+  <param name="minuteHand"         value="din 41092.3"/>
+  <param name="secondHand"         value="{{t.showseconds}}"/>
+  <param name="minuteHandBehavior" value="stepping"/>
+  <param name="secondHandBehavior" value="stepping"/>
+  <param name="secondHandStopToGo" value="yes"/>
+  <param name="secondHandStopTime" value="1.5"/>
+  <param name="backgroundColor"    value="rgba(0,0,0,0)"/>
+  <param name="dialColor"          value="rgb(40,40,40)"/>
+  <param name="hourHandColor"      value="rgb(20,20,20)"/>
+  <param name="minuteHandColor"    value="rgb(20,20,20)"/>
+  <param name="secondHandColor"    value="rgb(160,50,40)"/>
+  <param name="axisCoverColor"     value="rgb(20,20,20)"/>
+  <param name="axisCoverRadius"    value="0"/>
+  <param name="updateInterval"     value="{{t.update}}"/>
+  <param name="timeZone" value="{{t.offset}}"/>
+</object>
+</td>
+
+
+</tr>
+</table>
+
+</div>

@@ -1,0 +1,44 @@
+<div class="modal-header">
+	<h4 class="modal-title">Date Picker Test</h4>
+</div>
+<div class="modal-body">
+	<p class="input-group">
+		From:
+	</p>
+	<p class="input-group">
+		<input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="timerange.from" is-open="openedFromdate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+		<span class="input-group-btn">
+			<button class="btn btn-default" ng-click="open($event, 'openedFromdate')">
+				<span class="glyphicon glyphicon-calendar"></span>
+			</button>
+		</span>
+	</p>
+	<p class="input-group">
+		  <span class="input-group-btn input-time">
+        		<timepicker ng-model="timerange.from" hour-step="hstep" minute-step="mstep" show-meridian="false" show-seconds="true"></timepicker>
+                  </span>
+	</p>
+	<p class="input-group">
+		To:
+	</p>
+	<p class="input-group">
+		<input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="timerange.to" is-open="openedTodate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+		<span class="input-group-btn">
+			<button class="btn btn-default" ng-click="open($event, 'openedTodate')">
+				<span class="glyphicon glyphicon-calendar"></span>
+			</button>
+		</span>
+	</p>
+	<p class="input-group">
+		<span class="input-group-btn input-time">
+			<timepicker ng-model="timerange.to" hour-step="hstep" minute-step="mstep" show-meridian="false" show-seconds="true"></timepicker>
+                </span>
+	</p>
+	
+	<!-- <p class="input-group">Predefined </p> -->
+
+
+</div>
+<div class="modal-footer">
+	<button class="btn btn-default" ng-click="done()">Done</button>
+</div>

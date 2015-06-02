@@ -1,0 +1,99 @@
+<div class="modal-header">
+	<h4 class="modal-title">User Action</h4>
+</div>
+<div class="modal-body">
+  <tabset>
+	<tab>
+        <tab-heading><i class="glyphicon glyphicon-transfer"></i> User Edit </tab-heading>
+		<ng-form name="nameDialog" novalidate role="form">
+        		<div class="form-group input-group-lg">
+				<p>
+                			<label class="control-label" for="dashboardname">Name:</label>
+                        		<input type="text" class="form-control" name="username" id="dashboard" ng-model="user.username">
+				</p>
+				<p>
+                			<label class="control-label" for="password1">Password:</label>
+                        		<input type="password" class="form-control" name="password_1" id="password_1" ng-model="user.password_1">
+				</p>
+				<p>
+                			<label class="control-label" for="password2">Password (repeat):</label>
+                        		<input type="password" class="form-control" name="password_2" id="password_2" ng-model="user.password_2">
+				</p>
+				<p>
+                			<label class="control-label" for="dashboardname">Firstname:</label>
+                        		<input type="text" class="form-control" name="firstname" id="firstname" ng-model="user.firstname">
+				</p>
+				<p>
+                			<label class="control-label" for="dashboardname">Lastname:</label>
+                        		<input type="text" class="form-control" name="lastname" id="lastname" ng-model="user.lastname">
+				</p>
+				<p>
+                			<label class="control-label" for="dashboardname">Email:</label>
+                        		<input type="text" class="form-control" name="email" id="email" ng-model="user.email">
+				</p>
+				<p>
+                			<label class="control-label" for="dashboardname">Group (comma separated):</label>
+                        		<input type="text" class="form-control" name="grp" id="grp" ng-model="user.grp">
+				</p>
+				<p>
+                			<label class="control-label" for="dashboardname">Department:</label>
+                        		<input type="text" class="form-control" name="deparment" id="department" ng-model="user.department">
+				</p>                	</div>
+				<p>
+                			<label class="control-label" for="dashboardname">Active:</label>
+                        		<input type="bool" class="form-control" name="active" id="active" ng-model="user.active">
+				</p>		
+		</ng-form>
+		<div class="modal-footer">
+			<button class="btn btn-default" ng-click="delete()">Delete</button>
+			<button class="btn btn-default" ng-click="done()">Done</button>
+		</div>
+	  </tab>
+          <tab>
+          	<tab-heading><i class="glyphicon glyphicon-transfer"></i> New User </tab-heading>
+		<ng-form name="nameDialog" novalidate role="form">
+        		<div class="form-group input-group-lg">
+				<p>
+                			<label class="control-label" for="dashboardname">Name:</label>
+                        		<input type="text" class="form-control" name="username" id="dashboard" ng-model="newuser.username">
+				</p>
+				<p>
+                			<label class="control-label" for="password1">Password:</label>
+                        		<input type="password" class="form-control" name="password_1" id="password_1" ng-model="newuser.password_1">
+				</p>
+				<p>
+                			<label class="control-label" for="password2">Password (repeat):</label>
+                        		<input type="password" class="form-control" name="password_2" id="password_2" ng-model="newuser.password_2">
+				</p>
+				<p>
+                			<label class="control-label" for="dashboardname">Firstname:</label>
+                        		<input type="text" class="form-control" name="firstname" id="firstname" ng-model="newuser.firstname">
+				</p>
+				<p>
+                			<label class="control-label" for="dashboardname">Lastname:</label>
+                        		<input type="text" class="form-control" name="lastname" id="lastname" ng-model="newuser.lastname">
+				</p>
+				<p>
+                			<label class="control-label" for="dashboardname">Email:</label>
+                        		<input type="text" class="form-control" name="email" id="email" ng-model="newuser.email">
+				</p>
+				<p>
+                			<label class="control-label" for="dashboardname">Group (comma separated):</label>
+                        		<input type="text" class="form-control" name="grp" id="grp" ng-model="newuser.grp">
+				</p>
+				<p>
+                			<label class="control-label" for="dashboardname">Department:</label>
+                        		<input type="text" class="form-control" name="deparment" id="department" ng-model="newuser.department">
+				</p>                	</div>
+				<p>
+                			<label class="control-label" for="dashboardname">Active:</label>
+                        		<input type="bool" class="form-control" name="active" id="active" ng-model="newuser.active">
+				</p>	
+                	</div>
+		</ng-form>
+		<div class="modal-footer">
+			<button class="btn btn-default" ng-click="done()">Add</button>
+		</div>
+	  </tab>
+   </tabset>
+</div>
