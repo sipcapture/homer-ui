@@ -155,19 +155,20 @@ angular.module('homer.widgets.elasticaggs', ['adf.provider', 'highcharts-ng','ba
     $scope.reloadIt = function() {              
           $scope.$parent.changeReloading(true);                    
 	  elasticaggsService.get(config, config.path, config.query).then( function (sdata) {
-	        var seriesData = checkData(sdata);
-	        var chart = $scope.chartObj;
-		if (typeof chart.series === 'undefined') return;
-	        for (var i = 0, len =chart.series.length; i < len; i++) {
-		        //chart.series[i].remove();
-			if (typeof chart.series[i] !== 'undefined' && typeof seriesData[i] !== 'undefined') {
-				chart.series[i].update({ data: seriesData[i].data}, true); //true / false to redraw
-			}
-		}
-	        
+		var seriesData = checkData(sdata);
+                var chart = $scope.chartObj;
+                if (typeof chart.series === 'undefined') return;
+                var slen = seriesData.length;
+
+                for (var i = 0, len = chart.series.length; i < len; i++) {
+                        if(i <  slen)  chart.series[i].update(seriesData[i], true); //true / false to redraw                            
+                        else if(chart.series[i]) chart.series[i].remove(false);
+                }
+
+                for (i; i < slen; i++) chart.addSeries(seriesData[i], true);
+
                 $scope.$parent.changeReloading(false);
-	                  
-		//$scope.chartObj.series[0].update({ data: seriesData}, true); //true / false to redraw				
+
              },
              function(sdata) {
                 return;

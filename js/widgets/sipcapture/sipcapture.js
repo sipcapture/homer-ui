@@ -101,16 +101,18 @@ angular.module('homer.widgets.sipcapture', ['adf.provider', 'highcharts-ng'])
           $scope.$parent.changeReloading(true);          
           
 	  sipcaptureService.get(config, config.path, config.query).then( function (sdata) {
-	        var seriesData = checkData(sdata);
-		console.log(seriesData);
-	        var chart = $scope.chartObj;
-	        for (var i = 0, len =chart.series.length; i < len; i++) {
-		        //chart.series[i].remove();
-			chart.series[i].update({ data: seriesData[i].data}, true); //true / false to redraw				
-		}
+		var seriesData = checkData(sdata);
+                var chart = $scope.chartObj;
+                var slen = seriesData.length;
 
-		$scope.$parent.changeReloading(false);		           			        
-		//$scope.chartObj.series[0].update({ data: seriesData}, true); //true / false to redraw				
+                for (var i = 0, len = chart.series.length; i < len; i++) {
+                        if(i <  slen)  chart.series[i].update(seriesData[i], true); //true / false to redraw                            
+                        else if(chart.series[i]) chart.series[i].remove(false);
+                }
+      
+                for (i; i < slen; i++) chart.addSeries(seriesData[i], true);
+                
+                $scope.$parent.changeReloading(false);
              },
              function(sdata) {
              	console.log("RZ");
