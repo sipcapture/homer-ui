@@ -67,6 +67,7 @@ angular.module('homer.widgets.sipcapture', ['adf.provider', 'highcharts-ng'])
                 
 	$http.post(url, objQuery)
           .success(function(data){
+	    config.debugresp = JSON.stringify(data);
             if (data && data.status){
               var status = data.status;
               if ( status < 300 ){
