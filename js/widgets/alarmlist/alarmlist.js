@@ -10,7 +10,7 @@
 'use strict';
 
 angular.module('homer.widgets.alarmlist', ['adf.provider'])
-  .value('alarmListServiceUrl', '/api/alarm/list')
+  .value('alarmListServiceUrl', 'api/alarm/list')
   .config(function(dashboardProvider){
     dashboardProvider
       .widget('alarmlist', {
