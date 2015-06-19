@@ -10,7 +10,7 @@
 'use strict';
 
 angular.module('homer.widgets.adminuser', ['adf.provider'])
-  .value('adminuserServiceUrl', '/api/admin/user')
+  .value('adminuserServiceUrl', 'api/admin/user')
   .config(function(dashboardProvider){
     dashboardProvider
       .widget('adminuser', {
