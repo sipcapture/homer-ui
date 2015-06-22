@@ -36,7 +36,7 @@
                  $rootScope.currentUser = {};
                  
                  $scope.addDashBoard = function() {
-                         var dlg = $dialogs.create('/templates/dialogs/newdialog.html','newDashboardCtrl',{},{key: false,back: 'static'});
+                         var dlg = $dialogs.create('templates/dialogs/newdialog.html','newDashboardCtrl',{},{key: false,back: 'static'});
                          dlg.result.then(function(dashboardname){
                              /* upload is reserved name!!! */
                              if(dashboardname != "upload") 
@@ -216,7 +216,7 @@
     
 		//== Methods ==//
 		$scope.launch = function(){
-			var dlg = dialogs.create('/templates/dialogs/timerange.html','timerangeDialogCtrl',$scope.timerange);
+			var dlg = dialogs.create('templates/dialogs/timerange.html','timerangeDialogCtrl',$scope.timerange);
 			dlg.result.then(function(timerange){
 			    $scope.timerange = timerange;
 			    userProfile.setProfile("timerange", $scope.timerange);
