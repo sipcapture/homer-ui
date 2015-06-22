@@ -206,7 +206,7 @@
                     var messagewindowId = ""+data.id+"_"+data.trans;
 
                     $homerModal.open({
-                        url: '/templates/dialogs/message.html',
+                        url: 'templates/dialogs/message.html',
                         cls: 'homer-modal-content',
                         id: "message"+messagewindowId.hashCode(),
                         divLeft: event.clientX.toString()+'px',

@@ -147,7 +147,7 @@
                     var messagewindowId = ""+localrow.entity.id+"_"+localrow.entity.trans;
 
 		    $homerModal.open({
-		        url: '/templates/dialogs/message.html',
+		        url: 'templates/dialogs/message.html',
 		        cls: 'homer-modal-content',
 		        id: "message"+messagewindowId.hashCode(),
 			divLeft: event.clientX.toString()+'px',
@@ -207,7 +207,7 @@
                     var trwindowId = ""+localrow.entity.callid + "_" +localrow.entity.dbnode;
 
 		    $homerModal.open({
-		        url: '/templates/dialogs/transaction.html',
+		        url: 'templates/dialogs/transaction.html',
 		        cls: 'homer-modal-content',
 		        id: "trans"+trwindowId.hashCode(),
 		        params: search_data,
