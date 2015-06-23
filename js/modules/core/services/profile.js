@@ -60,6 +60,11 @@
                     deleteLocalProfile(key);
                     deleteRemoteProfile(key);                    
                };                
+               
+               var deleteAllProfile = function()
+               {                
+                    deleteAllRemoteProfile();                    
+               };                
                                  
                var setLocalProfile = function (key, data)
                {                
@@ -75,7 +80,7 @@
                {                
                     delete myProfile[key];
                };                
-                                                                                                                  
+               
 	       var getAllRemoteProfile = function ()
                {
 			var deferred = $q.defer();
@@ -169,6 +174,23 @@
                          );
                         return defer.promise;
                };
+               
+               var deleteAllRemoteProfile = function ()
+               {
+
+                        var defer = $q.defer();
+                        $http.delete('api/profile/store/', {handleStatus:[403,503]}).then(
+                                /* good response */
+                            function (results) {
+                                defer.resolve(results.data);
+                            },
+                            /* bad response */
+                            function (results) {
+                                defer.reject();
+                            }
+                         );
+                        return defer.promise;
+               };
                                   
                var getAll = function() 
                {  
@@ -209,6 +231,7 @@
                    setLocalProfile: setLocalProfile,
                    getLocalProfile: getLocalProfile,
                    deleteLocalProfile: deleteLocalProfile,
+                   deleteAllProfile: deleteAllProfile,
                    getRemoteProfile: getRemoteProfile,                   
                    setRemoteProfile: setRemoteProfile,                   
                    deleteRemoteProfile: deleteRemoteProfile,

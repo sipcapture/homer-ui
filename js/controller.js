@@ -20,7 +20,7 @@
              '$location',      
              'dialogs',
              homer.modules.core.services.profile,
-             function($scope, $rootScope, eventbus, $state, authentication, $location, $dialogs) {
+             function($scope, $rootScope, eventbus, $state, authentication, $location, $dialogs, userProfile) {
 
 		 $rootScope.homerApp = 'HOMER';
 		 $rootScope.homerVersion = '5.0.0beta1';
@@ -92,6 +92,14 @@
                  $scope.doLogout = function() {
                       $scope.showLeftMenu = false;                      
                       $scope.dropDownUserMenuClass = "";
+                      $location.path(homer.modules.auth.routes.logout);
+                 }
+                 
+                 $scope.doResetProfile = function() {
+                      $scope.showLeftMenu = false;                      
+                      $scope.dropDownUserMenuClass = "";
+                      userProfile.deleteAllProfile();                 
+                      console.log(userProfile);
                       $location.path(homer.modules.auth.routes.logout);
                  }
                                                                               
