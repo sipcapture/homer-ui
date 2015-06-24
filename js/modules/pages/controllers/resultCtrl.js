@@ -68,11 +68,14 @@
 		  $scope.dataLoading = true;		  
 		  
                   search.searchByMethod(data).then( function (sdata) {
-                          $scope.count = sdata.length;
-                          $scope.gridOpts.data = sdata; 
-                          $timeout(function () {
-                              angular.element($window).resize();
-                          }, 0)
+                          if(sdata) 
+                          {                  
+                              $scope.count = sdata.length;
+                              $scope.gridOpts.data = sdata; 
+                              $timeout(function () {
+                                  angular.element($window).resize();
+                              }, 0)
+                           } 
                      },
                      function(sdata) {
                         return;

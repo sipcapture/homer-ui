@@ -3,23 +3,13 @@
 	  <ng-form name="form">
 	  <!-- TEXT FIELDS -->
 
-	   <div ng-if="field.selection=='2B2B CID'">
-			 <div class="form-group">
-                                        <label>B2B CID:</label>
-                                        <div class="input-group">
-                                                <i class="fa fa-phone"> {{field.selection}}</i>
-                                        </div>
-                                            <input type="checkbox" ng-model="newObject[field.name]"/>
-                         </div>
-
-	   </div>
-	   <div ng-if="field.selection=='B2B CID'">
+	   <div ng-if="field.selection=='B2B ext'">
 	    		<div class="form-group">
                                         <div class="input-group">
                                             <div class="input-group-addon">
                                                 <i class="fa fa-phone"> {{field.selection}}</i>
                                             </div>
-                                            <input type="checkbox" class="btn" style="margin-left: 5px;" ng-model="newObject.searchValues[field.name]"/>
+                                            <input type="checkbox" class="btn" style="margin-left: 5px;" ng-model="newObject[field.name]"/>
                                         </div>
 	    		</div>
 	   </div>
@@ -58,7 +48,7 @@
 
 
 
-	   <div ng-if="field.selection!='B2B CID' && field.selection!='Transaction' && field.selection!='Result Type' && field.selection!='DB Node'">
+	   <div ng-if="field.selection!='B2B ext' && field.selection!='Transaction' && field.selection!='Result Type' && field.selection!='DB Node'">
 	    <div ng-if="field.selection" class="form-group">
                                         <div class="input-group">
                                             <div class="input-group-addon">

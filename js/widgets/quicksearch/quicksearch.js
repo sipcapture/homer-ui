@@ -259,6 +259,7 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
                    {name:'limit', selection:'Limit Query'},
                    {name:'transaction', selection:'Transaction'},
                    {name:'dbnode', selection:'DB Node'},
+                   {name:'b2b', selection:'B2B ext'},
                    {name:'restype', selection:'Result Type'}
             ];            	   
   }) 
