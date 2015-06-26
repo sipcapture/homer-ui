@@ -138,7 +138,7 @@ angular.module('homer.widgets.adminnode', ['adf.provider'])
     
     $scope.addNewNode = function() {
       
-        console.log("NEW USER");        
+        console.log("NEW NODE");        
 	$scope.errorNewNodeShow = false;                                                
         $scope.removeNodeTab();                             
         
@@ -165,7 +165,7 @@ angular.module('homer.widgets.adminnode', ['adf.provider'])
     
     $scope.doEditNode = function() {
         
-                console.log("Edit USER");
+                console.log("Edit NODE");
                 $scope.editTab = false;
                 $scope.newTab = false;
                 $scope.activeNewTab = false;
@@ -200,7 +200,7 @@ angular.module('homer.widgets.adminnode', ['adf.provider'])
     
     $scope.doDeleteNode = function() {
       
-        console.log("Delete USER");
+        console.log("Delete NODE");
                 
 	SweetAlert.swal({
                 title: "Are you sure?",
@@ -223,13 +223,13 @@ angular.module('homer.widgets.adminnode', ['adf.provider'])
                                 $scope.activeTab = true;
                                 $scope.tabShown = true;
 
-				var id = $scope.node.id;
+				var id = $scope.noderec.id;
                 
 				adminnodeService.delete(id).then(function (mdata) {
 					$scope.gridOptions.data.length = 0;
 					$timeout(function(){ $scope.gridOptions.data = mdata;});
 			        });
-                                $scope.removeAlarmTab();
+                                $scope.removeNodeTab();
                         }
         });
 
