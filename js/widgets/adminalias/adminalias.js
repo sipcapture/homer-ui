@@ -160,7 +160,7 @@ angular.module('homer.widgets.adminalias', ['adf.provider'])
     
     $scope.doEditAlias = function() {
         
-                console.log("Edit USER");
+                console.log("Edit ALIAS");
                 $scope.editTab = false;
                 $scope.newTab = false;
                 $scope.activeNewTab = false;
@@ -192,7 +192,7 @@ angular.module('homer.widgets.adminalias', ['adf.provider'])
     
     $scope.doDeleteAlias = function() {
       
-        console.log("Delete USER");
+        console.log("Delete ALIAS");
 
 
 	 SweetAlert.swal({
@@ -216,7 +216,7 @@ angular.module('homer.widgets.adminalias', ['adf.provider'])
                                 $scope.activeTab = true;
                                 $scope.tabShown = true;
 
-			        var id = $scope.alias.id;
+			        var id = $scope.arec.id;
                 
 				adminaliasService.delete(id).then(function (mdata) {
 					$scope.gridOptions.data.length = 0;
@@ -225,7 +225,7 @@ angular.module('homer.widgets.adminalias', ['adf.provider'])
 					});
 	        		});
 
-                                $scope.removeAlarmTab();
+                                $scope.removeAliasTab();
                         }
                 }
         );
