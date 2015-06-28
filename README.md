@@ -1,9 +1,10 @@
-# homer-ui
+[![Logo](http://sipcapture.org/data/images/sipcapture_header.png)](http://sipcapture.org)
 
-### HOMER 5 User-Interface
-PUBLIC BETA1
+## HOMER 5 User-Interface
 
-DOCUMENTATION is here:
+### PUBLIC BETA 1
+
+DOCUMENTATION is available here:
 
 https://github.com/sipcapture/homer/tree/homer5
 
