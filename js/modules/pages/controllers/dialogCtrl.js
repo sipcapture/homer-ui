@@ -222,8 +222,8 @@
                 $scope.checkMousePosition = function (event) {
                                 
                         var ret = false;
-                        var x = event.offsetX;
-                        var y = event.offsetY;
+                        var x = event.offsetX==null?event.originalEvent.layerX-event.target.offsetLeft:event.offsetX;
+                        var y = event.offsetY==null?event.originalEvent.layerY-event.target.offsetTop:event.offsetY;
 		
                         angular.forEach($scope.clickArea, function(ca) {
 				if(ca.x1 < x && ca.x2 > x && ca.y1 < y && ca.y2 > y) {
@@ -240,9 +240,9 @@
                                 
                         var ret = false;
                         var obj = {};
-                        var x = event.offsetX;
-                        var y = event.offsetY;
-                                                 
+                        var x = event.offsetX==null?event.originalEvent.layerX-event.target.offsetLeft:event.offsetX;
+                        var y = event.offsetY==null?event.originalEvent.layerY-event.target.offsetTop:event.offsetY;
+
                         angular.forEach($scope.clickArea, function(ca) {
 				if(ca.x1 < x && ca.x2 > x && ca.y1 < y && ca.y2 > y) {
 				        ret = true;				        
