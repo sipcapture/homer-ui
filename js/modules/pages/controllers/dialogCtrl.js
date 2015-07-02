@@ -222,8 +222,9 @@
                 $scope.checkMousePosition = function (event) {
                                 
                         var ret = false;
-                        var x = event.offsetX;
-                        var y = event.offsetY;
+                        // Not all brawsers support offsetX/offsetY properties
+                        var x = event.offsetX==null?event.originalEvent.layerX-event.originalEvent.originalTarget.offsetLeft:event.offsetX;
+                        var y = event.offsetY==null?event.originalEvent.layerY-event.originalEvent.originalTarget.offsetTop:event.offsetY;
 		
                         angular.forEach($scope.clickArea, function(ca) {
 				if(ca.x1 < x && ca.x2 > x && ca.y1 < y && ca.y2 > y) {
@@ -240,9 +241,10 @@
                                 
                         var ret = false;
                         var obj = {};
-                        var x = event.offsetX;
-                        var y = event.offsetY;
-                                                 
+                        // Not all brawsers support offsetX/offsetY properties
+                        var x = event.offsetX==null?event.originalEvent.layerX-event.originalEvent.originalTarget.offsetLeft:event.offsetX;
+                        var y = event.offsetY==null?event.originalEvent.layerY-event.originalEvent.originalTarget.offsetTop:event.offsetY;
+
                         angular.forEach($scope.clickArea, function(ca) {
 				if(ca.x1 < x && ca.x2 > x && ca.y1 < y && ca.y2 > y) {
 				        ret = true;				        
