@@ -63,7 +63,6 @@
 		angular.forEach(transaction.transaction, function(v, k) {
 		    data.param.transaction[v.name] = true;
 		});
-
 		$scope.dataLoading = true;
 
 		search.searchByMethod(data).then(
@@ -79,7 +78,7 @@
 		function(sdata) {
 		    return;
 		}).finally(
-		function(){
+		function() {
 		    $scope.dataLoading = false;
 		    //$scope.$apply();
 		});
@@ -120,7 +119,7 @@
 			}
             };
 
-	    $scope.showMessage = function(localrow,event) {
+	    $scope.showMessage = function(localrow, event) {
 		var search_data =  {
 		    timestamp: {
 			from: parseInt(localrow.entity.micro_ts/1000),
@@ -135,8 +134,8 @@
 			    node: localrow.entity.dbnode
 			},
 			transaction: {
-			    call: false,\
-			    registration: false,\
+			    call: false,
+			    registration: false,
 			    rest: false
 			}
 		    }
@@ -174,7 +173,7 @@
 
 		callids.push(localrow.entity.callid);
 
-		angular.forEach(rows, function(row, key){
+		angular.forEach(rows, function(row, key) {
 		    if(callids.indexOf(row.callid) == -1) callids.push(row.callid);
 		    if(callids.indexOf(row.callid_aleg) == -1 && row.callid_aleg.length > 1) callids.push(row.callid_aleg);
 		    if(nodes.indexOf(row.dbnode) == -1) nodes.push(row.dbnode);
@@ -254,7 +253,7 @@
 			displayName: 'Id',
 			width: 50},
 		    {field: 'milli_ts',
-			displayName: 'Date', 
+			displayName: 'Date',
 			cellFilter: 'date:\'yyyy-dd-MM HH:mm:ss.sss\'',
 			width: 170
 		    },
@@ -297,9 +296,9 @@
 		return row.id;
 	    };
 
-	    $scope.gridOpts.onRegisterApi = function(gridApi){
-	    //set gridApi on scope
-	    $scope.gridApi = gridApi;
+	    $scope.gridOpts.onRegisterApi = function(gridApi) {
+		//set gridApi on scope
+		$scope.gridApi = gridApi;
 	    };
 	}
     ])
