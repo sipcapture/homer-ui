@@ -277,11 +277,12 @@
 				cellTemplate: '<div  ng-click="grid.appScope.showTransaction(row, $event)" class="ui-grid-cell-contents"><span class="navText">{{COL_FIELD}}</span></div>'
 			    },
                             {field: 'user_agent', displayName: 'User Agent'},
+                            {field: 'source_alias', displayName: 'Source Alias'},
                             {field: 'source_ip', displayName: 'Source IP'},
                             {field: 'source_port', displayName: 'SPort', width: 50},
+                            {field: 'destination_alias', displayName: 'Destination Alias'},
                             {field: 'destination_ip', displayName: 'Dest. IP'},
                             {field: 'destination_port', displayName: 'DPort', width: 50},
-                            {field: 'source_ip', displayName: 'Source IP'},
                             {field: 'proto', displayName: 'Proto', width: 40},
                             {field: 'node', displayName: 'Node'}
                       ]    
