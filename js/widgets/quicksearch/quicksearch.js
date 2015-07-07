@@ -248,7 +248,7 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
                    {name:'diversion', selection:'Diversion'},
                    {name:'via_1', selection:'VIA'},  
                    {name:'source_ip', selection:'Source IP'},
-                   {name:'destion_ip', selection:'Dest. IP'},
+                   {name:'destination_ip', selection:'Dest. IP'},
                    {name:'source_port', selection:'Source Port'},
                    {name:'destination_port', selection:'Dest. Port'},
                    {name:'node', selection:'DB Node'},
