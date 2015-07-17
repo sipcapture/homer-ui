@@ -251,7 +251,7 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
                    {name:'destination_ip', selection:'Dest. IP'},
                    {name:'source_port', selection:'Source Port'},
                    {name:'destination_port', selection:'Dest. Port'},
-                   {name:'node', selection:'DB Node'},
+                   {name:'node', selection:'Node'},
                    {name:'uniq', selection:'Unique'},
                    {name:'orand', selection:'Logic OR'},
                    {name:'proto', selection:'Protocol'},
