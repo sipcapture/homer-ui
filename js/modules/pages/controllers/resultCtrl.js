@@ -275,6 +275,11 @@
 			width: 160,
 			cellTemplate: '<div  ng-click="grid.appScope.showTransaction(row, $event)" class="ui-grid-cell-contents"><span class="navText">{{COL_FIELD}}</span></div>'
 		    },
+		    {field: 'callid_aleg',
+                        displayName: 'CallID_AL',
+                        width: 100,
+                        cellTemplate: '<div  ng-click="grid.appScope.showTransaction(row, $event)" class="ui-grid-cell-contents"><span class="navText">{{COL_FIELD}}</span></div>'
+                    },
 		    {field: 'user_agent', displayName: 'User Agent'},
 		    {field: 'source',
 			displayName: 'Source Host',
