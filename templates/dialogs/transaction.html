@@ -18,6 +18,22 @@
   </ol>
 </script>
 
+<script type="text/ng-template" id="logs_renderer.html">
+  <div nodrag>
+    <a class="btn btn-success btn-xs" nodrag ng-click="toggleTree(log.id)">
+    <span class="glyphicon"
+        ng-class="{
+          'glyphicon-chevron-right': !collapsed[log.id],
+          'glyphicon-chevron-down': collapsed[log.id]
+        }"></span></a>
+    {{log.date}}: [{{log.correlation_id}}]
+  </div>
+  <ol ng-model="log.msg" ng-class="{hidden: !collapsed[log.id]}" nodrag>
+        {{log.msg}}
+  </ol>
+</script>
+
+
 <div class="modal-header homer-modal-header" style="border-bottom:0;" >
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="closeModal()" style="margin-right:4px;">&times;</button>
 
@@ -75,7 +91,7 @@
 			<div id="log-root" ng-if="enableLogReport">				
 				<p>Log:</p>
 				<ol ng-model="logreport">
-					<li ng-repeat="report in logreport" ng-include="'reports_renderer.html'"></li>
+					<li ng-repeat="report in logreport" ng-include="'logs_renderer.html'"></li>
 				</ol>
 			</div>				
 
