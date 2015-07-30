@@ -90,11 +90,85 @@
         		return defer.promise;		                                                 
                 };
                 
+                var searchRTCPReportById = function (data) {
+
+                        var defer = $q.defer();
+
+                        $http.post('/api/report/share/rtcp', data).then(
+                                /* good response */
+                            function (results) {
+                                    if(results.data.auth == "false") {
+                                        defer.reject('user not authorized');
+                                    }
+                                    else {
+                                        defer.resolve(results.data.data);
+                                    }
+                            },
+                                /* bad response */
+                                function (results) {
+                                        defer.reject('bad response combination');
+                                }
+                         );
+
+                        return defer.promise;
+                };
+
+                var searchLogReportById = function (data) {
+
+                        var defer = $q.defer();
+
+                        $http.post('/api/report/share/log', data).then(
+                                /* good response */
+                            function (results) {
+                                    if(results.data.auth == "false") {
+                                        defer.reject('user not authorized');
+                                    }
+                                    else {
+                                        defer.resolve(results.data.data);
+                                    }
+                            },
+                                /* bad response */
+                                function (results) {
+                                        defer.reject('bad response combination');
+                                }
+                         );
+
+                        return defer.promise;
+                };
+		
+		 var searchQualityReportById = function (type, data) {
+
+                        var defer = $q.defer();
+
+                        $http.post('/api/report/share/quality/'+type, data).then(
+                                /* good response */
+                            function (results) {
+                                    if(results.data.auth == "false") {
+                                        defer.reject('user not authorized');
+                                    }
+                                    else {
+                                        defer.resolve(results.data.data);
+                                    }
+                            },
+                                /* bad response */
+                                function (results) {
+                                        defer.reject('bad response combination');
+                                }
+                         );
+
+                        return defer.promise;
+                };
+
+
                 return {
                    searchMessageById: searchMessageById,
                    searchTransactionById: searchTransactionById,
-                   makePcapTextforTransactionById: makePcapTextforTransactionById
+                   makePcapTextforTransactionById: makePcapTextforTransactionById,
+                   searchQualityReportById: searchQualityReportById,
+                   searchLogReportById: searchLogReportById,
+                   searchRTCPReportById: searchRTCPReportById
                 };
+
           }
     ]);
 }(angular, homer));
