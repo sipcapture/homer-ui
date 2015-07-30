@@ -22,6 +22,41 @@
     <![endif]-->
 </head>
 <body style="min-height: 800px;" ng-class="{hiddenMenu:boolLeftMenu}" class="skin-black menu-on-top  pace-done">
+	
+<script type="text/ng-template" id="reports_renderer.html">
+  <div nodrag>
+    <a class="btn btn-success btn-xs" nodrag ng-click="toggleTree(report.id)">
+    <span class="glyphicon"
+        ng-class="{
+          'glyphicon-chevron-right': !collapsed[report.id],
+          'glyphicon-chevron-down': collapsed[report.id]
+        }"></span></a>
+    {{report.date}}: [{{report.correlation_id}}]
+  </div>
+  <ol ng-model="report.msg" ng-class="{hidden: !collapsed[report.id]}" nodrag>
+    <li ng-repeat="(property, value) in report.msg">
+      <div class="tree-report tree-report-content" nodrag> {{property}}:</div>
+          <ol  ng-model="value" nodrag>
+                <li ng-repeat="(p, v) in value">{{p}}: {{v}}</li>
+          </ol>
+    </li>
+  </ol>
+</script>
+
+<script type="text/ng-template" id="logs_renderer.html">
+  <div nodrag>
+    <a class="btn btn-success btn-xs" nodrag ng-click="toggleTree(log.id)">
+    <span class="glyphicon"
+        ng-class="{
+          'glyphicon-chevron-right': !collapsed[log.id],
+          'glyphicon-chevron-down': collapsed[log.id]
+        }"></span></a>
+    {{log.date}}: [{{log.correlation_id}}]
+  </div>
+  <ol ng-model="log.msg" ng-class="{hidden: !collapsed[log.id]}" nodrag>
+        {{log.msg}}
+  </ol>
+</script>
 
 <div ng-show="showError"> {{ErrorLoad}}</div>
 <div id="sharemain" role="main" auto-height ng-show="showPage">
@@ -48,9 +83,14 @@
 				{{rtcpreport}}
 		     </tab>	     
 		     <tab>
-		     <tab-heading><i class="glyphicon glyphicon-transfer"></i> Logs </tab-heading>	     	     
-				{{logreport}}
-		     </tab>
+		     <tab-heading><i class="glyphicon glyphicon-transfer"></i> Logs: </tab-heading>
+                        <div id="log-root" ng-if="enableLogReport">
+                                <p>Logs:</p>
+                                <ol ng-model="logreport">
+                                        <li ng-repeat="log in logreport" ng-include="'logs_renderer.html'"></li>
+                                </ol>
+                        </div>
+                     </tab>
 		     <tab>
 		     <tab-heading><i class="glyphicon glyphicon-info-sign"></i> Export</tab-heading>
 			<button class="btn btn-normal" ng-click="exportPCAP()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;">Export PCAP</button>
