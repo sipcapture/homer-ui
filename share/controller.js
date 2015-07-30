@@ -48,14 +48,23 @@
 		    console.log("details");
 		};
 
-		$scope.id = 1;
-		$scope.transaction = [];
-		$scope.clickArea = [];
-		$scope.msgCallId = "";
-		$scope.showPage = true;
-		$rootScope.showError = false;
-						
-		
+	        $scope.id = 1;
+                $scope.transaction = [];
+                $scope.clickArea = [];
+                $scope.msgCallId = "";
+                $scope.showPage = true;
+                $rootScope.showError = false;
+                $scope.collapsed = [];
+                $scope.enableQualityReport = false;
+                $scope.enableRTCPReport = false;
+                $scope.enableLogReport = false;
+                $scope.enableXRTPReport = false;
+
+
+                $scope.toggleTree = function (id) {
+                        $scope.collapsed[id] =! $scope.collapsed[id];
+                };
+
 		$scope.exportPCAP = function() {
 		        makePcapText(this.data, false, $scope.msgCallId);		        
 		};
@@ -197,8 +206,61 @@
                                  return;
                          }).finally(function(){
                       });
-                };                                
+                };             
                 
+                 $scope.showRTCPReport = function(rdata) {
+
+                    search.searchRTCPReportById(rdata).then( function (msg) {
+
+                            if (msg.length > 0) {
+                                console.log("RTCP", msg);
+                                $scope.enableRTCPReport = true;
+                                $scope.rtcpreport = msg;
+                            }
+                     },
+                     function(sdata) { return;}).finally(function(){
+                          $scope.dataLoading = false;
+                     });
+                };
+
+
+                $scope.showLogReport = function(rdata) {
+
+                    search.searchLogReportById(rdata).then( function (msg) {
+
+                            if (msg.length > 0) {
+                                $scope.enableLogReport = true;
+                                $scope.logreport = msg;
+                            }
+                     },
+                     function(sdata) { return;}).finally(function(){
+                          $scope.dataLoading = false;
+                     });
+                };
+
+		$scope.showQualityReport = function(rdata) {
+
+                    /* only rtcp-xr = 1 , nvoice = 2 and so on... */
+                    //report_data['param']['search']['type'] = 1;
+                    var type = "short";
+
+                    search.searchQualityReportById(type, rdata).then( function (msg) {
+
+                            if (msg.length > 0) {
+                                $scope.enableQualityReport = true;
+                                $scope.qualityreport = msg;
+                            }
+                     },
+                     function(sdata) { return;}).finally(function(){
+                          $scope.dataLoading = false;
+                     });
+                };
+
+                //$scope.showRTCPReport(data);
+                $scope.showLogReport(data);
+                //$scope.showQualityReport(data);
+                console.log("Reporting...", data);
+
                 $timeout(function() {
                         if($homerModal.getOpenedModals().indexOf('tempModal') !== -1) {
                         $homerModal.close('tempModal', 'var a', 'var b');
