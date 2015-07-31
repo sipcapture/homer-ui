@@ -207,6 +207,10 @@
 
 		search_data['param']['transaction'][localrow.entity.trans] = true;
 		var trwindowId = ""+localrow.entity.callid + "_" +localrow.entity.dbnode;
+		
+		nodes = userProfile.getProfile("node");
+                search_data['node'] = nodes['dbnode'];
+
 
 		$homerModal.open({
 		    url: 'templates/dialogs/transaction.html',
