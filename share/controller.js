@@ -60,6 +60,17 @@
                 $scope.enableLogReport = false;
                 $scope.enableXRTPReport = false;
 
+		var getCallFileName = function() {
+			var fileNameTemplete = defineExportTemplate();
+			var callFileName = fileNameTemplete ;
+			var ts_hms = new Date($scope.transaction.calldata[0].milli_ts);
+			var fileNameTime = (ts_hms.getMonth() + 1) + "/" + ts_hms.getDate() + "/" + ts_hms.getFullYear() + " " +
+		          ts_hms.getHours() + ":" + ts_hms.getMinutes() + ":" + ts_hms.getSeconds() ;		
+
+			callFileName = callFileName.replace("#{date}",fileNameTime );  			
+			callFileName = $.tmpl(callFileName, $scope.transaction.calldata[0]);						
+	 	        return callFileName;
+		};
 
                 $scope.toggleTree = function (id) {
                         $scope.collapsed[id] =! $scope.collapsed[id];
@@ -72,6 +83,14 @@
 		$scope.exportTEXT = function() {
 		        makePcapText(this.data, true, $scope.msgCallId);
 		};
+		
+		$scope.exportCanvas = function() {
+                        var canvas = $("body").find('#cflowcanv');
+                        var a = document.createElement("a");
+                        a.download = getCallFileName() + ".png";
+                        a.href = canvas[0].toDataURL("image/png");
+                        a.click();
+                };		
 		
 		$scope.exportShare = function() {
 		        //makePcapText(this.data, false, $scope.msgCallId);		        
@@ -193,10 +212,10 @@
                 var makePcapText = function(fdata, text, callid) 
                 { 
                         search.makePcapTextforTransactionById(data, text).then( function (msg) {
-	           	      var filename = "HOMER5_"+callid+".pcap";
+	           	      var filename = getCallFileName()+".pcap";
 	           	      var content_type = "application/pcap";	           	                                          	           	      
 	           	      if(text) {
-	           	            filename = "HOMER5_"+callid+".txt";
+	           	            filename = getCallFileName()+".txt";
 	           	            content_type = "attacment/text;charset=utf-8";
                               }                              
                               var blob = new Blob([msg], {type: content_type});	           	      

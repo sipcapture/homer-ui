@@ -87,7 +87,6 @@
 			  $scope.trustedHtmlDetails = $sce.trustAsHtml($scope.sipDetails);			  
                      },
                      function(sdata) {
-                        console.log("RZ");
                         console.log(sdata); 
                         return;
                      }).finally(function(){
@@ -135,12 +134,23 @@
 		$scope.enableLogReport = false;
 		$scope.enableXRTPReport = false;
 			  			  	  			  
-                
-		$scope.exportCanvas = function() {
+		var getCallFileName = function() {
+                        var fileNameTemplete = defineExportTemplate();
+                        var callFileName = fileNameTemplete ;
+                        var ts_hms = new Date($scope.transaction.calldata[0].milli_ts);
+                        var fileNameTime = (ts_hms.getMonth() + 1) + "/" + ts_hms.getDate() + "/" + ts_hms.getFullYear() + " " +
+                          ts_hms.getHours() + ":" + ts_hms.getMinutes() + ":" + ts_hms.getSeconds() ;           
+
+                        callFileName = callFileName.replace("#{date}",fileNameTime );
+                        callFileName = $.tmpl(callFileName, $scope.transaction.calldata[0]);
+                        return callFileName;
+                };
+
+                $scope.exportCanvas = function() {
 		        var myEl = angular.element(document.querySelectorAll("#"+$homerModalParams.id));	
 		        var canvas = $(myEl).find('#cflowcanv');		                                		        
                         var a = document.createElement("a");
-			a.download = "callflow_"+$scope.msgCallId+".png";
+			a.download = getCallFileName()+".png";
 			a.href = canvas[0].toDataURL("image/png");
 			a.click();
 		};
@@ -342,10 +352,10 @@
                 var makePcapText = function(fdata, text, callid) 
                 { 
                         search.makePcapTextforTransaction(fdata, text).then( function (msg) {
-	           	      var filename = "HOMER5_"+callid+".pcap";
+	           	      var filename = getCallFileName()+".pcap";
 	           	      var content_type = "application/pcap";	           	                                          	           	      
 	           	      if(text) {
-	           	            filename = "HOMER5_"+callid+".txt";
+	           	            filename = getCallFileName()+".txt";
 	           	            content_type = "attacment/text;charset=utf-8";
                               }                              
                               var blob = new Blob([msg], {type: content_type});	           	      

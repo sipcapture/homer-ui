@@ -39,3 +39,21 @@ function defineHomerJsLibrary(b, a, d) {
 
     return angular.module(b, a).factory(b, d)
 }
+
+$.tmpl = function(str, obj) {
+    do {
+        var beforeReplace = str;
+        str = str.replace(/#{([^}]+)}/g, function(wholeMatch, key) {
+            var substitution = obj[$.trim(key)];
+            return (substitution === undefined ? wholeMatch : substitution);
+        });
+        var afterReplace = str !== beforeReplace;
+    } while (afterReplace);
+
+    return str;
+};
+
+
+function defineExportTemplate() {
+    return "HOMER5-#{destination_ip}-#{ruri_user}-#{date}";
+}
