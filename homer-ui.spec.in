@@ -1,9 +1,9 @@
 # Definitions
 %define debug_package %{nil}
 %if %{_vendor} == suse
-%define webroot %{_prefix}/srv/%name/htdocs
+%define webroot %{_prefix}/srv/sipcapture/htdocs
 %else # CentOS/Fedora
-%define webroot %{_localstatedir}/www/%name
+%define webroot %{_localstatedir}/www/sipcapture/htdocs
 %define webuser apache
 %define webgroup apache
 %endif
