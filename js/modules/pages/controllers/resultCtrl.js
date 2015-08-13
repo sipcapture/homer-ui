@@ -56,7 +56,8 @@
 		data.param.transaction = {};
 		data.param.limit = limit;
 		data.param.search = value;
-		data.param.node = node;
+		data.param.location = {};
+		data.param.location.node = node;
 		data.timestamp.from = timedate.from.getTime();
 		data.timestamp.to = timedate.to.getTime();
 
@@ -209,7 +210,7 @@
 		var trwindowId = ""+localrow.entity.callid + "_" +localrow.entity.dbnode;
 		
 		nodes = userProfile.getProfile("node");
-                search_data['node'] = nodes['dbnode'];
+                search_data['param']['location']['node'] = nodes['dbnode'];
 
 
 		$homerModal.open({
