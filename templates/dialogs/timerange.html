@@ -1,5 +1,5 @@
 <div class="modal-header">
-	<h4 class="modal-title">Date Picker Test</h4>
+	<h4 class="modal-title">Date Picker</h4>
 </div>
 <div class="modal-body">
 	<p class="input-group">
@@ -8,7 +8,10 @@
 	<p class="input-group">
 		<input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="timerange.from" is-open="openedFromdate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
 		<span class="input-group-btn">
-			<button class="btn btn-default" ng-click="open($event, 'openedFromdate')">
+			<a tooltip-placement="bottom" tooltip="Set Now" ng-click="#">
+				<button class="btn btn-info" ng-click="setToNow(1);"><span class="glyphicon glyphicon-refresh"></span></button>
+			</a>
+			<button class="btn btn-primary" ng-click="open($event, 'openedFromdate')">
 				<span class="glyphicon glyphicon-calendar"></span>
 			</button>
 		</span>
@@ -24,7 +27,10 @@
 	<p class="input-group">
 		<input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="timerange.to" is-open="openedTodate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
 		<span class="input-group-btn">
-			<button class="btn btn-default" ng-click="open($event, 'openedTodate')">
+			<a tooltip-placement="bottom" tooltip="Set Now" ng-click="#">         
+				<button class="btn btn-info" ng-click="setToNow(2);"><span class="glyphicon glyphicon-refresh"></span></button>
+			</a>
+			<button class="btn btn-primary" ng-click="open($event, 'openedTodate')">
 				<span class="glyphicon glyphicon-calendar"></span>
 			</button>
 		</span>
@@ -40,5 +46,5 @@
 
 </div>
 <div class="modal-footer">
-	<button class="btn btn-default" ng-click="done()">Done</button>
+	<button class="btn btn-success" ng-click="done()">Done</button>
 </div>

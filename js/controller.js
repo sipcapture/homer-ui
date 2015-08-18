@@ -189,7 +189,7 @@
              }                          
     ])    
     
-    .controller("HomerDatepickerCtrl", function($scope, dialogs, userProfile, eventbus, $interval) {
+    .controller("HomerDatepickerCtrl", function($scope, dialogs, userProfile, eventbus, $interval, $state) {
            //== Variables ==//
                
                 var dt = new Date(new Date().setHours(new Date().getHours() - 2 ));
@@ -206,7 +206,7 @@
                             }
                         });
                 }());
-				
+                
                 $scope.toggleMin = function() {
                     $scope.minDate = $scope.minDate ? null : new Date().setFullYear(2013, 0, 1);;
                     $scope.maxDate = $scope.maxDate ? null : new Date().setFullYear(2032, 0, 1);;
@@ -221,6 +221,16 @@
                           
 		$scope.formats = ['yyyy/MM/dd', 'yyyy-MM-dd', 'dd.MM.yyyy', 'shortDate'];
 		$scope.format = $scope.formats[1];		                         
+    
+		$scope.setFromNow = function() {
+		        var dt = new Date(new Date().setMinutes(new Date().getMinutes() + 5 ));
+			$scope.timerange = {			     
+			      from: new Date(),
+			      to: dt
+			};
+			userProfile.setProfile("timerange", $scope.timerange);
+			eventbus.broadcast('globalWidgetReload', 1);		
+		};    
     
 		//== Methods ==//
 		$scope.launch = function(){
@@ -258,12 +268,22 @@
 			
 			$scope.activeInterval = true;
 			
-			stop = $interval(function() {			    
-			    $scope.timerange.from.setSeconds($scope.timerange.from.getSeconds() + seconds);
-			    $scope.timerange.to.setSeconds($scope.timerange.to.getSeconds() + seconds);						
-      			    userProfile.setProfile("timerange", $scope.timerange);			     			
-			    eventbus.broadcast('globalWidgetReload', 1);			    			    
-			}, seconds * 1000);
+			if($state.current.name == "result") 
+			{
+			    stop = $interval(function() {			    
+			        $scope.timerange.to.setSeconds($scope.timerange.to.getSeconds() + seconds);						
+			        userProfile.setProfile("timerange", $scope.timerange);			     			
+			        eventbus.broadcast(homer.modules.pages.events.resultSearchSubmit, "fullsearch");			                           
+                            }, seconds * 1000);			
+			}
+			else {
+                             stop = $interval(function() {			    
+        			   $scope.timerange.from.setSeconds($scope.timerange.from.getSeconds() + seconds);
+        			   $scope.timerange.to.setSeconds($scope.timerange.to.getSeconds() + seconds);						
+        			   userProfile.setProfile("timerange", $scope.timerange);			     			
+        			   eventbus.broadcast('globalWidgetReload', 1);			    			    
+                             }, seconds * 1000);
+                        }
 	        };
 
         	$scope.cancelRefresh = function(){
@@ -275,6 +295,10 @@
 			}
 
         	}; // end refresh
+        	
+                eventbus.subscribe(homer.modules.pages.events.destroyRefresh , function(event, name, model) {
+                        $scope.cancelRefresh();
+                });        	
 
     }) 
     .controller('timerangeDialogCtrl',function($log,$scope,$modalInstance,data){
@@ -308,6 +332,12 @@
                 $event.stopPropagation();
                 $scope[opened] = true;
         };
+
+        $scope.setToNow = function(type) {
+                if(type == 1) $scope.timerange.from = new Date();
+                else $scope.timerange.to = new Date();
+        };
+
 
 	$scope.done = function(){
 		$modalInstance.close($scope.timerange);

@@ -40,6 +40,16 @@
 		/* hide left menu */
 		eventbus.broadcast(homer.modules.pages.events.hideLeftMenu, "1");
 
+		$scope.$on("$destroy", function(){
+		    eventbus.broadcast(homer.modules.pages.events.destroyRefresh, "1");
+		    myListener();
+                });
+		
+                //eventbus.broadcast(homer.modules.pages.events.resultSearchSubmit, "fullsearch");		                   
+		var myListener = eventbus.subscribe(homer.modules.pages.events.resultSearchSubmit , function(event,name, model) {
+			$scope.processSearchResult();
+		});				
+
 		// process the form
 		$scope.processSearchResult = function() {
 

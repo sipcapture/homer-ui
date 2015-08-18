@@ -33,7 +33,8 @@
 	    adfDeleteEvent: 'adfDashboardRequestedForDelete',
 	    widgetsReload: 'widgetReload',
 	    resultSearchSubmit: 'resultSearchSubmit',
-	    hideLeftMenu: 'hideLeftMenu'	    
+	    hideLeftMenu: 'hideLeftMenu',
+	    destroyRefresh: 'destroyRefresh'	    
         },
         state: {
             home: 'home',

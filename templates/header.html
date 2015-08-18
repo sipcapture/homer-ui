@@ -47,7 +47,11 @@
                <!-- Search icon-->
                <span ng-controller="HomerDatepickerCtrl">
                <li>               
-                       <span class="timerange-info"><i class="fa fa-chevron-circle-right"></i></span>
+                       <span class="timerange-info">
+                       			<a tooltip-placement="bottom" tooltip="Now -> + 5 min" ng-click="setFromNow();">
+                       				<i class="fa fa-chevron-circle-right"></i>
+					</a>
+                       </span>
 		       <span ng-click="launch();" class="timerange-info">{{timerange.from | date:'yyyy-MM-dd HH:mm:ss Z' }}</span>
                        <span class="timerange-info"><i class="fa fa-arrow-right"></i></span>
 		       <span ng-click="launch();"  class="timerange-info">{{timerange.to | date:'yyyy-MM-dd HH:mm:ss Z' }}</span>	       
