@@ -254,7 +254,7 @@
 		multiSelect:true,
 		modifierKeysToMultiSelect: false,
 		enablePaging  : true,
-		paginationPageSizes: [25, 50, 75],
+		paginationPageSizes: [25, 50, 75, 100, 150, 200, 300, 400, 500, 600, 800, 1000, 2000],
 		paginationPageSize: 25,
 		enableFiltering: true,
 		rowTemplate: rowtpl,
