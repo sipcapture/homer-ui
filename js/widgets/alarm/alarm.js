@@ -285,7 +285,7 @@ angular.module('homer.widgets.alarm', ['adf.provider'])
      
     $scope.gridOptions.columnDefs = [
 		{ name: 'id', enableCellEdit: false, width: 50 },
-		{ name: 'name', displayName: 'username' },
+		{ name: 'name', displayName: 'Name' },
 		{ name: 'startdate', displayName: 'Start date' , type: 'date', cellFilter: 'date:"yyyy-MM-dd"'},
 		{ name: 'stopdate', displayName: 'Stop date' , type: 'date', cellFilter: 'date:"yyyy-MM-dd"'},
 		{ name: 'type', displayName: 'Type' },
