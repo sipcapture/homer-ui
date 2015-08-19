@@ -10,7 +10,7 @@
 'use strict';
 
 angular.module('homer.widgets.adminnode', ['adf.provider'])
-  .value('adminnodeServiceUrl', 'api/admin/node')
+  .value('adminnodeServiceUrl', 'api/v1/admin/node')
   .config(function(dashboardProvider){
     dashboardProvider
       .widget('adminnode', {

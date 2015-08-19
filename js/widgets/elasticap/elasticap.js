@@ -10,7 +10,7 @@
 'use strict';
 
 angular.module('homer.widgets.elasticap', ['adf.provider', 'highcharts-ng','base64'])
-  .value('localApiUrl', 'api/')
+  .value('localApiUrl', 'api/v1/')
   .value('elasticapApiUrl', 'http://homer.sipcapture.org:8086')
   .config(function(dashboardProvider){
     // template object for elasticap widgets

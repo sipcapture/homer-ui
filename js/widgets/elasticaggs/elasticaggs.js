@@ -10,8 +10,8 @@
 'use strict';
 
 angular.module('homer.widgets.elasticaggs', ['adf.provider', 'highcharts-ng','base64'])
-  .value('localApiUrl', 'api/')
-  .value('elasticaggsApiUrl', 'http://homer.sipcapture.org:8086')
+  .value('localApiUrl', 'api/v1/')
+  .value('elasticaggsApiUrl', 'http://127.0.0.1:8086')
   .config(function(dashboardProvider){
     // template object for elasticaggs widgets
     var widget = {

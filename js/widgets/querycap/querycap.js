@@ -9,7 +9,7 @@
 'use strict';
 
 angular.module('homer.widgets.querycap', ['adf.provider', 'highcharts-ng'])
-  .value('localApiUrl', 'api/')
+  .value('localApiUrl', 'api/v1/')
   .value('querycapApiUrl', 'http://homer.yourhost.org:8086')
   .config(function(dashboardProvider){
     // template object for querycap widgets

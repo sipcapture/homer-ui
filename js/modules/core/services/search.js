@@ -73,7 +73,7 @@
                 
                         var defer = $q.defer();
                         
-                        $http.post('api/search/data', mdata, {handleStatus:[403,503]}).then(
+                        $http.post('api/v1/search/data', mdata, {handleStatus:[403,503]}).then(
         			/* good response */
 	                    function (results) {
 	        		    if(results.data.auth == "false") {				
@@ -96,7 +96,7 @@
                 
                         var defer = $q.defer();
                                                             
-                        $http.post('api/search/method', data , {handleStatus:[403,503]}).then(
+                        $http.post('api/v1/search/method', data , {handleStatus:[403,503]}).then(
         			/* good response */
 	                    function (results) {
 	        		    if(results.data.auth == "false") {				
@@ -119,7 +119,7 @@
                 
                         var defer = $q.defer();
                                                             
-                        $http.post('api/search/message', data, {handleStatus:[403,503]}).then(
+                        $http.post('api/v1/search/message', data, {handleStatus:[403,503]}).then(
         			/* good response */
 	                    function (results) {
 	        		    if(results.data.auth == "false") {				
@@ -142,7 +142,7 @@
                 
                         var defer = $q.defer();
                                                             
-                        $http.post('api/search/transaction', data, {handleStatus:[403,503]}).then(
+                        $http.post('api/v1/search/transaction', data, {handleStatus:[403,503]}).then(
         			/* good response */
 	                    function (results) {
 	        		    if(results.data.auth == "false") {				
@@ -165,7 +165,7 @@
                 
                         var defer = $q.defer();
                                                             
-                        $http.post('api/report/rtcp', data, {handleStatus:[403,503]}).then(
+                        $http.post('api/v1/report/rtcp', data, {handleStatus:[403,503]}).then(
         			/* good response */
 	                    function (results) {
 	        		    if(results.data.auth == "false") {				
@@ -188,7 +188,7 @@
                 
                         var defer = $q.defer();
                                                             
-                        $http.post('api/report/log', data, {handleStatus:[403,503]}).then(
+                        $http.post('api/v1/report/log', data, {handleStatus:[403,503]}).then(
         			/* good response */
 	                    function (results) {
 	        		    if(results.data.auth == "false") {				
@@ -211,7 +211,7 @@
                 
                         var defer = $q.defer();                        
                                                             
-                        $http.post('api/report/quality/'+type, data, {handleStatus:[403,503]}).then(
+                        $http.post('api/v1/report/quality/'+type, data, {handleStatus:[403,503]}).then(
         			/* good response */
 	                    function (results) {
 	        		    if(results.data.auth == "false") {				
@@ -235,7 +235,7 @@
                 
                         var defer = $q.defer();
                                                             
-                        $http.get('api/dashboard/node', {handleStatus:[403,503]}).then(
+                        $http.get('api/v1/dashboard/node', {handleStatus:[403,503]}).then(
         			/* good response */
 	                    function (results) {
 	        		    if(results.data.auth == "false") {				
@@ -258,7 +258,7 @@
                 
                         var defer = $q.defer();
                         
-                        var url = 'api/search/export/';
+                        var url = 'api/v1/search/export/';
                         
                         if(text == true) url+= "text";
                         else url+="pcap";
@@ -287,7 +287,7 @@
 
                         var defer = $q.defer();
                         
-                        var url = 'api/search/export/data/';
+                        var url = 'api/v1/search/export/data/';
                         if(text == true) url+= "text";
                         else url+="pcap";
 
@@ -314,7 +314,7 @@
                 
                         var defer = $q.defer();
                                                             
-                        $http.post('api/search/sharelink', data, {handleStatus:[403,503]}).then(
+                        $http.post('api/v1/search/sharelink', data, {handleStatus:[403,503]}).then(
         			/* good response */
 	                    function (results) {
 	        		    if(results.data.auth == "false") {				

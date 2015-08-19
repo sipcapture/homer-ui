@@ -21,7 +21,7 @@
                 {
                 
                         var defer = $q.defer();                                                            
-                        $http.get('api/dashboard/store', {handleStatus:[403,503]}).then(
+                        $http.get('api/v1/dashboard/store', {handleStatus:[403,503]}).then(
         			/* good response */
 	                    function (results) {
 	                        defer.resolve(results.data);                                                                        
@@ -37,7 +37,7 @@
                 {
                 
                         var deferred = $q.defer();
-			$http.get('api/dashboard/store/' + id, {handleStatus:[403,503]})
+			$http.get('api/v1/dashboard/store/' + id, {handleStatus:[403,503]})
 				.success(function(data){
 	        			deferred.resolve(data.data);
 				})
@@ -51,7 +51,7 @@
                 {
                 
                         var defer = $q.defer();                                                            
-                        $http.post('api/dashboard/menu/'+id, data, {handleStatus:[403,503]}).then(
+                        $http.post('api/v1/dashboard/menu/'+id, data, {handleStatus:[403,503]}).then(
         			/* good response */
 	                    function (results) {
 	                        defer.resolve(results.data);                                                                        
@@ -67,7 +67,7 @@
                 {
                 
                         var defer = $q.defer();                                                            
-                        $http.post('api/dashboard/store/'+id, data, {handleStatus:[403,503]}).then(
+                        $http.post('api/v1/dashboard/store/'+id, data, {handleStatus:[403,503]}).then(
         			/* good response */
 	                    function (results) {
 	                        defer.resolve(results.data);                                                                        
@@ -83,7 +83,7 @@
                 {
                 
                         var defer = $q.defer();                                                            
-                        $http.delete('api/dashboard/store/'+id, {handleStatus:[403,503]}).then(
+                        $http.delete('api/v1/dashboard/store/'+id, {handleStatus:[403,503]}).then(
         			/* good response */
 	                    function (results) {
 	                        defer.resolve(results.data);                                                                        

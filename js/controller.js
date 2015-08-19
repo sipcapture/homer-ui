@@ -363,7 +363,7 @@
 
 
 	   var uploader = $scope.uploader = new FileUploader({
-          		url: '/api/dashboard/upload'
+          		url: 'api/v1/dashboard/upload'
            });
 
 	   $scope.save = function(){

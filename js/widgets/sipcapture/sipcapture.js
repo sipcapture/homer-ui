@@ -10,8 +10,8 @@
 'use strict';
 
 angular.module('homer.widgets.sipcapture', ['adf.provider', 'highcharts-ng'])
-  .value('localApiUrl', 'api/')
-  .value('sipcaptureApiUrl', 'api/')
+  .value('localApiUrl', 'api/v1/')
+  .value('sipcaptureApiUrl', 'api/v1/')
   .config(function(dashboardProvider){
     // template object for sipcapture widgets
     var widget = {

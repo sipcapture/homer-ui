@@ -30,17 +30,14 @@
                 login = function (username, password) {
                         var defer = $q.defer();
                                         
-                           $http.post('api/session', { username: username, password: password }).then(
+                           $http.post('api/v1/session', { username: username, password: password }).then(
         			/* good response */
 	                        function (results) {
 		        	    console.log(results.data);
 			            if(results.data.auth == "false") {				
-			                console.log("AAAA:" + results.data.auth);
                                          defer.reject('Unknown Username / Password combination');                                                             
 	        		    }	
 		        	    else {
-			        	console.log("EMAIL 111");
-
         				var group = results.data.data.grp.split(",") 
 	        		        console.log(group);
 		        		
@@ -53,7 +50,6 @@
 		        	/* bad response */
         			function (results) {
 	        			console.log(results);
-		        		console.log("bad result");
         				defer.reject('Unknown Username / Password combination');				                            				                        
 	        		}
 		            );                    
@@ -65,7 +61,7 @@
                 session = function () {
                         var defer = $q.defer();
                                                             
-                        $http.get('api/session').then(
+                        $http.get('api/v1/session').then(
 			/* good response */
 	                function (results) {
 			    if(results.data.auth == "false") {				
@@ -93,7 +89,7 @@
                     
                    var defer = $q.defer();
                    
-                   $http.get('api/user').then(
+                   $http.get('api/v1/user').then(
 			/* good response */
 	                function (results) {
 			    if(results.data.auth == "false") {							    
@@ -126,7 +122,7 @@
                     currentUser = undefined;
                     eventbus.broadcast(homer.modules.auth.events.userLoggedOut);
 
-                    $http.delete('api/session').then(
+                    $http.delete('api/v1/session').then(
 			/* good response */
 	                function (results) {
 	                    defer.resolve(false);

@@ -84,7 +84,7 @@
 	       var getAllRemoteProfile = function ()
                {
 			var deferred = $q.defer();
-                        $http.get('api/profile/store', {handleStatus:[403,503]})
+                        $http.get('api/v1/profile/store', {handleStatus:[403,503]})
                                 .success(function(data) {                                     
 					angular.forEach(data.data, function(value,key){
 						var jsonObj = JSON.parse(value);
@@ -114,7 +114,7 @@
                var getRemoteProfile = function (id)
                {
                         var deferred = $q.defer();
-                        $http.get('api/profile/store/' + id, {handleStatus:[403,503]})
+                        $http.get('api/v1/profile/store/' + id, {handleStatus:[403,503]})
                                 .success(function(data){
 					var jsonObj = JSON.parse(value);
 				        /* workaround for bad json date string */
@@ -138,8 +138,8 @@
                 
                var setRemoteProfile = function (id, sdata)
                {
-                        var url = "api/profile/store";
-                        if(id != null) url = 'api/profile/store/'+id;
+                        var url = "api/v1/profile/store";
+                        if(id != null) url = 'api/v1/profile/store/'+id;
                         
                         var data = { id: id, param: sdata }                                             
 
@@ -162,7 +162,7 @@
                {
 
                         var defer = $q.defer();
-                        $http.delete('api/profile/store/'+id, {handleStatus:[403,503]}).then(
+                        $http.delete('api/v1/profile/store/'+id, {handleStatus:[403,503]}).then(
                                 /* good response */
                             function (results) {
                                 defer.resolve(results.data);
@@ -179,7 +179,7 @@
                {
 
                         var defer = $q.defer();
-                        $http.delete('api/profile/store/', {handleStatus:[403,503]}).then(
+                        $http.delete('api/v1/profile/store/', {handleStatus:[403,503]}).then(
                                 /* good response */
                             function (results) {
                                 defer.resolve(results.data);
@@ -200,7 +200,7 @@
                           return deferred.promise;
                       }
                       
-                      $http.get('api/profile/store', {handleStatus:[403,503]})
+                      $http.get('api/v1/profile/store', {handleStatus:[403,503]})
                                 .success(function(data) {
                                         angular.forEach(data.data, function(value,key){
                                                 var jsonObj = angular.fromJson(value);
