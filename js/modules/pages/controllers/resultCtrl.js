@@ -296,14 +296,17 @@
                         cellTemplate: '<div  ng-click="grid.appScope.showTransaction(row, $event)" class="ui-grid-cell-contents"><span class="navText">{{COL_FIELD}}</span></div>'
                     },
 		    {field: 'user_agent', displayName: 'User Agent'},
-		    {field: 'source',
+		    {
+		        name: 'source',
+		        field: 'source_alias',
 			displayName: 'Source Host',
-			cellTemplate: '<div title="{{ grid.appScope.getColumnTooltip(row, col) }}">{{ grid.appScope.getColumnValue(row, col) }}</div>'
+			cellTemplate: '<div title="{{ grid.appScope.getColumnTooltip(row, col) }}">{{COL_FIELD}}</div>'
 		    },
 		    {field: 'source_port', displayName: 'SPort', width: 50},
-		    {field: 'destination',
+		    {
+		        field: 'destination_alias',
 			displayName: 'Destination Host',
-			cellTemplate: '<div title="{{ grid.appScope.getColumnTooltip(row, col) }}">{{ grid.appScope.getColumnValue(row, col) }}</div>'
+			cellTemplate: '<div title="{{ grid.appScope.getColumnTooltip(row, col) }}">{{ COL_FIELD }}</div>'
 		    },
 		    {field: 'destination_port', displayName: 'DPort', width: 50},
 		    {field: 'proto', displayName: 'Proto', width: 40},
@@ -323,11 +326,12 @@
 	}
     ])
     .filter('unixts', function() {
+
 	return function(input) {
 	    if (!input){
 		return '';
 	    } else {
-		return new Date(input * 1000);
+		return input;
 	    }
 	};
      });
