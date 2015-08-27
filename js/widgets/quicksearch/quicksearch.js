@@ -232,9 +232,12 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
 
 	   $scope.headers = [
            
-                   {name:'from_user', selection:'From'},
-                   {name:'to_user', selection:'To'},
-                   {name:'ruri_user', selection:'RURI'},
+                   {name:'from_user', selection:'From User'},
+                   {name:'from_domain', selection:'From Domain'},
+                   {name:'to_user', selection:'To User'},
+                   {name:'to_domain', selection:'To Domain'},
+                   {name:'ruri_user', selection:'RURI User'},
+                   {name:'ruri_domain', selection:'RURI Domain'},
                    {name:'callid', selection:'Call-ID'},
                    {name:'callid_aleg', selection:'B2B CID'},
                    {name:'contact_user', selection:'Contact User'},
