@@ -54,8 +54,11 @@
                                             <div class="input-group-addon">
 					     <div ng-switch on="field.name">
                                                 <i ng-switch-when="from_user" class="fa fa-phone"> {{field.selection}}</i>
+                                                <i ng-switch-when="from_domain" class="fa fa-phone"> {{field.selection}}</i>
                                                 <i ng-switch-when="to_user" class="fa fa-phone"> {{field.selection}}</i>
+                                                <i ng-switch-when="to_domain" class="fa fa-phone"> {{field.selection}}</i>
                                                 <i ng-switch-when="ruri_user" class="fa fa-phone"> {{field.selection}}</i>
+                                                <i ng-switch-when="ruri_domain" class="fa fa-phone"> {{field.selection}}</i>
                                                 <i ng-switch-when="callid" class="fa fa-phone"> {{field.selection}}</i>
                                                 <i ng-switch-when="contact_user" class="fa fa-phone"> {{field.selection}}</i>
                                                 <i ng-switch-default class="fa fa-search"> {{field.selection}}</i>
