@@ -310,7 +310,10 @@
 		    },
 		    {field: 'destination_port', displayName: 'DPort', width: 50},
 		    {field: 'proto', displayName: 'Proto', width: 40},
-		    {field: 'node', displayName: 'Node'}
+		    {field: 'node', displayName: 'Node'},
+		    {field: 'custom_field1', displayName: 'Custom F1', visible: false},
+		    {field: 'custom_field2', displayName: 'Custom F2', visible: false},
+		    {field: 'custom_field3', displayName: 'Custom F3', visible: false}
 		]
 	    };
 
