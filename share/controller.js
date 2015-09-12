@@ -275,9 +275,9 @@
                      });
                 };
 
-                //$scope.showRTCPReport(data);
+                $scope.showRTCPReport(data);
                 $scope.showLogReport(data);
-                //$scope.showQualityReport(data);
+                $scope.showQualityReport(data);
                 console.log("Reporting...", data);
 
                 $timeout(function() {
