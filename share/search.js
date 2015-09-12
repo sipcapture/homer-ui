@@ -20,7 +20,7 @@
                 
                         var defer = $q.defer();
                                                             
-                        $http.post('/api/search/share/message', data).then(
+                        $http.post('/api/v1/search/share/message', data).then(
         			/* good response */
 	                    function (results) {
 	        		    if(results.data.auth == "false") {				
@@ -43,7 +43,7 @@
                 
                         var defer = $q.defer();
                                                             
-                        $http.post('/api/search/share/transaction', data).then(
+                        $http.post('/api/v1/search/share/transaction', data).then(
         			/* good response */
 	                    function (results) {
 	        		    if(results.data.auth == "false") {				
@@ -66,7 +66,7 @@
                 
                         var defer = $q.defer();
                         
-                        var url = '/api/search/share/export/';
+                        var url = '/api/v1/search/share/export/';
                         
                         if(text == true) url+= "text";
                         else url+="pcap";
@@ -94,7 +94,7 @@
 
                         var defer = $q.defer();
 
-                        $http.post('/api/report/share/rtcp', data).then(
+                        $http.post('/api/v1/report/share/rtcp', data).then(
                                 /* good response */
                             function (results) {
                                     if(results.data.auth == "false") {
@@ -117,7 +117,7 @@
 
                         var defer = $q.defer();
 
-                        $http.post('/api/report/share/log', data).then(
+                        $http.post('/api/v1/report/share/log', data).then(
                                 /* good response */
                             function (results) {
                                     if(results.data.auth == "false") {
@@ -140,7 +140,7 @@
 
                         var defer = $q.defer();
 
-                        $http.post('/api/report/share/quality/'+type, data).then(
+                        $http.post('/api/v1/report/share/quality/'+type, data).then(
                                 /* good response */
                             function (results) {
                                     if(results.data.auth == "false") {
