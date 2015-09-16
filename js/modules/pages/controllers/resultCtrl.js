@@ -285,6 +285,7 @@
 		    {field: 'reply_reason', displayName: 'Reason', width: 70},
 		    {field: 'ruri_user', displayName: 'RURI user'},
 		    {field: 'from_user', displayName: 'From User'},
+                    {field: 'to_user', displayName: 'To User'},
 		    {field: 'callid',
 			displayName: 'CallID',
 			width: 160,
