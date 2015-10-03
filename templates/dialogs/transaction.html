@@ -80,7 +80,7 @@
 			</div>							
 									
 			<div id="tree-root" ng-if="enableQualityReport">				
-				<p>Reports:</p>
+				<p>RTCP-XR Reports:</p>
 				<ol ng-model="qualityreport">
 					<li ng-repeat="report in qualityreport" ng-include="'reports_renderer.html'"></li>
 				</ol>
@@ -91,7 +91,7 @@
 			<div id="log-root" ng-if="enableLogReport">				
 				<p>Log:</p>
 				<ol ng-model="logreport">
-					<li ng-repeat="report in logreport" ng-include="'logs_renderer.html'"></li>
+					<li ng-repeat="log in logreport" ng-include="'logs_renderer.html'"></li>
 				</ol>
 			</div>				
 
