@@ -1,7 +1,8 @@
 include config/utility.am
 include config/project.am
 
-@PACKAGE@_EXTRA_DIST = \
+
+@PACKAGE@_wwwdata = \
 	COPYING \
 	css \
 	fonts \
@@ -12,3 +13,13 @@ include config/project.am
 	share \
 	store \
 	templates
+
+@PACKAGE@_EXTRA_DIST = $(@PACKAGE@_wwwdata) \
+	pkg \
+	README.md
+
+@PACKAGE@datadir = /var/www/sipcapture/htdocs
+
+install-data-local:
+	mkdir -p $(DESTDIR)/var/www/sipcapture/htdocs
+	cp -r $(@PACKAGE@_wwwdata) $(DESTDIR)/var/www/sipcapture/htdocs/
