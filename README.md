@@ -2,7 +2,7 @@
 
 ## HOMER 5 User-Interface
 
-### PUBLIC BETA 2
+### RELEASE CANDIDATE 1
 
 DOCUMENTATION is available here:
 
