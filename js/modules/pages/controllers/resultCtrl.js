@@ -184,6 +184,8 @@
 
 		callids.push(localrow.entity.callid);
 
+		if(callids.indexOf(localrow.entity.callid_aleg) == -1 && localrow.entity.callid_aleg.length > 1) callids.push(localrow.entity.callid_aleg);
+
 		angular.forEach(rows, function(row, key) {
 		    if(callids.indexOf(row.callid) == -1) callids.push(row.callid);
 		    if(callids.indexOf(row.callid_aleg) == -1 && row.callid_aleg.length > 1) callids.push(row.callid_aleg);
