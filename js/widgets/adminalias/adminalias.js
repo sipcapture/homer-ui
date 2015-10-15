@@ -146,6 +146,7 @@ angular.module('homer.widgets.adminalias', ['adf.provider'])
 		gid: 10,
 		ip: $scope.newalias.ip,
 		port: $scope.newalias.port,
+		capture_id: $scope.newalias.capture_id,
 		alias: $scope.newalias.alias,
 		status: $scope.newalias.status				        
         };
@@ -176,6 +177,7 @@ angular.module('homer.widgets.adminalias', ['adf.provider'])
                     gid: 10,
                     ip: $scope.arec.ip,
                     port: $scope.arec.port,
+                    capture_id: $scope.arec.capture_id,
                     alias: $scope.arec.alias,
                     status: $scope.arec.status,				                        
                     id: id
@@ -275,6 +277,7 @@ angular.module('homer.widgets.adminalias', ['adf.provider'])
 		{ name: 'gid', width: 50 },
 		{ name: 'ip', displayName: 'IP' },
 		{ name: 'port', displayName: 'Port' },
+    { name: 'capture_id', displayName: 'Capture ID' },
 		{ name: 'status', displayName: 'status' },
 		{ name: 'created', displayName: 'Created' , type: 'date', cellFilter: 'date:"yyyy-MM-dd"'}	      
       ];
