@@ -277,7 +277,7 @@ angular.module('homer.widgets.adminalias', ['adf.provider'])
 		{ name: 'gid', width: 50 },
 		{ name: 'ip', displayName: 'IP' },
 		{ name: 'port', displayName: 'Port' },
-    { name: 'capture_id', displayName: 'Capture ID' },
+		{ name: 'capture_id', displayName: 'Capture ID' },
 		{ name: 'status', displayName: 'status' },
 		{ name: 'created', displayName: 'Created' , type: 'date', cellFilter: 'date:"yyyy-MM-dd"'}	      
       ];
