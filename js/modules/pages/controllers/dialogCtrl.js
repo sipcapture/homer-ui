@@ -80,10 +80,12 @@
                           for (var p in sdata[0]) {
                                    if(p == "msg") continue;
 			           if (sdata[0].hasOwnProperty(p) && sdata[0][p] != '') {
-			               tabjson.push(''+p +''+ ': <b>' + sdata[0][p].split('<').join('&lt;')+'</b><br>');
+			               // tabjson.push(''+p +''+ ': <b>' + sdata[0][p].split('<').join('&lt;')+'</b><br>');
+			               tabjson.push('<tr><td>'+p +''+ '</td><td>' + sdata[0][p].split('<').join('&lt;')+'</td></tr>');
                                    }
                           }  tabjson.push();
-                          $scope.sipDetails = "<div id='"+sdata[0].id+"_details'>"+tabjson.join('')+"</div>";
+                          // $scope.sipDetails = "<div id='"+sdata[0].id+"_details'>"+tabjson.join('')+"</div>";
+                          $scope.sipDetails = "<div id='"+sdata[0].id+"_details'><table class='table table-striped'>"+tabjson.join('')+"</table></div>";
 			  $scope.trustedHtmlDetails = $sce.trustAsHtml($scope.sipDetails);			  
                      },
                      function(sdata) {
@@ -275,17 +277,34 @@
                 
                 $scope.reDrawCanvas = function () {                
                         $scope.drawCanvas($scope.id, $scope.transaction);                
+			 $(window).resize();
                 };
 		
                 search.searchTransaction(data).then( function (msg) {
 
 			  if (msg) {			  			  
-			      $scope.transaction = msg;			  			      
+			      $scope.transaction = msg;
                               $scope.drawCanvas($homerModalParams.id, msg);			     
                               if(msg.rtpinfo.length > 0) {
                                    $scope.enableXRTPReport = true;	  			  		  			  
                                    $scope.xrtpreport = msg.rtpinfo;			  			      
-                              }                         
+                              }                    
+				// calc session duration
+				if (msg.calldata) {
+					console.log('Get call duration....');
+					var dates = [];
+					for(var i=0; i<msg.calldata.length; i++) {
+						dates.push(msg.calldata[i].milli_ts);
+					}
+					var maxT=new Date(Math.max.apply(null,dates));
+					var minT=new Date(Math.min.apply(null,dates));
+					var seconds = (maxT.getTime() - minT.getTime())/1000;
+					//console.log('CALL SEC: '+seconds);
+					// $scope.sess_duration = seconds.toFixed(1)+'s';
+					var sdate = new Date(null);
+				        sdate.setSeconds(seconds); // specify value for SECONDS here
+					$scope.sess_duration = sdate.toISOString().substr(11, 8);
+				}
 			  }			  
                      },
                      function(sdata) {
@@ -335,7 +354,104 @@
 
 			    if (msg.length > 0) {		
 			        $scope.enableQualityReport = true;	  			  
-			        $scope.qualityreport = msg;			  		
+			        $scope.qualityreport = msg;
+
+				// VQ Stats
+				$scope.vq_mos = [];
+				$scope.vq_jit = [];
+				$scope.vq_loss = [];
+				$scope.vq_dates = [];
+				for (var key in msg) {
+				  if (msg.hasOwnProperty(key)) {
+					// console.log(msg[key] );
+					var tmpstr = JSON.stringify(msg[key].msg).split("},").join("},<br>");
+					$scope.vq_mos.push( [ tmpstr, parseFloat(msg[key].msg.QualityEst.MOSCQ) ] );
+					$scope.vq_loss.push( parseFloat(msg[key].msg.PacketLoss.NLR) );
+					$scope.vq_jit.push( parseFloat(msg[key].msg.Delay.IAJ) );
+					$scope.vq_dates.push( msg[key].date.split(" ")[1] );
+				  }
+				}
+				// MOS Avg
+				var sum_mos = 0;
+				for( var i = 0; i < $scope.vq_mos.length; i++ ){
+				    sum_mos = parseFloat(sum_mos) + parseFloat($scope.vq_mos[i][1]);
+				}
+				var avg_mos = sum_mos/$scope.vq_mos.length;
+				$scope.vq_avg_mos = avg_mos.toFixed(1);
+				// LOSS Total
+				var sum_loss = 0;
+				for( var i = 0; i < $scope.vq_loss.length; i++ ){
+				    sum_loss = parseInt(sum_loss) + parseInt($scope.vq_loss[i]);
+				}
+				// $scope.vq_avg_loss = sum_loss/$scope.vq_loss.length;
+				$scope.vq_avg_loss = sum_loss;
+				// JITTER Avg
+				var sum_jit = 0;
+				for( var i = 0; i < $scope.vq_jit.length; i++ ){
+				    sum_jit = parseFloat(sum_jit) + parseFloat($scope.vq_jit[i]);
+				}
+				var avg_jit = sum_jit/$scope.vq_jit.length;
+				$scope.vq_avg_jit = avg_jit.toFixed(1);
+
+
+				$scope.chartConfig = {
+		  	                chart: {
+					    polar: true,
+			  	            type: 'bar',
+				            backgroundColor:'rgba(255, 255, 255, 0.1)' 
+				        },
+					yAxis: [
+					{
+					        title: {
+					            text: 'MOS'
+					        }
+    					}, {
+					        title: {
+					            text: 'Packet Loss'
+					        },
+						opposite:true
+    					}, {
+				                labels: {
+				                    formatter: function () {
+				                        return this.value + 'ms';
+				                    },
+			                    style: {
+			                        color: '#89A54E'
+				                    }
+				                },
+				                title: {
+				                    text: 'Jitter',
+				                    style: {
+				                        color: '#89A54E'
+				                    }
+				                },
+				                opposite: true
+            				}],
+					xAxis: {
+						type: 'datetime',
+					        categories: $scope.vq_dates 
+    					},
+				        series: [
+						{ data: $scope.vq_jit, "name": "Jitter", "type": "spline", yAxis: 2 },
+						{ data: $scope.vq_loss, "name": "Packet Loss", "type": "column", yAxis: 1 },
+						{ data: $scope.vq_mos, "name": "MOS", "type": "column", yAxis: 0 }
+				        ],
+				        title: {
+				            text: ''
+				        },
+					size: { height: '250' },
+				        loading: false
+				    };
+
+				/*
+				    $scope.reflow = function () {
+				      $scope.$broadcast('highchartsng.reflow');
+				    };
+
+				    $timeout(function() {
+				      $scope.$broadcast('highchartsng.reflow');
+				    });
+			  	*/	
                             }			  
                      },
                      function(sdata) { return;}).finally(function(){

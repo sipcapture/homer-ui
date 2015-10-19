@@ -1,5 +1,6 @@
 <script type="text/ng-template" id="reports_renderer.html">
   <div nodrag>
+    
     <a ng-class="{{ report.msg.QualityEst.MOSCQ > 3 }} ? 'btn btn-success btn-xs' : 'btn btn-warning btn-xs'" nodrag ng-click="toggleTree(report.id)">
 	{{ report.msg.QualityEst.MOSCQ ? report.msg.QualityEst.MOSCQ : '' }}
     <span class="glyphicon"
@@ -20,6 +21,7 @@
 </script>
 
 <script type="text/ng-template" id="logs_renderer.html">
+
   <div nodrag>
     <a class="btn btn-success btn-xs" nodrag ng-click="toggleTree(log.id)">
     <span class="glyphicon"
@@ -38,7 +40,9 @@
 <div class="modal-header homer-modal-header" style="border-bottom:0;" >
 	<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="closeModal()" style="margin-right:4px;">&times;</button>
 
-        	<h4 class="modal-title" style="font-size:15px;margin-left:4px;margin-bottom:10px;"><i class="fa fa-phone" style="margin-right:5px;"></i> Call-ID: <i> {{msgCallId}} </i></h4> 
+        	<h4 class="modal-title" style="font-size:15px;margin-left:4px;margin-bottom:10px;"><i class="fa fa-phone" style="margin-right:5px;">
+			</i> Call-ID: <i> {{msgCallId}} </i>
+		</h4> 
 </div>
 <div ng-show="dataLoading">
 	<div id="loadingWidget" class="row-fluid ui-corner-all" style="padding: 0 .7em;">
@@ -59,15 +63,27 @@
 	     <tab-heading><i class="fa fa-rss"></i> QoS Reports </tab-heading>	     	     
 			<div id="no-reports" ng-hide="enableQualityReport|| enableXRTPReport || enableRTCPReport" class="alert alert-warning alert-dismissible" role="alert">
 				 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				  <strong>Sorry!</strong> No Reports available for this session
+				  <strong>Oops!</strong> No Reports available for this session
 			</div>
 
 			<div id="tree-root" ng-if="enableQualityReport" class="jumbotron" style="padding:8px;margin:5px;">				
-				<p>RTCP-XR VQ:</p>
-				<ol ng-model="qualityreport">
-					<li ng-repeat="report in qualityreport" ng-include="'reports_renderer.html'"></li>
-				</ol>
+				<p>RTCP-XR VQ:  
+					<button type="button" ng-class="{'btn btn-sm btn-success':vq_avg_mos>=4, 'btn btn-sm btn-warning': vq_avg_mos<4, 'btn btn-sm btn-danger': vq_avg_mos<=3}">MOS: {{vq_avg_mos}}</button>
+					<button type="button" ng-class="{'btn btn-sm btn-success':vq_avg_jit<=10, 'btn btn-sm btn-sm btn-warning': vq_avg_jit>=10, 'btn btn-sm btn-danger': vq_avg_jit>=30}">JITTER: {{vq_avg_jit}}ms</button>
+					<button type="button" ng-class="{'btn btn-sm btn-success':vq_avg_loss<10, 'btn btn-sm btn-warning': vq_avg_loss>=10, 'btn btn-sm btn-danger': vq_avg_loss>=30}">PACKET LOSS: {{vq_avg_loss}}</button>
+				</p>
+				<div ng-if="chartConfig" ng-if="enableQualityReport">
+					<highchart id="chart1" config="chartConfig" style="width:100%;height:250px;margin-top:10px;"></highchart>
+				</div>
+				<!--
+				<div ng-if="chartConfig" style="width:100%;" ng-if="enableQualityReport">
+					<ol ng-model="qualityreport" style="margin-right:30px;">
+						<li ng-repeat="report in qualityreport" ng-include="'reports_renderer.html'"></li>
+					</ol>					
+				</div> 
+				-->
 			</div>				
+
 
 			<div id="xrtp-root" ng-if="enableXRTPReport" class="jumbotron" style="padding:8px;margin:5px;">				
 				<p>X-RTP:</p>
@@ -99,23 +115,25 @@
 	     <tab-heading><i class="fa fa-file-text-o"></i> Logs </tab-heading>	     	     
 			<div id="no-reports" ng-hide="enableLogReport" class="alert alert-warning alert-dismissible" role="alert">
 				 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				  <strong>Sorry!</strong> No Logs available for this session
+				  <strong>Oops!</strong> No Logs available for this session
 			</div>
-			<div id="log-root" ng-if="enableLogReport" class="jumbotron" style="padding:8px;margin:5px;">				
+			<div id="log-root" ng-if="enableLogReport" class="jumbotron" style="background-color:transparent;padding:8px;margin:5px;">				
+				
 				<p>SysLog from {{ logreport[0].source_ip }}:{{logreport[0].source_port}}</p>
-					<table border=0 cellpadding="0" style="margin:5px;margin-left:45px;">
-					<tbody style="text-indent:-40px;padding-left:40px;">
-					  <tr ng-repeat="log in logreport" >
-					    <td style="white-space: normal;">{{ log.msg }}</td>
-					  </tr>
-					</tbody>
-					</table>
-
-			<!--	
-				<ol ng-model="logreport">
-					<li ng-repeat="log in logreport" ng-include="'logs_renderer.html'"></li>
-				</ol>
-   			-->
+				  <div class="form-group">
+					<input type="text" ng-model="logsearch" class="form-control" placeholder="Filter Logs" style="margin-left:15px;width:98%;border-radius: 5px !important;" />
+				  </div>
+				</p>
+				
+					<div ng-repeat="log in logreport  | filter :{msg:logsearch}" >
+						<!-- <div class="alert alert-info" role="alert" style="margin-bottom:5px;">{{log.msg}}</div> -->
+						<div ng-class-odd="(log.msg.indexOf('Authentication') > -1 ? 'alert alert-danger' : 'alert alert-success')" ng-class-even="(log.msg.indexOf('Authentication') > -1 ? 'alert alert-danger' : 'alert alert-info')" role="alert" style="margin-bottom:5px;">{{log.msg}}</div>
+					</div>
+				<!--	
+					<ol ng-model="logreport">
+						<li ng-repeat="log in logreport" ng-include="'logs_renderer.html'"></li>
+					</ol>
+	   			-->
 			</div>				
 
 
@@ -123,15 +141,21 @@
 	     <tab>
 	     <tab-heading><i class="fa fa-cloud"></i> Export</tab-heading>
 			<div style="margin:15px;">
-			<button class="btn btn-normal" ng-click="exportPCAP()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;"><i class="fa fa-cloud-download"></i><br>  Export PCAP</button>
-			<button class="btn btn-normal" ng-click="exportTEXT()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;"><i class="fa fa-file-text-o"></i><br> Export TEXT</button>
-			<button class="btn btn-normal" ng-click="exportCanvas()" data-placement="top-right" style="margin-top:18px;margin-left:8px;"><i class="fa fa-file-image-o"></i><br> Export PNG</button>			
-			<button class="btn btn-normal" ng-click="exportShare()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;"><i class="fa fa-share-alt"></i><br> Share Link</button>
+			<button class="btn btn-normal btn-info" ng-click="exportPCAP()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;"><i class="fa fa-cloud-download"></i><br>  Export PCAP</button>
+			<button class="btn btn-normal btn-default" ng-click="exportTEXT()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;"><i class="fa fa-file-text-o"></i><br> Export TEXT</button>
+			<button class="btn btn-normal btn-danger" ng-click="exportCanvas()" data-placement="top-right" style="margin-top:18px;margin-left:8px;"><i class="fa fa-file-image-o"></i><br> Export PNG</button>			
+			<button class="btn btn-normal btn-warning" ng-click="exportShare()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;"><i class="fa fa-share-alt"></i><br> Share Link</button>
 			<br><br>
 			<p>
 			{{sharelink}}
 			</p>
 			</div>
 	     </tab>
+
+	     <tab disabled="true" ng-show="sess_duration">
+		     <tab-heading><i class="fa fa-clock-o"></i> Session Duration: {{sess_duration}}</tab-heading>
+	     </tab>
+
 	  </tabset>
 </div>
+
