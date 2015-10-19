@@ -20,10 +20,10 @@ angular.module('homer.widgets.ripesearch', ['adf.provider'])
         controller: 'ripeCtrl',
         reload: true,
         resolve: {
-          data: function(weatcherService, config){
+          data: function(ripeSearchService, config){
             if (!config.rscount){ config.rscount = 4; }
             if (config.location){
-              return weatcherService.get(config.location,config.rscount);
+              return ripeSearchService.get(config.location,config.rscount);
             }
           }
         },
@@ -32,7 +32,7 @@ angular.module('homer.widgets.ripesearch', ['adf.provider'])
         }
       });
   })
-  .service('weatcherService', function($q, $http, RIPEServiceUrl){
+  .service('ripeSearchService', function($q, $http, RIPEServiceUrl){
     return {
       get: function(location,counter){
         var deferred = $q.defer();
