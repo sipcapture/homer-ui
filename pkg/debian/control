@@ -3,6 +3,7 @@ Section: comm
 Priority: optional
 Maintainer: Konstantin S. Vishnivetsky <kvishnivetsky@sipcapture.org>
 Build-Depends:	debhelper (>= 8.0.0),
+		debconf,
 		autotools-dev,
 		libmysqlclient-dev
 Standards-Version: 5.0.1
