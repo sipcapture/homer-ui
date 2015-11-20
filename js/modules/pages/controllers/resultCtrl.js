@@ -271,7 +271,7 @@
 			width: 50},
 		    {field: 'milli_ts',
 			displayName: 'Date',
-			cellFilter: 'date:\'yyyy-dd-MM HH:mm:ss.sss\'',
+			cellFilter: 'date:\'yyyy-MM-dd HH:mm:ss.sss\'',
 			width: 170
 		    },
 		    //{field: 'micro_ts', displayName: 'Micro TS', width: 80},
