@@ -72,7 +72,8 @@
 
 			  $scope.msgId = sdata[0].id;
 			  $scope.msgCallId = sdata[0].callid;
-			  $scope.msgDate = sdata[0].date;
+			  //$scope.msgDate = sdata[0].date;
+                          $scope.msgDate = sdata[0].micro_ts/1000;
 			  $scope.sipPath = sdata[0].source_ip+":"+sdata[0].source_port+ " -> "+sdata[0].destination_ip+":"+sdata[0].destination_port;
 			  $scope.sipMessage = swapText(sdata[0].msg);    //.replace(/</g, "&lt;");
 			  			  
