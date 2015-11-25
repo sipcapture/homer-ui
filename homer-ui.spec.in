@@ -17,7 +17,7 @@ Requires: %{php}-json
 
 Name:		@PACKAGE_NAME@
 Version:	@PACKAGE_VERSION@
-Release:	@PACKAGE_REVISION@
+Release:	@PACKAGE_REVISION@%{dist}
 Summary:	WEB UI for HOMER
 
 Group:		Applications/Communications
