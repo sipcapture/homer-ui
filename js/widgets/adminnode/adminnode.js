@@ -15,7 +15,7 @@ angular.module('homer.widgets.adminnode', ['adf.provider'])
     dashboardProvider
       .widget('adminnode', {
         title: 'Admin Node',
-        description: 'Nodes admin',
+        description: 'Manage Database Nodes',
         templateUrl: 'js/widgets/adminnode/adminnode.html',
         controller: 'adminnodeCtrl',
         resolve: {
