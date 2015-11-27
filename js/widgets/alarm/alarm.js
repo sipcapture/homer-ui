@@ -15,7 +15,7 @@ angular.module('homer.widgets.alarm', ['adf.provider'])
     dashboardProvider
       .widget('alarm', {
         title: 'Alarm Settings',
-        description: 'alarm settngs',
+        description: 'Configure Alarm Triggers',
         templateUrl: 'js/widgets/alarm/alarm.html',
         controller: 'alarmCtrl',
         resolve: {

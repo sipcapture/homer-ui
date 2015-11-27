@@ -15,7 +15,7 @@ angular.module('homer.widgets.alarmlist', ['adf.provider'])
     dashboardProvider
       .widget('alarmlist', {
         title: 'Alarm List',
-        description: 'alarm lists',
+        description: 'Display Alarm Detections',
         templateUrl: 'js/widgets/alarmlist/alarmlist.html',
         controller: 'alarmListCtrl',
         reload: true,

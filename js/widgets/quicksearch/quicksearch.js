@@ -14,7 +14,7 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
     dashboardProvider
       .widget('quicksearch', {
         title: 'Quick Search',
-        description: 'Quick Search Widget',
+        description: 'Display Search Form component',
         templateUrl: 'js/widgets/quicksearch/quicksearch.html',
         controller: 'quicksearchCtrl',	
         controllerAs: 'qsearch',
