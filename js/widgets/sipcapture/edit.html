@@ -20,6 +20,10 @@
 			        	</p>
 	        			<hr noshade width="60%" style="align:left;">
 		        		<p>
+		        		 <label style="width:40%;" for=widgetLibrary>Library: </label>		        		 
+		        		 <select ng-options="opt as opt.label for opt in library track by opt.value " ng-model="config.chart.library"></select>	        				        			        		
+			        	</p>
+			        	<p>
 		        		 <label style="width:40%;" for=widgetChartType>Type: </label>		        		 
 		        		 <select ng-options="opt as opt.label for opt in charts track by opt.value " ng-model="config.chart.type"></select>	        				        			        		
 			        	</p>
