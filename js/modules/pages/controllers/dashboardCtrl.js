@@ -30,7 +30,11 @@
                 return;                                         
             }
             else {
-                console.log("AUTH TRUE DASHBOARD");            
+                console.log("AUTH TRUE DASHBOARD");
+
+                if (sipcaptureWdgt) { // Clear d3 events
+                    sipcaptureWdgt.d3.clear();
+                }  
             }            
         
             if($state.current.name == "search") $stateParams.boardID = "search";
