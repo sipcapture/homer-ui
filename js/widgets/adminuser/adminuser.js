@@ -15,7 +15,7 @@ angular.module('homer.widgets.adminuser', ['adf.provider'])
     dashboardProvider
       .widget('adminuser', {
         title: 'Admin User',
-        description: 'Manage Local Users',
+        description: 'Users admin',
         templateUrl: 'js/widgets/adminuser/adminuser.html',
         controller: 'adminuserCtrl',
         resolve: {
