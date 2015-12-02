@@ -14,7 +14,10 @@
     <link rel="stylesheet" href="css/app.min.css" />
     <link rel="stylesheet" href="css/angular-dashboard-framework.min.css" />
     <link rel="stylesheet" href="css/homerModal.min.css" />    
+    <link rel="stylesheet" href="css/angular-chart.min.css" />    
     <link rel="stylesheet" href="css/sweetalert.min.css" />    
+
+    <link rel="stylesheet" href="lib/d3/nv.d3.min.css" rel="stylesheet" type="text/css">
 
     <link rel="icon" href="css/favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="css/favicon.ico" type="image/x-icon"/>
@@ -27,16 +30,16 @@
 <body style="min-height: 800px;" ng-class="{hiddenMenu:boolLeftMenu}" class="skin-black menu-on-top  pace-done">
 
 <header id="header" class="header">
-	<ng-include src="header"></ng-include>
+    <ng-include src="header"></ng-include>
 </header>
 
 <aside id="left-panel" class="left-side sidebar-offcanvas" ng-show="showLeftMenu">
-	<ng-include src="menu"></ng-include>
+    <ng-include src="menu"></ng-include>
 </aside>
 
 <div id="main" role="main" auto-height>
-	<ng-include src="ribbon"></ng-include>
-	<div ui-view></div>
+    <ng-include src="ribbon"></ng-include>
+    <div ui-view></div>
 </div>
 
 <ng-include src="footer"></ng-include>
@@ -77,6 +80,12 @@
 <script type="application/javascript" src="lib/highcharts/highcharts-3d.js"></script>
 <script type="application/javascript" src="lib/highcharts/exporting.js"></script>
 <script type="application/javascript" src="lib/highcharts/highcharts-ng.js"></script>
+<!-- CANVAS -->
+<script type="application/javascript" src="lib/chartjs/Chart.js"></script>
+<script type="application/javascript" src="lib/chartjs/angular-chart.js"></script>
+<!-- D3 -->
+<script type="application/javascript" src="lib/d3/d3.min.js" charset="utf-8"></script>
+<script type="application/javascript" src="lib/d3/nv.d3.min.js"></script>
 
 
 <!-- HOMER FILES  -->
@@ -127,12 +136,16 @@
 <script type="application/javascript" src="js/widgets/alarmlist/alarmlist.js"></script>
 <script type="application/javascript" src="js/widgets/adminalias/adminalias.js"></script>
 <script type="application/javascript" src="js/widgets/adminnode/adminnode.js"></script>
+
+<script type="application/javascript" src="js/widgets/quicksearch/quicksearch.js"></script>
+
+
 <script type="application/javascript" src="js/widgets/news/news.js"></script>
 <script type="application/javascript" src="js/widgets/clock/timezones.js"></script>
 <script type="application/javascript" src="js/widgets/clock/clock.js"></script>
 <script type="application/javascript" src="js/widgets/randommsg/randommsg.js"></script>
 <script type="application/javascript" src="js/widgets/markdown/markdown.js"></script>
-<script type="application/javascript" src="js/widgets/quicksearch/quicksearch.js"></script>
+
 
 <!-- unstable -->
 <script type="application/javascript" src="js/widgets/ripesearch/ripesearch.js"></script>
