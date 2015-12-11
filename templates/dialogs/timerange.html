@@ -8,7 +8,7 @@
 	<p class="input-group">
 		<input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="timerange.from" is-open="openedFromdate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
 		<span class="input-group-btn">
-			<a tooltip-placement="bottom" tooltip="Set Now" ng-click="#">
+			<a tooltip-placement="bottom" tooltip="Set Now">
 				<button class="btn btn-info" ng-click="setToNow(1);"><span class="glyphicon glyphicon-refresh"></span></button>
 			</a>
 			<button class="btn btn-primary" ng-click="open($event, 'openedFromdate')">
@@ -27,7 +27,7 @@
 	<p class="input-group">
 		<input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="timerange.to" is-open="openedTodate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
 		<span class="input-group-btn">
-			<a tooltip-placement="bottom" tooltip="Set Now" ng-click="#">         
+			<a tooltip-placement="bottom" tooltip="Set Now">         
 				<button class="btn btn-info" ng-click="setToNow(2);"><span class="glyphicon glyphicon-refresh"></span></button>
 			</a>
 			<button class="btn btn-primary" ng-click="open($event, 'openedTodate')">
