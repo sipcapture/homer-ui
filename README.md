@@ -2,13 +2,13 @@
 
 ## HOMER 5 User-Interface
 
+Modular component for [HOMER 5](http://github.com/sipcapture/homer)
+
 ### RELEASE CANDIDATE 1
 
-DOCUMENTATION is available here:
+Project Documentation is available here:
 
-https://github.com/sipcapture/homer/tree/homer5
-
-https://github.com/sipcapture/homer/blob/homer5/INSTALL.md
+https://github.com/sipcapture/homer/wiki
 
 For Help contact: support@sipcapture.org
 
