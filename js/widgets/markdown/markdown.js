@@ -24,12 +24,12 @@
 
 'use strict';
 
-angular.module('sample.widgets.markdown', ['adf.provider', 'btford.markdown'])
+angular.module('adf.widgets.markdown', ['adf.provider', 'btford.markdown'])
   .config(function(dashboardProvider){
     dashboardProvider
       .widget('markdown', {
-        title: 'Markdown',
-        description: 'Markdown widget',
+        title: 'Tool: Markdown',
+        description: 'Markdown Widget',
         controller: 'markdownCtrl',
         templateUrl: 'js/widgets/markdown/markdown.html',
         edit: {

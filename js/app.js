@@ -63,6 +63,7 @@
         'homer.widgets.alarm',
         'homer.widgets.alarmlist',
         'adf.widgets.news', 
+        'adf.widgets.markdown', 
         'adf.widgets.linklist', 
         'homer.widgets.randommsg'              
     ]);        
