@@ -1,0 +1,244 @@
+.fix-right-6-column {
+    padding-left: 7px;
+    padding-right: 0;
+}
+
+.fix-left-6-column {
+    padding-right: 7px;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #000;
+    z-index: 1000000;
+}
+
+#queryTab {
+    position: relative;
+}
+
+#totalValue {
+        margin: 1.1rem 0.4rem;
+}
+
+.checkboxGlyphicon {
+    color: #688BA2;
+    margin-right: 0.2rem;
+    font-size: 1.2rem;
+}
+
+.modal {
+    z-index: 1000000000;
+}
+
+.modal a:hover, .modal .tab-content tab-heading:hover {
+    text-decoration: underline;
+}
+
+.modal .tab-content .active > a > tab-heading:hover {
+    text-decoration: initial;
+}
+
+.modal .modal-dialog select {
+    -webkit-appearance: none;
+}
+
+.modal .modal-dialog .modal-footer button {
+    background: #3e6c8b;
+    border-width: 0;
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+}
+
+.modal .modal-dialog .modal-footer button:hover {
+    background: #214b68;
+}
+
+.modal .modal-dialog .modal-content {
+    padding: 0;
+    -webkit-border-radius: 0.4rem 0.4rem 0 0;
+    -moz-border-radius: 0.4rem 0.4rem 0 0;
+    border-radius: 0.4rem 0.4rem 0 0;
+}
+
+.modal .modal-dialog .modal-content .input-group .input-group-addon {
+    min-width: initial;
+}
+
+.modal .modal-dialog .modal-content .modal-header {
+    background: #3e6c8b;
+    color: #c1ccd5;
+    border: 0;
+    -webkit-border-radius: 0.4rem 0.4rem 0 0;
+    -moz-border-radius: 0.4rem 0.4rem 0 0;
+    border-radius: 0.4rem 0.4rem 0 0;
+}
+
+.modal .modal-dialog .modal-content .modal-header a {
+    color: #c1ccd5;
+}
+
+.modal .modal-dialog .modal-content .modal-header button {
+    padding: 1.8rem;
+    margin: -1.5rem;
+    background: #3e6c8b;
+    color: #c1ccd5;
+    opacity: 1;
+    line-height: 1.8rem;
+    border-top-right-radius: 0.4rem;
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+}
+
+.modal .modal-dialog .modal-content .modal-header button:hover {
+    color: #fff;
+    background: #214b68;
+}
+
+.modal .modal-dialog .modal-content .modal-body .nav-tabs {
+    background: #7094ac;
+    border: 0;
+    margin: -1.5rem;
+}
+
+.modal .modal-dialog .modal-content .modal-body .nav-tabs > li {
+    margin: 0;
+}
+
+.modal .modal-dialog .modal-content .modal-body .nav-tabs a {
+    background: #7094ac;
+    color: #ebebeb;
+    border: 0;
+    margin: 0;
+    border-radius: 0;
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out;
+}
+
+.modal .modal-dialog .modal-content .modal-body .chartswdgt .nav-tabs li {
+    width: 50%;
+}
+
+.modal .modal-dialog .modal-content .modal-body .chartswdgt .nav-tabs li a {
+    width: 100%;
+    text-align: center;
+}
+
+.modal .modal-dialog .modal-content .modal-body .nav-tabs a:hover {
+    color: #fff;
+    background: #54778e;
+}
+
+.modal .modal-dialog .modal-content .modal-body .nav-tabs .active a {
+    background: #d4dfe6;
+    color: #3e6c8b;
+}
+
+.modal .modal-dialog .modal-content .modal-body .nav-tabs .active a:hover {
+    color: #3e6c8b;
+    background: #d4dfe6;
+}
+
+.modal .modal-dialog .modal-content .modal-body .tab-content {
+    padding: 3rem 0.6rem 0 0.6rem;
+    margin-bottom: -0.8rem;
+}
+
+.modal .modal-dialog .modal-content .modal-body .tab-content .tab-pane.active {
+    opacity: 1;
+}
+
+.modal .modal-dialog .modal-content .modal-body .tab-content .tab-pane.active-add {
+    opacity: 0;
+}
+
+.modal .modal-dialog .modal-content .modal-body .tab-content .tab-pane {
+    -webkit-transition: all 0.08s ease-in-out;
+    -moz-transition: all 0.08s ease-in-out;
+    -o-transition: all 0.08s ease-in-out;
+    transition: all 0.08s ease-in-out;
+}
+
+.modal .modal-dialog .modal-content .modal-body input {
+    border-color: #c1ccd5;
+}
+
+.modal .modal-dialog .modal-content .modal-body label {
+    color: #3e6c8b;
+    margin-bottom: 0;
+    font-weight: 500;
+}
+
+.modal .modal-dialog .modal-content .modal-body .seeMore {
+    float: right;
+    margin-right: 1.4rem;
+}
+
+.modal .modal-dialog .modal-content .modal-body .seeMore .glyphicon{
+    font-size: 0.9rem;
+    margin: 0.4rem;
+    color: #60ACD9;
+}
+
+.modal .modal-dialog .modal-content .modal-body .chartswdgt .input-group {
+    margin: 0 0 0.4rem;
+}
+
+.modal .modal-dialog .modal-content .modal-body .chartswdgt .row .row {
+    margin-right: 0;
+}
+
+.modal .modal-dialog .modal-content .modal-body .chartswdgt table {
+    color: #3e6c8b;
+}
+.modal .modal-dialog .modal-content .modal-body .chartswdgt .tab-content .nav-tabs {
+    margin: 0 -2.1rem;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.modal .modal-dialog .modal-content .modal-body .chartswdgt hr {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.modal .modal-dialog .modal-content .modal-body .chartswdgt .green {
+    background-color: #62B453;
+    color: white;
+    padding: 0.3rem 0.6rem;
+    border-radius: 2.8rem;
+    width: 2.8rem;
+    height: 2.8rem;
+    position: absolute;
+    top: 8rem;
+    right: 1rem;
+}
+
+.modal .modal-dialog .modal-content .modal-body .tab-content .tab-content {
+    margin: -2.2rem 0 4.8rem 0;
+}
+
+.modal .modal-dialog .modal-content .modal-body .chartswdgt .tab-content .nav-tabs {
+    background: initial;
+}
+
+.modal .modal-dialog .modal-content .modal-body .chartswdgt .tab-content .nav-tabs li a {
+    color: #3c8dbc;
+    background: initial;
+    margin: 0.4rem 0;
+}
+
+.modal .modal-dialog .modal-content .modal-body .chartswdgt .tab-content .nav-tabs li.active a {
+    color: #A4B0B8;
+}
