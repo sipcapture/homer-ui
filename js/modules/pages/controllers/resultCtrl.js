@@ -159,7 +159,7 @@
 		    url: 'templates/dialogs/message.html',
 		    cls: 'homer-modal-content',
 		    id: "message"+messagewindowId.hashCode(),
-		    divLeft: event.clientX.toString()+'px',
+		    divLeft: event.clientX.toString()/2+'px',
 		    divTop: event.clientY.toString()+'px',
 		    params: search_data,
 		    onOpen: function() {
