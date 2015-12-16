@@ -294,11 +294,17 @@
 				if (msg.calldata) {
 					console.log('Get call duration....');
 					var dates = [];
+                                        var dates1 = [];
+                                        var minT200ok=0;
 					for(var i=0; i<msg.calldata.length; i++) {
 						dates.push(msg.calldata[i].milli_ts);
+                                                if(msg.calldata[i].method=="200" && minT200ok==0){
+                                                        dates1.push(msg.calldata[i].milli_ts);
+                                                        minT200ok=msg.calldata[i].milli_ts;
+                                                }
 					}
 					var maxT=new Date(Math.max.apply(null,dates));
-					var minT=new Date(Math.min.apply(null,dates));
+					var minT=new Date(Math.min.apply(null,dates1));
 					var seconds = (maxT.getTime() - minT.getTime())/1000;
 					//console.log('CALL SEC: '+seconds);
 					// $scope.sess_duration = seconds.toFixed(1)+'s';
