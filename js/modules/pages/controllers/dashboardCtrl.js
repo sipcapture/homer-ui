@@ -48,7 +48,7 @@
             
                         var currentUser = authentication.getCurrentLoginUser();
                         $rootScope.dashboardEditable = false;
-                        if(currentUser.permissions.indexOf("admin") > -1) $rootScope.dashboardEditable = true;
+                        if(currentUser.permissions.indexOf("admins") > -1) $rootScope.dashboardEditable = true;
 			that.model = status;
             });
 
