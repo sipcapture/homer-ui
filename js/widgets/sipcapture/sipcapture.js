@@ -16,7 +16,7 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "c
         resolve: {
             sipdata: function($scope, sipcaptureService, config) {
                 if (config.path && config.query) {
-                    return sipcaptureService.get(config, config.path, config.query);
+                    return sipcaptureService.get($scope, config, config.path, config.query);
                 }
             }
         },
@@ -33,7 +33,7 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "c
     }, widget));
 }).service("sipcaptureService", function($q, $http, sipcaptureApiUrl, userProfile) {
     return {
-        get: function(config, path, query) {
+        get: function($scope, config, path, query) {
             var deferred = $q.defer();
             var url = sipcaptureApiUrl + path;
             var objQuery = {};
@@ -47,9 +47,9 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "c
                 deferred.reject();
                 return deferred.promise;
             }
-            var timedate = userProfile.getProfile("timerange");
-            objQuery.timestamp.from = timedate.from.getTime();
-            objQuery.timestamp.to = timedate.to.getTime();
+
+            objQuery = sipcaptureWdgt.query($scope, objQuery, userProfile);
+
             $http.post(url, objQuery).success(function(data) {
                 config.debugresp = JSON.stringify(data);
                 if (data && data.status) {
@@ -72,11 +72,12 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "c
     }
     var rangeDate = {};
     var data = {};
-    var fields = config.panel.fieldname.split(";");
-    var values = config.panel.fieldvalue.split(";");
+    var fields = $scope.config.panel.filters;
+
     $scope.reloadIt = function() {
+        console.log("reloading");
         $scope.$parent.changeReloading(true);
-        sipcaptureService.get(config, config.path, config.query).then(function(sdata) {
+        sipcaptureService.get($scope, config, config.path, config.query).then(function(sdata) {
             if (config.chart.hasOwnProperty("library") && config.chart.library.value == "canvasjs") {
                             
             var seriesData = checkCanvasJSData(sdata);
@@ -94,8 +95,8 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "c
 
                     $scope.$parent.changeReloading(false);                                
             } else if (config.chart.hasOwnProperty("library") && config.chart.library.value == "d3") {
-                $scope.$parent.changeReloading(false);
                 sipcaptureWdgt.d3.draw($scope, config.chart.type["value"], sdata);
+                $scope.$parent.changeReloading(false);
             } else {            
                         
                 var seriesData = checkData(sdata);
@@ -119,16 +120,18 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "c
     function checkData(locdata) {
         var rangeDate = {};
         angular.forEach(locdata, function(commit) {
-            var timevalue = parseDate(commit[config.panel.timefield]);
+            var timevalue = parseDate(commit[config.panel.timefield.field]);
             var fv = [];
             angular.forEach(fields, function(fl) {
-                fv.push(commit[fl]);
+                fv.push(commit[fl.type]);
             });
             var fieldname = fv.join("|");
             var fieldvalue = 0;
-            angular.forEach(values, function(fl) {
-                if (config.panel.fieldsum) fieldvalue = parseInt(commit[fl]); else fieldvalue = parseInt(commit[fl]);
-            });
+            fieldvalue = parseInt(commit.total);
+//            angular.forEach(values, function(fl) {
+//                if (config.panel.fieldsum) fieldvalue = parseInt(commit[fl.field])
+//		else fieldvalue = parseInt(commit[fl.field]);
+//            });
             if (!rangeDate.hasOwnProperty(fieldname)) rangeDate[fieldname] = [];
             rangeDate[fieldname].push([ timevalue, fieldvalue ]);
         });
@@ -164,16 +167,17 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "c
     function checkCanvasJSData(locdata) {
         var rangeDate = {};
         angular.forEach(locdata, function(commit) {
-            var timevalue = parseDate(commit[config.panel.timefield]);
+            var timevalue = parseDate(commit[config.panel.timefield.field]);
             var fv = [];
             angular.forEach(fields, function(fl) {
-                fv.push(commit[fl]);
+                fv.push(commit[fl.type]);
             });
             var fieldname = fv.join("|");
             var fieldvalue = 0;
-            angular.forEach(values, function(fl) {
-                if (config.panel.fieldsum) fieldvalue = parseInt(commit[fl]); else fieldvalue = parseInt(commit[fl]);
-            });
+            fieldvalue = parseInt(commit.total);
+//            angular.forEach(values, function(fl) {
+//                if (config.panel.fieldsum) fieldvalue = parseInt(commit[fl.field]); else fieldvalue = parseInt(commit[fl.field]);
+//            });
             if (!rangeDate.hasOwnProperty(fieldname)) rangeDate[fieldname] = [];
             rangeDate[fieldname].push([ timevalue, fieldvalue ]);
         });
@@ -251,7 +255,7 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "c
     /* DRAW DATA */
     
     if (sipdata) {
-            
+
         if (config.chart.hasOwnProperty("library") && config.chart.library.value == "canvasjs") {
         
             var seriesData = checkCanvasJSData(sipdata);
@@ -270,18 +274,16 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "c
                         //legendTemplate : '<ul class="tc-chart-js-legend"><% for (var i=0; i<segments.length; i++){%><li><span style="background-color:<%=segments[i].fillColor%>"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>'                        
             };
 
-        if (config.chart.legend) {
-                    if (config.chart.legend.enabled && config.chart.legend.enabled == true) {
-            $scope.canvasShowLegend = true;
-                    }
+            if (config.chart.legend) {
+                if (config.chart.legend.enabled && config.chart.legend.enabled == true) {
+                    $scope.canvasShowLegend = true;
+                }
             }
 
             if (config.chart.type["value"] == "pie") {
-
                 $scope.canvasLabels = seriesData[0].label;
                 $scope.canvasData = seriesData[0].data;
-        $scope.canvasChartType = 'Pie';
-                
+                $scope.canvasChartType = 'Pie';
             }
             else {
                   
@@ -357,7 +359,10 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "c
                     }
                     if (parseInt(config.chart.size.height) > 0) {
                         $scope.chartConfig.size.height = config.chart.size.height;
-                    }
+                    } else {
+			// L: default size?
+                        $scope.chartConfig.size.height = 300;
+		    }
                 }
                 if (config.chart.legend) {
                     if (config.chart.legend.enabled && config.chart.legend.enabled == true) {
@@ -377,6 +382,9 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "c
                         }
                     },
                     xAxis: {
+                        title: {
+                            text: null
+                        },
                         type: "datetime"
                     },
                     yAxis: {
@@ -441,6 +449,9 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "c
                 }
                 if (config.chart.yaxis && config.chart.yaxis.title && config.chart.yaxis.title.length > 0) {
                     $scope.chartConfig.yAxis.title.text = config.chart.yaxis.title;
+                }
+                if (config.chart.xaxis && config.chart.xaxis.title && config.chart.xaxis.title.length > 0) {
+                    $scope.chartConfig.xAxis.title.text = config.chart.xaxis.title;
                 }
             }
         }
@@ -513,13 +524,14 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "c
         name: "vertical",
         value: "vertical"
     } ];
+
     $scope.updateDebugUrl = function() {
         var url = sipcaptureApiUrl + $scope.config.path;
         try {
             var objQuery = JSON.parse($scope.config.query);
-            var timedate = userProfile.getProfile("timerange");
-            objQuery.timestamp.from = timedate.from.getTime();
-            objQuery.timestamp.to = timedate.to.getTime();
+
+            objQuery = sipcaptureWdgt.query($scope, objQuery, userProfile);
+ 
             $scope.debug = "curl -v --cookie 'HOMERSESSID=" + $cookies["HOMERSESSID"] + "' -X POST \\\n" + "-d '" + JSON.stringify(objQuery) + "' \\\n" + ' "' + window.location.protocol + "//" + window.location.host + "/" + url + '"\n';
             $scope.parsingStatus = "ok";
             $scope.parsingColorClass = "green";
@@ -528,7 +540,71 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "c
             $scope.parsingColorClass = "red";
         }
     };
+
+    $scope.datasources = sipcaptureWdgt.data.datasources.datasources;
+
+    //--------------------------------------------------------------------------------------
+    // On datasource select
+    //--------------------------------------------------------------------------------------
+    $('body').on('change', '#widgetDatasources', function() {
+        $("#query").val($scope.config.panel.datasource.settings.query).trigger('change');
+        $("#path").val($scope.config.panel.datasource.settings.path).trigger('change');
+    });
+
     $scope.updateDebugUrl();
+
+    //==========================================================================================
+    // Chart basic settings
+    //==========================================================================================
+
+    //------------------------------------------------------------------------------------------
+    // Select Chart
+    //------------------------------------------------------------------------------------------
+    $scope.selectType = function() {
+        if ($scope.config.chart.type.value == 'pie') {
+            $scope.config.panel.total = true;
+        } else {
+            $scope.config.panel.total = false;
+        }
+    };
+
+    //------------------------------------------------------------------------------------------
+    // Select Engine
+    //------------------------------------------------------------------------------------------
+    $scope.selectEngine = function() {
+        $scope.config.chart.update.clear();
+    };
+
+    //==========================================================================================
+    // Filters
+    //==========================================================================================
+
+    // add an item
+    $scope.addFilter = function() {
+        if (!$scope.config.panel.filters) {
+            $scope.config.panel.filters = [];
+        }
+        $scope.config.panel.filters.push({
+            type: $scope.config.panel.filter.type,
+            value: $scope.config.panel.filtervalue.value
+        });
+    };
+
+    // remove an item
+    $scope.removeFilter = function(index) {
+        $scope.config.panel.filters.splice(index, 1);
+    };
+
+    //==========================================================================================
+    // General
+    //==========================================================================================
+
+    // remove an item
+    $scope.reset = function(index) {
+        $scope.config.panel.values = [];
+        $scope.config.panel.filters = [];
+    };
+
 });
 
 
@@ -540,6 +616,43 @@ var sipcaptureWdgt = {};
 sipcaptureWdgt.capitalize = function (text) {
     return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 }
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// Service functions
+////////////////////////////////////////////////////////////////////////////////////////////
+sipcaptureWdgt.service = {};
+
+//==========================================================================================
+// Add filters
+//==========================================================================================
+sipcaptureWdgt.query = function($scope, query, userProfile) { 
+
+    var timedate = userProfile.getProfile("timerange");
+    var filters = $scope.config.panel.filters;
+    var filterParams = [];
+
+    query.timestamp.from = timedate.from.getTime();
+    query.timestamp.to = timedate.to.getTime();
+
+    query.param.limit = $scope.config.panel.limit;
+    query.param.total = $scope.config.panel.total;
+
+    if (typeof filters == 'object') {
+        filters.forEach(function(filter) {
+            var obj = {};
+            obj[filter.type] = filter.value;
+            filterParams.push(obj);
+        });
+
+        query.param.filter = filterParams;
+    }
+
+    return query;
+
+};
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // D3 Properties and functions
@@ -572,14 +685,46 @@ sipcaptureWdgt.generateId = function($scope) { // Generate unique ID for the cha
 };
 
 //==========================================================================================
+// D3 requeriments
+//==========================================================================================
+sipcaptureWdgt.d3.checkRequeriments = function($scope) {
+
+    if (!$scope.config.panel.timefield.field) {
+        console.error("Please define a timefield in " + $scope.$parent.model.title);        
+        return false;
+    }
+
+    if (typeof $scope.config.panel.filters != 'object') {
+        console.error("Please define filters in " + $scope.$parent.model.title);        
+        return false;
+    }
+    
+    return true;
+};
+
+//==========================================================================================
 // D3 create
 //==========================================================================================
 sipcaptureWdgt.d3.create = function($scope, chart, data, animate) {
 
-    console.log('creating');
     var selector = $scope.d3Selector;
     var d3chart;
-    var resizeEvent;
+    var resizeEvent = $scope.config.chart.update;
+
+    if (typeof resizeEvent == 'function') {
+        resizeEvent.clear();
+    }
+
+    chart.showLegend($scope.config.chart.legend.enabled);
+
+    if (chart.xAxis) {
+        if ($scope.config.chart.yaxis && $scope.config.chart.yaxis.title && $scope.config.chart.yaxis.title.length > 0) {
+            chart.yAxis.axisLabel($scope.config.chart.yaxis.title);
+        }
+        if ($scope.config.chart.xaxis && $scope.config.chart.xaxis.title && $scope.config.chart.xaxis.title.length > 0) {
+            chart.xAxis.axisLabel($scope.config.chart.xaxis.title);
+        }
+    }
 
     d3chart = d3.select(selector).datum(data);
     
@@ -590,7 +735,7 @@ sipcaptureWdgt.d3.create = function($scope, chart, data, animate) {
     d3chart.call(chart);
     
     resizeEvent = nv.utils.windowResize(chart.update);
-
+    $scope.config.chart.update = resizeEvent;
     sipcaptureWdgt.d3.events.push(resizeEvent);
 };
 
@@ -612,9 +757,11 @@ sipcaptureWdgt.d3.clear = function() {
 //==========================================================================================
 sipcaptureWdgt.d3.data = function($scope, data) {
 
-    var fieldname =  $scope.config.panel.fieldname.split(";");
-    var fieldvalue =  $scope.config.panel.fieldvalue.split(";");
-    var timefield =  $scope.config.panel.timefield;
+//    var fieldname =  $scope.config.panel.fieldname;
+//    var fieldvalues =  $scope.config.panel.values;
+    var timefield =  $scope.config.panel.timefield.field;
+
+    var filters =  $scope.config.panel.filters;
 
     var names = [];
     var values = {};
@@ -626,19 +773,38 @@ sipcaptureWdgt.d3.data = function($scope, data) {
 
         var name = "";
         var value = 0;
-        
+/*        
         fieldname.forEach(function(n) {
-            if (entry[n]) {
+            if (entry[n.type]) {
                 if (name) {
                     name = name + " | ";
                 }
-                name = name + entry[n];
+                name = name + entry[n.type];
             }
         });
         
         fieldvalue.forEach(function(v) {
+            value = value + parseInt(entry[v.field]);
+        });
+*/
+        filters.forEach(function(n) {
+            if (entry[n.type]) {
+                if (name) {
+                    name = name + " | ";
+                }
+                name = name + entry[n.type];
+            }
+        });
+/*        
+        filters.forEach(function(v) {
+            value = value + parseInt(entry[v.value]);
+        });
+
+        fieldvalues.forEach(function(v) { 
             value = value + parseInt(entry[v]);
         });
+*/
+        value = parseInt(entry['total']);
 
         if (names.indexOf(name) === -1) { // Getting names
             names.push(name)
@@ -655,6 +821,7 @@ sipcaptureWdgt.d3.data = function($scope, data) {
         }
         values[name][timefieldData] = (values[name][timefieldData] || 0) + value;
     });
+
 
     names.forEach(function(name) { // Order and fill empty data
 
@@ -812,7 +979,7 @@ sipcaptureWdgt.d3.multiBarChart.prepare = function($scope, animate, data) {
     nv.addGraph(function() {
         var chart = nv.models.multiBarChart()
             .x(function(d) { return d.timefield; })
-            .y(function(d) { return d.value; })
+            .y(function(d) { return d.value; });
 
         chart.yAxis.tickFormat(d3.format('d'));
         chart.xAxis.tickFormat(function(d) { return d3.time.format('%H:%M')(new Date(d * 1000))});
@@ -839,7 +1006,9 @@ sipcaptureWdgt.d3.pieChart.prepare = function($scope, animate, data) {
             .x(function(d) { return d.key; })
             .y(function(d) { return d.value; })
             .valueFormat(d3.format('d'))
-            .showLabels(false);
+            .showLabels(false)
+            .legendPosition("right")
+            .margin({top:0,right:0,bottom:0,left:0});
 
         sipcaptureWdgt.d3.create($scope, chart, data, animate);
 
@@ -852,21 +1021,193 @@ sipcaptureWdgt.d3.pieChart.prepare = function($scope, animate, data) {
 // D3 Draw
 //==========================================================================================
 sipcaptureWdgt.d3.draw = function($scope, type, data) {
-    
-    var firstRun = sipcaptureWdgt.generateId($scope);
+    if (sipcaptureWdgt.d3.checkRequeriments($scope)) {
 
-    var customData = sipcaptureWdgt.d3.data($scope, data);
+        var firstRun = sipcaptureWdgt.generateId($scope);
+        var customData = sipcaptureWdgt.d3.data($scope, data);
     
-    if (type == "pie") {
-        sipcaptureWdgt.d3.pieChart.prepare($scope, firstRun, customData);
-    } else if (type == "scatter") {
-        customData = sipcaptureWdgt.d3.scatterChart.data(customData);
-        sipcaptureWdgt.d3.scatterChart.prepare($scope, firstRun, customData);
-    } else if (type == "line") {
-        sipcaptureWdgt.d3.lineChart.prepare($scope, firstRun, customData);
-    } else if (type == "areaspline") {
-        sipcaptureWdgt.d3.stackedAreaChart.prepare($scope, firstRun, customData);
+        if (type == "pie") {
+            sipcaptureWdgt.d3.pieChart.prepare($scope, firstRun, customData);
+        } else if (type == "scatter") {
+            customData = sipcaptureWdgt.d3.scatterChart.data(customData);
+            sipcaptureWdgt.d3.scatterChart.prepare($scope, firstRun, customData);
+        } else if (type == "line") {
+            sipcaptureWdgt.d3.lineChart.prepare($scope, firstRun, customData);
+        } else if (type == "areaspline") {
+            sipcaptureWdgt.d3.stackedAreaChart.prepare($scope, firstRun, customData);
+        } else {
+            sipcaptureWdgt.d3.multiBarChart.prepare($scope, firstRun, customData);
+        }
     } else {
-        sipcaptureWdgt.d3.multiBarChart.prepare($scope, firstRun, customData);
+        console.error("You should update your widget settings in " + $scope.$parent.model.title);
     }
 };
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+// Settings
+////////////////////////////////////////////////////////////////////////////////////////////
+sipcaptureWdgt.data = {}
+
+sipcaptureWdgt.data.datasources = {
+    "version": 1,
+    "datasources": [
+        {
+            "name": "Method",
+            "type": "JSON",
+            "settings": {
+                "path": "statistic\/method",
+                "query": "{\n   \"timestamp\": {\n          \"from\": \"@from_ts\",\n          \"to\":  \"@to_ts\"\n   },\n  \"param\": {\n        \"filter\": [ \n             \"@filters\"\n       ],\n       \"limit\": \"@limit\",\n       \"total\": \"@total\"\n   }\n}",
+                "method": "GET",
+                "limit": 200,
+                "total": false,
+                "eval": {
+                    incoming: {
+                        name: "test incoming",
+                        value: "var object = @incoming; return object"
+                    }
+                },
+                "timefields" : [
+                    { "field": "from_ts", "desc": "From Timestamp" },
+                    { "field": "to_ts", "desc": "To Timestamp" }
+                ],
+                "fieldvalues": [
+                    { "field": "total", "desc": "All Packets" }
+                ],
+                "filters": [
+			{ "type": "method", "desc": "SIP Method", options: [ {"value": "!ALL"},{"value":"!TOTAL"},{"value": "TOTAL"},{"value": "INVITE"},{"value": "UPDATE"}, {"value": "REGISTER"}, {"value": "CANCEL"}, {"value": "BYE"}, {"value": "OPTIONS"}, {"value": "300"}, {"value": "401"}, {"value": "407"}, {"value": "200"} ] },
+			{ "type": "cseq", "desc": "SIP Cseq", options: [ {"value": "INVITE"}, {"value": "UPDATE"},{"value": "REGISTER"},{"value": "CANCEL"}, {"value": "BYE"}, {"value": "OPTIONS"} ] },
+			{ "type": "auth", "desc": "SIP Auth", options: [ {"value": "true"} ] },
+			{ "type": "totag", "desc": "SIP To Tag", options: [ {"value": "true"} ] }
+                ]
+            }
+        },
+        {
+            "name": "Data",
+            "type": "JSON",
+            "settings": {
+                "path": "statistic\/data",
+                        "query": "{\n   \"timestamp\": {\n          \"from\": \"@from_ts\",\n          \"to\":  \"@to_ts\"\n   },\n  \"param\": {\n        \"filter\": [ \n             \"@filters\"\n       ],\n       \"limit\": \"@limit\",\n       \"total\": \"@total\"\n   }\n}",
+                "method": "GET",
+                "limit": 200,
+                "total": false,
+                "eval": {
+                    incoming: {
+                        name: "test incoming",
+                        value: "var object = @incoming; return object"
+                    }
+                },
+                "timefields" : [
+                    { "field": "from_ts", "desc": "From Timestamp" },
+                    { "field": "to_ts", "desc": "To Timestamp" }
+                ],
+                "fieldvalues": [
+                    { "field": "total", "desc": "All Packets" }
+                ],
+                "filters": [
+		    { "type": "type", "desc": "Data Statistics", options: [
+	                    { "value": "asr", "desc": "Answer Seizure Ratio" },
+	                    { "value": "ner", "desc": "Network Effectiveness Ratio" },
+	                    { "value": "packet_size", "desc": "Packet Size" },
+	                    { "value": "packet_count", "desc": "Packet Count" },
+	                    { "value": "sdf", "desc": "counter of call’s releases except busy and normal call clearing (17 && 16)" },
+	                    { "value": "isa", "desc": "counter of replies on INVITE: 408|50[03]" },
+	                    { "value": "sd", "desc": "counter of replies on INVITE: 50[034]" },
+	                    { "value": "ssr", "desc": "call success setup rate" }
+			] 
+		    }
+                ]
+            }
+        },
+        {
+            "name": "IP",
+            "type": "JSON",
+            "settings": {
+                "path": "statistic\/ip",
+                "query": "{\n   \"timestamp\": {\n          \"from\": \"@from_ts\",\n          \"to\":  \"@to_ts\"\n   },\n  \"param\": {\n        \"filter\": [ \n             \"@filters\"\n       ],\n       \"limit\": \"@limit\",\n       \"total\": \"@total\"\n   }\n}",
+                "method": "GET",
+                "limit": 200,
+                "total": false,
+                "eval": {
+                    incoming: {
+                        name: "test incoming",
+                        value: "var object = @incoming; return object"
+                    }
+                },
+                "timefields" : [
+                    { "field": "from_ts", "desc": "From Timestamp" },
+                    { "field": "to_ts", "desc": "To Timestamp" }
+                ],
+                "fieldvalues": [
+                    { "field": "total", "desc": "All Packets" }
+                ],
+                "filters": [
+  		    { "type": "method", "desc": "SIP Method", options: [ {"value": "!ALL"},{"value":"!TOTAL"},{"value": "TOTAL"},{"value": "INVITE"},{"value": "UPDATE"}, {"value": "REGISTER"}, {"value": "CANCEL"}, {"value": "BYE"}, {"value": "OPTIONS"}, {"value": "300"}, {"value": "401"}, {"value": "407"}, {"value": "200"} ] },
+                    { "type": "source_ip", "desc": "SIP Source IP", options: [] }
+                ]
+            }
+        },
+        {
+            "name": "User-Agent",
+            "type": "JSON",
+            "settings": {
+                "path": "statistic\/useragent",
+                "query": "{\n   \"timestamp\": {\n          \"from\": \"@from_ts\",\n          \"to\":  \"@to_ts\"\n   },\n  \"param\": {\n        \"filter\": [ \n             \"@filters\"\n       ],\n       \"limit\": \"@limit\",\n       \"total\": \"@total\"\n   }\n}",
+                "method": "GET",
+                "limit": 200,
+                "total": false,
+                "eval": {
+                    incoming: {
+                        name: "test incoming",
+                        value: "var object = @incoming; return object"
+                    }
+                },
+                "timefields" : [
+                    { "field": "from_ts", "desc": "From Timestamp" },
+                    { "field": "to_ts", "desc": "To Timestamp" }
+                ],
+                "fieldvalues": [
+                    { "field": "total", "desc": "All Packets" }
+                ],
+                "filters": [
+  		    { "type": "useragent", "desc": "SIP User-Agent", options: [ {"value": "!ALL"},{"value":"!TOTAL"},{"value": "TOTAL"},{"value": "INVITE"},{"value": "UPDATE"}, {"value": "REGISTER"}, {"value": "CANCEL"}, {"value": "BYE"}, {"value": "OPTIONS"}, {"value": "300"}, {"value": "401"}, {"value": "407"}, {"value": "200"} ] },
+  		    { "type": "method", "desc": "SIP Method", options: [ {"value": "!ALL"},{"value":"!TOTAL"},{"value": "TOTAL"},{"value": "INVITE"},{"value": "UPDATE"}, {"value": "REGISTER"}, {"value": "CANCEL"}, {"value": "BYE"}, {"value": "OPTIONS"}, {"value": "300"}, {"value": "401"}, {"value": "407"}, {"value": "200"} ] }
+                ]
+            }
+        }
+    
+    ]
+};
+
+//==========================================================================================
+// Adding toggleText to jquery
+//==========================================================================================
+$.fn.extend({
+    toggleText: function (a, b) {
+        if (this.text() == a) { 
+            this.text(b); 
+        }
+        else { 
+            this.text(a) 
+        }
+    }
+});
+
+//==========================================================================================
+// Events
+//==========================================================================================
+
+$(document).ready(function() {
+
+    //--------------------------------------------------------------------------------------
+    // Settings expert mode show/hide
+    //--------------------------------------------------------------------------------------
+    $('body').on('click', '#seeChartExpert', function(e) {
+        e.preventDefault();
+        $("#chartExpert").toggleClass("hidden");
+        $("#seeChartExpert .glyphicon").toggleClass("glyphicon-chevron-down glyphicon-chevron-up");
+        $("#seeChartExpert .text").toggleText("Switch to expert mode", "Switch to normal mode");
+    });
+
+
+});
