@@ -45,6 +45,10 @@
             var that = this;
 
             storeService.get($stateParams.boardID).then(function (status) {
+            
+                        var currentUser = authentication.getCurrentLoginUser();
+                        $rootScope.dashboardEditable = false;
+                        if(currentUser.permissions.indexOf("admin") > -1) $rootScope.dashboardEditable = true;
 			that.model = status;
             });
 

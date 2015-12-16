@@ -2,7 +2,7 @@
 
 	<button class="btn" ng-show="hide" ng-click="dashboard.delete(dashboard.name)" id="deleteThisDash">Delete Dashboard</button>
 
-	<adf-dashboard name="{{dashboard.name}}" structure="4-8" adf-model="dashboard.model" collapsible="collapsible"><adf-dashboard/>
+	<adf-dashboard name="{{dashboard.name}}" structure="4-8" adf-model="dashboard.model" collapsible="collapsible" editable="{{$root.dashboardEditable}}"><adf-dashboard/>
 
 	<br>
 	
