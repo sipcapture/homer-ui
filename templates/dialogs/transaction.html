@@ -146,8 +146,8 @@
 			<button class="btn btn-normal btn-danger" ng-click="exportCanvas()" data-placement="top-right" style="margin-top:18px;margin-left:8px;"><i class="fa fa-file-image-o"></i><br> Export PNG</button>			
 			<button class="btn btn-normal btn-warning" ng-click="exportShare()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;"><i class="fa fa-share-alt"></i><br> Share Link</button>
 			<br><br>
-			<p>
-			{{sharelink}}
+			<p style="margin:8px;">
+			<a href="{{sharelink}}" target="_blank" ng-if="sharelink">{{sharelink}}</a>
 			</p>
 			</div>
 	     </tab>
