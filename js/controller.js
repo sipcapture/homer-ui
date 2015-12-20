@@ -74,14 +74,51 @@
 
                  $scope.expandLeftMenu = function() {
                      $scope.boolLeftMenu = false;                     
-                 };                                                                                      
+                 };                      
+
+                function toggle(obj) {
+                  if (obj == "boolDropDownAlert") {
+                      $scope.boolDropDownAlert = !$scope.boolDropDownAlert;
+                  } else {
+                      $scope.boolDropDownAlert = false;
+
+                  }
+
+                  if (obj == "boolDropDownSearch") {
+                      $scope.boolDropDownSearch = !$scope.boolDropDownSearch;
+                  } else {
+                      $scope.boolDropDownSearch = false;
+
+                  }
+
+                  if (obj == "boolDropDownUserMenu") {
+                      $scope.boolDropDownUserMenu = !$scope.boolDropDownUserMenu;;
+                  } else {
+                      $scope.boolDropDownUserMenu = false;
+
+                  }
+
+                  if (obj == "boolDropDownLastMenu") {
+                      $scope.boolDropDownLastMenu = !$scope.boolDropDownLastMenu;
+                  } else {
+                      $scope.boolDropDownLastMenu = false;
+
+                  }
+
+                  if (obj == "boolDropDownRefreshMenu") {
+                      $scope.boolDropDownRefreshMenu = !$scope.boolDropDownRefreshMenu;
+                  } else {
+                      $scope.boolDropDownRefreshMenu = false;
+
+                  }
+                }                                                                
                                                                
 
-                 $scope.showAlertBox = function() { $scope.boolDropDownAlert = !$scope.boolDropDownAlert; };              
-                 $scope.showSearchBox = function() { $scope.boolDropDownSearch = !$scope.boolDropDownSearch; };                            
-                 $scope.showUserMenuBox = function() { $scope.boolDropDownUserMenu = !$scope.boolDropDownUserMenu; };                              
-                 $scope.showLastMenuBox = function() { $scope.boolDropDownLastMenu = !$scope.boolDropDownLastMenu; };               
-                 $scope.showRefreshMenuBox = function() { $scope.boolDropDownRefreshMenu = !$scope.boolDropDownRefreshMenu; };               
+                 $scope.showAlertBox = function() { toggle("boolDropDownAlert") };              
+                 $scope.showSearchBox = function() { toggle("boolDropDownSearch") };                            
+                 $scope.showUserMenuBox = function() { toggle("boolDropDownUserMenu") };                              
+                 $scope.showLastMenuBox = function() { toggle("boolDropDownLastMenu") };               
+                 $scope.showRefreshMenuBox = function() { toggle("boolDropDownRefreshMenu") };               
 
 		 $scope.searchClass = "btn btn-primary";
 
@@ -103,6 +140,15 @@
                       $location.path(homer.modules.auth.routes.logout);
                  }
                                                                               
+		$rootScope.setRange = function(type,tss) {
+			console.log('SELECT RANGE:',tss);
+				userProfile.profileScope.timerange = tss;
+				$scope.timerange = userProfile.profileScope.timerange;
+				userProfile.setProfile("timerange", tss);
+				eventbus.broadcast('globalWidgetReload', 1);		
+		}    
+
+
                  eventbus.subscribe(homer.modules.auth.events.userLoggedIn , function(event,args) {
                       if(!$scope.templateSet)
                       {
@@ -195,6 +241,8 @@
                 var dt = new Date(new Date().setHours(new Date().getHours() - 2 ));
 		$scope.timerange = userProfile.profileScope.timerange;
 		var stop;
+		
+
 
                 /* update if timerange will be changed */
                 (function () {
@@ -223,6 +271,7 @@
 		$scope.format = $scope.formats[1];		                         
     
 		$scope.setFromNow = function() {
+                      
 		        var dt = new Date(new Date().setMinutes(new Date().getMinutes() + 5 ));
 			$scope.timerange = {			     
 			      from: new Date(),
@@ -234,11 +283,14 @@
     
 		//== Methods ==//
 		$scope.launch = function(){
+
 			var dlg = dialogs.create('templates/dialogs/timerange.html','timerangeDialogCtrl',$scope.timerange);
+
 			dlg.result.then(function(timerange){
 			    $scope.timerange = timerange;
 			    userProfile.setProfile("timerange", $scope.timerange);
 	        	});
+	        		        	
         	}; // end launch
 		$scope.last = function(min){
 	                var dt = new Date(new Date().setMinutes(new Date().getMinutes() - min ));
@@ -299,6 +351,11 @@
                 eventbus.subscribe(homer.modules.pages.events.destroyRefresh , function(event, name, model) {
                         $scope.cancelRefresh();
                 });        	
+                
+                eventbus.subscribe(homer.modules.pages.events.setTimeRange , function(event, timeRange, model) {
+                       $scope.timerange = timeRange;
+                       userProfile.setProfile("timerange", $scope.timerange);
+                });        	
 
     }) 
     .controller('timerangeDialogCtrl',function($log,$scope,$modalInstance,data){
@@ -311,8 +368,8 @@
         $scope.options = {
             hstep: [1, 2, 3],
             mstep: [1, 5, 10, 15, 25, 30]
-        };                                    
-                                 
+        };                  
+        
 	//== Listeners ==//
 	$scope.$watch('timerange.from',function(val,old){
 	      $log.info('Date Changed: ' + val);
@@ -337,7 +394,6 @@
                 if(type == 1) $scope.timerange.from = new Date();
                 else $scope.timerange.to = new Date();
         };
-
 
 	$scope.done = function(){
 		$modalInstance.close($scope.timerange);
