@@ -33,6 +33,10 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "c
     }, widget));
 }).service("sipcaptureService", function($q, $http, sipcaptureApiUrl, userProfile) {
     return {
+
+	set: function(range) {
+                        userProfile.setProfile("timerange", $scope.timerange);
+	},
         get: function($scope, config, path, query) {
             var deferred = $q.defer();
             var url = sipcaptureApiUrl + path;
@@ -66,6 +70,34 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "c
             return deferred.promise;
         }
     };
+}).directive("contenteditable", function() {
+  return {
+    require: "ngModel",
+    link: function(scope, element, attrs, ngModel) {
+
+      function read() {
+        ngModel.$setViewValue(element.html());
+      }
+
+      ngModel.$render = function() {
+        element.html(ngModel.$viewValue || "").text();
+      };
+	
+       element.bind("keydown keypress", function(event) {
+                if(event.which === 13) {
+                    event.preventDefault();
+                    scope.$apply(attrs.ngEnter);                    
+                }
+      });
+
+      element.bind("blur keyup change", function() {
+        scope.$apply(read);
+      });
+      element.bind("keydown keypress", function() {
+        scope.$apply(read);
+      });
+    }
+  };
 }).controller("sipcaptureCtrl", function($scope, config, sipdata, sipcaptureService) {
     function parseDate(input) {
         return input * 1e3;
@@ -82,7 +114,6 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "c
                             
             var seriesData = checkCanvasJSData(sdata);
             if (config.chart.type["value"] == "pie") {
-                    //$scope.canvasLabels = ["Download Sales", "In-Store Sales", "Mail-Order Sales", "Tele Sales", "Corporate Sales"];
                     $scope.canvasLabels = seriesData[0].label;
                     $scope.canvasData = seriesData[0].data;
                 }  
@@ -684,6 +715,7 @@ sipcaptureWdgt.generateId = function($scope) { // Generate unique ID for the cha
 
 };
 
+
 //==========================================================================================
 // D3 requeriments
 //==========================================================================================
@@ -724,6 +756,14 @@ sipcaptureWdgt.d3.create = function($scope, chart, data, animate) {
         if ($scope.config.chart.xaxis && $scope.config.chart.xaxis.title && $scope.config.chart.xaxis.title.length > 0) {
             chart.xAxis.axisLabel($scope.config.chart.xaxis.title);
         }
+    }
+
+    // d3 color
+
+    if ($scope.config.chart.ccc) {
+         var cols = new Array();
+         cols = $scope.config.chart.ccc.split(",");
+         chart.color(cols);
     }
 
     d3chart = d3.select(selector).datum(data);
@@ -922,14 +962,28 @@ sipcaptureWdgt.d3.lineChart.prepare = function($scope, animate, data) {
 
     nv.addGraph(function() {
 
-        var chart = nv.models.lineChart()
+	// var chart = nv.models.lineChart()
+        var chart = nv.models.lineWithFocusChart()
             .x(function(d) { return d.timefield; })
             .y(function(d) { return d.value; });
+
+	chart.dispatch.on('brush', function(e) { 
+		// console.log('RANGE SELECT',e);
+                        var timerange = {
+                              from: new Date(e.extent[0]),
+                              to: new Date(e.extent[1])
+                        };
+                        // setRange("timerange", timerange);
+                        // eventbus.broadcast('globalWidgetReload', 1);
+	});
 
         chart.xAxis.tickFormat(function(d) { return d3.time.format('%H:%M')(new Date(d * 1000))});
         chart.yAxis.tickFormat(d3.format('d'));
         chart.xScale(d3.time.scale());
-
+	chart.isArea(true);
+	chart.focusHeight(30);
+        chart.y2Axis.tickFormat(function(d){ return; });
+        chart.x2Axis.tickFormat(function(d){ return; });
         sipcaptureWdgt.d3.create($scope, chart, data, animate);
 
         return chart;

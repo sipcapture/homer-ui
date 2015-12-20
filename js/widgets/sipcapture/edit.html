@@ -222,7 +222,7 @@
               <div class="row">
                 <div class="input-group">
                     <label for="widgetFieldValue">Filter Value</label>
-                    <select id="widgetFieldValue" ng-options="filtervalues as filtervalues.value for filtervalues in config.panel.filter.options track by filtervalues.value " ng-model="config.panel.filtervalue" class="form-control" required></select>
+                    <select id="widgetFieldValue" ng-options="filtervalues as filtervalues.value for filtervalues in config.panel.filter.options track by filtervalues.value " ng-model="config.panel.filtervalue" class="form-control" required ></select>
                 </div>
               </div>
               <div class="row text-center">
@@ -242,7 +242,7 @@
                   <tbody>
                     <tr ng-repeat="filter in config.panel.filters">
                       <td class="text-center">{{filter.type}}</td>
-                      <td class="text-center">{{filter.value}}</td> 
+                      <td class="text-center" contentEditable="true" ng-model="filter.value">{{filter.value}}</td> 
                       <td class="text-center"><a ng-click="removeFilter($index)"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
                     </tr>
                   </tbody>
