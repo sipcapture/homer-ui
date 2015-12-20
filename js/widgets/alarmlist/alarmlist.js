@@ -101,7 +101,18 @@ angular.module('homer.widgets.alarmlist', ['adf.provider'])
       }      
     };
   })
-  .controller('alarmListCtrl', function($scope, alarms, dialogs, alarmListService, $timeout, $window, SweetAlert){
+  .controller('alarmListCtrl', [
+     '$scope',
+     'alarms',
+     'dialogs',
+     'alarmListService',
+     '$timeout',
+     '$window',
+     'SweetAlert',
+     homer.modules.core.services.profile,
+     'eventbus',
+     '$location',
+     function($scope, alarms, dialogs, alarmListService, $timeout, $window, SweetAlert, userProfile, eventbus, $location){
 
 
 	$scope.getBkgColorTable = function (status) {
@@ -113,9 +124,14 @@ angular.module('homer.widgets.alarmlist', ['adf.provider'])
                         }                  
         };
 
+        console.log(userProfile);
     
-	var rowtpl='<div ng-style="row.isSelected && {} || grid.appScope.getBkgColorTable(row.entity.status)">'
-	    		+ '<div ng-click="grid.appScope.onDblClickRow(row)"   ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>'
+	//var rowtpl='<div ng-style="row.isSelected && {} || grid.appScope.getBkgColorTable(row.entity.status)">'
+	//    		+ '<div ng-click="grid.appScope.onDblClickRow(row)"   ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>'
+	//    		+'</div>';
+	    		
+        var rowtpl='<div ng-style="row.isSelected && {} || grid.appScope.getBkgColorTable(row.entity.status)">'
+	    		+ '<div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>'
 	    		+'</div>';
 
 
@@ -158,6 +174,87 @@ angular.module('homer.widgets.alarmlist', ['adf.provider'])
 	   }
 	
 	};
+		
+	$scope.showAlarm = function(localrow, event) {
+	        console.log("SHOW IT");
+
+	        var ts = localrow.entity.alarm_ts * 1000;
+	        var fromDate = new Date(new Date(ts).setMinutes(new Date(ts).getMinutes() - 5 ));
+	        var toDate = new Date(new Date(ts).setMinutes(new Date(ts).getMinutes() + 5 ));	        
+	        
+	        var search_time = { from: fromDate, to: toDate};	         
+	        console.log(search_time);
+
+	        eventbus.broadcast(homer.modules.pages.events.setTimeRange, search_time);		                    
+	        
+	        var source_ip = localrow.entity.source_ip;
+
+                var transaction = {
+                            call: true,
+                            registration: false,
+                            rest: false
+                };
+                
+                var search = {
+                      //  user_agent: "%friendly%"
+                      source_ip: source_ip                      
+                };
+                                                                                                                
+                userProfile.setProfile("transaction", transaction);
+                userProfile.setProfile("search", search);
+                $location.path('/result');
+        };
+
+	$scope.deleteAlarm = function(rowItem, event) {
+
+		console.log("Delete item", rowItem);              
+		if(rowItem.entity.status == 1) {
+			rowItem.entity.status = 0;
+			var ldata = {};        
+        	        ldata['param'] = {
+                	    id: rowItem.entity.id,
+	                    status: 0
+        	        };
+      
+                	console.log(ldata);			
+        
+	                alarmListService.update(ldata).then(function (mdata) {
+        	                rowItem.entity.status = 0;
+                	});
+		}
+		else {
+			rowItem.entity.status = 1;
+			var ldata = {};        
+        	        ldata['param'] = {
+                	    id: rowItem.entity.id,
+	                    status: 1
+        	        };
+	                alarmListService.update(ldata).then(function (mdata) {
+        	                rowItem.entity.status = 1;
+                	});			
+		}
+
+		console.log("DELETE ALARM");
+        };
+
+	$scope.alarmValue = function( grid, rowItem ) {
+		return rowItem.entity.status == 1 ? "read" : "unread";
+	};
+
+	$scope.showAgo = function( grid, rowItem ) {
+
+		var _MS_PER_HOUR = 60 * 60;
+		var d2 = new Date();
+		var diffHours =  Math.floor((d2.getTime()/1000 - (rowItem.entity.alarm_ts)) / _MS_PER_HOUR);
+		return diffHours;
+	};
+	
+	$scope.showDateValue = function( grid, rowItem ) {
+	        function pad(s) { return (s < 10) ? '0' + s : s; }	        
+		var d = new Date(rowItem.entity.alarm_ts*1000);
+		return [pad(d.getFullYear()), pad(d.getMonth()+1), d.getDate()].join('-') + ' ' + [pad(d.getHours()), pad(d.getMinutes()), pad(d.getSeconds())].join(':');
+	};
+	
     
 	$scope.Delete = function(row) {
 	          var index = $scope.gridListOptions.data.indexOf(row.entity);
@@ -170,12 +267,28 @@ angular.module('homer.widgets.alarmlist', ['adf.provider'])
 		{ name: 'total', displayName: 'Total' },
 		{ name: 'source_ip', displayName: 'Source IP' },
 		{ name: 'description', displayName: 'Description' },
-		{ name: 'create_date', displayName: 'Create date' , type: 'date', cellFilter: 'date:"yyyy-MM-dd"'},
-		{ name: 'status', displayName: 'Status', type: 'boolean', width: 50 }
+		{ name: 'create_date', 
+		  field: 'alarm_ts',
+		  displayName: 'Create date' , 
+		  type: 'date', 
+		  cellTemplate: '<div  ng-click="grid.appScope.showAlarm(row, $event)" class="ui-grid-cell-contents"><span class="navText">{{grid.appScope.showDateValue(grid, row)}}</span></div>'
+                },
+		{ name: 'ago', 
+		  displayName: 'Age Hours' , 
+		  field: 'alarm_ts',
+		  width: 150,
+		  cellTemplate: '<div class="ui-grid-cell-contents">{{grid.appScope.showAgo(grid, row)}}</div>'
+                },
+		{ name: 'status', 
+		  displayName: 'Status', 
+		  type: 'boolean', 
+		  width: 70,
+		  cellTemplate: '<button  ng-click="grid.appScope.deleteAlarm(row, $event)" class="btn btn-normal btn-danger">{{grid.appScope.alarmValue(grid, row)}}</button>'                
+                }
 	      
       	];
     
 	console.log('ADM-ROW_USER');
 	$scope.gridListOptions.data = alarms;
-  });
+  }]);
 
