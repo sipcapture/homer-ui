@@ -4,7 +4,7 @@
 
 Modular component for [HOMER 5](http://github.com/sipcapture/homer)
 
-### RELEASE CANDIDATE 2
+### Documentation
 
 Project Documentation is available here:
 
