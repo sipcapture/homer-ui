@@ -1,5 +1,5 @@
   <div>
-    <div class="alert alert-info" ng-if="!chartConfig && !canvasData && !d3Enabled">
+    <div class="alert alert-info" ng-if="!chartConfig && !canvasData && !d3Enabled && !flotEnabled">
       Please select a query from the widget configuration
     </div>
     <div ng-if="chartConfig">
@@ -11,6 +11,10 @@
     </div>
     <div ng-if="d3Enabled" ng-style="{'height': chartHeight}">
       <svg ng-attr-id="{{ d3ID }}"></svg>
+    </div>
+    <div ng-if="flotEnabled">
+    	<div id="legend" style="width: 200px; height: 20px;"></div>	
+	<flot dataset="flotData" options="flotOptions" height="200" width="chartWidth" on-plot-selected="handlePlotSelected(event, ranges)"></flot>	      
     </div>
   </div>
 
