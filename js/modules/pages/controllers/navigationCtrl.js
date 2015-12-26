@@ -53,6 +53,10 @@
 		        		        
 		};
 
+        $scope.isActive = function(route) {
+            return route === $location.path();
+        }
+
 		eventbus.subscribe(homer.modules.pages.events.newDashboardItem, function(event,args) {
                       $scope.addNewDashboard(args);
                 });		

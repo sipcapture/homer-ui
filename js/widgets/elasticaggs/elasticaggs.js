@@ -49,7 +49,7 @@ angular.module('homer.widgets.elasticaggs', ['adf.provider', 'highcharts-ng','ba
     // register elasticaggs template by extending the template object
     dashboardProvider
       .widget('elasticaggsChart', angular.extend({
-        title: 'Elastic Aggs',
+        title: 'Chart: Elastic Aggs',
         description: 'Display Elasticsearch Aggs',
         controller: 'elasticaggsCtrl'
         }, widget));

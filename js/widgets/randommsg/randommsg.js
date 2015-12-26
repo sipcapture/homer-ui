@@ -13,7 +13,7 @@ angular.module('homer.widgets.randommsg', ['adf.provider'])
   .config(function(dashboardProvider){
     dashboardProvider
       .widget('randommsg', {
-        title: 'Random Method',
+        title: 'Tool: Random SIP RFC',
         description: 'Display a random SIP Method definition and RFC',
         templateUrl: 'js/widgets/randommsg/randommsg.html',
         controller: 'randommsgCtrl',

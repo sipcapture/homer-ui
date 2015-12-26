@@ -13,7 +13,7 @@ angular.module('homer.widget.clock', ['adf.provider'])
   .config(function(dashboardProvider){
     dashboardProvider
       .widget('clock', {
-        title: 'Clock',
+        title: 'Tool: Clock',
         description: 'Displays date and time',
         templateUrl: 'js/widgets/clock/view.html',
         controller: 'clockController',

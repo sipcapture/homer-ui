@@ -52,9 +52,10 @@
 
 		// process the form
 		$scope.processSearchResult = function() {
-
+            
 		/* save data for next search */
 		var data = {param:{}, timestamp:{}};
+		
 
 		var transaction = userProfile.getProfile("transaction");
 		var limit = userProfile.getProfile("limit");
@@ -62,18 +63,80 @@
 		var value = userProfile.getProfile("search");
 		var node = userProfile.getProfile("node").dbnode;
 
-		/* make construct of query */
-		data.param.transaction = {};
-		data.param.limit = limit;
-		data.param.search = value;
-		data.param.location = {};
-		data.param.location.node = node;
-		data.timestamp.from = timedate.from.getTime();
-		data.timestamp.to = timedate.to.getTime();
+		var sObj = {};
+		var searchQueryObject = $location.search();			
+		if(searchQueryObject.hasOwnProperty("query")) {
+		    var rison = searchQueryObject.query;
+		    rison = rison.substring(1, rison.length - 2);		                        		    
+		    var ar = rison.split('\',');
+		    for (i = 0; i < ar.length; i++) { 
+		        var va = ar[i].split(':\'')		        
+		        sObj[va[0]] = va[1];
+                    }
+		}				
+		
+		if(Object.keys(sObj).length == 0) 
+		{
+        		/* make construct of query */
+	        	data.param.transaction = {};
+	        	data.param.limit = limit;
+        		data.param.search = value;
+	        	data.param.location = {};
+	        	data.param.location.node = node;
+	        	data.timestamp.from = timedate.from.getTime();
+	        	data.timestamp.to = timedate.to.getTime();
+	        	angular.forEach(transaction.transaction, function(v, k) {
+        		    data.param.transaction[v.name] = true;
+	        	});
+                }
+                else {
+                    
+                    data.timestamp.from = timedate.from.getTime();
+                    data.timestamp.to = timedate.to.getTime();                                        
+                    data.param.transaction = {};
+                    
+                    var searchValue = {};
+                    
+                    if(sObj.hasOwnProperty("limit")) limit = sObj["limit"];
+                    if(sObj.hasOwnProperty("startts")) {
+                            data.timestamp.from = sObj["startts"] * 1000;
+                    }
+                    if(sObj.hasOwnProperty("endts")) {
+                            data.timestamp.to = sObj["endts"] * 1000;
+                    }
+                    
+                    if(sObj.hasOwnProperty("startdate")) {
+                            var v = new Date(sObj["startdate"]);
+                            data.timestamp.from = v.getTime();
+                    }
+                    if(sObj.hasOwnProperty("enddate")) {
+                            var v = new Date(sObj["enddate"]);
+                            data.timestamp.to = v.getTime();
+                            console.log(data);
+                    }                    
+                    
+                    if(sObj.hasOwnProperty("trancall")) data.param.transaction["call"] = true;
+                    if(sObj.hasOwnProperty("tranreg")) data.param.transaction["registration"] = true;
+                    if(sObj.hasOwnProperty("tranrest")) data.param.transaction["rest"] = true;
+         
+                    //search_callid                                       
+                    if(sObj.hasOwnProperty("search_callid")) searchValue["callid"] = sObj["search_callid"];
+                    if(sObj.hasOwnProperty("search_ruri_user")) searchValue["ruri_user"] = sObj["search_ruri_user"];
+                    if(sObj.hasOwnProperty("search_from_user")) searchValue["from_user"] = sObj["search_from_user"];
+                    if(sObj.hasOwnProperty("search_to_user")) searchValue["to_user"] = sObj["search_to_user"];
 
-		angular.forEach(transaction.transaction, function(v, k) {
-		    data.param.transaction[v.name] = true;
-		});
+                    data.param.limit = limit;
+                    data.param.search = searchValue;
+                    data.param.location = {};
+                    data.param.location.node = node;
+                    
+                    /* set back timerange */
+                    timedate.from = new Date(data.timestamp.from);
+                    timedate.to = new Date(data.timestamp.to);                                                                                                           
+                    userProfile.setProfile("timerange", timedate);
+                    eventbus.broadcast(homer.modules.pages.events.setTimeRange, timedate);
+                }
+
 		$scope.dataLoading = true;
 
 		search.searchByMethod(data).then(
@@ -157,9 +220,9 @@
 
 		$homerModal.open({
 		    url: 'templates/dialogs/message.html',
-		    cls: 'homer-modal-content',
+		    cls: 'homer-modal-message',
 		    id: "message"+messagewindowId.hashCode(),
-		    divLeft: event.clientX.toString()/2+'px',
+		    divLeft: event.clientX.toString()+'px',
 		    divTop: event.clientY.toString()+'px',
 		    params: search_data,
 		    onOpen: function() {
@@ -230,7 +293,7 @@
 		    cls: 'homer-modal-content',
 		    id: "trans"+trwindowId.hashCode(),
 		    params: search_data,
-		    divLeft: event.clientX.toString()+'px',
+		    divLeft: event.clientX.toString()/2+'px',
 		    divTop: event.clientY.toString()+'px',
 		    onOpen: function() {
 			console.log('modal1 opened from url',this.id);

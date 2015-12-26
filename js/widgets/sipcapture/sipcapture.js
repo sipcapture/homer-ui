@@ -27,8 +27,8 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "a
         refresh: true
     };
     dashboardProvider.widget("sipcaptureChart", angular.extend({
-        title: "SIPCapture Charts",
-        description: "Display SIPCapture API data as charts",
+        title: "Charts: Sipcapture",
+        description: "Display SIPCapture API data",
         controller: "sipcaptureCtrl"
     }, widget));
 }).service("sipcaptureService", function($q, $http, sipcaptureApiUrl, userProfile) {
@@ -121,7 +121,7 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "a
                 for (var i = 0, len = chart.series.length; i < len; i++) {
                     if (i < slen) chart.series[i].update(seriesData[i], true); else if (chart.series[i]) chart.series[i].remove(false);
                 }
-                for (i; i < slen; i++) chart.addSeries(seriesData[i], true);
+                for (var i = 0; i < slen; i++) chart.addSeries(seriesData[i], true);
                 $scope.$parent.changeReloading(false);            
                 console.log("RELOADING");
             }
@@ -482,10 +482,6 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "a
     //------------------------------------------------------------------------------------------
     $scope.selectEngine = function() {
         $scope.config.chart.update.clear();
-    };
-
-    $scope.onChartClick =  function() {
-        console.log("CLICK");
     };
 
     //==========================================================================================
@@ -865,8 +861,13 @@ sipcaptureWdgt.d3.lineChart.prepare = function($scope, animate, data) {
 	                          from: new Date(e.extent[0] *1000),
 	                          to: new Date(e.extent[1] *1000)
 	                    };
-                       	    if (counter > 2) { $scope.$parent.$root.setRange("timerange", timestamp); counter=0; }
-		        }.bind(this), 1500);
+                        
+                   	    if (counter > 2) { 
+                                $scope.$parent.$root.setRange("timerange", timestamp);
+                                counter=0;
+                        }
+
+        		        }.bind(this), 1500);
 
 	});
 
@@ -1129,7 +1130,7 @@ sipcaptureWdgt.flot.lineChart.prepare = function($scope, animate, data) {
             borderWidth: 0 
         },                               
         legend: {
-	    container: '#legend',
+	   // container: '#legend',
 	    noColumns: 0,
 	    show: false
 	},
@@ -1187,7 +1188,7 @@ sipcaptureWdgt.flot.stackedAreaChart.prepare = function($scope, animate, data) {
 	    	}
 	    },
 	    legend: {
-	      container: '#legend',
+	     // container: '#legend',
 	      noColumns: 0,
 	      show: false
 	      //labelFormatter: function(label, series){return '<div ng-click="onChartClick()">'+label+'</div>';}
@@ -1250,9 +1251,8 @@ sipcaptureWdgt.flot.scatterChart.prepare = function($scope, animate, data) {
 		}
 	},
 	legend: {
-	      container: '#legend',
+	     // container: '#legend',
 	      noColumns: 0,
-	      position: "ne",
 	      show: false
 	},
 	 tooltip: {
@@ -1268,6 +1268,7 @@ sipcaptureWdgt.flot.scatterChart.prepare = function($scope, animate, data) {
     if ($scope.config.chart.legend) {
         if ($scope.config.chart.legend.enabled && $scope.config.chart.legend.enabled == true) {
             $scope.flotOptions.legend.show = true;            
+            $scope.flotOptions.legend.position = "ne";
         }
     }
 
@@ -1312,9 +1313,8 @@ sipcaptureWdgt.flot.pieChart.prepare = function($scope, animate, data) {
             }
         },
         legend: {
-            container: '#legend',
+            // container: '#legend',
             //noColumns: 2,
-	    position: "ne",
             show: false                 
         },
 	 tooltip: {
@@ -1326,6 +1326,7 @@ sipcaptureWdgt.flot.pieChart.prepare = function($scope, animate, data) {
     if ($scope.config.chart.legend) {
         if ($scope.config.chart.legend.enabled && $scope.config.chart.legend.enabled == true) {
             $scope.flotOptions.legend.show = true;            
+            $scope.flotOptions.legend.position = "ne";
         }
     }                                                                     
 
@@ -1371,7 +1372,7 @@ sipcaptureWdgt.flot.multiBarChart.prepare = function($scope, animate, data) {
 	      }
 	},
 	legend: {
-	    container: '#legend',
+	   // container: '#legend',
 	    noColumns: 0,
 	    position: "ne",
 	    show: false   
@@ -1385,6 +1386,7 @@ sipcaptureWdgt.flot.multiBarChart.prepare = function($scope, animate, data) {
     if ($scope.config.chart.legend) {
         if ($scope.config.chart.legend.enabled && $scope.config.chart.legend.enabled == true) {
             $scope.flotOptions.legend.show = true;            
+            $scope.flotOptions.legend.position = "ne";
         }
     }              
 

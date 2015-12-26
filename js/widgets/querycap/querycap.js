@@ -121,7 +121,7 @@ angular.module('homer.widgets.querycap', ['adf.provider', 'highcharts-ng'])
 		        else if(chart.series[i]) chart.series[i].remove(false);                        
 		}
 		
-		for (i; i < slen; i++) chart.addSeries(seriesData[i], true);
+		for (var i = 0; i < slen; i++) chart.addSeries(seriesData[i], true);
 								
 		//chart.redraw();
 		

@@ -35,7 +35,7 @@ angular.module('homer.widgets.elasticap', ['adf.provider', 'highcharts-ng','base
     // register elasticap template by extending the template object
     dashboardProvider
       .widget('elasticapChart', angular.extend({
-        title: 'Elastic Facets',
+        title: 'Chart: Elastic Facets',
         description: 'Display Elasticsearch Facets',
         controller: 'elasticapCtrl'
         }, widget));

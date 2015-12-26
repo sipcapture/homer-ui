@@ -34,7 +34,8 @@
 	    widgetsReload: 'widgetReload',
 	    resultSearchSubmit: 'resultSearchSubmit',
 	    hideLeftMenu: 'hideLeftMenu',
-	    destroyRefresh: 'destroyRefresh'	    
+	    destroyRefresh: 'destroyRefresh',
+	    setTimeRange: 'setTimeRange'	    
         },
         state: {
             home: 'home',
