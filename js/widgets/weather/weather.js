@@ -30,14 +30,16 @@ angular.module('sample.widgets.weather', ['adf.provider'])
     dashboardProvider
       .widget('weather', {
         title: 'Weather',
+        group: 'Tools',
+        name: 'weather',
         description: 'Display the current temperature of a city',
         templateUrl: 'js/widgets/weather/weather.html',
         controller: 'weatherCtrl',
         reload: true,
         resolve: {
-          data: function(weatcherService, config){
+          data: function(weatherService, config){
             if (config.location){
-              return weatcherService.get(config.location);
+              return weatherService.get(config.location);
             }
           }
         },
@@ -46,7 +48,7 @@ angular.module('sample.widgets.weather', ['adf.provider'])
         }
       });
   })
-  .service('weatcherService', function($q, $http, weatherServiceUrl){
+  .service('weatherService', function($q, $http, weatherServiceUrl){
     return {
       get: function(location){
         var deferred = $q.defer();

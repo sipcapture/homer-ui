@@ -15,6 +15,8 @@ angular.module('homer.widgets.adminalias', ['adf.provider'])
     dashboardProvider
       .widget('adminalias', {
         title: 'Admin Alias',
+        group: 'Admin',
+        name: 'adminalias',
         description: 'Manage IP:PORT Aliases',
         templateUrl: 'js/widgets/adminalias/adminalias.html',
         controller: 'adminaliasCtrl',

@@ -47,6 +47,8 @@ angular.module('sample.widgets.github', ['adf.provider', 'highcharts-ng'])
     dashboardProvider
       .widget('githubHistory', angular.extend({
         title: 'Github History',
+        group: 'Tools',
+        name: 'githubHistory',
         description: 'Display the commit history of a GitHub project as chart',
         controller: 'githubHistoryCtrl'
         }, widget))

@@ -53,7 +53,9 @@ angular.module('homer.widgets.querycap', ['adf.provider', 'highcharts-ng'])
     // register querycap template by extending the template object
     dashboardProvider
       .widget('querycapChart', angular.extend({
-        title: 'QueryCapture Charts',
+        title: 'QueryCapture',
+        group: 'Charts',
+        name: 'querycapChart',
         description: 'Display QueryCapture API data as charts',
         controller: 'querycapCtrl'
         }, widget));

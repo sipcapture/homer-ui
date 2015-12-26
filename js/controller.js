@@ -2,7 +2,7 @@
     "use strict";
     defineHomerAngularModule(homer.modules.app.name).controller("homerAppController", [ "$scope", "$rootScope", "eventbus", "$state", homer.modules.auth.services.authentication, "$location", "dialogs", homer.modules.core.services.profile, function($scope, $rootScope, eventbus, $state, authentication, $location, $dialogs, userProfile) {
         $rootScope.homerApp = "HOMER";
-        $rootScope.homerVersion = "5.0.1 RC3";
+        $rootScope.homerVersion = "5.0.1 Release";
         console.log("HOMER INIT:", $rootScope.homerVersion);
         $scope.header = "templates/empty.html";
         $scope.menu = "templates/empty.html";

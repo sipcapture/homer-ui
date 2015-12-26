@@ -15,15 +15,17 @@ angular.module('homer.widgets.ripesearch', ['adf.provider'])
     dashboardProvider
       .widget('ripesearch', {
         title: 'RIPE DB Search',
+        group: 'Tools',
+        name: 'ripesearch',
         description: 'Display RIPE Visibility for a given IP/AS',
         templateUrl: 'js/widgets/ripesearch/ripesearch.html',
         controller: 'ripeCtrl',
         reload: true,
         resolve: {
-          data: function(weatcherService, config){
+          data: function(ripesearchService, config){
             if (!config.rscount){ config.rscount = 4; }
             if (config.location){
-              return weatcherService.get(config.location,config.rscount);
+              return ripesearchService.get(config.location,config.rscount);
             }
           }
         },
@@ -32,7 +34,7 @@ angular.module('homer.widgets.ripesearch', ['adf.provider'])
         }
       });
   })
-  .service('weatcherService', function($q, $http, RIPEServiceUrl){
+  .service('ripesearchService', function($q, $http, RIPEServiceUrl){
     return {
       get: function(location,counter){
         var deferred = $q.defer();

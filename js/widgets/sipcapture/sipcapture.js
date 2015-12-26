@@ -27,7 +27,9 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "a
         refresh: true
     };
     dashboardProvider.widget("sipcaptureChart", angular.extend({
-        title: "Charts: Sipcapture",
+        title: "Sipcapture Stats",
+        group: "Charts",
+        name: 'sipcaptureChart',
         description: "Display SIPCapture API data",
         controller: "sipcaptureCtrl"
     }, widget));

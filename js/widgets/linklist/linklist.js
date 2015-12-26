@@ -28,8 +28,10 @@ angular.module('adf.widgets.linklist', ['adf.provider'])
   .config(function(dashboardProvider){
     dashboardProvider
       .widget('linklist', {
-        title: 'Tool: Links',
-        description: 'Displays a list of links',
+        title: 'URL Links',
+        group: 'Tools',
+        name: 'linklist',
+        description: 'Display a list of links',
         controller: 'linklistCtrl',
         controllerAs: 'list',
         templateUrl: 'js/widgets/linklist/linklist.html',

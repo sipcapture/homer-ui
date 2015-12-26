@@ -15,6 +15,8 @@ angular.module('homer.widgets.ripewhois', ['adf.provider'])
     dashboardProvider
       .widget('ripewhois', {
         title: 'RIPE Whois Search',
+        group: 'Tools',
+        name: 'ripewhois',
         description: 'Display RIPE WHOIS Data for a given IP/AS',
         templateUrl: 'js/widgets/ripewhois/ripewhois.html',
         controller: 'ripewhoCtrl',

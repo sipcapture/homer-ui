@@ -29,8 +29,10 @@ angular.module('adf.widgets.news', ['adf.provider'])
   .config(function(dashboardProvider){
     dashboardProvider
       .widget('news', {
-        title: 'Tool: Newsfeed',
-        description: 'Displays a RSS/Atom feed',
+        title: 'Newsfeed',
+        group: 'Tools',
+        name: 'news',
+        description: 'Display an RSS/Atom feed',
         templateUrl: 'js/widgets/news/news.html',
         controller: 'newsCtrl',
         resolve: {
