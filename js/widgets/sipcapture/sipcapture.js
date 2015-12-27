@@ -1579,6 +1579,34 @@ sipcaptureWdgt.data.datasources = {
   		    { "type": "method", "desc": "SIP Method", options: [ {"value": "!ALL"},{"value":"!TOTAL"},{"value": "TOTAL"},{"value": "INVITE"},{"value": "UPDATE"}, {"value": "REGISTER"}, {"value": "CANCEL"}, {"value": "BYE"}, {"value": "OPTIONS"}, {"value": "300"}, {"value": "401"}, {"value": "407"}, {"value": "200"} ] }
                 ]
             }
+        },
+        {
+            "name": "Alarms",
+            "type": "JSON",
+            "settings": {
+                "path": "statistic\/alarm",
+                "query": "{\n   \"timestamp\": {\n          \"from\": \"@from_ts\",\n          \"to\":  \"@to_ts\"\n   },\n  \"param\": {\n        \"filter\": [ \n             \"@filters\"\n       ],\n       \"limit\": \"@limit\",\n       \"total\": \"@total\"\n   }\n}",
+                "method": "GET",
+                "limit": 200,
+                "total": false,
+                "eval": {
+                    incoming: {
+                        name: "test incoming",
+                        value: "var object = @incoming; return object"
+                    }
+                },
+                "timefields" : [
+                    { "field": "from_ts", "desc": "From Timestamp" },
+                    { "field": "to_ts", "desc": "To Timestamp" }
+                ],
+                "fieldvalues": [
+                    { "field": "total", "desc": "All Alarms" }
+                ],
+                "filters": [
+  		    { "type": "source_ip", "desc": "Source IP", options: [ {"value": "0.0.0.0"} ] },
+  		    { "type": "type", "desc": "Alarm Type", options: [ {"value": "scanner"} ] }
+                ]
+            }
         }
     
     ]

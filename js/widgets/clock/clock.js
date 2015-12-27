@@ -16,7 +16,7 @@ angular.module('homer.widget.clock', ['adf.provider'])
         title: 'World Clock',
         group: 'Tools',
         name: 'clock',
-        description: 'Displays date and time',
+        description: 'Display date and time',
         templateUrl: 'js/widgets/clock/view.html',
         controller: 'clockController',
         controllerAs: 'clock',
