@@ -31,29 +31,34 @@ angular.module('homer.widgets.alarmlist', ['adf.provider'])
         }
       });
   })
-  .service('alarmListService', function($q, $http, alarmListServiceUrl){
+  .service('alarmListService', function($q, $http, alarmListServiceUrl, userProfile){
     return {
-      get: function(){
-        var deferred = $q.defer();
-        $http.get(alarmListServiceUrl+"/get")
-          .success(function(data){
-	      // console.log('ADM-ROW_DATA');
-            if (data && data.data){
-	      // console.log('ADM-ROW_DATA_IN');
-              deferred.resolve(data.data);
-            } else {
-              deferred.reject();
-            }
-          })
-          .error(function(){
-            deferred.reject();
-          });
+      get: function($scope, config, path, query){
+      
+        var deferred = $q.defer();        
+        var url = alarmListServiceUrl + "/get";
+	var objQuery = {};
 
-        return deferred.promise;
+        objQuery = alarmlistWdgt.query($scope, objQuery, userProfile);
+
+	$http.post(url, objQuery).success(function(data) {
+		//config.debugresp = JSON.stringify(data);
+                if (data && data.status) {
+                    var status = data.status;
+                    if (status < 300) {
+                        deferred.resolve(data.data);
+                    } else {
+                        deferred.reject(data.data);
+                    }
+                }
+	}).error(function() {
+                deferred.reject();
+        });
+        
+	return deferred.promise;        
       },      
       save: function(ldata){
         var deferred = $q.defer();
-        console.log(ldata);
         $http.post(alarmListServiceUrl+"/new", ldata)
           .success(function(data){
             if (data && data.data){
@@ -70,7 +75,6 @@ angular.module('homer.widgets.alarmlist', ['adf.provider'])
       },
       update: function(ldata){
         var deferred = $q.defer();
-        console.log(ldata);
         $http.post(alarmListServiceUrl+"/edit", ldata)
           .success(function(data){
             if (data && data.data){
@@ -126,8 +130,6 @@ angular.module('homer.widgets.alarmlist', ['adf.provider'])
                         }                  
         };
 
-        console.log(userProfile);
-    
 	//var rowtpl='<div ng-style="row.isSelected && {} || grid.appScope.getBkgColorTable(row.entity.status)">'
 	//    		+ '<div ng-click="grid.appScope.onDblClickRow(row)"   ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>'
 	//    		+'</div>';
@@ -290,7 +292,41 @@ angular.module('homer.widgets.alarmlist', ['adf.provider'])
 	      
       	];
     
-	console.log('ADM-ROW_USER');
 	$scope.gridListOptions.data = alarms;
   }]);
 
+////////////////////////////////////////////////////////////////////////////////////////////
+// Widget object
+////////////////////////////////////////////////////////////////////////////////////////////
+var alarmlistWdgt = {};
+
+//==========================================================================================
+// Add filters
+//==========================================================================================
+alarmlistWdgt.query = function($scope, query, userProfile) {
+
+    var timedate = userProfile.getProfile("timerange");
+    
+    query.timestamp = {};
+
+    query.timestamp.from = timedate.from.getTime();
+    query.timestamp.to = timedate.to.getTime();
+
+    query.param = {};
+
+    query.param.limit = 30;
+    //query.param.limit = $scope.config.panel.limit;
+    //query.param.total = $scope.config.panel.total;
+
+    if (typeof filters == 'object') {
+        filters.forEach(function(filter) {
+            var obj = {};
+            obj[filter.type] = filter.value;
+            filterParams.push(obj);
+        });
+
+        query.param.filter = filterParams;
+    }
+
+    return query;
+};
