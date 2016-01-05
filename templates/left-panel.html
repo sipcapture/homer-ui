@@ -59,31 +59,32 @@
                     
 		    <div ng-controller="navigationCtrl">
 			    <ul class="sidebar-menu">
-			    	 <li ng-repeat="item in items">
-			    	  <a  ng-show="item.href.length > 1" ui-sref="dashboard({boardID:'{{item.href}}'})"">
-			    	         <i class="{{item.class}}"></i><span>{{item.name}}</span>
-					<small ng-show="item.badgeinfo.length > 0" class="{{item.badgeclass}}">{{item.badgeinfo}}</small>
-				  </a>	
-				  <span ng-hide="item.href.length > 1">				  	
-				  	<a ng-click="showChilds(item)">
-						<i class="{{item.class}}"></i><span>{{item.name}}</span>
-						<i class="{{item.rowclass}}"></i>
-					</a>					
-					<ul class="treeview-home-menu">
-				                <li ng-repeat="subItem in item.subItems" ng-show="item.active">
-				                	<div ng-if="subItem.boardid == 1">
-				                		<a ng-click="addNewDashboard()">
-				                			<i class="{{subItem.class}}"></i><span>{{subItem.name}}</span>
-				                		</a>
-							</div>
-							<div ng-if="subItem.boardid != 1">											                				                
-								<a ui-sref="dashboard({ boardID:'{{subItem.boardid}}'})">
-						        		<i class="{{subItem.class}}"></i><span>{{subItem.name}}</span>
-								</a>						
-							</div>
-		        		        </li>
-				        </ul>	
-				  </span>	
+					<li ng-repeat="item in items">
+						<a  ng-show="item.href.length > 1" ui-sref="dashboard({boardID:'{{item.href}}'})" ng-class="{active: isActive('/dashboard/{{item.href}}')}">
+							<i class="{{item.class}}"></i><span>{{item.name}}</span>
+							<small ng-show="item.badgeinfo.length > 0" class="{{item.badgeclass}}">{{item.badgeinfo}}</small>
+						</a>	
+						<span ng-hide="item.href.length > 1">				  	
+							<a ng-click="showChilds(item)">
+								<i class="{{item.class}}"></i><span>{{item.name}}</span>
+								<!--<i class="{{item.rowclass}}"></i>-->
+								<i class="fa fa-bars pull-right"></i>
+							</a>					
+							<ul class="treeview-home-menu">
+								<li ng-repeat="subItem in item.subItems" ng-show="item.active">
+								<div ng-if="subItem.boardid == 1">
+									<a ng-click="addNewDashboard()">
+									<i class="{{subItem.class}}"></i><span>{{subItem.name}}</span>
+								</a>
+								</div>
+								<div ng-if="subItem.boardid != 1">											                				                
+									<a ui-sref="dashboard({ boardID:'{{subItem.boardid}}'})" ng-class="{active: isActive('/dashboard/{{subItem.boardid}}')}">
+										<i class="{{subItem.class}}"></i><span>{{subItem.name}}</span>
+									</a>						
+								</div>
+								</li>
+							</ul>	
+						</span>	
 				  	           
 			        </li>
 			    </ul>
