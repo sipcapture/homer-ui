@@ -54,13 +54,13 @@
 <div class="modal-body homer-modal-body">
 		<div class="modal-body-buttons">
 
-	<tabset>
-	     <tab>
-	     <tab-heading><i class="fa fa-exchange"></i> Call-Flow </tab-heading>	     	     
+	<uib-tabset>
+	     <uib-tab>
+	     <uib-tab-heading><i class="fa fa-exchange"></i> Call-Flow </uib-tab-heading>	     	     
 	      <canvas id="cflowcanv" class="cflow" canvasclick style="left:15px;"></canvas>
-	     </tab>
-	     <tab>
-	     <tab-heading><i class="fa fa-rss"></i> QoS Reports </tab-heading>	     	     
+	     </uib-tab>
+	     <uib-tab>
+	     <uib-tab-heading><i class="fa fa-rss"></i> QoS Reports </uib-tab-heading>	     	     
 			<div id="no-reports" ng-hide="enableQualityReport|| enableXRTPReport || enableRTCPReport" class="alert alert-warning alert-dismissible" role="alert">
 				 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				  <strong>Oops!</strong> No Reports available for this session
@@ -110,9 +110,9 @@
 				</ol>
 			</div>							
 									
-	     </tab>	     
-	     <tab>
-	     <tab-heading><i class="fa fa-file-text-o"></i> Logs </tab-heading>	     	     
+	     </uib-tab>	     
+	     <uib-tab>
+	     <uib-tab-heading><i class="fa fa-file-text-o"></i> Logs </uib-tab-heading>	     	     
 			<div id="no-reports" ng-hide="enableLogReport" class="alert alert-warning alert-dismissible" role="alert">
 				 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				  <strong>Oops!</strong> No Logs available for this session
@@ -137,9 +137,9 @@
 			</div>				
 
 
-	     </tab>
-	     <tab>
-	     <tab-heading><i class="fa fa-cloud"></i> Export</tab-heading>
+	     </uib-tab>
+	     <uib-tab>
+	     <uib-tab-heading><i class="fa fa-cloud"></i> Export</uib-tab-heading>
 			<div style="margin:15px;">
 			<button class="btn btn-normal btn-info" ng-click="exportPCAP()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;"><i class="fa fa-cloud-download"></i><br>  Export PCAP</button>
 			<button class="btn btn-normal btn-default" ng-click="exportTEXT()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;"><i class="fa fa-file-text-o"></i><br> Export TEXT</button>
@@ -150,12 +150,12 @@
 			<a href="{{sharelink}}" target="_blank" ng-if="sharelink">{{sharelink}}</a>
 			</p>
 			</div>
-	     </tab>
+	     </uib-tab>
 
-	     <tab disabled="true" ng-show="sess_duration">
-		     <tab-heading><i class="fa fa-clock-o"></i> Session Duration: {{sess_duration}}</tab-heading>
-	     </tab>
+	     <uib-tab disable="true" ng-show="sess_duration">
+		     <uib-tab-heading><i class="fa fa-clock-o"></i> Session Duration: {{sess_duration}}</uib-tab-heading>
+	     </uib-tab>
 
-	  </tabset>
+	  </uib-tabset>
 </div>
 

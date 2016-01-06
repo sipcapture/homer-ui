@@ -6,7 +6,7 @@
 <table width="100%">
 <tr>
 <td align="center" ng-repeat="clock in clocks">
-	<b>{{clock.name}}</b>
+	<b>{{clock.name.split('/')[1]}}</b>
 	<div class="clock-date">
 		<span style="color: grey">{{clock.time}}</span>	
 	</div>
@@ -15,8 +15,7 @@
 </tr>
 <tr>
 <td align="center" ng-repeat="t in tz">
-  <object data="js/widgets/clock/station-clock.svg" type="image/svg+xml"
-  width="120" height="120">
+  <object data="js/widgets/clock/station-clock.svg" type="image/svg+xml" width="100">
   <param name="dial"               value="din 41091.4"/>
   <param name="hourHand"           value="din 41092.3"/>
   <param name="minuteHand"         value="din 41092.3"/>

@@ -13,6 +13,7 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "a
     var widget = {
         templateUrl: "js/widgets/sipcapture/sipcapture.html",
         reload: true,
+        maximizable: true,
         resolve: {
             sipdata: function($scope, sipcaptureService, config) {
                 if (config.path && config.query) {

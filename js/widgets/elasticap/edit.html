@@ -1,9 +1,9 @@
 <div>
 <form role="form">
   <div class="form-group">
-   <tabset>
-	<tab>
-        	<tab-heading><i class="glyphicon glyphicon-transfer"></i> Chart Type </tab-heading>		
+   <uib-tabset>
+	<uib-tab>
+        	<uib-tab-heading><i class="glyphicon glyphicon-transfer"></i> Chart Type </uib-tab-heading>		
         <!--	<form role="form" class="form-horizontal"> -->
         		<div class="form-group"> 
 				<div id="Chart1" style="float:left;margin-right:5px;width:45%;">
@@ -69,9 +69,9 @@
  				</div><div style="clear:both;"/>       
 	        	</div> 
 	       <!-- </form> -->
-	</tab>
-        <tab>
-        <tab-heading><i class="glyphicon glyphicon-info-sign"></i> Fields </tab-heading>
+	</uib-tab>
+        <uib-tab>
+        <uib-tab-heading><i class="glyphicon glyphicon-info-sign"></i> Fields </uib-tab-heading>
 		 <br>
 		<label for="path">API Query Fields</label>
 		<p> 
@@ -97,9 +97,9 @@
 			<select ng-init="config.chart.query_res = config.chart.query_res || query_res[0].value" 	
 			 ng-options="option.value as option.name for option in query_res" ng-model="config.chart.query_res"></select>	  
 		</p>
-	</tab>
-	<tab>
-        <tab-heading><i class="glyphicon glyphicon-info-sign"></i> Queries</tab-heading>
+	</uib-tab>
+	<uib-tab>
+        <uib-tab-heading><i class="glyphicon glyphicon-info-sign"></i> Queries</uib-tab-heading>
 		<label for="path">ES Query URL</label>
 		<input type="text" class="form-control" id="path" ng-model="config.path" ng-change="updateDebugUrl()" placeholder="Enter Path (call/function)">
 		<label for="path">ES Index</label>
@@ -114,9 +114,9 @@
 		<textarea style="width: 549px; height: 235px;" class="form-control" id="query" ng-change="updateDebugUrl()" ng-model="config.query" placeholder="Query"></textarea>
 		<br>
 		<p ng-class="parsingColorClass">{{parsingStatus}}</p>
-	</tab>
-	<tab>
-	<tab-heading><i class="glyphicon glyphicon-info-sign"></i> Debug</tab-heading>
+	</uib-tab>
+	<uib-tab>
+	<uib-tab-heading><i class="glyphicon glyphicon-info-sign"></i> Debug</uib-tab-heading>
 		<label for="path">CURL Debug:</label>
 		<p>
 			<textarea style="width: 549px; height: 235px;" class="form-control" id="debugquery" ng-model="debug" placeholder="Debug query"></textarea>
@@ -125,8 +125,8 @@
 		<p>
 			<textarea style="width: 549px; height: 135px;" class="form-control" id="debugqueryresp" ng-model="config.debugresp" placeholder="Debug Response"></textarea>
 		</p>
-	</tab>
-   </tabset>
+	</uib-tab>
+   </uib-tabset>
   </div>
 </form>
 </div>

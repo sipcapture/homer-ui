@@ -2,7 +2,7 @@
     "use strict";
     defineHomerAngularModule(homer.modules.app.name).controller("homerAppController", [ "$scope", "$rootScope", "eventbus", "$state", homer.modules.auth.services.authentication, "$location", "dialogs", homer.modules.core.services.profile, function($scope, $rootScope, eventbus, $state, authentication, $location, $dialogs, userProfile) {
         $rootScope.homerApp = "HOMER";
-        $rootScope.homerVersion = "5.0.1 Release";
+        $rootScope.homerVersion = "5.0.2 Release";
         console.log("HOMER INIT:", $rootScope.homerVersion);
         $scope.header = "templates/empty.html";
         $scope.menu = "templates/empty.html";
@@ -100,6 +100,27 @@
             console.log(userProfile);
             $location.path(homer.modules.auth.routes.logout);
         };
+
+        $scope.doSaveGridState = function() {
+            $scope.showLeftMenu = false;
+            $scope.dropDownUserMenuClass = "";
+            eventbus.broadcast(homer.modules.pages.events.saveGridState, "1");
+        };
+        
+        $scope.doRestoreGridState = function() {
+            $scope.showLeftMenu = false;
+            $scope.dropDownUserMenuClass = "";
+            eventbus.broadcast(homer.modules.pages.events.restoreGridState, "1");
+        };
+        
+        $scope.doResetGridState = function() {
+            $scope.showLeftMenu = false;
+            $scope.dropDownUserMenuClass = "";
+            eventbus.broadcast(homer.modules.pages.events.resetGridState, "1");
+            $location.path(homer.modules.pages.routes.home);
+        };
+        
+        
         eventbus.subscribe(homer.modules.auth.events.userLoggedIn, function(event, args) {
             if (!$scope.templateSet) {
                 $scope.showLeftMenu = true;
@@ -303,7 +324,7 @@
             userProfile.setProfile("timerange", $scope.timerange);
             updateTimeRange(true);                        
         });
-    }).controller("timerangeDialogCtrl", function($log, $scope, $modalInstance, data) {
+    }).controller("timerangeDialogCtrl", function($log, $scope, $uibModalInstance, data) {
         $scope.timerange = data;
         $scope.options = {
             hstep: [ 1, 2, 3 ],
@@ -319,19 +340,19 @@
         };
         $scope.setDate();
         $scope.done = function() {
-            $modalInstance.close($scope.timerange);
+            $uibModalInstance.close($scope.timerange);
         };
     }).config(function(dialogsProvider) {
         dialogsProvider.useBackdrop(true);
         dialogsProvider.useEscClose(true);
         dialogsProvider.useCopy(false);
         dialogsProvider.setSize("sm");
-    }).controller("newDashboardCtrl", function($scope, $modalInstance, data, FileUploader) {
+    }).controller("newDashboardCtrl", function($scope, $uibModalInstance, data, FileUploader) {
         $scope.dashboard = {
             name: ""
         };
         $scope.cancel = function() {
-            $modalInstance.dismiss("canceled");
+            $uibModalInstance.dismiss("canceled");
         };
         $scope.hitEnter = function(evt) {
             if (angular.equals(evt.keyCode, 13) && !(angular.equals($scope.dashboard, null) || angular.equals($scope.dashboard, ""))) $scope.save();
@@ -343,7 +364,7 @@
             if ($scope.uploader.queue.length > 0) {
                 uploader.uploadAll();
             } else {
-                if ($scope.nameDialog.$valid) $modalInstance.close($scope.dashboard.name);
+                if ($scope.nameDialog.$valid) $uibModalInstance.close($scope.dashboard.name);
             }
         };
         uploader.filters.push({
@@ -354,7 +375,7 @@
         });
         uploader.onCompleteAll = function() {
             console.info("onCompleteAll");
-            $modalInstance.close("upload");
+            $uibModalInstance.close("upload");
         };
     });
 })(angular, homer);

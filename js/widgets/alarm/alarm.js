@@ -305,7 +305,7 @@ angular.module('homer.widgets.alarm', ['adf.provider'])
       //$scope.myData = users;
 
   })
-   .controller('alarmSelectDialogCtrl',function($log,$scope,$modalInstance,data){
+   .controller('alarmSelectDialogCtrl',function($log,$scope,$uibModalInstance,data){
 
 	// console.log('ADM-ROW_DBLCLICK');
         $scope.alarm = data;
@@ -333,7 +333,7 @@ angular.module('homer.widgets.alarm', ['adf.provider'])
         };
 
         $scope.done = function(){
-                $modalInstance.close($scope.timerange);
+                $uibModalInstance.close($scope.timerange);
         }; // end done
     });
 

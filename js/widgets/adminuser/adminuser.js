@@ -291,7 +291,7 @@ angular.module('homer.widgets.adminuser', ['adf.provider'])
       $scope.gridOptions.data = users;
 
   })
-   .controller('userSelectDialogCtrl',function($log,$scope,$modalInstance,data){
+   .controller('userSelectDialogCtrl',function($log,$scope,$uibModalInstance,data){
 
         $scope.user = data;
 
@@ -315,7 +315,7 @@ angular.module('homer.widgets.adminuser', ['adf.provider'])
         };
 
         $scope.done = function(){
-                $modalInstance.close($scope.timerange);
+                $uibModalInstance.close($scope.timerange);
         }; // end done
     });
 

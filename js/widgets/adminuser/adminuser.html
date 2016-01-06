@@ -1,18 +1,18 @@
 <div access="admins" access-permission-type="AtLeastOne" class="row" ng-show="showtable" style="width:101%;float:right;">
       <div class="box-homer-admin">
-	<tabset>
-	<tab active="activeMainTab" disabled="activeTab === false" select="tabShown = !tabShown" deselect="tabShown = !tabShown">
-	<tab-heading><i class="fa fa-users"> Local Users</i></tab-heading>
+	<uib-tabset>
+	<uib-tab active="activeMainTab" disable="activeTab === false" select="tabShown = !tabShown" deselect="tabShown = !tabShown">
+	<uib-tab-heading><i class="fa fa-users"> Local Users</i></uib-tab-heading>
                <div style="margin-top:8px;">
 		 <div id="grid1" ng-if="activeMainTab" ui-grid="gridOptions" class="gridWidgetsStyle" ui-grid-edit ui-grid-row-edit ui-grid-cellNav ui-grid-auto-resize resize ></div>
                </div>
-	</tab>
-	<tab ng-if="activeMainTab === true" active="disabled" deselect="activeMainTab">
-            <tab-heading ng-click="newUser()"><a ng-click="newUser()" href=''> <i class="fa fa-plus"> Add User</i></a></tab-heading>
-        </tab>
+	</uib-tab>
+	<uib-tab ng-if="activeMainTab === true" active="disabled" deselect="activeMainTab">
+            <uib-tab-heading ng-click="newUser()"><a ng-click="newUser()" href=''> <i class="fa fa-plus"> Add User</i></a></uib-tab-heading>
+        </uib-tab>
 
-	<tab ng-if="newTab" active="activeNewTab" >
-	<tab-heading><i class="fa fa-user"> New User</i>  &nbsp; <a ng-click="removeUserTab()" href=''><i class="fa fa-times"></i></a></tab-heading>
+	<uib-tab ng-if="newTab" active="activeNewTab" >
+	<uib-tab-heading><i class="fa fa-user"> New User</i>  &nbsp; <a ng-click="removeUserTab()" href=''><i class="fa fa-times"></i></a></uib-tab-heading>
 		<div style="padding:15px;">
 	 	<div role="alert">
 		      <span class="error" ng-show="errorNewUserShow">{{errorNewUserForm}}</span>
@@ -86,10 +86,10 @@
                 	        <button class="btn btn-success" ng-click="addNewUser()" ng-disabled="newUserForm.$invalid">Create User</button>
                 	</div>
                 </div>
-	</tab>
+	</uib-tab>
 
-	<tab ng-if="editTab === true" active="editTab ? true : false">
-	<tab-heading><i class="fa fa-edit"> Edit User</i>  &nbsp; <a ng-click="removeUserTab()" href=''><i class="fa fa-times"></i></a></tab-heading>
+	<uib-tab ng-if="editTab === true" active="editTab ? true : false">
+	<uib-tab-heading><i class="fa fa-edit"> Edit User</i>  &nbsp; <a ng-click="removeUserTab()" href=''><i class="fa fa-times"></i></a></uib-tab-heading>
 		<div style="padding:15px;">
                 <div role="alert">
                       <span class="help-block error" ng-show="errorEditUserShow">{{errorEditUserForm}}</span>
@@ -164,10 +164,10 @@
                 </div>
 
 
-	<tab>
+	<uib-tab>
 
 
-	</tabset>
+	</uib-tabset>
 
       </div><!-- /.box-body external-scopes="gridHandlers" -->
 </div>

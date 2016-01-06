@@ -14,10 +14,10 @@
         '$rootScope',
         '$scope',
         '$location',
-        '$modal',
+        '$uibModal',
         homer.modules.auth.services.authentication,
         homer.modules.core.services.profile,
-        function ($rootScope, $scope, $location, $modal, authentication, userProfile) {
+        function ($rootScope, $scope, $location, $uibModal, authentication, userProfile) {
             $scope.loginModel = {};
             $scope.isBusy = false;
             $scope.invalidLogin = false;

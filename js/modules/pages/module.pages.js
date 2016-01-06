@@ -35,7 +35,10 @@
 	    resultSearchSubmit: 'resultSearchSubmit',
 	    hideLeftMenu: 'hideLeftMenu',
 	    destroyRefresh: 'destroyRefresh',
-	    setTimeRange: 'setTimeRange'	    
+	    setTimeRange: 'setTimeRange',
+	    saveGridState: 'saveGridState',	    
+	    restoreGridState: 'restoreGridState',
+	    resetGridState: 'resetGridState'
         },
         state: {
             home: 'home',

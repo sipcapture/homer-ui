@@ -11,16 +11,16 @@
     'use strict';
 
     angular.module(homer.modules.pages.name)
-        .controller('drawCtrl',function($scope, $modalInstance){
+        .controller('drawCtrl',function($scope, $uibModalInstance){
                 
 		console.log("OPEN DATA");
 
 		$scope.ok = function () {
-    			$modalInstance.close("11");
+    			$uibModalInstance.close("11");
 		};
 
 		$scope.close = function () {
-		    $modalInstance.dismiss('cancel');
+		    $uibModalInstance.dismiss('cancel');
 		};        
         })
         .controller('messageCtrl', [

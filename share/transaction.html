@@ -12,20 +12,20 @@
 <div class="body" id="shareit">
 		<div class="modal-body-buttons">
 
-	<tabset>
-	     <tab>
+	<uib-tabset>
+	     <uib-tab>
 	     <tab-heading><i class="glyphicon glyphicon-transfer"></i> Call-Flow </tab-heading>	     	     
 	      <canvas id="cflowcanv" class="cflow" canvasclick></canvas>
-	     </tab>
-	     <tab>
+	     </uib-tab>
+	     <uib-tab>
 	     <tab-heading><i class="glyphicon glyphicon-transfer"></i> RTCP/Reports </tab-heading>	     	     
 			{{rtcpreport}}
-	     </tab>	     
-	     <tab>
+	     </uib-tab>	     
+	     <uib-tab>
 	     <tab-heading><i class="glyphicon glyphicon-transfer"></i> Logs </tab-heading>	     	     
 			{{logreport}}
-	     </tab>
-	     <tab>
+	     </uib-tab>
+	     <uib-tab>
 	     <tab-heading><i class="glyphicon glyphicon-info-sign"></i> Export</tab-heading>
 			<button class="btn btn-normal" ng-click="exportPCAP()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;">Export PCAP</button>
 			<button class="btn btn-normal" ng-click="exportTEXT()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;">Export TEXT</button>
@@ -34,7 +34,7 @@
 			<p>
 			{{sharelink}}
 			</p>
-	     </tab>
-	  </tabset>
+	     </uib-tab>
+	  </uib-tabset>
 </div>
 

@@ -16,13 +16,13 @@
             <ul class="nav navbar-nav">
                <li>
                   <!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
-                  <a tooltip-placement="bottom" tooltip="Show/Hide menu" tooltip-popup-delay='1000' ng-click="changeClass();" data-toggle-state="aside-collapsed" data-persists="true" class="hidden-xs">
+                  <a uib-tooltip-placement="bottom" uib-tooltip="Show/Hide menu" uib-tooltip-popup-delay='1000' ng-click="changeClass();" data-toggle-state="aside-collapsed" data-persists="true" class="hidden-xs">
                      <em class="fa fa-navicon"></em>
                   </a>
                </li>
                <li>
                   <!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
-                  <a tooltip-placement="bottom" tooltip="Add new Panel" tooltip-popup-delay='1000' ng-click="addDashBoard();" data-toggle-state="aside-collapsed" data-persists="true" class="hidden-xs">
+                  <a uib-tooltip-placement="bottom" uib-tooltip="Add new Panel" uib-tooltip-popup-delay='1000' ng-click="addDashBoard();" data-toggle-state="aside-collapsed" data-persists="true" class="hidden-xs">
                      <em class="fa fa-plus-square"></em>
                   </a>
                </li>
@@ -37,13 +37,13 @@
                -->
                <li>
                   <!-- Button to clear all site options stored option from browser storage-->
-                  <a tooltip-placement="bottom" tooltip="Reload" tooltip-popup-delay='1000' href="javascript:location.reload(true)" data-toggle="reset">
+                  <a uib-tooltip-placement="bottom" uib-tooltip="Reload" uib-tooltip-popup-delay='1000' href="javascript:location.reload(true)" data-toggle="reset">
                      <em class="fa fa-refresh" alt="refresh"></em>
                   </a>
                </li>
 
                <li>
-                  <a tooltip-placement="bottom" tooltip="Search box" tooltip-popup-delay='1000' ng-click="showSearchBox();" ui-sref="search" href="#/search">
+                  <a uib-tooltip-placement="bottom" uib-tooltip="Search box" uib-tooltip-popup-delay='1000' ng-click="showSearchBox();" ui-sref="search" href="#/search">
                      <em class="fa fa-search" alt="search tool"></em>
                   </a>
                </li>
@@ -85,7 +85,7 @@
    <!--
                <li>               
                        <span class="timerange-info">
-                       			<a tooltip-placement="bottom" tooltip="Now -> + 5 min" ng-click="setFromNow();">
+                       			<a uib-tooltip-placement="bottom" uib-tooltip="Now -> + 5 min" ng-click="setFromNow();">
                        				<i class="fa fa-chevron-circle-right"></i>
 					</a>
                        </span>
@@ -95,7 +95,7 @@
 	       </li>
 
                <li class="dropdown" ng-class="{open:boolDropDownLastMenu}">               	                            
-                      <a tooltip-placement="bottom" tooltip="Range Select" ng-click="showLastMenuBox();" data-play="fadeIn" class="dropdown-toggle">
+                      <a uib-tooltip-placement="bottom" uib-tooltip="Range Select" ng-click="showLastMenuBox();" data-play="fadeIn" class="dropdown-toggle">
 	                     <em class="fa fa-calendar"></em>
         	      </a>
                   <ul class="dropdown-menu dropdown-color">
@@ -121,7 +121,7 @@
 
 -->
 <!--               <li class="dropdown" ng-class="{open:boolDropDownRefreshMenu}">               	                            
-                      <a tooltip-placement="bottom" tooltip="Auto Refresh" ng-click="showRefreshMenuBox();" data-play="fadeIn" class="dropdown-toggle">
+                      <a uib-tooltip-placement="bottom" uib-tooltip="Auto Refresh" ng-click="showRefreshMenuBox();" data-play="fadeIn" class="dropdown-toggle">
 	                     <em class="fa fa-clock-o" ng-class="{timeractive:activeInterval}"></em>
         	      </a>
                   <ul class="dropdown-menu dropdown-color">
@@ -142,7 +142,7 @@
                </li>
 -->
                <li>
-                  <a tooltip-placement="bottom" tooltip="Refresh Now" tooltip-popup-delay='1000' ng-click="refresh(0);" >
+                  <a uib-tooltip-placement="bottom" uib-tooltip="Refresh Now" uib-tooltip-popup-delay='1000' ng-click="refresh(0);" >
                      <em class="fa fa-rotate-right"></em>
                   </a>
                </li>
@@ -163,8 +163,12 @@
                      <li><a ng-click="showUserMenuBox();void(0);">Messages<div class="label label-danger pull-right">0</div></a>
                      </li>
                      <li><a ng-click="showUserMenuBox();doResetProfile();">Reset Profile</a>
-                     </li>
+                     </li>                     
                   -->
+                     <li><a ng-click="showUserMenuBox();doSaveGridState();">Save Grid</a></li>
+                     <li><a ng-click="showUserMenuBox();doRestoreGridState();">Restore Grid</a></li>
+                     <li><a ng-click="showUserMenuBox();doResetGridState();">Reset Grid</a></li>
+                     </li>&nbsp;</li>                     
                      <li><a ng-click="showUserMenuBox();doLogout();">Logout</a>
                      </li>
                   </ul>
@@ -182,19 +186,19 @@
 
             <label for="datetimepickerFrom">From</label>
             <p class="input-group">
-               <input id="datetimepickerFrom" type="text" class="form-control" datepicker-popup="{{formatDate}}" ng-model="timerange.customFrom" is-open="openedFromdate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+               <input id="datetimepickerFrom" type="text" class="form-control" uib-datepicker-popup="{{formatDate}}" ng-model="timerange.customFrom" is-open="openedFromdate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
                <span class="input-group-addon">
-                  <button class="btn" ng-click="setToNow(1);" tooltip="Set Now">
+                  <button class="btn" ng-click="setToNow(1);" uib-tooltip="Set Now">
                      <i class="fa fa-crosshairs"></i>
                   </button>
-                  <button class="btn" ng-click="open($event, 'openedFromdate')"  tooltip="Open Calendar">
+                  <button class="btn" ng-click="open($event, 'openedFromdate')"  uib-tooltip="Open Calendar">
                      <i class="glyphicon glyphicon-calendar"></i>
                   </button>
                </span>
             </p>
             <p class="input-group">
                <span class="input-group-btn input-time">
-                  <timepicker ng-model="timerange.customFrom" hour-step="hstep" minute-step="mstep" show-meridian="false" show-seconds="true"></timepicker>
+                  <uib-timepicker ng-model="timerange.customFrom" hour-step="hstep" minute-step="mstep" show-meridian="false" show-seconds="true"></uib-timepicker>
                </span>
             </p>
 
@@ -204,19 +208,19 @@
             </p>
 -->
             <p class="input-group">
-               <input id="datetimepickerTo" type="text" class="form-control" datepicker-popup="{{format}}" ng-model="timerange.customTo" is-open="openedTodate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+               <input id="datetimepickerTo" type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="timerange.customTo" is-open="openedTodate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
                <span class="input-group-addon">
-                  <button class="btn" ng-click="setToNow(2);" tooltip="Set Now">
+                  <button class="btn" ng-click="setToNow(2);" uib-tooltip="Set Now">
                      <i class="fa fa-crosshairs"></i>
                   </button>
-                  <button class="btn" ng-click="open($event, 'openedTodate')"  tooltip="Open Calendar">
+                  <button class="btn" ng-click="open($event, 'openedTodate')"  uib-tooltip="Open Calendar">
                      <i class="glyphicon glyphicon-calendar"></i>
                   </button>
                </span>
             </p>
             <p class="input-group">
                <span class="input-group-btn input-time">
-                  <timepicker ng-model="timerange.customTo" hour-step="hstep" minute-step="mstep" show-meridian="false" show-seconds="true"></timepicker>
+                  <uib-timepicker ng-model="timerange.customTo" hour-step="hstep" minute-step="mstep" show-meridian="false" show-seconds="true"></uib-timepicker>
                </span>
             </p>
 
@@ -227,9 +231,9 @@
                From:
             </p>
             <p class="input-group">
-               <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="timerange.from" is-open="openedFromdate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+               <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="timerange.from" is-open="openedFromdate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
                <span class="input-group-btn">
-                  <a tooltip-placement="bottom" tooltip="Set Now">
+                  <a uib-tooltip-placement="bottom" uib-tooltip="Set Now">
                      <button class="btn btn-info" ng-click="setToNow(1);"><span class="glyphicon glyphicon-refresh"></span></button>
                   </a>
                   <button class="btn btn-primary" ng-click="open($event, 'openedFromdate')">
@@ -239,16 +243,16 @@
             </p>
             <p class="input-group">
                  <span class="input-group-btn input-time">
-                     <timepicker ng-model="timerange.from" hour-step="hstep" minute-step="mstep" show-meridian="false" show-seconds="true"></timepicker>
+                     <uib-timepicker ng-model="timerange.from" hour-step="hstep" minute-step="mstep" show-meridian="false" show-seconds="true"></uib-timepicker>
                            </span>
             </p>
             <p class="input-group">
                To:
             </p>
             <p class="input-group">
-               <input type="text" class="form-control" datepicker-popup="{{format}}" ng-model="timerange.to" is-open="openedTodate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
+               <input type="text" class="form-control" uib-datepicker-popup="{{format}}" ng-model="timerange.to" is-open="openedTodate" min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" />
                <span class="input-group-btn">
-                  <a tooltip-placement="bottom" tooltip="Set Now">         
+                  <a uib-tooltip-placement="bottom" uib-tooltip="Set Now">         
                      <button class="btn btn-info" ng-click="setToNow(2);"><span class="glyphicon glyphicon-refresh"></span></button>
                   </a>
                   <button class="btn btn-primary" ng-click="open($event, 'openedTodate')">
@@ -258,7 +262,7 @@
             </p>
             <p class="input-group">
                <span class="input-group-btn input-time">
-                  <timepicker ng-model="timerange.to" hour-step="hstep" minute-step="mstep" show-meridian="false" show-seconds="true"></timepicker>
+                  <uib-timepicker ng-model="timerange.to" hour-step="hstep" minute-step="mstep" show-meridian="false" show-seconds="true"></uib-timepicker>
                          </span>
             </p>
 -->            

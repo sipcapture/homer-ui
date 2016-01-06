@@ -22,7 +22,8 @@
 	    '$window',
 	    '$homerModal',
 	    homer.modules.core.services.profile,
-	    function ($scope,$rootScope, eventbus, $http, $location, search, $timeout, $window, $homerModal, userProfile) {
+	    'localStorageService',
+	    function ($scope,$rootScope, eventbus, $http, $location, search, $timeout, $window, $homerModal, userProfile, localStorageService) {
 
 		//$rootScope.loggedIn = false;
 		$scope.expandme = true;
@@ -142,6 +143,7 @@
 		search.searchByMethod(data).then(
 		function (sdata) {
 		    if (sdata) {
+		        $scope.restoreState();
 			$scope.count = sdata.length;
 			$scope.gridOpts.data = sdata;
 			$timeout(function () {
@@ -173,9 +175,11 @@
 
 	    $scope.hashCode = function(str) { // java String#hashCode
 		var hash = 0;
-		for (var i = 0; i < str.length; i++) {
-			hash = str.charCodeAt(i) + ((hash << 5) - hash);
-		}
+		if(str) {
+        		for (var i = 0; i < str.length; i++) {
+	        		hash = str.charCodeAt(i) + ((hash << 5) - hash);
+                        }
+                }
 		return hash;
 	    }; 
 
@@ -310,6 +314,13 @@
 			+'</div>';
 
 	    $scope.gridOpts = {
+	        saveWidths: true,
+	        saveOrder: true,
+	        saveVisible: true,
+	        saveFocus: false,
+	        saveScroll: true,
+	        saveGrouping: false,
+	        saveGroupingExpandedStates: true,
 		enableColumnResizing: true,
 		enableSorting: true,
 		enableRowSelection: true, 
@@ -383,6 +394,37 @@
 		]
 	    };
 
+	    $scope.state = localStorageService.get('localStorageGrid');	        
+
+	    //$scope.state = {};
+
+	    $scope.saveState = function() {	        
+        	$scope.state = $scope.gridApi.saveState.save();
+        	localStorageService.set('localStorageGrid',$scope.state);                              	
+	    };
+
+      	    $scope.restoreState = function() {
+      	        $scope.state = localStorageService.get('localStorageGrid');
+      	        if($scope.state) $scope.gridApi.saveState.restore( $scope, $scope.state );
+      	    };
+      	    
+      	    $scope.resetState = function() {
+        	$scope.state = {};
+        	$scope.gridApi.saveState.restore( $scope, $scope.state);
+        	localStorageService.set('localStorageGrid',$scope.state);                              	
+      	    };
+
+      	    eventbus.subscribe(homer.modules.pages.events.saveGridState, function(event, args) {
+      	        $scope.saveState();
+            });
+            
+            eventbus.subscribe(homer.modules.pages.events.restoreGridState, function(event, args) {
+      	        $scope.restoreState();
+            });
+            
+            eventbus.subscribe(homer.modules.pages.events.resetGridState, function(event, args) {
+      	        $scope.resetState();
+            });        
 
 	    $scope.gridOpts.rowIdentity = function(row) {
 		return row.id;
