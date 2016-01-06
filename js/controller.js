@@ -102,20 +102,14 @@
         };
 
         $scope.doSaveGridState = function() {
-            $scope.showLeftMenu = false;
-            $scope.dropDownUserMenuClass = "";
             eventbus.broadcast(homer.modules.pages.events.saveGridState, "1");
         };
         
         $scope.doRestoreGridState = function() {
-            $scope.showLeftMenu = false;
-            $scope.dropDownUserMenuClass = "";
             eventbus.broadcast(homer.modules.pages.events.restoreGridState, "1");
         };
         
         $scope.doResetGridState = function() {
-            $scope.showLeftMenu = false;
-            $scope.dropDownUserMenuClass = "";
             eventbus.broadcast(homer.modules.pages.events.resetGridState, "1");
             $location.path(homer.modules.pages.routes.home);
         };
