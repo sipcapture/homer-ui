@@ -33,8 +33,12 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
      homer.modules.core.services.profile,
      '$log',
      homer.modules.core.services.search,             
-     function($scope, config, $location, userProfile, $log, search){
-           
+     '$q',
+     function($scope, config, $location, userProfile, $log, search, $q){
+          
+          var self = this; 
+
+          $scope.methodString = "AA";
            	
           /* workaround */    
           if(userProfile.profileScope.search && userProfile.profileScope.search instanceof Array)
@@ -85,6 +89,8 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
           $scope.processSearchForm = function(t) {
                            
                 if($scope.newObject instanceof Array) $scope.newObject={};                                
+                
+                console.log($scope.newObject);
 		userProfile.setProfile("search", $scope.newObject);
 		userProfile.setProfile("transaction", $scope.newTransaction);
 		userProfile.setProfile("result", $scope.newResult);
@@ -170,6 +176,10 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
     		{ name:'pcap', value:'PCAP'},
     		{ name:'text', value:'TEXT'}
 	  ];
+	  
+          $scope.method_list = [ 'INVITE','REGISTER','BYE','CANCEL','OPTIONS','ACK','PRACK','SUBSCRIBE',
+                                 'NOTIFY','PUBLISH','INFO','REFER','MESSAGE','UPDATE'
+          ];          	  
 
 	  $scope.db_node_selected = [];
 	  $scope.db_node = [
@@ -179,6 +189,23 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
 	  search.loadNode().then( function (data) {	        
 	           $scope.db_node = data;
           });	  
+
+          $scope.filterStringList = function(userInput) {
+            var filter = $q.defer();
+            var normalisedInput = userInput.toLowerCase();
+            var filteredArray = $scope.method_list.filter(function(method) {
+              return method.toLowerCase().indexOf(normalisedInput) === 0;
+            });
+            $scope.newObject.method = userInput;
+            filter.resolve(filteredArray);
+            return filter.promise;
+          };
+
+	  $scope.itemMethodSelected = function(item) {
+            console.log('Handle item string selected in controller:', item);
+            //$scope.newObject.method = item;
+            //self.stringMessage = 'String item selected: ' + item;
+          };
 
 	  //$scope.type_result_selected = $scope.type_result[0];
 	  $scope.newResult['restype'] =  $scope.type_result[0];
@@ -266,6 +293,7 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
                    {name:'family', selection:'Family'},
                    {name:'limit', selection:'Limit Query'},
                    {name:'transaction', selection:'Transaction'},
+                   //{name:'methodtype', selection:'Methodtype'},
                    {name:'dbnode', selection:'DB Node'},
                    {name:'b2b', selection:'B2B ext'},
                    {name:'restype', selection:'Result Type'}

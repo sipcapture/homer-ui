@@ -45,10 +45,23 @@
                                         </div>
 	    		</div>
 	   </div>
+	   
+	   <div ng-if="field.selection=='Method'">
+	    		<div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-search"> {{field.selection}}</i>
+                                            </div>
+					     <input-dropdown input-placeholder="Method" input-name="method" input-required="true" selected-item="newObject[field.name]" default-dropdown-items="method_list"
+					          filter-list-method="filterStringList(userInput)" item-selected-method="itemMethodSelected(item)">
+					     </input-dropdown>
+                                        </div>
+	    		</div>
+	   </div>
 
 
 
-	   <div ng-if="field.selection!='B2B ext' && field.selection!='Transaction' && field.selection!='Result Type' && field.selection!='DB Node'">
+	   <div ng-if="field.selection!='B2B ext' && field.selection!='Transaction' && field.selection!='Result Type' && field.selection!='DB Node' && field.selection!='Method'">
 	    <div ng-if="field.selection" class="form-group">
                                         <div class="input-group">
                                             <div class="input-group-addon">
