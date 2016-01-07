@@ -323,6 +323,7 @@
 	        saveGroupingExpandedStates: true,
 		enableColumnResizing: true,
 		enableSorting: true,
+		treeRowHeaderAlwaysVisible: false,
 		enableRowSelection: true, 
 		enableGridMenu: true,
 		showGridFooter:true,
