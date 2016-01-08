@@ -45,6 +45,7 @@
         'oitozero.ngSweetAlert',
         'ngAnimate',
         'ngCookies',
+        'inputDropdown',
         'LocalStorageModule',
         'ngSanitize',
         'dialogs.main',
