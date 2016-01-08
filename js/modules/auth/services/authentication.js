@@ -112,6 +112,53 @@
 		    return defer.promise;                 
                 },
                 
+                fullUser = function () {
+                    
+                   var defer = $q.defer();
+                   
+                   $http.get('api/v1/user').then(
+			/* good response */
+	                function (results) {
+			    if(results.data.auth == "false") {							    
+			        console.log("SESSION:" + results.data.auth);
+			        defer.reject('unknown username');			                                        
+			    }	
+			    else {
+                                defer.resolve(results.data);                                                                                                             
+                            }
+        	   	},
+			/* bad response */
+			function (results) {
+				defer.reject('Unknown Username');				                                
+			}
+		    );   
+		    
+		    return defer.promise;                 
+                },
+                
+                updateUser = function (profile) {
+                    
+                   var defer = $q.defer();
+                   
+                   $http.post('api/v1/user', {param: profile}).then(
+			/* good response */
+	                function (results) {
+			    if(results.data.auth == "false") {							    
+			        console.log("SESSION:" + results.data.auth);
+			    }	
+			    else {
+                                defer.resolve(results.data);                                                                                                             
+                            }
+        	   	},
+			/* bad response */
+			function (results) {
+				defer.reject('Unknown Username');				                                
+			}
+		    );   
+		    
+		    return defer.promise;                 
+                },
+                
 
                 logout = function () {
                     // we should only remove the current user.
@@ -146,6 +193,8 @@
                 logout: logout,
                 session: session,
                 user: user,
+                fullUser: fullUser,
+                updateUser: updateUser,
                 getCurrentLoginUser: getCurrentLoginUser
             };
         }

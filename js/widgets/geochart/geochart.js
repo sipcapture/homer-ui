@@ -16,7 +16,6 @@ angular.module("homer.widgets.geochart", [ "adf.provider", "googlechart"])
     var widget = {
         templateUrl: "js/widgets/geochart/geochart.html",
         reload: true,
-        maximizable: true,                
         resolve: {
             sipdata: function($scope, geochartService, config) {
 		if(!config.query) config.query = {};
@@ -34,7 +33,7 @@ angular.module("homer.widgets.geochart", [ "adf.provider", "googlechart"])
         refresh: true
     };
     dashboardProvider.widget("geochartChart", angular.extend({
-        title: "Geo Chart",
+        title: "Geo geochart",
         group: "Charts",
         name: 'geochartChart',
         description: "Display SIPCapture API data on geochart",
@@ -66,8 +65,6 @@ angular.module("homer.widgets.geochart", [ "adf.provider", "googlechart"])
                 config.debugresp = JSON.stringify(data);
                 if (data && data.status) {
                     var status = data.status;
-                    console.log(status);
-                    console.log(data);
                     if (status < 300) {
                         deferred.resolve(data.data);
                     } else {
@@ -178,6 +175,9 @@ angular.module("homer.widgets.geochart", [ "adf.provider", "googlechart"])
 		 chart1.options = {
 		      chartArea: {left:10,top:10,bottom:20,height:"100%",width:"100%"},
 		      displayMode: 'regions',
+		      //magnifyingGlass:  {enable: true, zoomFactor: 5.0},
+		      backgroundColor: '#e7f6fe',
+		      datalessRegionColor: '#efefef',		                
 		      colorAxis : {
         	    	colors : ['20C248', 'FFFF00', 'FF0000']
         	      },
@@ -393,15 +393,15 @@ geochartWdgt.service = {};
 geochartWdgt.query = function($scope, query, userProfile) { 
 
     var timedate = userProfile.getProfile("timerange");
-    var filters = $scope.config.panel.filters;
-    var filterParams = [];
+    //var filters = $scope.config.panel.filters;
+    //var filterParams = [];
     
     query.timestamp = {};
     query.timestamp.from = timedate.from.getTime();
     query.timestamp.to = timedate.to.getTime();
 
-    query.param.limit = $scope.config.panel.limit;
-    query.param.total = $scope.config.panel.total;
+    //query.param.limit = $scope.config.panel.limit;
+    //query.param.total = $scope.config.panel.total;
 
     
     if (typeof filters == 'object') {

@@ -17,6 +17,7 @@
             search: 'searchCtrl',
             result: 'resultCtrl',
             dashboard: 'dashboardCtrl',
+            profile: 'profileCtrl',
             navigation: 'navigationCtrl'
         },
         routes: {
@@ -38,7 +39,8 @@
 	    setTimeRange: 'setTimeRange',
 	    saveGridState: 'saveGridState',	    
 	    restoreGridState: 'restoreGridState',
-	    resetGridState: 'resetGridState'
+	    resetGridState: 'resetGridState',
+	    showUserProfile: 'showUserProfile'
         },
         state: {
             home: 'home',

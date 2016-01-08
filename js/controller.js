@@ -101,6 +101,10 @@
             $location.path(homer.modules.auth.routes.logout);
         };
 
+        $scope.doUserProfile = function() {
+            eventbus.broadcast(homer.modules.pages.events.showUserProfile, "1");
+        };
+
         $scope.doSaveGridState = function() {
             eventbus.broadcast(homer.modules.pages.events.saveGridState, "1");
         };
