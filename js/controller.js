@@ -121,6 +121,7 @@
         
         eventbus.subscribe(homer.modules.auth.events.userLoggedIn, function(event, args) {
             if (!$scope.templateSet) {
+                
                 $scope.showLeftMenu = true;
                 $scope.header = "templates/header.html";
                 $scope.menu = "templates/left-panel.html";
@@ -133,6 +134,8 @@
                         reload: true
                     });
                 }
+                
+                $scope.boolLeftMenu = true;                            
             }
         });
         eventbus.subscribe(homer.modules.auth.events.userLoggedOut, function(event, args) {

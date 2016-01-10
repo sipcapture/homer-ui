@@ -55,8 +55,14 @@
                         <li class="input">
                            <input type="text" class="form-control" placeholder="Find panels by name" ng-model="searchDash"/>
                         </li>
-                        <div ng-repeat="item in items">
-                           <li ng-repeat="subItem in item.subItems | filter:searchDash" ng-class="{active: isActive('/dashboard/{{subItem.boardid}}')}">
+                        <div ng-repeat="item in items | filter:searchDash">
+			    <li ng-show="item.subItems == null" ng-class="{active: isActive('/dashboard/{{item.href}}')}">
+                            <a ui-sref="dashboard({ boardID:'{{item.href}}'})" ng-click="$parent.backdash = false">
+                                 <span>{{item.name}}</span>
+                            </a>
+			   </li>
+                           <!-- <li ng-repeat="subItem in item.subItems | filter:searchDash" ng-class="{active: isActive('/dashboard/{{subItem.boardid}}')}"> -->
+                            <li ng-repeat="subItem in item.subItems" ng-class="{active: isActive('/dashboard/{{subItem.boardid}}')}">
                               <a ui-sref="dashboard({ boardID:'{{subItem.boardid}}'})" ng-click="$parent.$parent.backdash = false">
                                  <span>{{subItem.name}}</span>
                               </a>
