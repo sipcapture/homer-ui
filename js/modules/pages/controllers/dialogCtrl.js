@@ -298,15 +298,16 @@
 					for(var i=0; i<msg.calldata.length; i++) {
 						dates.push(msg.calldata[i].milli_ts);
 					}
-
 					var maxT=new Date(Math.max.apply(null,dates));
 					var minT=new Date(Math.min.apply(null,dates));
-					var seconds = (maxT.getTime() - minT.getTime())/1000;
-					//console.log('CALL SEC: '+seconds);
-					// $scope.sess_duration = seconds.toFixed(1)+'s';
-					var sdate = new Date();
-				        sdate.setSeconds(seconds); // specify value for SECONDS here
-					$scope.sess_duration = sdate.toISOString().substr(11, 8);
+					var secs = (maxT.getTime() - minT.getTime())/1000;
+					var milli = (maxT.getTime() - minT.getTime()) % 1000;
+					var hours = Math.floor(secs / (60 * 60));	
+					var divisor_for_minutes = secs % (60 * 60);
+					var minutes = Math.floor(divisor_for_minutes / 60);
+					var divisor_for_seconds = divisor_for_minutes % 60;
+					var seconds = Math.ceil(divisor_for_seconds);
+					$scope.sess_duration = ('0' + hours).slice(-2)+":"+('0' + minutes).slice(-2)+":"+('0' + seconds).slice(-2)+"."+milli;
 				}
 			  }			  
                      },
