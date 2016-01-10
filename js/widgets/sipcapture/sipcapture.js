@@ -1127,6 +1127,7 @@ sipcaptureWdgt.flot.lineChart.prepare = function($scope, animate, data) {
 	colors: [],
         xaxis: {
 		mode: "time",
+		timezone: "browser",
 		timeformat: "%H:%M"	  
 	},
         grid: {
@@ -1177,6 +1178,7 @@ sipcaptureWdgt.flot.stackedAreaChart.prepare = function($scope, animate, data) {
            colors: [],        
  	   xaxis: {
 		mode: "time",
+		timezone: "browser",
 		timeformat: "%H:%M"	  
 	   },
            grid: {
@@ -1207,6 +1209,7 @@ sipcaptureWdgt.flot.stackedAreaChart.prepare = function($scope, animate, data) {
 	    }	    
     };
 
+console.log("AA");
     if ($scope.config.chart.legend) {
         if ($scope.config.chart.legend.enabled && $scope.config.chart.legend.enabled == true) {
             $scope.flotOptions.legend.show = true;            
@@ -1242,6 +1245,7 @@ sipcaptureWdgt.flot.scatterChart.prepare = function($scope, animate, data) {
 	colors: [],
         xaxis: {
 		mode: "time",
+		timezone: "browser",
 		timeformat: "%H:%M"	  
 	},
         grid: {
@@ -1305,6 +1309,7 @@ sipcaptureWdgt.flot.pieChart.prepare = function($scope, animate, data) {
 	colors: [],
         xaxis: {
 		mode: "time",
+		timezone: "browser",
 		timeformat: "%H:%M"	  
 	},
         grid: {
@@ -1362,7 +1367,9 @@ sipcaptureWdgt.flot.multiBarChart.prepare = function($scope, animate, data) {
 	colors: [],
         xaxis: {
 		mode: "time",
+		timezone: "browser",
 		timeformat: "%H:%M"	  
+		
 	},
         grid: {
         	borderWidth: 0,
