@@ -18,7 +18,8 @@
             result: 'resultCtrl',
             dashboard: 'dashboardCtrl',
             profile: 'profileCtrl',
-            navigation: 'navigationCtrl'
+            navigation: 'navigationCtrl',
+            panel: 'panelCtrl'
         },
         routes: {
             home: '/dashboard/home',
