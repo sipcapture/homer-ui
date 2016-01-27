@@ -254,16 +254,23 @@
         		return defer.promise;		                                                 
                 };
                 
-                var makePcapTextforTransaction = function (data, text) {
+                var makePcapTextforTransaction = function (data, type) {
                 
                         var defer = $q.defer();
                         
                         var url = 'api/v1/search/export/';
                         
-                        if(text == true) url+= "text";
+                        var response = {responseType:'arraybuffer', handleStatus:[403,503]};
+                        if(type == 1) url+= "text";
+                        else if(type == 2) {
+                            url+= "external";
+                            response = { handleStatus:[403,503]};
+                        }
                         else url+="pcap";
-                                                            
-                        $http.post(url, data, {responseType:'arraybuffer', handleStatus:[403,503]}).then(
+                        
+                        console.log(response);
+
+                        $http.post(url, data, response).then(
         			/* good response */
 	                    function (results) {
 	        		    if(results.data.auth == "false") {				
@@ -282,16 +289,21 @@
         		return defer.promise;		                                                 
                 };
                 
-                var makePcapTextData = function (data, text) {
+                var makePcapTextData = function (data, type) {
                 
 
                         var defer = $q.defer();
                         
+                        var response = {responseType:'arraybuffer', handleStatus:[403,503]};
                         var url = 'api/v1/search/export/data/';
-                        if(text == true) url+= "text";
+                        if(type == 1) url+= "text";
+                        else if(type == 2) {
+                            url+= "external";
+                            response = { handleStatus:[403,503]};
+                        }
                         else url+="pcap";
 
-                        $http.post(url, data, {responseType:'arraybuffer', handleStatus:[403,503]}).then(
+                        $http.post(url, data, response).then(
         			/* good response */
 	                    function (results) {
 	        		    if(results.data.auth == "false") {				

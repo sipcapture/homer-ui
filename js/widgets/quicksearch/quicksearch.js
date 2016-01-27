@@ -99,11 +99,14 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
                 var tres = $scope.newResult['restype'].name;				
 				
                 if(tres == "pcap") {
-                     $scope.processSearchResult(false);
+                     $scope.processSearchResult(0);
                 }
 		else if(tres == "text") {
-                     $scope.processSearchResult(true);
+                     $scope.processSearchResult(1);
                 }
+                else if(tres == "external") {
+                     $scope.processSearchResult(2);
+                }                
 		else $location.path('/result'); 
 	  }; 	  	  
 	  
@@ -126,7 +129,7 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
 	  }; 	  	  
 
 	  
-	  $scope.processSearchResult = function(text) {
+	  $scope.processSearchResult = function(type) {
                                     
 		  /* save data for next search */
 		  var data = {param:{}, timestamp:{}};		  
@@ -151,13 +154,27 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
 
 		  var ts = new Date().getTime();
 		  
-		  search.makePcapTextData(data, text).then( function (msg) {
-                              var filename = "HOMER5_"+ts+".pcap";
-                              var content_type = "application/pcap";
-                              if(text) {
-                                    filename = "HOMER5_"+ts+".txt";
-                                    content_type = "attacment/text;charset=utf-8";
+		  search.makePcapTextData(data, type).then( function (msg) {
+		     
+		              if(type == 0) {
+                                  var filename = "HOMER5_"+ts+".pcap";
+                                  var content_type = "application/pcap";
                               }
+                              else if(type == 1) {
+                                    filename = "HOMER5_"+ts+".txt";
+                                    content_type = "attachment/text;charset=utf-8";
+                              }
+                              else if(type == 2) {
+                                  if(msg.data.hasOwnProperty("url")) {
+				      window.sweetAlert({   title: "Export Done!",   text: "Your PCAP can be accessed <a target='_blank' href='"+msg.data.url+"'>here</a>",   html: true });
+                                  }
+                                  else {
+                                     var error = "Please check your settings";
+                                      if(msg.data.hasOwnProperty("exceptions")) error = msg.data.exceptions;
+                                      window.sweetAlert({   title: "Error", type: "error",  text: "Your PCAP couldn't be uploaded!<BR>"+error,   html: true });                                  
+                                  }				  
+                                  return;
+                              }                              
                               var blob = new Blob([msg], {type: content_type});
                               saveAs(blob, filename);                         
         	  });
@@ -174,7 +191,8 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
 	  $scope.type_result = [
  		{ name:'table', value:'TABLE'},
     		{ name:'pcap', value:'PCAP'},
-    		{ name:'text', value:'TEXT'}
+    		{ name:'text', value:'TEXT'},
+    		{ name:'external', value:'EXTERNAL'}
 	  ];
 	  
           $scope.method_list = [ 'INVITE','REGISTER','BYE','CANCEL','OPTIONS','ACK','PRACK','SUBSCRIBE',

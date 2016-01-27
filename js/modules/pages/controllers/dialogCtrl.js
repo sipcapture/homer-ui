@@ -159,11 +159,15 @@
 		};
 		
 		$scope.exportPCAP = function() {
-		        makePcapText(this.data, false, $scope.msgCallId);		        
+		        makePcapText(this.data, 0, $scope.msgCallId);		        
 		};
 		
 		$scope.exportTEXT = function() {
-		        makePcapText(this.data, true, $scope.msgCallId);
+		        makePcapText(this.data, 1, $scope.msgCallId);
+		};
+		
+		$scope.exportExternal = function() {
+		        makePcapText(this.data, 2, $scope.msgCallId);		        
 		};
 		
 		$scope.exportShare = function() {
@@ -467,12 +471,12 @@
                 $scope.showRTCPReport(data);
                 $scope.showLogReport(data);
                 $scope.showQualityReport(data);
-                var makePcapText = function(fdata, text, callid) 
+                var makePcapText = function(fdata, type, callid) 
                 { 
-                        search.makePcapTextforTransaction(fdata, text).then( function (msg) {
+                        search.makePcapTextforTransaction(fdata, type).then( function (msg) {
 	           	      var filename = getCallFileName()+".pcap";
 	           	      var content_type = "application/pcap";	           	                                          	           	      
-	           	      if(text) {
+	           	      if(type == 1) {
 	           	            filename = getCallFileName()+".txt";
 	           	            content_type = "attacment/text;charset=utf-8";
                               }                              
