@@ -165,12 +165,12 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
                                     content_type = "attachment/text;charset=utf-8";
                               }
                               else if(type == 2) {
-                                  if(msg.data.hasOwnProperty("url")) {
+                                  if(msg.data && msg.data.hasOwnProperty("url")) {
 				      window.sweetAlert({   title: "Export Done!",   text: "Your PCAP can be accessed <a target='_blank' href='"+msg.data.url+"'>here</a>",   html: true });
                                   }
                                   else {
                                      var error = "Please check your settings";
-                                      if(msg.data.hasOwnProperty("exceptions")) error = msg.data.exceptions;
+                                      if(msg.data && msg.data.hasOwnProperty("exceptions")) error = msg.data.exceptions;
                                       window.sweetAlert({   title: "Error", type: "error",  text: "Your PCAP couldn't be uploaded!<BR>"+error,   html: true });                                  
                                   }				  
                                   return;
