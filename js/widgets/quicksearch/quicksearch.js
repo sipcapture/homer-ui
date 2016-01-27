@@ -192,7 +192,7 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
  		{ name:'table', value:'TABLE'},
     		{ name:'pcap', value:'PCAP'},
     		{ name:'text', value:'TEXT'},
-    		{ name:'external', value:'EXTERNAL'}
+    		{ name:'external', value:'CLOUD'}
 	  ];
 	  
           $scope.method_list = [ 'INVITE','REGISTER','BYE','CANCEL','OPTIONS','ACK','PRACK','SUBSCRIBE',
