@@ -104,7 +104,7 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
 		else if(tres == "text") {
                      $scope.processSearchResult(1);
                 }
-                else if(tres == "external") {
+                else if(tres == "cloud") {
                      $scope.processSearchResult(2);
                 }                
 		else $location.path('/result'); 
@@ -192,7 +192,7 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
  		{ name:'table', value:'TABLE'},
     		{ name:'pcap', value:'PCAP'},
     		{ name:'text', value:'TEXT'},
-    		{ name:'external', value:'CLOUD'}
+    		{ name:'cloud', value:'CLOUD'}
 	  ];
 	  
           $scope.method_list = [ 'INVITE','REGISTER','BYE','CANCEL','OPTIONS','ACK','PRACK','SUBSCRIBE',

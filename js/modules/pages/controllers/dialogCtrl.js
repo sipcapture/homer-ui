@@ -166,7 +166,7 @@
 		        makePcapText(this.data, 1, $scope.msgCallId);
 		};
 		
-		$scope.exportExternal = function() {
+		$scope.exportCloud = function() {
 		        makePcapText(this.data, 2, $scope.msgCallId);		        
 		};
 		
@@ -474,14 +474,29 @@
                 var makePcapText = function(fdata, type, callid) 
                 { 
                         search.makePcapTextforTransaction(fdata, type).then( function (msg) {
+
 	           	      var filename = getCallFileName()+".pcap";
 	           	      var content_type = "application/pcap";	           	                                          	           	      
+
 	           	      if(type == 1) {
 	           	            filename = getCallFileName()+".txt";
 	           	            content_type = "attacment/text;charset=utf-8";
-                              }                              
-                              var blob = new Blob([msg], {type: content_type});	           	      
+                              }                                                            
+                              else if(type == 2) {
+                                  if(msg.data && msg.data.hasOwnProperty("url")) {
+                                      window.sweetAlert({   title: "Export Done!",   text: "Your PCAP can be accessed <a target='_blank' href='"+msg.data.url+"'>here</a>",   html: true });
+                                  }
+                                  else {
+                                     var error = "Please check your settings";
+                                      if(msg.data && msg.data.hasOwnProperty("exceptions")) error = msg.data.exceptions;
+                                      window.sweetAlert({   title: "Error", type: "error",  text: "Your PCAP couldn't be uploaded!<BR>"+error,   html: true });
+                                  }                          
+                                  return;                    
+                              }                 
+                              
+			      var blob = new Blob([msg], {type: content_type});	           	      
                               saveAs(blob, filename);                                    
+                              
                          },
                          function(sdata) {
                                  return;

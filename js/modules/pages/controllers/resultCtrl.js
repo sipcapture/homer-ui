@@ -242,6 +242,14 @@
 	    $scope.getColumnTooltip = function(row,col) {
 		return row.entity[col.field+'_ip'];
 	    }
+	    
+	    $scope.protoCheck = function(row,col) {
+	        if(parseInt(row.entity.proto) == 1) return "udp";
+	        else if(parseInt(row.entity.proto) == 2) return "tcp";
+	        else if(parseInt(row.entity.proto) == 3) return "ws";
+	        else if(parseInt(row.entity.proto) == 4) return "sctp";
+	        else return "udp";
+	    }
 
 	    $scope.showTransaction = function(localrow,event) {
 
@@ -387,7 +395,9 @@
 			cellTemplate: '<div title="{{ grid.appScope.getColumnTooltip(row, col) }}">{{ COL_FIELD }}</div>'
 		    },
 		    {field: 'destination_port', displayName: 'DPort', width: 50},
-		    {field: 'proto', displayName: 'Proto', width: 40},
+		    {field: 'proto', displayName: 'Proto', width: 40,
+    	    	         cellTemplate: '<div class="ui-grid-cell-contents" title="proto">{{grid.appScope.protoCheck(row, col)}}</div>' 
+		    },
 		    {field: 'node', displayName: 'Node'},
 		    {field: 'custom_field1', displayName: 'Custom F1', visible: false},
 		    {field: 'custom_field2', displayName: 'Custom F2', visible: false},

@@ -263,7 +263,7 @@
                         var response = {responseType:'arraybuffer', handleStatus:[403,503]};
                         if(type == 1) url+= "text";
                         else if(type == 2) {
-                            url+= "external";
+                            url+= "cloud";
                             response = { handleStatus:[403,503]};
                         }
                         else url+="pcap";
@@ -298,7 +298,7 @@
                         var url = 'api/v1/search/export/data/';
                         if(type == 1) url+= "text";
                         else if(type == 2) {
-                            url+= "external";
+                            url+= "cloud";
                             response = { handleStatus:[403,503]};
                         }
                         else url+="pcap";
