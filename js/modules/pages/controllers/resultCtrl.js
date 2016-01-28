@@ -246,7 +246,7 @@
 	    $scope.protoCheck = function(row,col) {
 	        if(parseInt(row.entity.proto) == 1) return "udp";
 	        else if(parseInt(row.entity.proto) == 2) return "tcp";
-	        else if(parseInt(row.entity.proto) == 3) return "ws";
+	        else if(parseInt(row.entity.proto) == 3) return "wss";
 	        else if(parseInt(row.entity.proto) == 4) return "sctp";
 	        else return "udp";
 	    }
@@ -275,7 +275,8 @@
 		    param: {
 			search: {
 			    id: parseInt(localrow.entity.id), 
-			    callid: callids
+			    callid: callids,
+			    uniq: false
 			},
 			location: {
 			    node: nodes
@@ -296,10 +297,14 @@
 		search_data['param']['transaction'][localrow.entity.trans] = true;
 		var trwindowId = ""+localrow.entity.callid + "_" +localrow.entity.dbnode;
 		
-		nodes = userProfile.getProfile("node");
+		nodes = userProfile.getProfile("node");		
                 search_data['param']['location']['node'] = nodes['dbnode'];
 
-
+                var search_profile = userProfile.getProfile("search");
+                if(search_profile.hasOwnProperty('uniq')) {
+                    search_data['param']['search']['uniq'] = search_profile.uniq;
+                }
+                
 		$homerModal.open({
 		    url: 'templates/dialogs/transaction.html',
 		    cls: 'homer-modal-content',
