@@ -13,6 +13,29 @@
                                         </div>
 	    		</div>
 	   </div>
+	   
+	   <div ng-if="field.selection=='Logic OR'">
+	    		<div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-phone"> {{field.selection}}</i>
+                                            </div>
+                                            <input type="checkbox" class="btn" style="margin-left: 5px;" ng-model="newObject[field.name]"/>
+                                        </div>
+	    		</div>
+	   </div>
+	   
+	   <div ng-if="field.selection=='Unique'">
+	    		<div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-phone"> {{field.selection}}</i>
+                                            </div>
+                                            <input type="checkbox" class="btn" style="margin-left: 5px;" ng-model="newObject[field.name]"/>
+                                        </div>
+	    		</div>
+	   </div>
+	   
 	   <div ng-if="field.selection=='Transaction'">
 	    		<div class="form-group">
                                         <div class="input-group">
@@ -61,7 +84,7 @@
 
 
 
-	   <div ng-if="field.selection!='B2B ext' && field.selection!='Transaction' && field.selection!='Result Type' && field.selection!='DB Node' && field.selection!='Method'">
+	   <div ng-if="field.selection!='Logic OR' && field.selection!='Unique' && field.selection!='B2B ext' && field.selection!='Transaction' && field.selection!='Result Type' && field.selection!='DB Node' && field.selection!='Method'">
 	    <div ng-if="field.selection" class="form-group">
                                         <div class="input-group">
                                             <div class="input-group-addon">
