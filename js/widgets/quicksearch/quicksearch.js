@@ -95,6 +95,8 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
 		userProfile.setProfile("transaction", $scope.newTransaction);
 		userProfile.setProfile("result", $scope.newResult);
 		userProfile.setProfile("node", $scope.newNode);
+
+		$scope.isBusy = true;
 				
                 var tres = $scope.newResult['restype'].name;				
 				
@@ -155,6 +157,8 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
 		  var ts = new Date().getTime();
 		  
 		  search.makePcapTextData(data, type).then( function (msg) {
+		       
+		              $scope.isBusy = false;
 		     
 		              if(type == 0) {
                                   var filename = "HOMER5_"+ts+".pcap";

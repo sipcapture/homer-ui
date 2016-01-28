@@ -90,7 +90,9 @@
         </div>
 
 	<div class="form-group" ng-show="config.searchbutton">
-                <button type="submit" ng-click="processSearchForm();" class="btn btn-primary" style="float:right;" ng-disabled="false"> Search </button>                
+                <button type="submit" ng-click="processSearchForm();" class="btn btn-primary" style="float:right;" ng-disabled="false"> 
+			<i class="fa" ng-class="{'fa-cog fa-spin': isBusy, '': !isBusy}"></i>                                
+        	Search </button>                
                 <button type="submit" ng-click="clearSearchForm();" class="btn btn-warning" style="float:right;margin-right: 10px" ng-disabled="false"> Clear </button>
         </div><!-- /.box -->
 </div>

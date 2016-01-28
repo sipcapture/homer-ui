@@ -159,14 +159,17 @@
 		};
 		
 		$scope.exportPCAP = function() {
+		        $scope.isPcapBusy = true;		                                      
 		        makePcapText(this.data, 0, $scope.msgCallId);		        
 		};
 		
 		$scope.exportTEXT = function() {
+		        $scope.isTextBusy = true;		                                      
 		        makePcapText(this.data, 1, $scope.msgCallId);
 		};
 		
 		$scope.exportCloud = function() {
+		        $scope.isCloudBusy = true;		                                      
 		        makePcapText(this.data, 2, $scope.msgCallId);		        
 		};
 		
@@ -475,6 +478,10 @@
                 { 
                         search.makePcapTextforTransaction(fdata, type).then( function (msg) {
 
+                              $scope.isPcapBusy = false;		                                      
+                              $scope.isTextBusy = false;		                                      
+                              $scope.isCloudBusy = false;		                                      
+                              
 	           	      var filename = getCallFileName()+".pcap";
 	           	      var content_type = "application/pcap";	           	                                          	           	      
 
