@@ -125,6 +125,7 @@
                     if(sObj.hasOwnProperty("search_ruri_user")) searchValue["ruri_user"] = sObj["search_ruri_user"];
                     if(sObj.hasOwnProperty("search_from_user")) searchValue["from_user"] = sObj["search_from_user"];
                     if(sObj.hasOwnProperty("search_to_user")) searchValue["to_user"] = sObj["search_to_user"];
+                    if(sObj.hasOwnProperty("search_pid_user")) searchValue["pid_user"] = sObj["search_pid_user"];
                     if(sObj.hasOwnProperty("search_orand")) searchValue["orand"] = sObj["search_orand"];
 
                     data.param.limit = limit;
