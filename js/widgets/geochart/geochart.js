@@ -403,6 +403,9 @@ geochartWdgt.query = function($scope, query, userProfile) {
     query.param.limit = $scope.config.panel.limit;
     query.param.total = $scope.config.panel.total;
 
+    if(query.timestamp.to == 0) query.timestamp.to = new Date().getTime(); 
+    if(query.timestamp.from == 0) query.timestamp.from = new Date().getTime() - 300*1000; 
+
     
     if (typeof filters == 'object') {
         filters.forEach(function(filter) {
