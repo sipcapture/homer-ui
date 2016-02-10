@@ -400,8 +400,8 @@ geochartWdgt.query = function($scope, query, userProfile) {
     query.timestamp.from = timedate.from.getTime();
     query.timestamp.to = timedate.to.getTime();
 
-    //query.param.limit = $scope.config.panel.limit;
-    //query.param.total = $scope.config.panel.total;
+    query.param.limit = $scope.config.panel.limit;
+    query.param.total = $scope.config.panel.total;
 
     
     if (typeof filters == 'object') {
@@ -412,6 +412,9 @@ geochartWdgt.query = function($scope, query, userProfile) {
         });
 
         query.param.filter = filterParams;
+    }
+    else {
+        query.param.filter = [];    
     }
     
 
