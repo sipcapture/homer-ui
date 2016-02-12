@@ -71,6 +71,45 @@ var datasource_h5 = {
             }
         },
         {
+            "name": "Generic",
+            "type": "JSON",
+            "settings": {
+                "path": "statistic\/generic",
+                        "query": "{\n   \"timestamp\": {\n          \"from\": \"@from_ts\",\n          \"to\":  \"@to_ts\"\n   },\n  \"param\": {\n        \"filter\": [ \n             \"@filters\"\n       ],\n       \"limit\": \"@limit\",\n       \"total\": \"@total\"\n   }\n}",
+                "method": "GET",
+                "limit": 200,
+                "total": false,
+                "eval": {
+                    incoming: {
+                        name: "test incoming",
+                        value: "var object = @incoming; return object"
+                    }
+                },
+                "timefields" : [
+                    { "field": "from_ts", "desc": "From Timestamp" },
+                    { "field": "to_ts", "desc": "To Timestamp" }
+                ],
+                "fieldvalues": [
+                    { "field": "total", "desc": "All Packets" }
+                ],
+                "filters": [
+		    { "type": "type", "desc": "Data Statistics", options: [
+	                    { "value": "delay_max", "desc": "delay_max" },
+	                    { "value": "interval", "desc": "interval" },
+	                    { "value": "lost_perc", "desc": "lost_perc" },
+	                    { "value": "late", "desc": "late" },
+	                    { "value": "streams", "desc": "streams" },
+	                    { "value": "out-of-seq", "desc": "out-of-seq" },
+	                    { "value": "late_perc", "desc": "late_perc" },
+	                    { "value": "lost", "desc": "lost" },
+	                    { "value": "packets", "desc": "packets" },
+	                    { "value": "delay_min", "desc": "delay_min" }
+			] 
+		    }
+                ]
+            }
+        },
+        {
             "name": "IP",
             "type": "JSON",
             "settings": {

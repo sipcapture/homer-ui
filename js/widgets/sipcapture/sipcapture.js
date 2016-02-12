@@ -203,13 +203,13 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "a
         if (config.chart.hasOwnProperty("library") && config.chart.library.value == "d3") {
             $scope.d3Enabled = true;
             $scope.chartHeight = config.chart.size.height;
-            sipcaptureWdgt.d3.draw($scope, config.chart.type["value"], sipdata);        
+            if(config.chart.type && config.chart.type.hasOwnProperty("value")) sipcaptureWdgt.d3.draw($scope, config.chart.type["value"], sipdata);        
             
         } else if (config.chart.hasOwnProperty("library") && config.chart.library.value == "flot") {
             $scope.flotEnabled = true;            
             $scope.chartHeight = config.chart.size.height;
-            $scope.chartWidth = config.chart.size.width;              
-            sipcaptureWdgt.flot.draw($scope, config.chart.type["value"], sipdata);
+            $scope.chartWidth = config.chart.size.width;            
+            if(config.chart.type && config.chart.type.hasOwnProperty("value")) sipcaptureWdgt.flot.draw($scope, config.chart.type["value"], sipdata);
             
         } else {
             $scope.chartHighchart = true;
@@ -1099,11 +1099,11 @@ sipcaptureWdgt.flot.clear = function() {
 //==========================================================================================
 sipcaptureWdgt.flot.checkRequeriments = function($scope) {
 
-    if (!$scope.config.panel.timefield.field) {
+    if (!$scope.config.panel.timefield || !$scope.config.panel.timefield.field) {
         console.error("Please define a timefield in " + $scope.$parent.model.title);        
         return false;
     }
-
+    
     if (typeof $scope.config.panel.filters != 'object') {
         console.error("Please define filters in " + $scope.$parent.model.title);        
         return false;
