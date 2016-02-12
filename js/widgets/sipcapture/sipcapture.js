@@ -947,6 +947,11 @@ sipcaptureWdgt.d3.multiBarChart = {};
 //------------------------------------------------------------------------------------------
 sipcaptureWdgt.d3.multiBarChart.prepare = function($scope, animate, data) {
 
+    // Order Dataset for multiBarChart class
+    data[0].values.sort(function (a, b) {
+        return a.timefield - b.timefield;
+    })
+
     nv.addGraph(function() {
         var chart = nv.models.multiBarChart()
             .x(function(d) { return d.timefield; })
