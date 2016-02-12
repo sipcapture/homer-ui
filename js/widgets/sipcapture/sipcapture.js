@@ -455,6 +455,9 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "a
     };
 
     $scope.datasources = sipcaptureWdgt.data.datasources.datasources;
+    $scope.displayExpertMode = false;        
+    $scope.expertMode = "Switch to expert mode";
+    $scope.expertClass = "glyphicon glyphicon-chevron-down";        
 
     //--------------------------------------------------------------------------------------
     // On datasource select
@@ -502,6 +505,21 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "a
             value: $scope.config.panel.filtervalue.value
         });
     };
+
+    $scope.showExpertMode = function() {
+    
+        $scope.displayExpertMode = !$scope.displayExpertMode;        
+        
+        if($scope.displayExpertMode) {        
+            $scope.expertMode = "Switch to normal mode";
+            $scope.expertClass = "glyphicon glyphicon-chevron-up";
+        }
+        else {
+            $scope.expertMode = "Switch to expert mode";
+            $scope.expertClass = "glyphicon glyphicon-chevron-down";        
+        }    
+    };
+
 
     // remove an item
     $scope.removeFilter = function(index) {

@@ -268,10 +268,10 @@
                 </div>
 -->
               <div class="row">
-                  <a href="#" id="seeChartExpert" class="seeMore"><span class="text">Switch to expert mode</span><span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></a>
+                  <a ng-click="showExpertMode();" class="seeMore"><span class="text">{{expertMode}}</span><span ng-class="expertClass" aria-hidden="true"></span></a>
                 </div>
               
-              <div id="chartExpert" class="hidden">
+              <div id="chartExpert" ng-show="displayExpertMode">
                   <hr>
                   <uib-tabset>
                       <uib-tab>
