@@ -42,6 +42,7 @@
         'ui.grid.moveColumns', 
         'ui.grid.pinning', 
         'ui.grid.grouping',
+        'ui.grid.exporter',
         'oitozero.ngSweetAlert',
         'ngAnimate',
         'ngCookies',
