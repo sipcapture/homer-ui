@@ -204,7 +204,7 @@
             </p>
             <p class="input-group">
                <span class="input-group-btn input-time">
-                  <uib-timepicker ng-model="timerange.customFrom" hour-step="hstep" minute-step="mstep" show-meridian="false" show-seconds="true"></uib-timepicker>
+                  <uib-timepicker ng-model="timerange.customFrom" hour-step="hstep" minute-step="mstep" second-step="sstep" show-spinners="false" show-meridian="false" show-seconds="true"></uib-timepicker>
                </span>
             </p>
 
@@ -226,7 +226,7 @@
             </p>
             <p class="input-group">
                <span class="input-group-btn input-time">
-                  <uib-timepicker ng-model="timerange.customTo" hour-step="hstep" minute-step="mstep" show-meridian="false" show-seconds="true"></uib-timepicker>
+                  <uib-timepicker ng-model="timerange.customTo" hour-step="hstep" minute-step="mstep" second-step="sstep" show-spinners="false"  show-meridian="false" show-seconds="true"></uib-timepicker>
                </span>
             </p>
 
@@ -272,6 +272,11 @@
                          </span>
             </p>
 -->            
+	<label for="tz">Timezone</label>
+	 <p class="input-group">
+		<select class="form-control" ng-options="opt.value as opt.name for opt in timezones" ng-model="timezone"></select>
+	</p>
+
             <div class="text-center">
                <button class="btn btn-default" ng-click="selectCustomeTime()">Done</button>
             </div>

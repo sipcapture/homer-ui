@@ -3,7 +3,7 @@
 
 <head lang="en">
     <meta charset="UTF-8">
-    <title>HOMER5 Dev</title>
+    <title>HOMER5</title>
 
     <link rel="stylesheet" href="../css/bootstrap.min.css" />
     <link rel="stylesheet" href="../css/font-awesome.min.css" />
@@ -20,6 +20,12 @@
     <script src="../https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="../https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <script>
+    var TogetherJSConfig_cloneClicks = true; 
+    </script>
+    <script src="//togetherjs.com/togetherjs-min.js"></script>
+
+
 </head>
 <body style="min-height: 800px;" ng-class="{hiddenMenu:boolLeftMenu}" class="skin-black menu-on-top  pace-done">
 	
@@ -126,6 +132,7 @@
 			<button class="btn btn-normal" ng-click="exportPCAP()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;">Export PCAP</button>
 			<button class="btn btn-normal" ng-click="exportTEXT()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;">Export TEXT</button>
 			<button class="btn btn-normal" ng-click="exportCanvas()" data-placement="top-right" style="margin-top:18px;margin-left:8px;">Export PNG</button>			
+			<button class="btn btn-normal" onclick="TogetherJS(this);return false;" data-placement="top-right" style="margin-top:18px;margin-left:8px;">Collaborate</button>
 			<br><br>
 			<p>
 			{{sharelink}}

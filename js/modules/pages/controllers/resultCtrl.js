@@ -61,6 +61,7 @@
 		var transaction = userProfile.getProfile("transaction");
 		var limit = userProfile.getProfile("limit");
 		var timedate = userProfile.getProfile("timerange");
+		var timezone = userProfile.getProfile("timezone");
 		var value = userProfile.getProfile("search");
 		var node = userProfile.getProfile("node").dbnode;
 
@@ -76,6 +77,8 @@
                     }
 		}				
 		
+		var diff = (new Date().getTimezoneOffset() - timezone) * 60 * 1000;
+		
 		if(Object.keys(sObj).length == 0) 
 		{
         		/* make construct of query */
@@ -84,16 +87,16 @@
         		data.param.search = value;
 	        	data.param.location = {};
 	        	data.param.location.node = node;
-	        	data.timestamp.from = timedate.from.getTime();
-	        	data.timestamp.to = timedate.to.getTime();
+	        	data.timestamp.from = timedate.from.getTime() + diff;
+	        	data.timestamp.to = timedate.to.getTime() + diff;
 	        	angular.forEach(transaction.transaction, function(v, k) {
         		    data.param.transaction[v.name] = true;
 	        	});
                 }
                 else {
                     
-                    data.timestamp.from = timedate.from.getTime();
-                    data.timestamp.to = timedate.to.getTime();                                        
+                    data.timestamp.from = timedate.from.getTime() + diff;
+                    data.timestamp.to = timedate.to.getTime() + diff;                                        
                     data.param.transaction = {};
                     
                     var searchValue = {};
@@ -125,8 +128,6 @@
                     if(sObj.hasOwnProperty("search_ruri_user")) searchValue["ruri_user"] = sObj["search_ruri_user"];
                     if(sObj.hasOwnProperty("search_from_user")) searchValue["from_user"] = sObj["search_from_user"];
                     if(sObj.hasOwnProperty("search_to_user")) searchValue["to_user"] = sObj["search_to_user"];
-                    if(sObj.hasOwnProperty("search_pid_user")) searchValue["pid_user"] = sObj["search_pid_user"];
-                    if(sObj.hasOwnProperty("search_orand")) searchValue["orand"] = sObj["search_orand"];
 
                     data.param.limit = limit;
                     data.param.search = searchValue;
@@ -134,8 +135,8 @@
                     data.param.location.node = node;
                     
                     /* set back timerange */
-                    timedate.from = new Date(data.timestamp.from);
-                    timedate.to = new Date(data.timestamp.to);                                                                                                           
+                    timedate.from = new Date(data.timestamp.from - diff);
+                    timedate.to = new Date(data.timestamp.to - diff);                                                                                                           
                     userProfile.setProfile("timerange", timedate);
                     eventbus.broadcast(homer.modules.pages.events.setTimeRange, timedate);
                 }
@@ -350,6 +351,7 @@
 		paginationPageSize: 25,
 		enableFiltering: true,
 		rowTemplate: rowtpl,
+		exporterMenuPdf: false,
 
 		filterOptions: {
 		    filterText: "",

@@ -2,7 +2,7 @@
     "use strict";
     defineHomerAngularModule(homer.modules.app.name).controller("homerAppController", [ "$scope", "$rootScope", "eventbus", "$state", homer.modules.auth.services.authentication, "$location", "dialogs", homer.modules.core.services.profile, function($scope, $rootScope, eventbus, $state, authentication, $location, $dialogs, userProfile) {
         $rootScope.homerApp = "HOMER";
-        $rootScope.homerVersion = "5.0.2 Release";
+        $rootScope.homerVersion = "5.0.3 Release";
         console.log("HOMER INIT:", $rootScope.homerVersion);
         $scope.header = "templates/empty.html";
         $scope.menu = "templates/empty.html";
@@ -97,7 +97,6 @@
             $scope.showLeftMenu = false;
             $scope.dropDownUserMenuClass = "";
             userProfile.deleteAllProfile();
-            console.log(userProfile);
             $location.path(homer.modules.auth.routes.logout);
         };
 
@@ -154,17 +153,56 @@
         });
     } ]).controller("HomerDatepickerCtrl", function($scope, $rootScope, $filter, dialogs, userProfile, eventbus, $interval, $state) {
         var dt = new Date(new Date().setHours(new Date().getHours() - 2));
+
         $scope.timerange = userProfile.profileScope.timerange;
+        $scope.timezone = userProfile.profileScope.timezone;        
+        
         var stop;
         (function() {
             $scope.$watch(function() {
                 return userProfile.profileScope.timerange;
             }, function(newVal, oldVal) {
                 if (newVal !== oldVal) {
-                    $scope.timerange = newVal;
+                    $scope.timerange.customFrom = newVal.from
+                    $scope.timerange.customTo = newVal.to;
                 }
             });
         })();
+        
+        (function() {
+            $scope.$watch(function() {
+                return userProfile.profileScope.timezone;
+            }, function(newVal, oldVal) {
+                if (newVal !== oldVal) {
+                    $scope.timezone = newVal;
+                    for( var prop in $scope.timezones ) {
+                        if( $scope.timezones[prop].value == $scope.timezone ) {
+                                $scope.nametimezone = $scope.timezones[prop].name;
+                        }
+                    }
+                }
+            });
+        })();
+        
+        $scope.timezones = [
+	 {value: 240, name: 'GMT-4 AST', desc: 'Atlantic Standard Time (Canada)'},
+	 {value: 300, name: 'GMT-5 EST', desc: 'Eastern Standard Time (USA & Canada)'},
+	 {value: 360, name: 'GMT-6 CST', desc: 'Central Standard Time (USA & Canada)'},
+	 {value: 420, name: 'GMT-7 MST', desc: 'Mountain Standard Time (USA & Canada)'},
+	 {value: 480, name: 'GMT-8 PST', desc: 'Pacific Standard Time (USA & Canada)'},
+	 {value: 240, name: 'GMT-4 EDT', desc: 'Eastern Daylight Time (USA & Canada)'},
+	 {value: 300, name: 'GMT-5 CDT', desc: 'Central Daylight Time (USA & Canada)'},
+	 {value: 360, name: 'GMT-6 MDT', desc: 'Mountain Daylight Time (USA & Canada)'},
+	 {value: 420, name: 'GMT-7 PDT', desc: 'Pacific Daylight Time (USA & Canada)'},
+	 {value: 480, name: 'GMT-8 AKDT', desc: 'Alaska Daylight Time (USA)'},
+	 {value: 0, name: 'GMT+0 UTC', desc: 'Greenwich Mean Time'},
+	 {value: -60, name: 'GMT+1 CET', desc: 'Central European Time'},
+	 {value: -120, name: 'GMT+2 EET', desc: 'Eastern European Time'},
+	 {value: -480, name: 'GMT+8 CCT', desc: 'China Coast Time'},
+	 {value: -520, name: 'GMT+9 JST', desc: 'Japan Standard Time'},
+	 {value: -600, name: 'GMT+10 EAST', desc: 'East Australian Standard Time'}
+	];
+                
         $scope.toggleMin = function() {
             $scope.minDate = $scope.minDate ? null : new Date().setFullYear(2013, 0, 1);
             $scope.maxDate = $scope.maxDate ? null : new Date().setFullYear(2032, 0, 1);
@@ -178,7 +216,8 @@
         $scope.formats = [ "yyyy/MM/dd", "yyyy-MM-dd", "dd.MM.yyyy", "shortDate" ];
         $scope.formatDate = $scope.formats[1];        
         $scope.hstep = 1;
-        $scope.mstep = 15;
+        $scope.mstep = 1;
+        $scope.sstep = 1;
         $scope.setFromNow = function() {
             var dt = new Date(new Date().setMinutes(new Date().getMinutes() + 5));
             $scope.timerange = {
@@ -195,11 +234,17 @@
             } else {
                 var timeDiff;
                 timeDiff = $scope.timerange.to - $scope.timerange.from;
-                $scope.filterIndicator = "From " + $filter("date")($scope.timerange.from, "yyyy-MM-dd HH:mm:ss") + " to " + $filter("date")($scope.timerange.to, "yyyy-MM-dd HH:mm:ss Z");
+                var namezone = "";
+                
+		for( var prop in $scope.timezones ) {
+			if( $scope.timezones[prop].value == $scope.timezone ) {
+				$scope.nametimezone = $scope.timezones[prop].name;
+		        }
+		}
+                $scope.filterIndicator = "From " + $filter("date")($scope.timerange.from, "yyyy-MM-dd HH:mm:ss") + " to " + $filter("date")($scope.timerange.to, "yyyy-MM-dd HH:mm:ss") + ", TZ "+ $scope.nametimezone;
+                
             }
             if (refreshCustom) {
-                //$scope.timerange.customFrom = $filter("date")($scope.timerange.from, "yyyy-MM-dd HH:mm:ss");
-                //$scope.timerange.customTo = $filter("date")($scope.timerange.to, "yyyy-MM-dd HH:mm:ss");
                 $scope.timerange.customFrom = $scope.timerange.from;
                 $scope.timerange.customTo = $scope.timerange.to;
             }
@@ -207,7 +252,7 @@
         $scope.updateFrequency = "";
         updateTimeRange(true);
         $rootScope.setRange = function(type, tss) {
-            console.log("SELECT RANGE:", tss);
+            //console.log("SELECT RANGE:", tss);
             if ($scope.timerange.to != tss.to || $scope.timerange.from != tss.from) {
                 $scope.timerange.to = tss.to;
                 $scope.timerange.from = tss.from;
@@ -226,6 +271,9 @@
             }
             return false;
         };
+        
+
+        
         $scope.isUpdatingActive = function(item) {
             if ($scope.updateFrequency == item) {
                 return true;
@@ -237,6 +285,7 @@
             $scope.timerange.to = new Date($scope.timerange.customTo);
             $scope.timerange.from = new Date($scope.timerange.customFrom);
             userProfile.setProfile("timerange", $scope.timerange);
+            userProfile.setProfile("timezone", $scope.timezone);
             eventbus.broadcast("globalWidgetReload", 1);
             $scope.timeWindow = false;
             updateTimeRange(false);
@@ -249,6 +298,7 @@
                 custom: text
             };
             userProfile.setProfile("timerange", $scope.timerange);
+            userProfile.setProfile("timezone", $scope.timezone);
             eventbus.broadcast("globalWidgetReload", 1);
             $scope.timeWindow = false;
             updateTimeRange(true);
@@ -262,6 +312,7 @@
                 custom: text
             };
             userProfile.setProfile("timerange", $scope.timerange);
+            userProfile.setProfile("timezone", $scope.timezone);
             eventbus.broadcast("globalWidgetReload", 1);
             $scope.timeWindow = false;
             updateTimeRange(true);
@@ -294,6 +345,7 @@
                 stop = $interval(function() {
                     $scope.timerange.to.setSeconds($scope.timerange.to.getSeconds() + seconds);
                     userProfile.setProfile("timerange", $scope.timerange);
+                    userProfile.setProfile("timezone", $scope.timezone);
                     eventbus.broadcast(homer.modules.pages.events.resultSearchSubmit, "fullsearch");
                 }, seconds * 1e3);
             } else {
@@ -302,6 +354,7 @@
                     $scope.timerange.from.setSeconds($scope.timerange.from.getSeconds() + seconds);
                     $scope.timerange.to.setSeconds($scope.timerange.to.getSeconds() + seconds);
                     userProfile.setProfile("timerange", $scope.timerange);
+                    userProfile.setProfile("timezone", $scope.timezone);
                     eventbus.broadcast("globalWidgetReload", 1);
                 }, seconds * 1e3);
             }
@@ -322,14 +375,15 @@
         eventbus.subscribe(homer.modules.pages.events.setTimeRange, function(event, timeRange, model) {
             $scope.timerange = timeRange;
             console.log("SET RANGE", $scope.timerange);
-            userProfile.setProfile("timerange", $scope.timerange);
+            userProfile.setProfile("timerange", $scope.timerange);            
             updateTimeRange(true);                        
         });
     }).controller("timerangeDialogCtrl", function($log, $scope, $uibModalInstance, data) {
         $scope.timerange = data;
         $scope.options = {
             hstep: [ 1, 2, 3 ],
-            mstep: [ 1, 5, 10, 15, 25, 30 ]
+            mstep: [ 1, 5, 10, 15, 25, 30 ],
+            sstep: [ 1, 5, 10, 15, 25, 30 ]
         };
         $scope.$watch("timerange.from", function(val, old) {
             $log.info("Date Changed: " + val);

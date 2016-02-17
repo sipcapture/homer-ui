@@ -30,6 +30,7 @@
 		    transaction: {},
 		    result: {},
 		    node: {},
+		    timezone: new Date().getTimezoneOffset(),
                     limit: 200
                };
                
@@ -38,6 +39,7 @@
 	       myProfile["transaction"] = profileScope["transaction"];
                myProfile["limit"] = profileScope["limit"];
                myProfile["timerange"] = profileScope["timerange"];
+               myProfile["timezone"] = profileScope["timezone"];
 	       myProfile["search"] = profileScope["search"];
                                                                                      
                var key = function(obj){
@@ -94,7 +96,12 @@
 							jsonObj.from = new Date(jsonObj.from);
 							jsonObj.to = new Date(jsonObj.to);    
 							profileScope.timerange = jsonObj;     
-						}                               
+						}                            						
+						else if(key == "timezone") 
+						{
+							profileScope.timezone = jsonObj;     
+						}                            
+						   
 			                        setLocalProfile(key, jsonObj);
                         			profileScope[key] = jsonObj;  
 						loadedProfile = true;
@@ -123,6 +130,10 @@
 						jsonObj.from = new Date(jsonObj.from);
 						jsonObj.to = new Date(jsonObj.to);    
 						profileScope.timerange = jsonObj;
+					}                              
+					else if(key == "timezone") 
+					{
+						profileScope.timezone = jsonObj;
 					}                               
 			                setLocalProfile(key, jsonObj);
                         		profileScope[key] = jsonObj;  
