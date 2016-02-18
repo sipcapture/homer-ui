@@ -191,16 +191,21 @@
 	 {value: 420, name: 'GMT-7 MST', desc: 'Mountain Standard Time (USA & Canada)'},
 	 {value: 480, name: 'GMT-8 PST', desc: 'Pacific Standard Time (USA & Canada)'},
 	 {value: 240, name: 'GMT-4 EDT', desc: 'Eastern Daylight Time (USA & Canada)'},
-	 {value: 300, name: 'GMT-5 CDT', desc: 'Central Daylight Time (USA & Canada)'},
 	 {value: 360, name: 'GMT-6 MDT', desc: 'Mountain Daylight Time (USA & Canada)'},
 	 {value: 420, name: 'GMT-7 PDT', desc: 'Pacific Daylight Time (USA & Canada)'},
 	 {value: 480, name: 'GMT-8 AKDT', desc: 'Alaska Daylight Time (USA)'},
 	 {value: 0, name: 'GMT+0 UTC', desc: 'Greenwich Mean Time'},
 	 {value: -60, name: 'GMT+1 CET', desc: 'Central European Time'},
 	 {value: -120, name: 'GMT+2 EET', desc: 'Eastern European Time'},
+	 {value: -180, name: 'GMT+3 MSK', desc: 'Moscow Standard Time'},
+	 {value: -240, name: 'GMT+4', desc: 'GMT +4'},
+	 {value: -300, name: 'GMT+5', desc: 'GMT +5'},
+	 {value: -360, name: 'GMT+6', desc: 'GMT +6'},
+	 {value: -420, name: 'GMT+7', desc: 'GMT +7'},
 	 {value: -480, name: 'GMT+8 CCT', desc: 'China Coast Time'},
 	 {value: -520, name: 'GMT+9 JST', desc: 'Japan Standard Time'},
-	 {value: -600, name: 'GMT+10 EAST', desc: 'East Australian Standard Time'}
+	 {value: -600, name: 'GMT+10 EAST', desc: 'East Australian Standard Time'},
+	 {value: -660, name: 'GMT+11 AEDT', desc: 'Australian Eastern Daylight Time'}
 	];
                 
         $scope.toggleMin = function() {
@@ -291,10 +296,11 @@
             updateTimeRange(false);
         };
         $scope.last = function(min, text) {
-            var dt = new Date(new Date().setMinutes(new Date().getMinutes() - min));
+            var diff = (new Date().getTimezoneOffset() - $scope.timezone);                                     
+            var dt = new Date(new Date().setMinutes(new Date().getMinutes() - min + diff));
             $scope.timerange = {
                 from: dt,
-                to: new Date(),
+                to: new Date(new Date().setMinutes(new Date().getMinutes() + diff)),
                 custom: text
             };
             userProfile.setProfile("timerange", $scope.timerange);
@@ -305,9 +311,10 @@
         };        
         
         $scope.next = function(min, text) {
-            var dt = new Date(new Date().setMinutes(new Date().getMinutes() + min));
+            var diff = (new Date().getTimezoneOffset() - $scope.timezone);                                     
+            var dt = new Date(new Date().setMinutes(new Date().getMinutes() + min + diff));
             $scope.timerange = {
-                from: new Date(),
+                from: new Date(new Date().getTimezoneOffset() - timezone),
                 to: dt,
                 custom: text
             };
