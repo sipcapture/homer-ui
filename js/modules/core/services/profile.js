@@ -225,6 +225,11 @@
                                                         jsonObj.to = new Date(jsonObj.to);
                                                         profileScope.timerange = jsonObj;
                                                 }
+                                                else if(key == "timezone") 
+						{
+                                                    if(typeof jsonObj !== "object") jsonObj = profileScope[key];
+                                                }
+
                                                 setLocalProfile(key, jsonObj);
                                                 profileScope[key] = jsonObj;
                                                 loadedProfile = true;
