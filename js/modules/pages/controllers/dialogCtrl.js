@@ -30,13 +30,16 @@
                 '$timeout', 
                 '$homerModalParams', 
 		'$sce',
-                function($scope, search, $homerModal, $timeout, $homerModalParams, $sce) {
+		homer.modules.core.services.profile,
+                function($scope, search, $homerModal, $timeout, $homerModalParams, $sce, userProfile) {
 
 		var data = $homerModalParams.params;
 
+		var timezone = userProfile.getProfile("timezone");		                
 		$scope.dataLoading = true;
 		$scope.showSipMessage = true;
 		$scope.showSipDetails = false;
+		$scope.msgOffset = timezone.offset;
 		
 		$scope.clickSipDetails = function() {
 		    console.log("details");

@@ -23,7 +23,8 @@
 	    '$homerModal',
 	    homer.modules.core.services.profile,
 	    'localStorageService',
-	    function ($scope,$rootScope, eventbus, $http, $location, search, $timeout, $window, $homerModal, userProfile, localStorageService) {
+	    '$filter',
+	    function ($scope,$rootScope, eventbus, $http, $location, search, $timeout, $window, $homerModal, userProfile, localStorageService, $filter) {
 
 		//$rootScope.loggedIn = false;
 		$scope.expandme = true;
@@ -77,7 +78,9 @@
                     }
 		}				
 		
-		var diff = (new Date().getTimezoneOffset() - timezone) * 60 * 1000;
+		$scope.diff = (new Date().getTimezoneOffset() - timezone.value);
+		var diff = $scope.diff * 60 * 1000;
+		$scope.offset = timezone.offset;
 		
 		if(Object.keys(sObj).length == 0) 
 		{
@@ -87,8 +90,8 @@
         		data.param.search = value;
 	        	data.param.location = {};
 	        	data.param.location.node = node;
-	        	data.timestamp.from = timedate.from.getTime() + diff;
-	        	data.timestamp.to = timedate.to.getTime() + diff;
+	        	data.timestamp.from = timedate.from.getTime() - diff;
+	        	data.timestamp.to = timedate.to.getTime() - diff;
 	        	angular.forEach(transaction.transaction, function(v, k) {
         		    data.param.transaction[v.name] = true;
 	        	});
@@ -203,8 +206,8 @@
 	    $scope.showMessage = function(localrow, event) {
 		var search_data =  {
 		    timestamp: {
-			from: parseInt(localrow.entity.micro_ts/1000),
-			to: parseInt(localrow.entity.micro_ts/1000)
+			from: parseInt(localrow.entity.micro_ts/1000)-100,
+			to: parseInt(localrow.entity.micro_ts/1000)+100
 		    },
 		    param: {
 			search: {
@@ -254,6 +257,14 @@
 	        else return "udp";
 	    }
 
+	    $scope.dateConvert = function(row,col) {
+	    	    
+	    	var dt = new Date(parseInt(row.entity.milli_ts));
+	    	//dt.setMinutes(dt.getMinutes() + this.diff);    	    	  
+	    	//this.diff  
+	        return $filter('date')(dt, 'yyyy-MM-dd HH:mm:ss.sss Z', $scope.offset);
+	    }
+
 	    $scope.showTransaction = function(localrow,event) {
 
 		var rows = $scope.gridApi.selection.getSelectedRows();
@@ -272,8 +283,8 @@
 
 		var search_data =  {
 		    timestamp: {
-			from: parseInt(localrow.entity.micro_ts/1000)-300,
-			to: parseInt(localrow.entity.micro_ts/1000)+300
+			from: localrow.entity.milli_ts-5*100,
+			to: localrow.entity.milli_ts+300*100
 		    },
 		    param: {
 			search: {
@@ -294,8 +305,10 @@
 
 		/* set to to our last search time */
 		//var timedate = search.getTimeRange();
+		var diff = $scope.diff * 60 * 1000;
+				
 		var timedate = userProfile.getProfile("timerange");
-		search_data['timestamp']['to'] = timedate.to.getTime();
+		search_data['timestamp']['to'] = timedate.to.getTime() - diff + 300*100;
 
 		search_data['param']['transaction'][localrow.entity.trans] = true;
 		var trwindowId = ""+localrow.entity.callid + "_" +localrow.entity.dbnode;
@@ -363,7 +376,8 @@
 			width: 50},
 		    {field: 'milli_ts',
 			displayName: 'Date',
-			cellFilter: 'date:\'yyyy-MM-dd HH:mm:ss.sss\'',
+			cellTemplate: '<div class="ui-grid-cell-contents" title="date">{{grid.appScope.dateConvert(row, col)}}</div>',
+			//cellFilter: 'date:\'yyyy-MM-dd HH:mm:ss.sss Z\':\'\+0400\'',
 			width: 170
 		    },
 		    //{field: 'micro_ts', displayName: 'Micro TS', width: 80},

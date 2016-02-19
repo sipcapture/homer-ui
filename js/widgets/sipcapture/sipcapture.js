@@ -564,8 +564,11 @@ sipcaptureWdgt.query = function($scope, query, userProfile) {
     var filters = $scope.config.panel.filters;
     var filterParams = [];
 
-    query.timestamp.from = timedate.from.getTime();
-    query.timestamp.to = timedate.to.getTime();
+    var timezone = userProfile.getProfile("timezone");                
+    var diff = (new Date().getTimezoneOffset() - timezone.value) * 60 * 1000;
+    
+    query.timestamp.from = timedate.from.getTime() - diff;
+    query.timestamp.to = timedate.to.getTime() - diff;
 
     query.param.limit = $scope.config.panel.limit;
     query.param.total = $scope.config.panel.total;

@@ -2,7 +2,7 @@
     "use strict";
     defineHomerAngularModule(homer.modules.app.name).controller("homerAppController", [ "$scope", "$rootScope", "eventbus", "$state", homer.modules.auth.services.authentication, "$location", "dialogs", homer.modules.core.services.profile, function($scope, $rootScope, eventbus, $state, authentication, $location, $dialogs, userProfile) {
         $rootScope.homerApp = "HOMER";
-        $rootScope.homerVersion = "5.0.3 Release";
+        $rootScope.homerVersion = "5.0.4 Release";
         console.log("HOMER INIT:", $rootScope.homerVersion);
         $scope.header = "templates/empty.html";
         $scope.menu = "templates/empty.html";
@@ -163,8 +163,10 @@
                 return userProfile.profileScope.timerange;
             }, function(newVal, oldVal) {
                 if (newVal !== oldVal) {
-                    $scope.timerange.customFrom = newVal.from
-                    $scope.timerange.customTo = newVal.to;
+                    //$scope.timerange.customFrom = newVal.from
+                    //$scope.timerange.customTo = newVal.to;
+                    $scope.timerange = newVal;
+                    updateTimeRange(true);
                 }
             });
         })();
@@ -176,36 +178,55 @@
                 if (newVal !== oldVal) {
                     $scope.timezone = newVal;
                     for( var prop in $scope.timezones ) {
-                        if( $scope.timezones[prop].value == $scope.timezone ) {
-                                $scope.nametimezone = $scope.timezones[prop].name;
+                        if( $scope.timezones[prop].value == $scope.timezone.value ) {
+                                $scope.timezone.name = $scope.timezones[prop].name;
+                                $scope.timezone.offset = $scope.timezones[prop].offset;
                         }
                     }
+                    updateTimeRange(true);
                 }
             });
         })();
         
+        $scope.$watch('timezone.value', function(oldVal, newVal) {
+
+                if(oldVal != newVal) {                                         
+                    var diff = oldVal - newVal;
+                    var ct = new Date($scope.timerange.customFrom);
+                    ct.setMinutes(ct.getMinutes() - diff);                
+                    $scope.timerange.customFrom = ct;
+                    ct = new Date($scope.timerange.customTo);
+                    ct.setMinutes(ct.getMinutes() - diff);                
+                    $scope.timerange.customTo = ct;
+                    $scope.timerange.to = $scope.timerange.customTo;
+                    $scope.timerange.from = $scope.timerange.customFrom;
+                    updateTimeRange(false);
+                }                
+                
+                return true;
+        });
+        
         $scope.timezones = [
-	 {value: 240, name: 'GMT-4 AST', desc: 'Atlantic Standard Time (Canada)'},
-	 {value: 300, name: 'GMT-5 EST', desc: 'Eastern Standard Time (USA & Canada)'},
-	 {value: 360, name: 'GMT-6 CST', desc: 'Central Standard Time (USA & Canada)'},
-	 {value: 420, name: 'GMT-7 MST', desc: 'Mountain Standard Time (USA & Canada)'},
-	 {value: 480, name: 'GMT-8 PST', desc: 'Pacific Standard Time (USA & Canada)'},
-	 {value: 240, name: 'GMT-4 EDT', desc: 'Eastern Daylight Time (USA & Canada)'},
-	 {value: 360, name: 'GMT-6 MDT', desc: 'Mountain Daylight Time (USA & Canada)'},
-	 {value: 420, name: 'GMT-7 PDT', desc: 'Pacific Daylight Time (USA & Canada)'},
-	 {value: 480, name: 'GMT-8 AKDT', desc: 'Alaska Daylight Time (USA)'},
-	 {value: 0, name: 'GMT+0 UTC', desc: 'Greenwich Mean Time'},
-	 {value: -60, name: 'GMT+1 CET', desc: 'Central European Time'},
-	 {value: -120, name: 'GMT+2 EET', desc: 'Eastern European Time'},
-	 {value: -180, name: 'GMT+3 MSK', desc: 'Moscow Standard Time'},
-	 {value: -240, name: 'GMT+4', desc: 'GMT +4'},
-	 {value: -300, name: 'GMT+5', desc: 'GMT +5'},
-	 {value: -360, name: 'GMT+6', desc: 'GMT +6'},
-	 {value: -420, name: 'GMT+7', desc: 'GMT +7'},
-	 {value: -480, name: 'GMT+8 CCT', desc: 'China Coast Time'},
-	 {value: -520, name: 'GMT+9 JST', desc: 'Japan Standard Time'},
-	 {value: -600, name: 'GMT+10 EAST', desc: 'East Australian Standard Time'},
-	 {value: -660, name: 'GMT+11 AEDT', desc: 'Australian Eastern Daylight Time'}
+         {value: 60, offset: '-0100', name: 'GMT-1', desc: 'GMT-1'},
+	 {value: 120, offset: '-0200', name: 'GMT-2', desc: 'GMT-2'},
+	 {value: 180, offset: '-0300', name: 'GMT-3', desc: 'GMT-3'},
+	 {value: 240, offset: '-0400', name: 'GMT-4 AST', desc: 'Atlantic Standard Time (Canada)'},
+	 {value: 300, offset: '-0500', name: 'GMT-5 EST', desc: 'Eastern Standard Time (USA & Canada)'},
+	 {value: 360, offset: '-0600', name: 'GMT-6 CST', desc: 'Central Standard Time (USA & Canada)'},
+	 {value: 420, offset: '-0700', name: 'GMT-7 MST', desc: 'Mountain Standard Time (USA & Canada)'},
+	 {value: 480, offset: '-0800', name: 'GMT-8 PST', desc: 'Pacific Standard Time (USA & Canada)'},
+	 {value: 0, offset: '+0000', name: 'GMT+0 UTC', desc: 'Greenwich Mean Time'},
+	 {value: -60, offset: '+0100', name: 'GMT+1 CET', desc: 'Central European Time'},
+	 {value: -120, offset: '+0200', name: 'GMT+2 EET', desc: 'Eastern European Time'},
+	 {value: -180, offset: '+0300', name: 'GMT+3 MSK', desc: 'Moscow Standard Time'},
+	 {value: -240, offset: '+0400', name: 'GMT+4', desc: 'GMT +4'},
+	 {value: -300, offset: '+0500', name: 'GMT+5', desc: 'GMT +5'},
+	 {value: -360, offset: '+0600', name: 'GMT+6', desc: 'GMT +6'},
+	 {value: -420, offset: '+0700', name: 'GMT+7', desc: 'GMT +7'},
+	 {value: -480, offset: '+0800', name: 'GMT+8 CCT', desc: 'China Coast Time'},
+	 {value: -520, offset: '+0900', name: 'GMT+9 JST', desc: 'Japan Standard Time'},
+	 {value: -600, offset: '+1000', name: 'GMT+10 EAST', desc: 'East Australian Standard Time'},
+	 {value: -660, offset: '+1100', name: 'GMT+11 AEDT', desc: 'Australian Eastern Daylight Time'}
 	];
                 
         $scope.toggleMin = function() {
@@ -240,13 +261,15 @@
                 var timeDiff;
                 timeDiff = $scope.timerange.to - $scope.timerange.from;
                 var namezone = "";
-                
+                       
 		for( var prop in $scope.timezones ) {
-			if( $scope.timezones[prop].value == $scope.timezone ) {
-				$scope.nametimezone = $scope.timezones[prop].name;
+			if( $scope.timezones[prop].value == $scope.timezone.value ) {
+				$scope.timezone.name = $scope.timezones[prop].name;
+				$scope.timezone.offset = $scope.timezones[prop].offset;
 		        }
 		}
-                $scope.filterIndicator = "From " + $filter("date")($scope.timerange.from, "yyyy-MM-dd HH:mm:ss") + " to " + $filter("date")($scope.timerange.to, "yyyy-MM-dd HH:mm:ss") + ", TZ "+ $scope.nametimezone;
+
+                $scope.filterIndicator = "From " + $filter("date")($scope.timerange.from, "yyyy-MM-dd HH:mm:ss") + " to " + $filter("date")($scope.timerange.to, "yyyy-MM-dd HH:mm:ss") + ", TZ "+ $scope.timezone.name;
                 
             }
             if (refreshCustom) {
@@ -276,9 +299,7 @@
             }
             return false;
         };
-        
-
-        
+                
         $scope.isUpdatingActive = function(item) {
             if ($scope.updateFrequency == item) {
                 return true;
@@ -296,7 +317,7 @@
             updateTimeRange(false);
         };
         $scope.last = function(min, text) {
-            var diff = (new Date().getTimezoneOffset() - $scope.timezone);                                     
+            var diff = (new Date().getTimezoneOffset() - $scope.timezone.value);                                     
             var dt = new Date(new Date().setMinutes(new Date().getMinutes() - min + diff));
             $scope.timerange = {
                 from: dt,
@@ -311,10 +332,10 @@
         };        
         
         $scope.next = function(min, text) {
-            var diff = (new Date().getTimezoneOffset() - $scope.timezone);                                     
+            var diff = (new Date().getTimezoneOffset() - $scope.timezone.value);                                     
             var dt = new Date(new Date().setMinutes(new Date().getMinutes() + min + diff));
             $scope.timerange = {
-                from: new Date(new Date().getTimezoneOffset() - timezone),
+                from: new Date(new Date().getTimezoneOffset() - $scope.timezone.value),
                 to: dt,
                 custom: text
             };
@@ -330,10 +351,11 @@
             $scope[opened] = true;
         };
         $scope.setToNow = function(type) {
+             var diff = (new Date().getTimezoneOffset() - $scope.timezone.value);
             if (type == 1) {
-                $scope.timerange.customFrom = new Date();
+                $scope.timerange.customFrom = new Date().setMinutes(new Date().getMinutes() + diff);
             } else {
-                $scope.timerange.customTo = new Date();
+                $scope.timerange.customTo = new Date().setMinutes(new Date().getMinutes() + diff);
             }
         };
         $scope.refresh = function(seconds, name) {
@@ -361,7 +383,7 @@
                     $scope.timerange.from.setSeconds($scope.timerange.from.getSeconds() + seconds);
                     $scope.timerange.to.setSeconds($scope.timerange.to.getSeconds() + seconds);
                     userProfile.setProfile("timerange", $scope.timerange);
-                    userProfile.setProfile("timezone", $scope.timezone);
+                    userProfile.setProfile("timezone", $scope.timezone.value);
                     eventbus.broadcast("globalWidgetReload", 1);
                 }, seconds * 1e3);
             }

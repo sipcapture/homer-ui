@@ -30,7 +30,10 @@
 		    transaction: {},
 		    result: {},
 		    node: {},
-		    timezone: new Date().getTimezoneOffset(),
+		    timezone: {
+		         value: new Date().getTimezoneOffset(),
+		         name: "Default"
+                    },
                     limit: 200
                };
                
