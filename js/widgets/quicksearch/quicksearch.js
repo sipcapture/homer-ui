@@ -144,9 +144,10 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
                                                                         
                   /* make construct of query */
                   data.param.transaction = {};
+                  data.param.location = {};
                   data.param.limit = limit;
                   data.param.search = value;
-                  data.param.node = node;
+                  data.param.location.node = node;
                   data.timestamp.from = timedate.from.getTime();
 		  data.timestamp.to = timedate.to.getTime();		                    
 		
