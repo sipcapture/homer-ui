@@ -335,7 +335,7 @@
             var diff = (new Date().getTimezoneOffset() - $scope.timezone.value);                                     
             var dt = new Date(new Date().setMinutes(new Date().getMinutes() + min + diff));
             $scope.timerange = {
-                from: new Date(new Date().getTimezoneOffset() - $scope.timezone.value),
+                from: new Date(new Date().setMinutes(new Date().getMinutes() + diff)),
                 to: dt,
                 custom: text
             };
