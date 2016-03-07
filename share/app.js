@@ -16,6 +16,7 @@
         'ngCookies',
         'ngSanitize',
         'dialogs.main',
+        homer.modules.core.name,
         'homer.modal',
         'homer.cflow',
         'homerCore'

@@ -14,12 +14,12 @@
 
         <uib-tabset>
             <uib-tab>
-		<tab-heading><i class="glyphicon glyphicon-earphone"></i> Message</tab-heading>
+		<uib-tab-heading><i class="glyphicon glyphicon-earphone"></i> Message</uib-tab-heading>
                 <div id='sippath' ng-show="showSipMessage" class="sipmessage">{{msgDate | date:'yyyy-MM-dd HH:mm:ss Z'}} : {{sipPath}}</div>
                 <div id='sipmsg' ng-show="showSipMessage" class="sipmessage" data-ng-bind-html="sipMessage"></div>
             </uib-tab>
             <uib-tab>
-		<tab-heading><i class="glyphicon glyphicon-info-sign"></i> Details</tab-heading>
+		<uib-tab-heading><i class="glyphicon glyphicon-info-sign"></i> Details</uib-tab-heading>
                 <div id='sipdetails' ng-show="showSipMessage" class="sipmessage" data-ng-bind-html="trustedHtmlDetails"></div>                
              </uib-tab>
           </uib-tabset>
