@@ -109,6 +109,9 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
                 else if(tres == "cloud") {
                      $scope.processSearchResult(2);
                 }                
+                else if(tres == "count") {
+                     $scope.processSearchResult(3);
+                }                
 		else $location.path('/result'); 
 	  }; 	  	  
 	  
@@ -179,6 +182,16 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
                                       window.sweetAlert({   title: "Error", type: "error",  text: "Your PCAP couldn't be uploaded!<BR>"+error,   html: true });                                  
                                   }				  
                                   return;
+                              }                             
+                              else if(type == 3) {
+                                  if(msg.data && msg.data.hasOwnProperty("cnt")) {
+				      window.sweetAlert({   title: "Count done!",   text: "We found: ["+msg.data["cnt"]+"] records" ,   html: true });
+                                  }
+                                  else {
+                                     var error = "Please check your settings";
+                                      window.sweetAlert({   title: "Error", type: "error",  text: "Count couldn't be provided!<BR>",   html: true });                                  
+                                  }				  
+                                  return;
                               }                              
                               var blob = new Blob([msg], {type: content_type});
                               saveAs(blob, filename);                         
@@ -195,6 +208,7 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
 
 	  $scope.type_result = [
  		{ name:'table', value:'TABLE'},
+ 		{ name:'count', value:'COUNT'},
     		{ name:'pcap', value:'PCAP'},
     		{ name:'text', value:'TEXT'},
     		{ name:'cloud', value:'CLOUD'}
