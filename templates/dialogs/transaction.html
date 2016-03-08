@@ -12,7 +12,7 @@
   </div>
   <ol ng-model="report.msg" ng-class="{hidden: !collapsed[report.id]}" nodrag>
     <li ng-repeat="(property, value) in report.msg">
-      <div class="tree-report tree-report-content" nodrag> {{property}}:</div>
+      <div class="tree-report tree-report-content" nodrag> {{property}}:{{value}}</div>
 	  <ol  ng-model="value" nodrag>
 		<li ng-repeat="(p, v) in value">{{p}}: {{v}}</li>
 	  </ol>                 
