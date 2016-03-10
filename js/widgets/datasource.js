@@ -103,7 +103,10 @@ var datasource_h5 = {
 	                    { "value": "late_perc", "desc": "late_perc" },
 	                    { "value": "lost", "desc": "lost" },
 	                    { "value": "packets", "desc": "packets" },
-	                    { "value": "delay_min", "desc": "delay_min" }
+	                    { "value": "delay_min", "desc": "delay_min" },
+                            { "value": "cpu_user", "desc": "cpu_user" },
+                            { "value": "cpu_system", "desc": "cpu_system" },
+                            { "value": "cpu_io", "desc": "cpu_io" }
 			] 
 		    }
                 ]
