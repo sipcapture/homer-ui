@@ -59,6 +59,29 @@
                 $scope.enableRTCPReport = false;
                 $scope.enableLogReport = false;
                 $scope.enableXRTPReport = false;
+				
+		            // Voicenter vars
+
+            $scope.beginRTCPDataDisplay = new Date();
+            $scope.endRTCPDataDisplay = new Date();
+            $scope.beginRTCPDataIsSet = false;
+            $scope.TimeOffSetMs = (new Date($scope.beginRTCPDataDisplay)).getTimezoneOffset()*60*1000;
+            $scope.calc_report = {
+                list : [],
+                from : 0,
+                to: 0,
+                totalRtcpMessages: 0,
+                totalPacketLost: 0,
+                averagePacketLost: 0,
+                maxPacketLost: 0,
+                totalPackets: 0,
+                averageJitterMsec: 0,
+                maxJitterMsec: 0
+            };
+            $scope.jittersFilterAll = true;
+            $scope.packetsLostFilterAll = true;
+
+            // Voicenter vars end
 
 		var getCallFileName = function() {
 			var fileNameTemplete = defineExportTemplate();
@@ -192,7 +215,10 @@
 			  if (msg.calldata.length > 0) {			  			  
 			      $scope.transaction = msg;			  			      
 			      $scope.showPage = true;
-                              $scope.drawCanvas('shareit', msg);			  
+                              $scope.drawCanvas('shareit', msg);	
+
+							$scope.voicenterAnalyzeSipData(msg); // Voicenter function
+							$scope.showRTCPReport(data);
 			  }			  
 			  else {
 			          $rootScope.showError = true;
@@ -235,6 +261,9 @@
                                 console.log("RTCP", msg);
                                 $scope.enableRTCPReport = true;
                                 $scope.rtcpreport = msg;
+								
+								$scope.setRtcpMembers(rdata); // Voicenter function
+								$scope.showRTCPChart();       // Voicenter function
                             }
                      },
                      function(sdata) { return;}).finally(function(){
@@ -275,7 +304,677 @@
                      });
                 };
 
-                $scope.showRTCPReport(data);
+                // Voicenter implimentations
+
+				$scope.showRTCPChart = function (rdata) {
+
+					$scope.calc_report = $scope.setDataBySelectedRange();
+					//$scope.setChartSeries();
+					//$scope.filterRtcpData(true);
+
+					console.log("Start showRTCPChart ",$scope.rtcpreport);  
+					if($scope.RTCPChart != undefined){
+						$scope.RTCPChart.destroy ();
+					}
+
+					$scope.RTCPChart = new Highcharts.Chart({
+						chart: {
+							renderTo: 'rtcpchart-container',
+							type: 'line',
+							//width: '1000',
+							zoomType: 'x'
+						},
+						title: {
+							text: 'Information graph'
+						},
+						subtitle: {
+							text: 'Jitters & Packets lost'
+						},
+						xAxis: {
+							type: 'datetime',
+							dateTimeLabelFormats: { // don't display the dummy year
+								month: '%e. %b',
+								year: '%b'
+							},
+							title: {
+								text: 'Duration'
+							},
+							//max: rtcpChartData.to,
+							//min: rtcpChartData.from
+						},
+						yAxis: {
+
+							title: {
+								text: 'Amount'
+							},
+							minRange:0,
+							startOnTick:0,
+							min: 0
+						},
+						plotOptions: {
+							series: {
+								cursor: 'pointer',
+								point: {
+									events: {
+
+										click: function (e) {
+											var clickTimeStemp= e.delegateTarget.options.x + $scope.TimeOffSetMs ;
+
+											if(!$scope.beginRTCPDataIsSet)  {
+												// Select from date:
+												$scope.endRTCPDataDisplay = 0;
+												$scope.beginRTCPDataDisplay = clickTimeStemp ;
+												$scope.beginRTCPDataIsSet=true;
+												$("#beginningDiv").addClass("bold");
+
+											}  else {
+												// Select end date:
+												$scope.endRTCPDataDisplay = clickTimeStemp;
+												$scope.beginRTCPDataIsSet=false;
+												$("#beginningDiv").removeClass("bold");
+
+
+												// Switch between dates in case of reverse selection
+												if( $scope.endRTCPDataDisplay < $scope.beginRTCPDataDisplay ){
+													var tmp =  $scope.endRTCPDataDisplay;
+													$scope.endRTCPDataDisplay = $scope.beginRTCPDataDisplay;
+													$scope.beginRTCPDataDisplay = tmp;
+												}
+
+
+												// Render data
+												$scope.calc_report = $scope.setDataBySelectedRange();
+												$scope.setChartSeries();
+												$scope.$apply();
+											}
+										}
+									}
+
+								},
+								marker: {
+									lineWidth: 1
+								}
+							},
+							line: {
+
+								events: {
+									legendItemClick: function (item) {
+										//alert('I am an alert');
+										//console.log("Clicked ", item);
+										return false;
+										// <== returning false will cancel the default action
+									}
+								}
+								,
+								showInLegend: true
+							}
+						}
+					});
+
+					$scope.setChartSeries();
+					$scope.filterRtcpData(true);
+					//$scope.$apply();
+				};
+
+				$scope.filterRtcpData = function(showAll) {
+
+					if(showAll==null){showAll=false;}
+
+					$("#beginRTCPDataInputDate").val((new Date($scope.beginRTCPDataDisplay).toLocaleDateString("he-IL")));
+					$("#beginRTCPDataInputTime").val((new Date($scope.beginRTCPDataDisplay).toLocaleTimeString("he-IL")));
+					$("#endRTCPDataInputDate").val((new Date($scope.endRTCPDataDisplay).toLocaleDateString("he-IL")));
+					$("#endRTCPDataInputTime").val((new Date($scope.endRTCPDataDisplay).toLocaleTimeString("he-IL")));
+
+					$("div[id*=RtcpDiv]").each(function(){
+						//  if( $(this).attr('id').match(/pattern/) ) {
+						// your code goes here
+						//  }
+
+
+						var DivTime = (this.id.toString().replace("RtcpDiv-",""))/1000 ;//+  $scope.TimeOffSetMs ;
+
+						//console.log("beginRTCPDataDisplay-", $scope.beginRTCPDataDisplay);
+						//console.log("DivTime--------------",DivTime);
+						//console.log("endRTCPDataDisplay---",$scope.endRTCPDataDisplay);
+						//$(this).show(500);
+						if (($scope.beginRTCPDataDisplay<=DivTime && $scope.endRTCPDataDisplay>=DivTime)||showAll){
+
+							$(this).show(500);
+						}else{
+
+							$(this).hide(500);
+						}
+					});
+				};
+
+				$scope.setChartSeries = function(){
+					// Remove existing series
+					console.log("$scope.rtcpMembers",$scope.rtcpMembers);
+					console.log("$scope.calc_report",$scope.calc_report);
+					while($scope.RTCPChart.series.length > 0)
+						$scope.RTCPChart.series[0].remove(true);
+
+					// Add series
+					$scope.calc_report.list.forEach(function(ip) {
+						$scope.rtcpMembers.forEach(function(member){
+							console.log("ip",ip);
+							console.log("member",member);
+
+							if(ip == member.name)
+							{
+								if(member.isShowJitter == true)
+								{
+									$scope.RTCPChart.addSeries({name: "Jitter " + $scope.calc_report[ip].source_ip + " -> " + $scope.calc_report[ip].destination_ip, data: $scope.calc_report[ip].jitter});
+									console.log("add jitter serie: " , {name: "Jitter " + $scope.calc_report[ip].source_ip + " -> " + $scope.calc_report[ip].destination_ip, data: $scope.calc_report[ip].jitter});
+								}
+								if(member.isShowPacketLost == true)
+								{
+									$scope.RTCPChart.addSeries({name: "Packets Lost " + $scope.calc_report[ip].source_ip + " -> " + $scope.calc_report[ip].destination_ip, data: $scope.calc_report[ip].packets_lost});
+									console.log("add rtcp series :", {name: "Packets Lost " + $scope.calc_report[ip].source_ip + " -> " + $scope.calc_report[ip].destination_ip, data: $scope.calc_report[ip].packets_lost});
+								}
+							}
+						});
+
+
+						//totalPackets += $scope.calc_report[ip].totalPackets;
+
+					});
+					console.log("$scope.RTCPChart",$scope.RTCPChart);
+				}
+
+				$scope.vc_CalculateJitterMos = function(rtt, jitter, num_packets_lost){
+					/*
+					Take the rtt latency, add jitter, but double the impact to latency
+					then add 10 for protocol latancies
+					*/
+					if(rtt == 0)
+						rtt = 10;
+					var effective_latency = rtt + (jitter * 2) + 10;
+					var mos_val; 
+					var r_factor;
+					/*
+					Implement a basic curve - deduct 4 for the r_factor at 160ms of latency
+					(round trip). Anything over that gets a much more agressive deduction
+					*/
+					if (effective_latency < 160)
+					{
+						r_factor = 93.2 - (effective_latency / 40);
+					}
+					else
+					{
+						r_factor = 93.2 - (effective_latency - 120) / 10;
+					}
+					/*
+					Now, let's deduct 2.5 r_factor per percentage of num_packets_lost
+					*/
+					r_factor = r_factor - (num_packets_lost * 100 * 2.5);
+					if (r_factor > 100)
+						r_factor = 100;
+					else if (r_factor < 0)
+						r_factor = 0;
+
+
+					/* Convert the r_factor into an MOS value. (this is a known formula) */
+					mos_val = 1 + (0.035) * (r_factor) + (0.000007) * (r_factor) * ((r_factor) - 60) * (100 - (r_factor));
+
+					if (mos_val > 5)
+						mos_val = 5;
+
+					//LERR("[RTT: %.2f][Jitter: %.2f] [# Packet Lost: %u][R-Factor: %.2f][MOS: %.2f]", rtt, jitter, num_packets_lost, *r_factor, mos_val);
+
+					return (mos_val);
+				}
+
+				$scope.setDataBySelectedRange = function() {
+					var chartDataExtended = {
+						list : [],
+						from : 0,
+						to: 0,
+						totalRtcpMessages: 0,
+						totalPacketLost: 0,
+						totalJitters: 0,
+						averageJitterMsec: 0,
+						averagePacketLost: 0,
+						maxPacketLost: 0,
+						totalPackets: 0,
+						maxJitterMsec: 0,
+						msg: [],
+						mos:[] ,
+						averageMos:0,
+						worstMos:5
+					};
+
+					var beginDate = $scope.beginRTCPDataDisplay * 1000;
+					var endDate = $scope.endRTCPDataDisplay * 1000;
+
+					console.log(beginDate, endDate);
+
+
+					var mosCounter = 0;
+					$scope.rtcpreport.forEach(function(rtcpData) {
+
+						console.log("rtcpData loop ",rtcpData);    
+						if(rtcpData.msg != undefined && rtcpData.msg != null ){
+
+							//console.log("from " , beginDate, rtcpData.micro_ts);
+							//console.log("to " , endDate, rtcpData.micro_ts);
+							
+							
+
+							if (beginDate <= rtcpData.micro_ts && endDate >= rtcpData.micro_ts){ // Check we are in selected range
+								if(rtcpData.msg.report_blocks != undefined && rtcpData.msg.report_blocks != null){
+									
+									
+									if(rtcpData.msg.report_blocks[0] !== undefined)  {
+										mosCounter++;
+										var tmpMos = $scope.vc_CalculateJitterMos(rtcpData.msg.report_blocks[0].dlsr,rtcpData.msg.report_blocks[0].ia_jitter,rtcpData.msg.report_blocks[0].packets_lost);
+										chartDataExtended.mos.push(tmpMos);
+										chartDataExtended.averageMos += tmpMos;
+										if(chartDataExtended.worstMos > tmpMos)
+											  chartDataExtended.worstMos =   tmpMos;
+											  
+									
+									}
+									var currentName = rtcpData.source_ip+ " -> " + rtcpData.destination_ip ;
+									var isJitterForShow = true;
+									var isPacketLostForShow = true;
+									var isShowStream = true;
+									$scope.rtcpMembers.forEach(function(member){
+										if(member.name == currentName && !member.isShowJitter)
+										{
+											isJitterForShow = false;
+										}
+										if(member.name == currentName && !member.isShowPacketLost)
+										{
+											isPacketLostForShow = false;
+										}
+										if(member.name == currentName && !member.isShowStream)
+										{
+											isShowStream = false
+										}
+									});
+
+									if(isShowStream){
+										chartDataExtended.msg.push(rtcpData);
+										if(chartDataExtended[currentName] == undefined){
+											chartDataExtended.list.push(currentName);
+											chartDataExtended[currentName] = {};
+											chartDataExtended[currentName].jitter = [];
+											chartDataExtended[currentName].packets_lost = [];
+											chartDataExtended[currentName].source_ip = rtcpData.source_ip;
+											chartDataExtended[currentName].destination_ip = rtcpData.destination_ip;
+											chartDataExtended[currentName].totalPackets = 0;
+										}
+
+										var timestamp = rtcpData.micro_ts/1000 -  $scope.TimeOffSetMs;
+										if(chartDataExtended.from == 0){
+											chartDataExtended.from = timestamp;
+										}
+										if(chartDataExtended.to < timestamp){
+											chartDataExtended.to = timestamp;
+										}
+
+										if(isJitterForShow)
+										{
+											// Set jitter
+											if( rtcpData.msg.report_blocks[0] !== undefined){
+												chartDataExtended[currentName].jitter.push([timestamp ,  rtcpData.msg.report_blocks[0].ia_jitter]);
+												if(chartDataExtended.maxJitterMsec < rtcpData.msg.report_blocks[0].ia_jitter){
+													chartDataExtended.maxJitterMsec = rtcpData.msg.report_blocks[0].ia_jitter;
+												}
+												chartDataExtended.totalJitters += rtcpData.msg.report_blocks[0].ia_jitter;
+											}
+										}
+										// Set packet lost
+										if(isPacketLostForShow){
+											if(rtcpData.msg.report_blocks[0] !== undefined){
+												var packetLostTmp = [timestamp ,  rtcpData.msg.report_blocks[0].packets_lost];
+												chartDataExtended[currentName].packets_lost.push(packetLostTmp);
+												if(chartDataExtended.maxPacketLost < packetLostTmp[1])  {
+													// Set maximum packet lost
+													chartDataExtended.maxPacketLost = packetLostTmp[1];
+												}
+												chartDataExtended.totalPacketLost+=packetLostTmp[1];
+											}
+										}
+
+										chartDataExtended.totalRtcpMessages++;
+										// Set total packets
+										if(rtcpData.msg.sender_information != undefined && chartDataExtended[currentName].totalPackets < rtcpData.msg.sender_information.packets){
+											chartDataExtended[currentName].totalPackets = rtcpData.msg.sender_information.packets;
+
+										}
+									}
+								}
+							}
+						}
+					});
+
+					chartDataExtended.averageMos = (chartDataExtended.averageMos  /  mosCounter).toFixed(2);
+					chartDataExtended.worstMos = (chartDataExtended.worstMos).toFixed(2);
+					// Total packets sum
+					chartDataExtended.list.forEach(function(data) {
+						chartDataExtended.totalPackets += chartDataExtended[data].totalPackets;
+
+					});
+					// Calculate averages
+					if(chartDataExtended.totalPacketLost != 0 && chartDataExtended.totalRtcpMessages != 0){
+						chartDataExtended.averagePacketLost = (chartDataExtended.totalPacketLost / chartDataExtended.totalRtcpMessages).toFixed(2);
+					} else {
+						chartDataExtended.averagePacketLost = 0;
+					}
+
+					if(chartDataExtended.totalJitters != 0 && chartDataExtended.totalRtcpMessages != 0){
+						chartDataExtended.averageJitterMsec = (chartDataExtended.totalJitters / chartDataExtended.totalRtcpMessages).toFixed(2);
+					} else {
+						chartDataExtended.averageJitterMsec = 0;
+					}
+
+					$scope.calc_report = chartDataExtended;
+					$scope.enableRTCPReport = true;
+					$scope.filterRtcpData(true);
+					//$scope.$apply();
+					console.log("calc_report: ", $scope.calc_report);
+					return chartDataExtended;
+				}
+
+				$scope.voicenterAnalyzeSipData = function(msg){
+
+					console.log("voicenterAnalyzeSipData",msg);
+
+					if (msg.calldata.length > 0) {
+
+						// Calculate start & end & duration
+						var startTime = msg.calldata[0].milli_ts;
+						var endTime = msg.calldata[msg.calldata.length-1].milli_ts;
+						var duration = parseInt((endTime - startTime) / 1000,10);
+
+						$scope.beginRTCPDataDisplay = startTime;
+						$scope.endRTCPDataDisplay = endTime;
+
+
+						console.log("$scope.beginRTCPDataDisplay",$scope.beginRTCPDataDisplay);
+						console.log("$scope.endRTCPDataDisplay",$scope.endRTCPDataDisplay);
+
+						var hours = Math.floor(duration / 3600);
+						duration %= 3600;
+						var minutes = Math.floor(duration / 60);
+						var seconds = duration % 60;
+
+						if(hours < 10)
+							hours = "0" + hours;
+
+						if(minutes < 10)
+							minutes = "0" + minutes;
+
+						$scope.call_duration = "" + hours + ":" + minutes + ":" + seconds;
+						// Calculate start & end & duration end
+
+						// Get FROM / TO
+						var leg1Callid = "";
+						var leg2Callid = "";
+						var leg1Invite = {};
+						var leg2Invite = {};
+						var leg1200 = {};
+						var leg2200 = {};
+
+						if(msg.calldata.length > 0){
+							leg1Callid = msg.calldata[0].callid;
+						}
+
+
+						msg.calldata.forEach(function(sipPacket) {
+
+							if(sipPacket.callid != leg1Callid && leg2Callid == ""){
+								leg2Callid = sipPacket.callid;
+							}
+
+							if(jQuery.trim(sipPacket.method_text) == "INVITE  (SDP)") {
+								if(leg1Invite.callid == undefined && sipPacket.callid == leg1Callid){
+									leg1Invite = sipPacket;
+								} else {
+									if(sipPacket.callid == leg2Callid){
+										leg2Invite = sipPacket;
+									}
+								}
+							}
+							if(jQuery.trim(sipPacket.method_text) == "200 OK (SDP)"){
+								if(leg1200.callid == undefined && sipPacket.callid == leg1Callid){
+									leg1200 = sipPacket;
+								} else {
+									if(sipPacket.callid == leg2Callid){
+										leg2200 = sipPacket;
+									}
+								}
+							}
+						});
+
+
+
+						$scope.LEG1_DTMFMODE = "INFO / INBAND";
+						$scope.LEG2_DTMFMODE = "INFO / INBAND";
+
+
+						var leg1From = "";
+						var leg1To = "";
+						var leg1CodecsInvite = [];
+						var leg2CodecsInvite = [];
+						var leg1Codecs200 = [];
+						var leg2Codecs200 = [];
+						var tmp = leg1Invite.msg.split("\r\n");
+						tmp.forEach(function(sipHeader){
+							if(sipHeader.substring(0,4).toUpperCase() == "FROM"){
+								leg1From = sipHeader.substring(6).split(";")[0];
+							}
+							if(sipHeader.substring(0,2).toUpperCase() == "TO"){
+								leg1To = sipHeader.substring(4).split(";")[0];
+							}
+							if(sipHeader.substring(0,8).toLowerCase() == "a=rtpmap"){
+								var t = sipHeader.split(" ")[1].split("/");
+								if(t[0] != "telephone-event"){
+									leg1CodecsInvite.push(t[0]);
+									//console.log(t[0]);
+								}  else {
+									$scope.LEG1_DTMFMODE = "RFC2833";
+								}
+							}
+						});
+
+						var leg2From = "";
+						var leg2To = "";
+
+						if(leg2Invite.msg != undefined){
+							tmp = leg2Invite.msg.split("\r\n");
+							tmp.forEach(function(sipHeader){
+								if(sipHeader.substring(0,4).toUpperCase() == "FROM"){
+									leg2From = sipHeader.substring(6).split(";")[0];
+								}
+								if(sipHeader.substring(0,2).toUpperCase() == "TO"){
+									leg2To = sipHeader.substring(4).split(";")[0];
+								}
+								if(sipHeader.substring(0,8).toLowerCase() == "a=rtpmap"){
+									var t = sipHeader.split(" ")[1].split("/");
+									if(t[0] != "telephone-event"){
+										leg2CodecsInvite.push(t[0]);
+										//console.log(t[0]);
+									}  else {
+										$scope.LEG2_DTMFMODE = "RFC2833";
+									}
+								}
+							});
+						}
+
+						if(leg1200.msg != undefined){
+							tmp = leg1200.msg.split("\r\n");
+							tmp.forEach(function(sipHeader){
+								if(sipHeader.substring(0,8).toLowerCase() == "a=rtpmap"){
+									var t = sipHeader.split(" ")[1].split("/");
+									if(t[0] != "telephone-event"){
+										leg1Codecs200.push(t[0]);
+										//console.log("Leg1 code " + t[0]);
+									}
+								}
+							});
+						}
+
+						if(leg2200.msg != undefined){
+							tmp = leg2200.msg.split("\r\n");
+							tmp.forEach(function(sipHeader){
+								if(sipHeader.substring(0,8).toLowerCase() == "a=rtpmap"){
+									var t = sipHeader.split(" ")[1].split("/");
+									if(t[0] != "telephone-event"){
+										leg2Codecs200.push(t[0]);
+										//console.log("Leg2 code " + t[0]);
+									}
+								}
+							});
+						}
+						$scope.FROM_LEG_1 = leg1From;
+						$scope.TO_LEG_1 = leg1To;
+						$scope.FROM_LEG_2 = leg2From;
+						$scope.TO_LEG_2 = leg2To;
+
+						// End get from / to
+						// Set codecs:
+						$scope.LEG11_CODEC1 = leg1CodecsInvite[0];
+						$scope.LEG11_CODEC2 = leg1CodecsInvite[1];
+						$scope.LEG11_CODEC3 = leg1CodecsInvite[2];
+
+						$scope.LEG21_CODEC1 = leg1Codecs200[0];
+						$scope.LEG21_CODEC2 = leg1Codecs200[1];
+						$scope.LEG21_CODEC3 = leg1Codecs200[2];
+
+						$scope.LEG12_CODEC1 = leg2CodecsInvite[0];
+						$scope.LEG12_CODEC2 = leg2CodecsInvite[1];
+						$scope.LEG12_CODEC3 = leg2CodecsInvite[2];
+
+						$scope.LEG22_CODEC1 = leg2Codecs200[0];
+						$scope.LEG22_CODEC2 = leg2Codecs200[1];
+						$scope.LEG22_CODEC3 = leg2Codecs200[2];
+
+						// Selected codecs:
+						for(var ind = 0; ind < 3 ; ind++){
+							if(leg1CodecsInvite[ind] == leg1Codecs200[ind]) {
+								$scope.SELECTED_CODEC_LEG1 = leg1Codecs200[ind];
+								break;
+							}
+						}
+						for(var ind = 0; ind < 3 ; ind++){
+							if(leg2CodecsInvite[ind] == leg2Codecs200[ind]) {
+								$scope.SELECTED_CODEC_LEG2 = leg2Codecs200[ind];
+								break;
+							}
+						}
+					}
+
+				};
+
+				$scope.setRtcpMembers = function(){
+					$scope.rtcpMembers = [];
+					var tmp = {};
+					$scope.rtcpreport.forEach(function(rtcpData) {
+						var currentName = rtcpData.source_ip+ " -> " + rtcpData.destination_ip ;
+						if(tmp[currentName] == undefined){
+							$scope.rtcpMembers.push({
+								name : currentName,
+								isShowJitter: true,
+								isShowPacketLost: true,
+								isShowStream: true
+							});
+							tmp[currentName] = currentName;
+						}
+					});
+					console.log("$scope.rtcpMembers: ", $scope.rtcpMembers);
+				}
+
+
+				// Chart 
+
+				$scope.resetData = function(){
+					$scope.rtcpMembers.forEach(function(member){
+						member.isShowJitter = true;
+						member.isShowPacketLost = true;
+						member.isShowStream = true;
+					});
+					$scope.beginRTCPDataDisplay = $scope.rtcpreport[0].micro_ts/1000   ;
+					$scope.endRTCPDataDisplay = $scope.rtcpreport[$scope.rtcpreport.length-1].micro_ts/1000  ;
+					$scope.calc_report = $scope.setDataBySelectedRange();
+					$scope.setChartSeries();
+				}
+
+				$scope.showAllJitters = function(jittersFilterAll){
+					if($scope.rtcpMembers == undefined){
+						return;
+					}
+					if(jittersFilterAll == true)
+					{
+						$scope.rtcpMembers.forEach(function(member){
+							member.isShowJitter = true;
+						});
+					}  else {
+						$scope.rtcpMembers.forEach(function(member){
+							member.isShowJitter = false;
+						});
+					}
+					$scope.calc_report = $scope.setDataBySelectedRange();
+					$scope.setChartSeries();
+				}
+
+				$scope.showAllPacketsLost = function(packetsLostFilterAll){
+					if($scope.rtcpMembers == undefined){
+						return;
+					}
+					if(packetsLostFilterAll == true)
+					{
+						$scope.rtcpMembers.forEach(function(member){
+							member.isShowPacketLost = true;
+						});
+					}  else {
+						$scope.rtcpMembers.forEach(function(member){
+							member.isShowPacketLost = false;
+						});
+					}
+					$scope.calc_report = $scope.setDataBySelectedRange();
+					$scope.setChartSeries();
+				}
+
+				$scope.addRemoveJitterSerie = function(el){
+
+					if($scope.rtcpMembers == undefined){
+						return;
+					}
+					$scope.calc_report = $scope.setDataBySelectedRange();
+					$scope.setChartSeries();
+				}
+
+				$scope.addRemovePacketLostSerie = function(el){
+					if($scope.rtcpMembers == undefined){
+						return;
+					}
+					$scope.calc_report = $scope.setDataBySelectedRange();
+					$scope.setChartSeries();
+				}
+
+				$scope.addRemoveStreamSerie = function(el){
+					if($scope.rtcpMembers == undefined){
+						return;
+					}
+					if(el.isShowStream){
+						el.isShowPacketLost = true;
+						el.isShowJitter = true;
+					} else {
+						el.isShowPacketLost = false;
+						el.isShowJitter = false;
+					}
+					$scope.calc_report = $scope.setDataBySelectedRange();
+					$scope.setChartSeries();
+				}
+
+				// Chart end
+
+				// Voicenter implimentations end
+
+				// $scope.showRTCPReport(data); // Move to search.searchTransactionById
                 $scope.showLogReport(data);
                 $scope.showQualityReport(data);
                 console.log("Reporting...", data);
