@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../css/dialogs.min.css" />
     <link rel="stylesheet" href="../css/themes/base/jquery-ui.min.css" />
     <link rel="stylesheet" href="../css/app.min.css" />
+    <link rel="stylesheet" href="../css/voicenter-style.css" /> 
 
     <link rel="icon" href="../css/favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="../css/favicon.ico" type="image/x-icon"/>
@@ -40,7 +41,7 @@
   </div>
   <ol ng-model="report.msg" ng-class="{hidden: !collapsed[report.id]}" nodrag>
     <li ng-repeat="(property, value) in report.msg">
-      <div class="tree-report tree-report-content" nodrag> {{property}}:{{value}}</div>
+      <div class="tree-report tree-report-content" nodrag> {{property}}: {{value}}</div>
           <ol  ng-model="value" nodrag>
                 <li ng-repeat="(p, v) in value">{{p}}: {{v}}</li>
           </ol>
@@ -85,36 +86,362 @@
 		     </uib-tab>
 		     <uib-tab>
 			     <uib-tab-heading><i class="glyphicon glyphicon-transfer"></i> RTCP/Reports </uib-tab-heading>	     	     
-				<div id="xrtp-root" ng-if="enableXRTPReport">
-                        	        <p>X-RTP:</p>
-                                	<ol ng-model="xrtpreport">
-                                        	<li ng-repeat="report in xrtpreport">
-                                                	<div>
-	                                                    <a class="btn btn-success btn-xs" nodrag ng-click="toggleTree(report.id)">
-        	                                            <span class="glyphicon" ng-class="{'glyphicon-chevron-right': !collapsed[report.id], 'glyphicon-chevron-down': collapsed[report.id]}"></span></a>
-                	                                    {{report.date}}: Call-ID: [{{report.callid}}] Method:[{{report.method}}]
-                        	                        </div>
-                                	                <ol ng-model="report.report" ng-class="{hidden: !collapsed[report.id]}" nodrag>
-                                        	            Source IP: {{report.source}}
-                                                	    <li ng-repeat="(property, value) in report.report">{{property}}: {{value}}</li>
-	                                                </ol>
-        	                                </li>
-                	                </ol>
-                        	</div>
+                                <div class="container grey-bg">                  
+                                    <div class="row">
+                                        <div class="col-md-7">
+                                            <div class="row top-strip">
+                                                <div class="col-md-3">
+                                                    <div class="begining">
+                                                        <p><span>From:</span><br/>
+                                                            <input type="text" id="beginRTCPDataInputDate" disabled="disabled" size="8" /><br />
+                                                            <input type="text" id="beginRTCPDataInputTime" disabled="disabled" size="8" />
+                                                        </p>
+                                                    </div>
+                                                    <div class="arrow">
+                                                        <?xml version="1.0" encoding="utf-8"?><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 17 13" enable-background="new 0 0 17 13" xml:space="preserve"><g id="XMLID_24_"><path id="XMLID_156_" fill="#013C4D" d="M9.2,0.5C8.7,1.1,8.7,2,9.2,2.6l0.1,0.1l2.5,2.5l-10.1,0c-0.8,0-1.5,0.7-1.5,1.5c0,0.8,0.7,1.5,1.5,1.5l10,0l-2.2,2.2c-0.6,0.6-0.6,1.5,0,2.1s1.5,0.6,2.1,0l4.9-4.9c0.6-0.6,0.6-1.5,0-2.1c0,0,0,0,0,0c0,0,0,0,0,0l-0.1-0.1l-4.7-4.7l-0.1-0.1C10.8-0.1,9.8-0.1,9.2,0.5z"/></g></svg>
+                                                    </div>
+                                                    <div class="end" id="beginningDiv">
+                                                        <p><span>To:</span><br/>
+                                                            <input type="text" id="endRTCPDataInputDate" disabled="disabled" size="8" /><br />
+                                                            <input type="text" id="endRTCPDataInputTime" disabled="disabled" size="8" />
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <div class="from-to" ng-show="FROM_LEG_1">
+                                                        <div class="icon"><?xml version="1.0" encoding="utf-8"?><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 45 55" enable-background="new 0 0 45 55" xml:space="preserve"><g id="XMLID_107_"><g id="XMLID_156_"><g id="XMLID_173_"><path id="XMLID_174_" fill="#013C4D" d="M35.6,8.5C35,9,35,10,35.6,10.6l0.1,0.1l2.5,2.5l-10.1,0c-0.8,0-1.5,0.7-1.5,1.5c0,0.8,0.7,1.5,1.5,1.5l10,0l-2.2,2.2c-0.6,0.6-0.6,1.5,0,2.1c0.6,0.6,1.5,0.6,2.1,0l4.9-4.9c0.6-0.6,0.6-1.5,0-2.1c0,0,0,0,0,0c0,0,0,0,0,0l-0.1-0.1l-4.7-4.7l-0.1-0.1C37.1,7.9,36.2,7.9,35.6,8.5z"/></g><g id="XMLID_157_"><path id="XMLID_170_" fill="#013C4D" d="M29.6,19.7v7.1H4.8V5.1c0-0.7,0.6-1.3,1.3-1.3h22.2c0.7,0,1.3,0.6,1.3,1.3v5.1h3V5.1c0-2.3-1.9-4.2-4.2-4.2H6.1c-2.3,0-4.2,1.9-4.2,4.2v44.8c0,2.3,1.9,4.2,4.2,4.2h22.2c2.3,0,4.2-1.9,4.2-4.2V19.7L29.6,19.7z M28.3,51.2H6.1c-0.7,0-1.3-0.6-1.3-1.3V29.8h24.8v20.1C29.6,50.6,29,51.2,28.3,51.2z"/><g id="XMLID_166_"><rect id="XMLID_169_" x="8.2" y="32.8" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_168_" x="15.3" y="32.8" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_167_" x="22.5" y="32.8" fill="#013C4D" width="3.7" height="3"/></g><g id="XMLID_162_"><rect id="XMLID_165_" x="8.2" y="39" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_164_" x="15.3" y="39" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_163_" x="22.5" y="39" fill="#013C4D" width="3.7" height="3"/></g><g id="XMLID_158_"><rect id="XMLID_161_" x="8.2" y="45.2" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_160_" x="15.3" y="45.2" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_159_" x="22.5" y="45.2" fill="#013C4D" width="3.7" height="3"/></g></g></g></g></svg></div>
+                                                        <div class="text">
+                                                            <p><span>FROM:</span><br/>
+                                                                {{FROM_LEG_1}}<br/>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="from-to"  ng-show="TO_LEG_1">
+                                                        <div class="icon"><?xml version="1.0" encoding="utf-8"?><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 45 55" enable-background="new 0 0 45 55" xml:space="preserve"><g id="XMLID_48_"><g id="XMLID_156_"><g id="XMLID_173_"><path id="XMLID_174_" fill="#013C4D" d="M16.2,21.1c-0.6-0.6-0.6-1.5,0-2.1l0.1-0.1l2.5-2.5l-10.1,0c-0.8,0-1.5-0.7-1.5-1.5c0-0.8,0.7-1.5,1.5-1.5l10,0l-2.2-2.2c-0.6-0.6-0.6-1.5,0-2.1c0.6-0.6,1.5-0.6,2.1,0l4.9,4.9c0.6,0.6,0.6,1.5,0,2.1c0,0,0,0,0,0c0,0,0,0,0,0l-0.1,0.1L18.4,21l-0.1,0.1C17.7,21.7,16.7,21.7,16.2,21.1z"/></g><g id="XMLID_157_"><path id="XMLID_170_" fill="#013C4D" d="M9.6,19.7l-1.9,0c-0.3,0-0.5,0.2-0.5,0.5v29.7c0,2.3,1.9,4.2,4.2,4.2h22.2c2.3,0,4.2-1.9,4.2-4.2V5.1c0-2.3-1.9-4.2-4.2-4.2H11.4c-2.3,0-4.2,1.9-4.2,4.2v4.6c0,0.3,0.2,0.5,0.5,0.5h1.9c0.3,0,0.5-0.2,0.5-0.5V5.1c0-0.7,0.6-1.3,1.3-1.3h22.2c0.7,0,1.3,0.6,1.3,1.3v21.7H10.1v-6.6C10.1,19.9,9.9,19.7,9.6,19.7z M10.1,49.9V29.8h24.8v20.1c0,0.7-0.6,1.3-1.3,1.3H11.4C10.7,51.2,10.1,50.6,10.1,49.9z"/><g id="XMLID_166_"><rect id="XMLID_169_" x="27.8" y="32.8" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_168_" x="20.7" y="32.8" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_167_" x="13.5" y="32.8" fill="#013C4D" width="3.7" height="3"/></g><g id="XMLID_162_"><rect id="XMLID_165_" x="27.8" y="39" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_164_" x="20.7" y="39" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_163_" x="13.5" y="39" fill="#013C4D" width="3.7" height="3"/></g><g id="XMLID_158_"><rect id="XMLID_161_" x="27.8" y="45.2" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_160_" x="20.7" y="45.2" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_159_" x="13.5" y="45.2" fill="#013C4D" width="3.7" height="3"/></g></g></g></g></svg></div>
+                                                        <div class="text">
+                                                            <p><span>TO:</span><br/>
+                                                                {{TO_LEG_1}}<br/>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="from-to"  ng-show="FROM_LEG_2">
+                                                        <div class="icon"><?xml version="1.0" encoding="utf-8"?><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 45 55" enable-background="new 0 0 45 55" xml:space="preserve"><g id="XMLID_107_"><g id="XMLID_156_"><g id="XMLID_173_"><path id="XMLID_174_" fill="#013C4D" d="M35.6,8.5C35,9,35,10,35.6,10.6l0.1,0.1l2.5,2.5l-10.1,0c-0.8,0-1.5,0.7-1.5,1.5c0,0.8,0.7,1.5,1.5,1.5l10,0l-2.2,2.2c-0.6,0.6-0.6,1.5,0,2.1c0.6,0.6,1.5,0.6,2.1,0l4.9-4.9c0.6-0.6,0.6-1.5,0-2.1c0,0,0,0,0,0c0,0,0,0,0,0l-0.1-0.1l-4.7-4.7l-0.1-0.1C37.1,7.9,36.2,7.9,35.6,8.5z"/></g><g id="XMLID_157_"><path id="XMLID_170_" fill="#013C4D" d="M29.6,19.7v7.1H4.8V5.1c0-0.7,0.6-1.3,1.3-1.3h22.2c0.7,0,1.3,0.6,1.3,1.3v5.1h3V5.1c0-2.3-1.9-4.2-4.2-4.2H6.1c-2.3,0-4.2,1.9-4.2,4.2v44.8c0,2.3,1.9,4.2,4.2,4.2h22.2c2.3,0,4.2-1.9,4.2-4.2V19.7L29.6,19.7z M28.3,51.2H6.1c-0.7,0-1.3-0.6-1.3-1.3V29.8h24.8v20.1C29.6,50.6,29,51.2,28.3,51.2z"/><g id="XMLID_166_"><rect id="XMLID_169_" x="8.2" y="32.8" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_168_" x="15.3" y="32.8" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_167_" x="22.5" y="32.8" fill="#013C4D" width="3.7" height="3"/></g><g id="XMLID_162_"><rect id="XMLID_165_" x="8.2" y="39" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_164_" x="15.3" y="39" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_163_" x="22.5" y="39" fill="#013C4D" width="3.7" height="3"/></g><g id="XMLID_158_"><rect id="XMLID_161_" x="8.2" y="45.2" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_160_" x="15.3" y="45.2" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_159_" x="22.5" y="45.2" fill="#013C4D" width="3.7" height="3"/></g></g></g></g></svg></div>
+                                                        <div class="text">
+                                                            <p><span>FROM:</span><br/>
+                                                                {{FROM_LEG_2}}<br/>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="from-to"  ng-show="TO_LEG_2">
+                                                        <div class="icon"><?xml version="1.0" encoding="utf-8"?><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 45 55" enable-background="new 0 0 45 55" xml:space="preserve"><g id="XMLID_48_"><g id="XMLID_156_"><g id="XMLID_173_"><path id="XMLID_174_" fill="#013C4D" d="M16.2,21.1c-0.6-0.6-0.6-1.5,0-2.1l0.1-0.1l2.5-2.5l-10.1,0c-0.8,0-1.5-0.7-1.5-1.5c0-0.8,0.7-1.5,1.5-1.5l10,0l-2.2-2.2c-0.6-0.6-0.6-1.5,0-2.1c0.6-0.6,1.5-0.6,2.1,0l4.9,4.9c0.6,0.6,0.6,1.5,0,2.1c0,0,0,0,0,0c0,0,0,0,0,0l-0.1,0.1L18.4,21l-0.1,0.1C17.7,21.7,16.7,21.7,16.2,21.1z"/></g><g id="XMLID_157_"><path id="XMLID_170_" fill="#013C4D" d="M9.6,19.7l-1.9,0c-0.3,0-0.5,0.2-0.5,0.5v29.7c0,2.3,1.9,4.2,4.2,4.2h22.2c2.3,0,4.2-1.9,4.2-4.2V5.1c0-2.3-1.9-4.2-4.2-4.2H11.4c-2.3,0-4.2,1.9-4.2,4.2v4.6c0,0.3,0.2,0.5,0.5,0.5h1.9c0.3,0,0.5-0.2,0.5-0.5V5.1c0-0.7,0.6-1.3,1.3-1.3h22.2c0.7,0,1.3,0.6,1.3,1.3v21.7H10.1v-6.6C10.1,19.9,9.9,19.7,9.6,19.7z M10.1,49.9V29.8h24.8v20.1c0,0.7-0.6,1.3-1.3,1.3H11.4C10.7,51.2,10.1,50.6,10.1,49.9z"/><g id="XMLID_166_"><rect id="XMLID_169_" x="27.8" y="32.8" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_168_" x="20.7" y="32.8" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_167_" x="13.5" y="32.8" fill="#013C4D" width="3.7" height="3"/></g><g id="XMLID_162_"><rect id="XMLID_165_" x="27.8" y="39" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_164_" x="20.7" y="39" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_163_" x="13.5" y="39" fill="#013C4D" width="3.7" height="3"/></g><g id="XMLID_158_"><rect id="XMLID_161_" x="27.8" y="45.2" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_160_" x="20.7" y="45.2" fill="#013C4D" width="3.7" height="3"/><rect id="XMLID_159_" x="13.5" y="45.2" fill="#013C4D" width="3.7" height="3"/></g></g></g></g></svg></div>
+                                                        <div class="text">
+                                                            <p><span>TO:</span><br/>
+                                                                {{TO_LEG_2}}<br/>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-	                        <div id="rtcp-root" ng-if="enableRTCPReport">
-        	                        <p>RTCP:</p>
-                	                <ol ng-model="rtcpreport">
-                        	                <li ng-repeat="report in rtcpreport" ng-include="'reports_renderer.html'"></li>
-                                	</ol>
-	                        </div>
+                                            
+                                            <!---------------------------------------------------------------------------->
 
-        	                <div id="tree-root" ng-if="enableQualityReport">
-                	                <p>Reports:</p>
-                        	        <ol ng-model="qualityreport">
-                                	        <li ng-repeat="report in qualityreport" ng-include="'reports_renderer.html'"></li>
-	                                </ol>
-        	                </div>
+                                            <div class="row chart-general" ng-show="rtcpMembers">
+                                                <!--<div class="col-md-12">
+                                                    <h5>Jitters:</h5>
+                                                    <ol>
+                                                        <li style="list-style-type: none;"><label style="cursor: pointer; width:100%;"><input type="checkbox" ng-change="showAllJitters(jittersFilterAll)" ng-model="jittersFilterAll">Show all</label></li>
+                                                        <li ng-repeat="server in rtcpMembers"  style="list-style-type: none;"><label style="cursor: pointer; width:100%;"><input type="checkbox" ng-change="addRemoveJitterSerie(server)" ng-model="server.isShowJitter">{{server.name}}</label></li>
+                                                    </ol>
+
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <h5>Packet lost:</h5>
+                                                    <ol>
+                                                        <li style="list-style-type: none;"><label style="cursor: pointer; width:100%;"><input type="checkbox"  ng-model="packetsLostFilterAll"  ng-change="showAllPacketsLost(packetsLostFilterAll)">Show all</label></li>
+                                                        <li ng-repeat="server in rtcpMembers"  style="list-style-type: none;"><label style="cursor: pointer; width:100%;"><input type="checkbox" ng-model="server.isShowPacketLost"  ng-change="addRemovePacketLostSerie(server)">{{server.name}}</label></li>
+                                                    </ol>
+
+                                                </div>-->
+                                                <div class="col-md-3 streams">
+                                                    <h5>Streams:</h5>
+                                                    <ol>
+                                                        <!--<li style="list-style-type: none;">
+                                                            <label style="cursor: pointer; width:100%;">
+                                                                <input type="checkbox"  ng-model="packetsLostFilterAll"  ng-change="showAllPacketsLost(packetsLostFilterAll)">Show all
+                                                            </label>
+                                                        </li>-->
+                                                        <li ng-repeat="server in rtcpMembers"  style="list-style-type: none;">
+                                                            <label style="cursor: pointer; width:250px;">
+                                                                <input type="checkbox" ng-model="server.isShowStream"  ng-change="addRemoveStreamSerie(server)">{{server.name}}
+                                                            </label>
+                                                            <label style="cursor: pointer; width:100px;" ng-show="server.isShowStream">
+                                                                <input type="checkbox" ng-model="server.isShowPacketLost"  ng-change="addRemovePacketLostSerie(server)">Packet lost
+                                                            </label>
+                                                            <label style="cursor: pointer;"  ng-show="server.isShowStream">
+                                                                <input type="checkbox"  ng-model="server.isShowJitter" ng-change="addRemoveJitterSerie(server)">Jitter
+                                                            </label>
+                                                        </li>
+                                                    </ol>
+                                                     <input type="button" ng-click="resetData()" value="Reset" />
+                                                </div>
+                                                
+                                                <div class="col-md-9 chart-wrap">
+                                                    <!--<input type="button" value="Show all" ng-click="resetRtcpData();">-->
+                                                    <div id="rtcpchart-container" ></div>
+                                                    <div class="row">
+                                                        <div class="col-md-7">
+                                                          <!--  <div id="rtcpTimePicker">
+                                                                <input type="text" disabled="disabled" size="60"  >
+                                                                <br/>
+                                                                <input type="text" id="endRTCPDataInput"  disabled="disabled" size="60" >
+                                                            </div> -->
+                                                        </div>
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+
+
+
+
+                                            <!--<div id="rtcp-root" ng-show="enableRTCPReport">
+                                                <ol ng-model="rtcpreport">
+                                                    <li ng-repeat="report in rtcpreport" ng-include="'reports_renderer.html'" style="list-style-type: none;"></li>
+                                                </ol>
+
+                                            </div>-->
+
+                                            <div id="rtcp-root" ng-show="enableRTCPReport">
+                                                <ol ng-model="calc_report.msg">
+                                                    <!--<li ng-repeat="report in calc_report.msg" ng-include="'reports_renderer.html'" style="list-style-type: none;">
+                                                    
+                                                            
+                                                    
+                                                    
+                                                    </li>     -->
+                                                </ol>
+
+                                            </div>
+                                            
+                                            <div id="xrtp-root" ng-if="enableXRTPReport">
+                                                <p>X-RTP:</p>
+                                                <ol ng-model="xrtpreport">
+                                                    <li ng-repeat="report in xrtpreport">
+                                                        <div>
+                                                            <a class="btn btn-success btn-xs" nodrag ng-click="toggleTree(report.id)">
+                                                                <span class="glyphicon" ng-class="{'glyphicon-chevron-right': !collapsed[report.id], 'glyphicon-chevron-down': collapsed[report.id]}"></span></a>
+                                                            {{report.date}}: Call-ID: [{{report.callid}}] Method:[{{report.method}}]
+                                                        </div>
+                                                        <ol ng-model="report.report" ng-class="{hidden: !collapsed[report.id]}" nodrag>
+                                                            Source IP: {{report.source}}
+                                                            <li ng-repeat="(property, value) in report.report">{{property}}: {{value}}</li>
+                                                        </ol>
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                            
+                                            <div id="tree-root" ng-if="enableQualityReport">
+                                                <p>Reports:</p>
+                                                <ol ng-model="qualityreport">
+                                                    <li ng-repeat="report in qualityreport" ng-include="'reports_renderer.html'"></li>
+                                                </ol>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-5">
+                                            <div class="row padding-top">
+                                                <div class="col-md-6 white-bg duration center-text">
+                                                    <p class="title">Call duration</p>
+                                                    <p class="L-text" id="call-duration">{{call_duration}}</p>
+                                                </div>
+                                                <div class="col-md-6 white-bg total-packets center-text">
+                                                    <p class="title">Total packets</p>
+                                                    <p class="XL-text" >{{calc_report.totalPackets}}</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="row white-bg center-text">
+                                                <div class="col-md-4">
+                                                    <div class="row light-orange">
+                                                        <p>Avg. Packets lost</p>
+                                                        <p class="L-text">{{calc_report.averagePacketLost}}</p>
+                                                    </div>
+                                                    <div class="row light-orange">
+                                                        <p>Max packets lost</p>
+                                                        <p class="L-text">{{calc_report.maxPacketLost}}</p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="row light-blue">
+                                                        <p>Avg. jitter (ms)</p>
+                                                        <p class="L-text">{{calc_report.averageJitterMsec}}</p>
+                                                    </div>
+                                                    <div class="row light-blue">
+                                                        <p>Max jitter (ms)</p>
+                                                        <p class="L-text">{{calc_report.maxJitterMsec}}</p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="row light-green">
+                                                        <p>MOS</p>
+                                                        <p class="L-text">{{calc_report.averageMos}}</p>
+                                                    </div>
+                                                    <div class="row light-green">
+                                                        <p>Worst MOS</p>
+                                                        <p class="L-text">{{calc_report.worstMos}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row white-bg" ng-show="{{mos.scale}}">
+                                                <div class="col-md-12 MOS">
+                                                    <p class="L-title">MOS<br/><span>(Quality rating)</span></p>
+                                                    <div class="bar-chart">
+                                                        <ul>
+                                                            <li class="green-full"></li>
+                                                            <li class="green-full"></li>
+                                                            <li class="green-full"></li>
+                                                            <li class="green-full"></li>
+                                                            <li class="grey-full"></li>
+                                                        </ul>
+                                                        <p class="MOS-des green-text">Good</p>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="row white-bg dtmf">
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <p class="L-title">DTMF Mode LEG1</p>
+                                                        <div class="box-big blue">{{LEG1_DTMFMODE}}</div>
+                                                    </div>
+                                                     <div class="row" ng-show="TO_LEG_2">
+                                                        <p class="L-title">DTMF Mode LEG2</p>
+                                                        <div class="box-big blue">{{LEG2_DTMFMODE}}</div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="panel-group" id="accordion_codec_leg1" role="tablist" aria-multiselectable="true">
+                                                            <div class="panel panel-default">
+                                                                <div class="panel-heading" role="tab" id="headingOne">
+                                                                    <h4 class="panel-title">
+                                                                        <p class="L-title">Codecs LEG1
+                                                                            <a role="button" href="javascript: void(0);" data-toggle="collapse" data-parent="#accordion_codec_leg1"  aria-controls="collapseOne" data-target="#collapseOne">
+
+                                                                                <?xml version="1.0" encoding="utf-8"?><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 20.4 10" enable-background="new 0 0 20.4 10" xml:space="preserve"><g id="XMLID_465_"><path id="XMLID_2_" fill="#013C4D" d="M10,9.7L0.2,1.2C0,1-0.1,0.7,0.1,0.5c0.2-0.2,0.5-0.2,0.7-0.1L10,8.3l9.2-7.9c0.2-0.2,0.5-0.2,0.7,0.1C20.1,0.7,20,1,19.8,1.2L10,9.7z"/></g></svg>
+                                                                            </a>
+                                                                        </p>
+
+                                                                        <div class="box-big orange">{{SELECTED_CODEC_LEG1}}</div>
+                                                                    </h4>
+                                                                    <div class="clearfix"></div>
+                                                                </div>
+                                                                <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                                                                    <div class="panel-body">
+                                                                        <table>
+                                                                            <tr>
+                                                                                <th><img src="../img/line.png"></th>
+                                                                                <th></th>
+                                                                                <th><img src="../img/line.png"></th>
+                                                                            </tr>
+
+                                                                            <tr>
+                                                                                <td>FROM:</td>
+                                                                                <td></td>
+                                                                                <td>TO:</td>
+                                                                            </tr>
+
+                                                                            <tr>
+                                                                                <td class="box-small orange">{{LEG11_CODEC1}}</td>
+                                                                                <td>1st</td>
+                                                                                <td class="box-small orange">{{LEG21_CODEC1}}</td>
+                                                                            </tr>
+
+                                                                            <tr>
+                                                                                <td class="box-small green">{{LEG11_CODEC2}}</td>
+                                                                                <td>2nd</td>
+                                                                                <td class="box-small purple">{{LEG21_CODEC2}}</td>
+                                                                            </tr>
+
+                                                                            <tr>
+                                                                                <td class="box-small purple">{{LEG11_CODEC3}}</td>
+                                                                                <td>3rd</td>
+                                                                                <td class="box-small green">{{LEG21_CODEC3}}</td>
+                                                                            </tr>
+
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row"  ng-show="TO_LEG_2">
+                                                        <div class="panel-group" id="accordion_codec_leg2" role="tablist" aria-multiselectable="true">
+                                                            <div class="panel panel-default">
+                                                                <div class="panel-heading" role="tab" id="headingOne">
+                                                                    <h4 class="panel-title">
+                                                                        <p class="L-title">Codecs LEG2
+                                                                            <a role="button" href="javascript: void(0);" data-toggle="collapse" data-parent="#accordion_codec_leg2" aria-controls="collapseTwo" data-target="#collapseTwo">
+
+                                                                                <?xml version="1.0" encoding="utf-8"?><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 20.4 10" enable-background="new 0 0 20.4 10" xml:space="preserve"><g id="XMLID_465_"><path id="XMLID_2_" fill="#013C4D" d="M10,9.7L0.2,1.2C0,1-0.1,0.7,0.1,0.5c0.2-0.2,0.5-0.2,0.7-0.1L10,8.3l9.2-7.9c0.2-0.2,0.5-0.2,0.7,0.1C20.1,0.7,20,1,19.8,1.2L10,9.7z"/></g></svg>
+                                                                            </a>
+                                                                        </p>
+
+                                                                        <div class="box-big orange">{{SELECTED_CODEC_LEG2}}</div>
+                                                                    </h4>
+                                                                    <div class="clearfix"></div>
+                                                                </div>
+                                                                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                                                                    <div class="panel-body">
+                                                                        <table>
+                                                                            <tr>
+                                                                                <th><img src="../img/line.png"></td>
+                                                                                <th></th>
+                                                                                <th><img src="../img/line.png"></td>
+                                                                            </tr>
+
+                                                                            <tr>
+                                                                                <td>FROM:</td>
+                                                                                <td></td>
+                                                                                <td>TO:</td>
+                                                                            </tr>
+
+                                                                            <tr>
+                                                                                <td ng-show="LEG12_CODEC1.length > 0" class="box-small orange">{{LEG12_CODEC1}}</td>
+                                                                                <td>1st</td>
+                                                                                <td ng-show="LEG22_CODEC1.length > 0" class="box-small orange">{{LEG22_CODEC1}}</td>
+                                                                            </tr>
+
+                                                                            <tr>
+                                                                                <td ng-show="LEG12_CODEC2.length > 0" class="box-small green">{{LEG12_CODEC2}}</td>
+                                                                                <td>2nd</td>
+                                                                                <td ng-show="LEG22_CODEC2.length > 0" class="box-small purple">{{LEG22_CODEC2}}</td>
+                                                                            </tr>
+
+                                                                            <tr>
+                                                                                <td ng-show="LEG12_CODEC3.length > 0" class="box-small purple">{{LEG12_CODEC3}}</td>
+                                                                                <td>3rd</td>
+                                                                                <td ng-show="LEG22_CODEC3.length > 0" class="box-small green">{{LEG22_CODEC3}}</td>
+                                                                            </tr>
+
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                </div>
 	
 		       </uib-tab>	     
 		     <uib-tab>
@@ -157,6 +484,7 @@
 <script type="application/javascript" src="../lib/bootstrap/ui-bootstrap-tpls-1.1.2.min.js"></script>
 <script type="application/javascript" src="../lib/angular-third/dialogs-default-translations.min.js"></script>
 <script type="application/javascript" src="../lib/angular-third/dialogs.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 
 <script type="application/javascript" src="../js/homer.js"></script>
