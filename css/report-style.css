@@ -1,221 +1,3 @@
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-    /*
- * Open Sans Hebrew (Hebrew) http://www.google.com/fonts/earlyaccess
- */
-    @font-face {
-        font-family: 'Open Sans Hebrew';
-        font-style: italic;
-        font-weight: 300;
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-LightItalic.eot);
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-LightItalic.eot?#iefix) format('embedded-opentype'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-LightItalic.woff2) format('woff2'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-LightItalic.woff) format('woff'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-LightItalic.ttf) format('truetype');
-    }
-
-    @font-face {
-        font-family: 'Open Sans Hebrew';
-        font-style: normal;
-        font-weight: 300;
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Light.eot);
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Light.eot?#iefix) format('embedded-opentype'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Light.woff2) format('woff2'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Light.woff) format('woff'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Light.ttf) format('truetype');
-    }
-
-    @font-face {
-        font-family: 'Open Sans Hebrew';
-        font-style: italic;
-        font-weight: 400;
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Italic.eot);
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Italic.eot?#iefix) format('embedded-opentype'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Italic.woff2) format('woff2'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Italic.woff) format('woff'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Italic.ttf) format('truetype');
-    }
-
-    @font-face {
-        font-family: 'Open Sans Hebrew';
-        font-style: normal;
-        font-weight: 400;
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Regular.eot);
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Regular.eot?#iefix) format('embedded-opentype'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Regular.woff2) format('woff2'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Regular.woff) format('woff'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Regular.ttf) format('truetype');
-    }
-
-    @font-face {
-        font-family: 'Open Sans Hebrew';
-        font-style: italic;
-        font-weight: 700;
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-BoldItalic.eot);
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-BoldItalic.eot?#iefix) format('embedded-opentype'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-BoldItalic.woff2) format('woff2'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-BoldItalic.woff) format('woff'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-BoldItalic.ttf) format('truetype');
-    }
-
-    @font-face {
-        font-family: 'Open Sans Hebrew';
-        font-style: normal;
-        font-weight: 700;
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Bold.eot);
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Bold.eot?#iefix) format('embedded-opentype'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Bold.woff2) format('woff2'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Bold.woff) format('woff'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Bold.ttf) format('truetype');
-    }
-
-    @font-face {
-        font-family: 'Open Sans Hebrew';
-        font-style: italic;
-        font-weight: 800;
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBoldItalic.eot);
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBoldItalic.eot?#iefix) format('embedded-opentype'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBoldItalic.woff2) format('woff2'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBoldItalic.woff) format('woff'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBoldItalic.ttf) format('truetype');
-    }
-
-    @font-face {
-        font-family: 'Open Sans Hebrew';
-        font-style: normal;
-        font-weight: 800;
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBold.eot);
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBold.eot?#iefix) format('embedded-opentype'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBold.woff2) format('woff2'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBold.woff) format('woff'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBold.ttf) format('truetype');
-    }
-	
-	 body {
-        font-family: 'Open Sans Hebrew', Arial, sans-serif;
-    }
-}
-
-@-moz-document url-prefix() {
-    /*
- * Open Sans Hebrew (Hebrew) http://www.google.com/fonts/earlyaccess
- */
-    @font-face {
-        font-family: 'Open Sans Hebrew';
-        font-style: italic;
-        font-weight: 300;
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-LightItalic.eot);
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-LightItalic.eot?#iefix) format('embedded-opentype'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-LightItalic.woff2) format('woff2'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-LightItalic.woff) format('woff'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-LightItalic.ttf) format('truetype');
-    }
-
-    @font-face {
-        font-family: 'Open Sans Hebrew';
-        font-style: normal;
-        font-weight: 300;
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Light.eot);
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Light.eot?#iefix) format('embedded-opentype'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Light.woff2) format('woff2'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Light.woff) format('woff'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Light.ttf) format('truetype');
-    }
-
-    @font-face {
-        font-family: 'Open Sans Hebrew';
-        font-style: italic;
-        font-weight: 400;
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Italic.eot);
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Italic.eot?#iefix) format('embedded-opentype'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Italic.woff2) format('woff2'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Italic.woff) format('woff'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Italic.ttf) format('truetype');
-    }
-
-    @font-face {
-        font-family: 'Open Sans Hebrew';
-        font-style: normal;
-        font-weight: 400;
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Regular.eot);
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Regular.eot?#iefix) format('embedded-opentype'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Regular.woff2) format('woff2'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Regular.woff) format('woff'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Regular.ttf) format('truetype');
-    }
-
-    @font-face {
-        font-family: 'Open Sans Hebrew';
-        font-style: italic;
-        font-weight: 700;
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-BoldItalic.eot);
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-BoldItalic.eot?#iefix) format('embedded-opentype'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-BoldItalic.woff2) format('woff2'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-BoldItalic.woff) format('woff'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-BoldItalic.ttf) format('truetype');
-    }
-
-    @font-face {
-        font-family: 'Open Sans Hebrew';
-        font-style: normal;
-        font-weight: 700;
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Bold.eot);
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Bold.eot?#iefix) format('embedded-opentype'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Bold.woff2) format('woff2'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Bold.woff) format('woff'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-Bold.ttf) format('truetype');
-    }
-
-    @font-face {
-        font-family: 'Open Sans Hebrew';
-        font-style: italic;
-        font-weight: 800;
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBoldItalic.eot);
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBoldItalic.eot?#iefix) format('embedded-opentype'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBoldItalic.woff2) format('woff2'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBoldItalic.woff) format('woff'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBoldItalic.ttf) format('truetype');
-    }
-
-    @font-face {
-        font-family: 'Open Sans Hebrew';
-        font-style: normal;
-        font-weight: 800;
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBold.eot);
-        src: url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBold.eot?#iefix) format('embedded-opentype'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBold.woff2) format('woff2'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBold.woff) format('woff'), url(//fonts.gstatic.com/ea/opensanshebrew/v3/OpenSansHebrew-ExtraBold.ttf) format('truetype');
-    }
-
-    body {
-        font-family: 'Open Sans Hebrew', Arial, sans-serif;
-		
-    }
-}
-
-
-
-header{
-background-color: #f42b38;
-text-align: center;
-padding: 8px 8px 4px;
-}
-
-body {
-color: #003D4C;
-}
-
-.clearfix:after {
-    clear: both;
-    content: ".";
-    display: block;
-    height: 0;
-    visibility: hidden;
-}
-.clearfix {
-    display: inline-block;
-}
-.clearfix {
-    display: block;
-}
-
-#sharemain{
-	margin: 0 auto;
-}
-.tab-content>.active{
-	border: 1px solid #DDD;
-    border-top: none;
-	background-color: #fff;
-}
-.nav-tabs>li{
-	margin-right: 10px;
-}
-.nav-tabs>li>a{
-	    font-size: 17px;
-    padding: 13px 31px;
-    margin-bottom: 20px;
-	border-bottom: 5px solid #003d4c;
-	color: #003d4c;
-}
-.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
-    color: #333;
-	background-color: transparent;
-	border: none;
-    border-bottom: 5px solid #F42B38;
-}
-.homer-modal-header{
-	border-bottom: none;
-}
-.glyphicon{
-	display: block;
-    text-align: center;
-	font-size: 10px;
-}
-.nav-tabs>li.active>a .glyphicon{
-	color: #F42B38;
-}
-
-.btn.btn-success {
-    background-color: transparent;
-    border: 2px solid #49ca6d;
-    border-radius: 50%;
-    display: inline-block;
-    margin: 5px;
-	padding: 4px 6px 7px 6px;
-}
-
 .grey-bg {
 	background: #f9f9f9;
 	}
@@ -231,16 +13,27 @@ color: #003D4C;
 
 .from-to {
     display: inline-block;
-    margin-left: 20px;
+    // margin-left: 20px;
     padding-top: 11px;
 	display: inline-block;
+    width: 50%;
+    float:left;
+}
+
+.to-from {
+    display: inline-block;
+    // margin-left: 20px;
+    padding-top: 11px;
+	display: inline-block;
+    width: 50%;
+    float:right;
 }
 
 .begining, .end {
 	display: inline-block;
 	float: left;
 	margin: 13px 0px 5px 5px;
-	font-size: 16px;
+	// font-size: 16px;
 }
 
 .arrow {
@@ -268,7 +61,7 @@ color: #003D4C;
 }
 
 .icon {
-    width: 40px;
+    width: 25px;
     display: inline-block;
     float: left;
 	margin-right: 10px;
@@ -332,12 +125,12 @@ color: #003D4C;
     }
 	
 .L-text {
-    font-size: 45px;
+    font-size: 25px;
     font-weight: 700;
 }
 
 .XL-text {
-    font-size: 70px;
+    font-size: 45px;
     font-weight: 700;
 	line-height: 60px;
 }
@@ -449,7 +242,7 @@ min-height: 140px;
 
 .box-small {
     padding: 15px;
-    font-size: 25px;
+    font-size: 18px;
     color: #fff;
     width: 70px;
     text-align: center;
@@ -484,25 +277,27 @@ min-height: 140px;
 	
 }
 
+
+
 .padding-top {
 padding-top: 25px;
 }
 
-.panel-body svg#Layer_1 {
+.report-panel-body svg#Layer_1 {
     width: 3px;
 }
 
-.panel-body tbody td {
+.report-panel-body tbody td {
     padding: 5px 40px;
     border: 3px solid #fff;
 }
 
-.panel-body table {
-text-align: center;
+.report-panel-body table {
+    text-align: center;
     float: right;
 }
 
-.panel-body th {
+.report-panel-body th {
     text-align: center;
 }
 
@@ -530,13 +325,11 @@ text-align: center;
 }
 
 
-@media (min-width: 1200px) {
-.container {
-    width: 1900px;
-}
-}
+@media (max-width: 1424px) {
 
-@media (max-width: 1024px) {
+.container {
+    width: 90%;
+}
 
 .col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-xs-1, .col-xs-10, .col-xs-11, .col-xs-12, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9 {
     position: relative;
@@ -568,15 +361,14 @@ text-align: center;
 }
 
 .box-big {
-    font-size: 22px;
+    font-size: 18px;
     width: 45%;
 	}
 	
-	.panel-body tbody td {
+.panel-body tbody td {
     padding: 5px 10px;
     border: 3px solid #fff;
     font-size: 15px;
 }
 
 }
-
