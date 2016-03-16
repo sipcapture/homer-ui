@@ -865,6 +865,10 @@
 								break;
 							}
 						}
+						
+						if (!$scope.SELECTED_CODEC_LEG1)  $scope.SELECTED_CODEC_LEG1 =  $scope.LEG21_CODEC1;
+                                                if (!$scope.SELECTED_CODEC_LEG2)  $scope.SELECTED_CODEC_LEG2 =  $scope.LEG22_CODEC1;
+
 					}
 
 				};
