@@ -563,7 +563,7 @@ sipcaptureWdgt.query = function($scope, query, userProfile) {
     var timedate = userProfile.getProfile("timerange");
     var filters = $scope.config.panel.filters;
     var filterParams = [];
-
+    
     var timezone = userProfile.getProfile("timezone");                
     var diff = (new Date().getTimezoneOffset() - timezone.value) * 60 * 1000;
     
@@ -1235,7 +1235,6 @@ sipcaptureWdgt.flot.stackedAreaChart.prepare = function($scope, animate, data) {
 	    }	    
     };
 
-console.log("AA");
     if ($scope.config.chart.legend) {
         if ($scope.config.chart.legend.enabled && $scope.config.chart.legend.enabled == true) {
             $scope.flotOptions.legend.show = true;            

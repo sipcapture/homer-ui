@@ -383,7 +383,7 @@
                     $scope.timerange.from.setSeconds($scope.timerange.from.getSeconds() + seconds);
                     $scope.timerange.to.setSeconds($scope.timerange.to.getSeconds() + seconds);
                     userProfile.setProfile("timerange", $scope.timerange);
-                    userProfile.setProfile("timezone", $scope.timezone.value);
+                    userProfile.setProfile("timezone", $scope.timezone);
                     eventbus.broadcast("globalWidgetReload", 1);
                 }, seconds * 1e3);
             }

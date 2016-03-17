@@ -264,7 +264,9 @@
 								
 								$scope.setRtcpMembers(rdata); // Voicenter function
 								$scope.showRTCPChart();       // Voicenter function
-                            }
+                            } else {
+				console.log('DISCARDING:',msg);
+			    }
                      },
                      function(sdata) { return;}).finally(function(){
                           $scope.dataLoading = false;
@@ -321,7 +323,7 @@
 						chart: {
 							renderTo: 'rtcpchart-container',
 							type: 'line',
-							//width: '1000',
+							// width: '1000',
 							zoomType: 'x'
 						},
 						title: {
@@ -761,7 +763,13 @@
 						var leg2CodecsInvite = [];
 						var leg1Codecs200 = [];
 						var leg2Codecs200 = [];
-						var tmp = leg1Invite.msg.split("\r\n");
+						try {
+							var tmp = leg1Invite.msg.split(/\r?\n/);
+							// var tmp = leg1Invite.msg.split("\r\n");
+						} catch(err) {
+							console.log(err); var tmp = [];
+						} 
+
 						tmp.forEach(function(sipHeader){
 							if(sipHeader.substring(0,4).toUpperCase() == "FROM"){
 								leg1From = sipHeader.substring(6).split(";")[0];
@@ -865,10 +873,9 @@
 								break;
 							}
 						}
-						
-						if (!$scope.SELECTED_CODEC_LEG1)  $scope.SELECTED_CODEC_LEG1 =  $scope.LEG21_CODEC1;
-                                                if (!$scope.SELECTED_CODEC_LEG2)  $scope.SELECTED_CODEC_LEG2 =  $scope.LEG22_CODEC1;
 
+						if (!$scope.SELECTED_CODEC_LEG1)  $scope.SELECTED_CODEC_LEG1 =  $scope.LEG21_CODEC1;
+						if (!$scope.SELECTED_CODEC_LEG2)  $scope.SELECTED_CODEC_LEG2 =  $scope.LEG22_CODEC1;
 					}
 
 				};
