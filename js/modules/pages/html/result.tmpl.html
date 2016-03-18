@@ -7,6 +7,8 @@
 	<a href="javascript:history.back();" ng-show="!dataLoading">
                      <em class="fa fa-step-backward" style="font-size: 20pt;"></em>
         </a>
+        &nbsp;
+	<input  ng-class="searchClass" style="float:right;" class="searchForm" type="text" ng-model="searchText" ng-change="searchData()" placeholder="Regex Filter ..." /> 	
 
         </h1>
         

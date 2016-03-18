@@ -152,6 +152,7 @@
 		        $scope.restoreState();
 			$scope.count = sdata.length;
 			$scope.gridOpts.data = sdata;
+			$scope.Data = sdata;
 			$timeout(function () {
 			    angular.element($window).resize();
 			}, 0)
@@ -468,6 +469,10 @@
 		//set gridApi on scope
 		$scope.gridApi = gridApi;
 	    };
+	    
+	    $scope.searchData = function() {
+  	          $scope.gridOpts.data = $filter('messageSearch')($scope.Data, $scope.gridOpts, $scope.searchText);
+	    };	    
 	}
     ])
     .filter('unixts', function() {
@@ -479,5 +484,32 @@
 		return input;
 	    }
 	};
-     });
+     })
+     .filter('messageSearch', function() {
+		 return function(data, grid, query) {    
+		    var matches = [];
+
+		    //no filter defined so bail
+		    if (query === undefined|| query==='') {
+		      return data;
+		    }
+
+		    for (var i = 0; i < data.length; i++) {
+			      for (var j = 0; j < grid.columnDefs.length; j++) {
+      
+				        var dataItem = data[i];
+				        var fieldName = grid.columnDefs[j]['field'];
+				        
+				        if(dataItem[fieldName] === undefined) continue;
+				        
+			        	if (dataItem[fieldName].toString().search(query)>-1) {
+                                                 var n = dataItem[fieldName].toString().search(query);
+					         matches.push(dataItem);
+			        		 break;
+				        }
+				}
+		    }
+		    return matches;
+   	      }
+   });
 }(angular, homer));
