@@ -116,8 +116,7 @@
             eventbus.broadcast(homer.modules.pages.events.resetGridState, "1");
             $location.path(homer.modules.pages.routes.home);
         };
-        
-        
+
         eventbus.subscribe(homer.modules.auth.events.userLoggedIn, function(event, args) {
             if (!$scope.templateSet) {
                 

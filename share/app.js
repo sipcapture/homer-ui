@@ -19,6 +19,7 @@
         homer.modules.core.name,
         'homer.modal',
         'homer.cflow',
+        'highcharts-ng',
         'homerCore'
     ]);        
     

@@ -112,6 +112,29 @@
 
                         return defer.promise;
                 };
+                
+                var searchQOSReportById = function (data) {
+
+                        var defer = $q.defer();
+
+                        $http.post('/api/v1/report/share/qos', data).then(
+                                /* good response */
+                            function (results) {
+                                    if(results.data.auth == "false") {
+                                        defer.reject('user not authorized');
+                                    }
+                                    else {
+                                        defer.resolve(results.data.data);
+                                    }
+                            },
+                                /* bad response */
+                                function (results) {
+                                        defer.reject('bad response combination');
+                                }
+                         );
+
+                        return defer.promise;
+                };
 
                 var searchLogReportById = function (data) {
 
@@ -166,7 +189,8 @@
                    makePcapTextforTransactionById: makePcapTextforTransactionById,
                    searchQualityReportById: searchQualityReportById,
                    searchLogReportById: searchLogReportById,
-                   searchRTCPReportById: searchRTCPReportById
+                   searchRTCPReportById: searchRTCPReportById,
+                   searchQOSReportById: searchQOSReportById
                 };
 
           }

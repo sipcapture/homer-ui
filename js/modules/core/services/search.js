@@ -183,6 +183,29 @@
 		    
         		return defer.promise;		                                                 
                 };
+                
+                var searchQOSReport = function (data) {
+                
+                        var defer = $q.defer();
+                                                            
+                        $http.post('api/v1/report/qos', data, {handleStatus:[403,503]}).then(
+        			/* good response */
+	                    function (results) {
+	        		    if(results.data.auth == "false") {				
+                                        defer.reject('user not authorized');
+	            		    }	
+		        	    else {
+                                        defer.resolve(results.data.data);                                                                        
+                                    }
+                            },
+        			/* bad response */
+	        		function (results) {
+		        		defer.reject('bad response combination');
+                                }
+        		 );   
+		    
+        		return defer.promise;		                                                 
+                };
 
                 var searchLogReport = function (data) {
                 
@@ -365,6 +388,7 @@
                    setSearchValue: setSearchValue,                   
                    searchValue: searchValue,
                    searchRTCPReport: searchRTCPReport,
+                   searchQOSReport: searchQOSReport,
                    searchLogReport: searchLogReport,
                    searchQualityReport: searchQualityReport,
                    loadNode: loadNode

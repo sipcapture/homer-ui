@@ -215,7 +215,7 @@ angular.module("homer.widgets.sipcapture", [ "adf.provider", "highcharts-ng", "a
             $scope.chartHighchart = true;
             
             var seriesData = checkData(sipdata);
-        
+                    
             if (config.chart.type["value"] == "pie") {
                 $scope.chartConfig = {
                     chart: {
@@ -1250,6 +1250,7 @@ sipcaptureWdgt.flot.stackedAreaChart.prepare = function($scope, animate, data) {
 	    }
     }
 
+    console.log(data);
     $scope.flotData = data;    
     return 1;
     
