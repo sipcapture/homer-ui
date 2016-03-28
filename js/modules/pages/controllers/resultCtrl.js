@@ -410,13 +410,13 @@
 		        name: 'source',
 		        field: 'source_alias',
 			displayName: 'Source Host',
-			cellTemplate: '<div title="{{ grid.appScope.getColumnTooltip(row, col) }}">{{COL_FIELD}}</div>'
+			cellTemplate: '<div class="ui-grid-cell-contents" title="{{ grid.appScope.getColumnTooltip(row, col) }}">{{COL_FIELD}}</div>'
 		    },
 		    {field: 'source_port', displayName: 'SPort', width: 50},
 		    {
 		        field: 'destination_alias',
 			displayName: 'Destination Host',
-			cellTemplate: '<div title="{{ grid.appScope.getColumnTooltip(row, col) }}">{{ COL_FIELD }}</div>'
+			cellTemplate: '<div class="ui-grid-cell-contents" title="{{ grid.appScope.getColumnTooltip(row, col) }}">{{ COL_FIELD }}</div>'
 		    },
 		    {field: 'destination_port', displayName: 'DPort', width: 50},
 		    {field: 'proto', displayName: 'Proto', width: 40,
