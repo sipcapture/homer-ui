@@ -304,13 +304,21 @@
 
                     search_data['param']['transaction'][data.trans] = true;
                     var messagewindowId = "" + data.id + "_" + data.trans;
+                    
+                    var posx = event.clientX;
+                    var posy = event.clientY;
+                    var winx = window.screen.availWidth;
+                    var winy = window.screen.availHeight;
+                    var diff = parseInt((posx + (winx/4) + 20) - (winx));
+		    // Reposition popup in visible area
+                    if ( diff > 0 ) { posx -= diff; }     
 
                     $homerModal.open({
                         url: 'templates/dialogs/message.html',
                         cls: 'homer-modal-message',
                         id: "message" + messagewindowId.hashCode(),
-                        divLeft: event.clientX.toString() + 'px',
-                        divTop: event.clientY.toString() + 'px',
+                        divLeft: posx.toString() + 'px',
+                        divTop: posy.toString() + 'px',
                         params: search_data,
                         onOpen: function() {
                             console.log('modal1 message opened from url ' + this.id);
