@@ -102,7 +102,19 @@
 		        $(element)
 		        .draggable({
 		              cancel: ".homer-modal-body, .close",
-		              handle: ".homer-modal-header"		                                                              		        
+		              handle: ".homer-modal-header",
+		              stop: function( event, ui ) {
+                                if (ui.helper[0]) {
+                                        var div = ui.helper[0];
+                                        if (ui.offset.top < 0) div.style.top = '0px';
+                                        if (ui.offset.left < 0) div.style.left = '0px';
+                                        if ((ui.offset.left + 100 ) > window.innerWidth) {
+                                                div.style.left = (window.innerWidth - 100)+'px';
+                                                window.scrollTo(0, 0);
+                                        }
+                                }
+                              }
+
 		        })
 			.resizable({
 			    resize: function (evt, ui) {
