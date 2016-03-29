@@ -309,7 +309,7 @@
                     var posy = event.clientY;
                     var winx = window.screen.availWidth;
                     var winy = window.screen.availHeight;
-                    var diff = parseInt((posx + (winx/4) + 20) - (winx));
+                    var diff = parseInt((posx + (winx/3) + 20) - (winx));
 		    // Reposition popup in visible area
                     if ( diff > 0 ) { posx -= diff; }     
 
