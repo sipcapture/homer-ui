@@ -103,6 +103,10 @@
 		        .draggable({
 		              cancel: ".homer-modal-body, .close",
 		              handle: ".homer-modal-header",
+		              start: function( event, ui ) {
+                                var elements=document.getElementsByClassName('opened');for(i=0;i<elements.length;i++){elements[i].style.zIndex=10001;}
+                                ui.helper[0].style.zIndex = 10002;
+                              },
 		              stop: function( event, ui ) {
                                 if (ui.helper[0]) {
                                         var div = ui.helper[0];
