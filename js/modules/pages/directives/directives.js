@@ -98,7 +98,15 @@
 	    return {
 	      restrict: 'EA',
 	      link: function(scope, element) {
-	            
+	      	
+	             	$(element).bind('mouseup', function(ui){
+                                var elements=document.getElementsByClassName('opened');
+                                for(i=0;i<elements.length;i++){if(!elements[i].style.zIndex){elements[i].style.zIndex=10001;}}
+                                if (window.topZ){window.topZ++;ui.currentTarget.style.zIndex = window.topZ; }
+                                else{ui.currentTarget.style.zIndex++;window.topZ = ui.currentTarget.style.zIndex;}
+                                ui.currentTarget.style.opacity=1;
+                        });
+
 		        $(element)
 		        .draggable({
 		              cancel: ".homer-modal-body, .close",
