@@ -297,7 +297,10 @@
 
 					<!-- START DETAILS -->
 					<div class="col-md-7">
-
+                                            <div id="no-qos-reports" ng-hide="enableQOSChart" class="row row white-bg center-text chart-general">
+                                                        <div style="margin:8px 0 0 10px;float:left;" ><i class="fa fa-chain-broken"></i></div>
+                                                        <div class="row light-grey" style="padding-bottom:5px;margin-top:0px;">Sorry! No Statistics Available!</div>
+                                            </div>
                                             <div class="row row white-bg center-text chart-general" ng-show="enableQOSChart">
                                                 <div class="col-md-12">
 							<div style="margin:8px 0 0 10px;float:left;" ><i class="fa fa-navicon"></i></div>
