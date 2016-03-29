@@ -104,6 +104,7 @@
 		              cancel: ".homer-modal-body, .close",
 		              handle: ".homer-modal-header",
 		              start: function( event, ui ) {
+		              	ui.helper[0].style.opacity=0.7;
                                 var elements=document.getElementsByClassName('opened');
                                 for(i=0;i<elements.length;i++){if(!elements[i].style.zIndex){elements[i].style.zIndex=10001;}}
                                 if (window.topZ){window.topZ++;ui.helper[0].style.zIndex = window.topZ; }
@@ -111,11 +112,11 @@
                               },
 		              stop: function( event, ui ) {
                                 if (ui.helper[0]) {
-                                        var div = ui.helper[0];
-                                        if (ui.offset.top < 0) div.style.top = '0px';
-                                        if (ui.offset.left < 0) div.style.left = '0px';
+                                	ui.helper[0].style.opacity=1;
+                                        if (ui.offset.top < 0) ui.helper[0].style.top = '0px';
+                                        if (ui.offset.left < 0) ui.helper[0].style.left = '0px';
                                         if ((ui.offset.left + 100 ) > window.innerWidth) {
-                                                div.style.left = (window.innerWidth - 100)+'px';
+                                                ui.helper[0].style.left = (window.innerWidth - 100)+'px';
                                                 window.scrollTo(0, 0);
                                         }
                                 }
