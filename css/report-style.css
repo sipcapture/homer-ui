@@ -112,7 +112,7 @@
 
 
 .btn.btn-success:hover {
-	// background-color: #fff;
+	-webkit-filter: hue-rotate(10deg);
 }
 
 #rtcp-root .glyphicon {
