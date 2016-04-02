@@ -413,32 +413,37 @@
 	   			-->
 			</div>				
 
-
 	     </uib-tab>
 	     <uib-tab>
 	     <uib-tab-heading><i class="fa fa-cloud"></i> Export</uib-tab-heading>
-			<div style="margin:15px;">
-			<button class="btn btn-normal btn-info" ng-click="exportPCAP()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;"><i class="fa fa-cloud-download"></i><br> 
-		                <i class="fa" ng-class="{'fa-cog fa-spin': isPcapBusy, '': !isPcapBusy}"></i>				                
-				<span> Export PCAP</span>
-			</button>
-			<button class="btn btn-normal btn-default" ng-click="exportTEXT()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;"><i class="fa fa-file-text-o"></i><br> 
-		                <i class="fa" ng-class="{'fa-cog fa-spin': isTextBusy, '': !isTextBusy}"></i>
-				<span>Export TEXT</span>
-			</button>
-			<button class="btn btn-normal btn-danger" ng-click="exportCanvas()" data-placement="top-right" style="margin-top:18px;margin-left:8px;"><i class="fa fa-file-image-o"></i><br> Export PNG</button>			
-			<button class="btn btn-normal btn-warning" ng-click="exportShare()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;"><i class="fa fa-share-alt"></i><br> Share Link</button>
-			<button class="btn btn-normal btn-info" ng-click="exportCloud()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;"><i class="fa fa-cloud-upload"></i><br>  
-		                <i class="fa" ng-class="{'fa-cog fa-spin': isCloudBusy, '': !isCloudBusy}"></i>
-				<span>Share Cloud</span>
-			</button>
-			<br><br>
-			<p style="margin:8px;">
-			<a href="{{sharelink}}" target="_blank" ng-if="sharelink">{{sharelink}}</a>
-			</p>
-			</div>
-	     </uib-tab>
+                <div style="margin:15px;">
+                        <button class="btn btn-normal btn-info" ng-click="exportPCAP()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;width:18%;"><i class="fa fa-cloud-download"></i><br>
+                                <i class="fa" ng-class="{'fa-cog fa-spin': isPcapBusy, '': !isPcapBusy}"></i>
+                                <span> Export PCAP</span>
+                        </button>
+                        <button class="btn btn-normal btn-default" ng-click="exportTEXT()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;width:18%;"><i class="fa fa-file-text-o"></i><br>
+                                <i class="fa" ng-class="{'fa-cog fa-spin': isTextBusy, '': !isTextBusy}"></i>
+                                <span>Export TEXT</span>
+                        </button>
+                        <button class="btn btn-normal btn-danger" ng-click="exportCanvas()" data-placement="top-right" style="margin-top:18px;margin-left:8px;width:18%;"><i class="fa fa-file-image-o"></i><br> Export PNG</button>
+                        <button class="btn btn-normal btn-info" ng-click="exportCloud()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;width:18%;"><i class="fa fa-cloud-upload"></i><br>
+                                <i class="fa" ng-class="{'fa-cog fa-spin': isCloudBusy, '': !isCloudBusy}"></i>
+                                <span>Share Cloud</span>
+                        </button>
 
+                        <!-- share link -->
+                        <button class="btn btn-normal btn-warning" ng-hide="sharelink" ng-click="exportShare()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;width:18%;">
+                                <i class="fa fa-share-alt"></i><br>
+                                Share Link
+                        </button>
+                        <a ng-if="sharelink" href="{{sharelink}}" target="_blank" class="btn btn-normal btn-warning" data-placement="top-right" style="margin-top:18px;margin-left:8px;width:18%;background-color:#f39c12;color:#ffffff;">
+                                <i class="fa fa-share-alt fa-spin"></i><br>
+                                Link Ready
+                        </a>
+                </div>
+                        
+             </uib-tab>
+             
 	     <uib-tab disable="true" ng-show="call_duration">
 		     <uib-tab-heading><i class="fa fa-clock-o"></i> Session Duration: {{call_duration}}</uib-tab-heading>
 	     </uib-tab>
