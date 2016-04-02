@@ -258,8 +258,13 @@
                     $scope.sharelink = "";
                     search.createShareLink(data).then(function(msg) {
                             if (msg) {
-                                $scope.sharelink = msg[0];
+                                if (msg[0].match(/^http/)) {
+                                        $scope.sharelink = msg[0];
+                                } else {
+                                        $scope.sharelink = location.protocol+"//"+window.location.hostname+'/share/'+msg[0];
+                                }
                             }
+
                         },
                         function(sdata) {
                             return;
