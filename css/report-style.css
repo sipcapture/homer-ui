@@ -446,3 +446,11 @@ padding-top: 5px;
 .short-p {
     margin: 0 0 2px 0;
 }
+
+
+.panel-title {
+    margin-top: 5px;
+    margin-bottom: 0;
+    font-size: 14px;
+    color: inherit;
+}
