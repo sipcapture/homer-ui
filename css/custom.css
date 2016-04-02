@@ -714,3 +714,7 @@ svg.nvd3-svg {
 	color:#F00;
 
 }
+
+.ui-grid-header-cell-wrapper {
+        font-size: 11px;
+}
