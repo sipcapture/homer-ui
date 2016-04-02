@@ -239,7 +239,7 @@
 					    <div class="row white-bg center-text" ng-if="calc_calls" ng-repeat="item in calc_calls">
                                                 <div class="col-md-12">
 							<div style="margin:8px 0 0 10px;float:left;" ><i class="fa fa-rss"></i></div>
-                                                        <div class="row light-grey" style="padding-bottom:5px;margin-top:0px;">RTP LEG {{ $index +1 }}</div>
+                                                        <div class="row light-grey" style="padding-bottom:5px;margin-top:0px;">SDP SESSION {{ $index +1 }}</div>
                                                 </div>
 					      <div ng-repeat="(key, value) in item.aparty.audio">
                                                 <div class="col-md-6"  ng-show="item.aparty.audio['k'+$index]" >
@@ -251,9 +251,21 @@
                                                         	<div class="box-codec blue" ng-if="item.aparty.audio['k'+$index].dtmf">{{ item.aparty.audio['k'+$index].dtmf }}</div>
                                                         	<div class="box-codec green"  ng-if="item.aparty.audio['k'+$index].description == item.bparty.audio['k'+$index].description">{{ item.aparty.audio['k'+$index].description }}</div>
                                                         	<div class="box-codec orange" ng-if="item.aparty.audio['k'+$index].description != item.bparty.audio['k'+$index].description">{{ item.aparty.audio['k'+$index].description }}</div>
-		                                                <div class="box-codec blue" ><i class="fa fa-arrow-right"></i></div>
+		                                                <div class="box-codec orange" ng-show="!item.bparty.audio['k'+$index]"><i class="fa fa-times"></i></div>
+                                                                <div class="box-codec blue" ng-show="item.bparty.audio['k'+$index]"><i class="fa fa-arrow-right"></i></div>
                                                     </div>
                                                 </div>
+                                                
+                                                <!-- MISSING BPARTY -->
+                                                <div class="col-md-6" ng-show="!item.bparty.audio['k'+$index]" style="padding: 5% 0;">
+                                                    <div class="row" style="padding: 5% 0;">
+                                                        <p class="short-p">
+                                                                <i class="fa fa-times"></i>
+                                                                NO RESPONSE
+                                                        </p>
+                                                    </div>
+                                                </div><div style="clear:both;" ng-show="!item.bparty.audio['k'+$index]"></div>
+
                                                 <div class="col-md-6" ng-show="item.bparty.audio['k'+$index]" >
                                                     <div class="row light-silver">
                                                         <p class="short-p">RTP-{{ $index +1}} AUDIO DST:</p>
@@ -274,8 +286,21 @@
 							</p>
                                                         	<div class="box-codec green"  ng-if="item.aparty.video['k'+$index].description == item.bparty.video['k'+$index].description">{{ item.aparty.video['k'+$index].description }}</div>
                                                         	<div class="box-codec orange" ng-if="item.aparty.video['k'+$index].description != item.bparty.video['k'+$index].description">{{ item.aparty.video['k'+$index].description }}</div>
+                                                        	<div class="box-codec orange" ng-show="!item.bparty.video['k'+$index]"><i class="fa fa-times"></i></div>
+                                                                <div class="box-codec blue" ng-show="item.bparty.video['k'+$index]"><i class="fa fa-arrow-right"></i></div>
                                                     </div>
                                                 </div>
+                                                
+                                                <!-- MISSING BPARTY -->
+                                                <div class="col-md-6" ng-show="!item.bparty.video['k'+$index]" style="padding: 5% 0;">
+                                                    <div class="row" style="padding: 5% 0;">
+                                                        <p class="short-p">
+                                                                <i class="fa fa-times"></i>
+                                                                NO RESPONSE
+                                                        </p>
+                                                    </div>
+                                                </div><div style="clear:both;" ng-show="!item.bparty.video['k'+$index]"></div>
+                                                
                                                 <div class="col-md-6"  ng-show="item.bparty.video.k$index" >
                                                     <div class="row light-green">
                                                         <p class="short-p">RTP-{{ $index +1}} VIDEO DST:</p>
