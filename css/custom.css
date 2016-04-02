@@ -192,7 +192,7 @@ svg.nvd3-svg {
     overflow: scroll;
     width: 98%;
     overflow-y: scroll;
-    position: absolute;
+    // position: absolute;
     height: 100%;
 }
 
