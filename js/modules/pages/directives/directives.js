@@ -127,6 +127,11 @@
                                                 ui.helper[0].style.left = (window.innerWidth - 100)+'px';
                                                 window.scrollTo(0, 0);
                                         }
+                                        if ((ui.offset.top + 50 ) > window.innerHeight) {
+                                                ui.helper[0].style.top = (window.innerHeight - 50)+'px';
+                                                window.scrollTo(0, 0);
+                                        }
+
                                 }
                               }
 
