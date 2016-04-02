@@ -122,7 +122,9 @@
                                 if (ui.helper[0]) {
                                 	ui.helper[0].style.opacity=1;
                                         if (ui.offset.top < 0) ui.helper[0].style.top = '0px';
-                                        if (ui.offset.left < 0) ui.helper[0].style.left = '0px';
+                                        if (ui.offset.left < 0) {
+                                                if ((ui.helper[0].offsetWidth + ui.offset.left ) < 100) ui.helper[0].style.left = '-' + (ui.helper[0].offsetWidth - 100) +'px';
+                                        }
                                         if ((ui.offset.left + 100 ) > window.innerWidth) {
                                                 ui.helper[0].style.left = (window.innerWidth - 100)+'px';
                                                 window.scrollTo(0, 0);
