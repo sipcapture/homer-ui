@@ -263,8 +263,21 @@
                                 } else {
                                         $scope.sharelink = location.protocol+"//"+window.location.hostname+'/share/'+msg[0];
                                 }
+                                
+                                window.sweetAlert({
+                                   title: "Ready to Share!",
+                                   text: "Your session can be accessed <a target='_blank' href='" + $scope.sharelink + "'>here</a>",
+                                   html: true
+                                });
+                                
+                            } else {
+                            	window.sweetAlert({
+                                   title: "Oops!",
+                                   type: "error",
+                                   text: "Your session could not be shared!<br>If this persists, contact your Administrator",
+                                   html: true
+                                });
                             }
-
                         },
                         function(sdata) {
                             return;
