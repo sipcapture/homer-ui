@@ -718,3 +718,8 @@ svg.nvd3-svg {
 .ui-grid-header-cell-wrapper {
         font-size: 11px;
 }
+
+.ui-grid-viewport {
+    overflow-y: auto !important;
+    overflow-x: auto !important;
+}
