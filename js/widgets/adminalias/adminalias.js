@@ -236,6 +236,12 @@ angular.module('homer.widgets.adminalias', ['adf.provider'])
                 
     };
 
+    $scope.$watch('config.size.height',function(val,old){
+          $scope.gridHeight = val;
+    });
+       
+    if($scope.config && $scope.config.size) $scope.gridHeight = $scope.config.size.height;
+    else $scope.gridHeight = 250;
 
     $scope.gridOptions = {
 	showFooter: false,

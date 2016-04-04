@@ -4,7 +4,7 @@
 	<uib-tab active="activeMainTab" disable="activeTab === false" select="tabShown = !tabShown" deselect="tabShown = !tabShown">
 	<uib-tab-heading><i class="fa fa-users"> Local Alarms</i></uib-tab-heading>
                <div style="margin-top:8px;">
-		 <div id="grid1" ng-if="activeMainTab" ui-grid="gridOptions" class="gridWidgetsStyle" ui-grid-edit ui-grid-row-edit ui-grid-cellNav ui-grid-auto-resize resize ></div>
+		 <div id="grid1"  ng-style="{'height': gridHeight}" ng-if="activeMainTab" ui-grid="gridOptions" class="gridWidgetsStyle" ui-grid-edit ui-grid-row-edit ui-grid-auto-resize resize ></div>
                </div>
 	</uib-tab>
 	<uib-tab ng-if="activeMainTab === true" active="disabled" deselect="activeMainTab">

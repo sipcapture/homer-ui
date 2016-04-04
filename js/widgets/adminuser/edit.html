@@ -1,6 +1,14 @@
 <form role=form> 
         <div class=form-group>
-        <label for=widgetTitle>Title</label>
-                <input type=text class=form-control id=widgetTitle ng-model="$parent.model.title" placeholder="Enter title" required>
+	
+	         <div class="input-group">
+		        <label for=widgetTitle>Title</label>
+                	<input type=text class=form-control id=widgetTitle ng-model="$parent.model.title" placeholder="Enter title" required>
+                
+		  </div>
+                  <div class="input-group">
+                      <label for="widgetHeight">Height:</label>
+                      <input type="number" min="0" step="1" pattern="\d*" class="form-control" id="widgetHeight" ng-init="config.size.height = config.size.height || 250" ng-model="config.size.height" placeholder="Enter height (0) - default" >
+                   </div>
         </div>
 </form>
