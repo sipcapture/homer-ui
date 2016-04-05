@@ -720,6 +720,6 @@ svg.nvd3-svg {
 }
 
 .ui-grid-viewport {
-    overflow-y: auto !important;
+    // overflow-y: auto !important;
     overflow-x: auto !important;
 }
