@@ -90,6 +90,7 @@
         		data.param.search = value;
 	        	data.param.location = {};
 	        	data.param.location.node = node;
+	        	data.param.timezone = timezone;
 	        	data.timestamp.from = timedate.from.getTime() - diff;
 	        	data.timestamp.to = timedate.to.getTime() - diff;
 	        	angular.forEach(transaction.transaction, function(v, k) {
@@ -307,7 +308,8 @@
 		/* set to to our last search time */
 		//var timedate = search.getTimeRange();
 		var diff = $scope.diff * 60 * 1000;
-				
+
+		var timezone = userProfile.getProfile("timezone");                            				
 		var timedate = userProfile.getProfile("timerange");
 		search_data['timestamp']['to'] = timedate.to.getTime() - diff + 300*100;
 
@@ -321,6 +323,8 @@
                 if(search_profile.hasOwnProperty('uniq')) {
                     search_data['param']['search']['uniq'] = search_profile.uniq;
                 }
+                                
+                search_data['param']['timezone'] = timezone;
                 
 		$homerModal.open({
 		    url: 'templates/dialogs/transaction.html',
