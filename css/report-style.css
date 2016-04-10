@@ -2,7 +2,7 @@
 	background: #f9f9f9;
 	}
 
-.white-bg {
+.white-bg {box
 	background: #fff;
 	margin-bottom: 5px;
 	margin-top: 5px;
@@ -298,6 +298,7 @@ padding: 10px;
     color: #fff;
     margin: 1px;
         text-align:center;
+        min-width:25px;
     // float:left;
     border-radius: 3px;
 }
