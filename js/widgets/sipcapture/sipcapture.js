@@ -919,7 +919,9 @@ sipcaptureWdgt.d3.lineChart.prepare = function($scope, animate, data) {
                 var percd = '';
                 if(d.series[0].values[d.pointIndex+1]){
                         percd = (((d.series[0].values[d.pointIndex].value - d.series[0].values[d.pointIndex+1].value)/d.series[0].values[d.pointIndex].value)*100).toFixed(2);
-                        if (percd >= 0) { percd = '<font color=green>+'+percd+'%</font>'; } else { percd = '<font color=red>'+percd+'%</font>'; }
+			if (percd >= 0) { percd = '<font color=green>+'+percd+'%</font>'; } 
+                        else if (percd < 0) { percd = '<font color=red>'+percd+'%</font>'; }
+                        else { percd = ''; }
                 }
                 var tip = '<div style="margin:8px;">'
                      + '<svg height="10" width="10"><circle cx="5" cy="5" r="5" stroke-width="1" fill="'+d.point.color+'" /></svg>'
