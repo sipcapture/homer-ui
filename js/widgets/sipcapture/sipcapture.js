@@ -905,18 +905,35 @@ sipcaptureWdgt.d3.lineChart.prepare = function($scope, animate, data) {
         chart.x2Axis.tickFormat(function(d){ return; });
         // Custom Tooltip
 	chart.tooltip.contentGenerator(function(d){
+                // Block Statistics
+                var len = d.series[0].values.length, min = Infinity, max = 0;
+                while (len--) {
+                  if (d.series[0].values[len].value < min) {
+                    min = d.series[0].values[len].value;
+                  }
+                  if (d.series[0].values[len].value > max) {
+                    max = d.series[0].values[len].value;
+                  }
+                }
+                var avg = (max + min) / 2;
                 var percd = '';
                 if(d.series[0].values[d.pointIndex+1]){
-                        percd = (((d.series[0].values[d.pointIndex].value - d.series[0].values[d.pointIndex+1].value)/d.series[0].values[d.pointIndex].value)*1$
+                        percd = (((d.series[0].values[d.pointIndex].value - d.series[0].values[d.pointIndex+1].value)/d.series[0].values[d.pointIndex].value)*100).toFixed(2);
                         if (percd >= 0) { percd = '<font color=green>+'+percd+'%</font>'; } else { percd = '<font color=red>'+percd+'%</font>'; }
-                }                  
+                }
                 var tip = '<div style="margin:8px;">'
                      + '<svg height="10" width="10"><circle cx="5" cy="5" r="5" stroke-width="1" fill="'+d.point.color+'" /></svg>'
                      + ' <b>'+d.point.value+'</b><br>'
                      + ' '+d.series[0].key+'<br>'
                      + ' '+percd+'<br>'
+                     + '<p>'
+                     + '<div class="box-codec blue" style="min-width:25px;"> < '+min+' </div>'
+                     + '<div class="box-codec green" style="min-width:25px;"> '+avg+' </div>'
+                     + '<div class="box-codec orange" style="min-width:25px;"> '+max+' > </div>'
+                     + '</p>'
                      + '</div>';
                 return tip;
+
         });
 
         sipcaptureWdgt.d3.create($scope, chart, data, animate);
