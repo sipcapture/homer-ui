@@ -83,64 +83,11 @@
                 </div>
             </div>
 
-<!--
-            <div class="row">
-                <div class="col-md-12">
-                  <span class="checkboxGlyphicon glyphicon glyphicon-open"></span>
-                    <input type="checkbox" ng-init="config.chart.legend.enabled ? true : false" id="widgetLegend" ng-model="config.chart.legend.enabled">
-                    <label for="widgetHeight">Legends</label>
-                </div>
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <span class="input-group-addon" id="legend-addon1">Align</span>
-                        <select id="widgetLegendAlign" ng-init="config.chart.legend.align = config.chart.legend.align || legend_align[0].value" ng-disabled="!config.chart.legend.enabled" ng-options="option.value as option.name for option in legend_align" ng-model="config.chart.legend.align" class="form-control" aria-describedby="legend-addon1"></select>                                                               
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <span class="input-group-addon" id="legend-addon1">Layout</span>
-                        <select id="widgetLegendLayout" ng-init="config.chart.legend.layout = config.chart.legend.layout || legend_layout[0].value" ng-disabled="!config.chart.legend.enabled" ng-options="option.value as option.name for option in legend_layout" ng-model="config.chart.legend.layout" class="form-control" aria-describedby="legend-addon2"></select>                                                             
-                    </div>
-                </div>
-            </div>
---><!--
-                <div id="Chart1" style="float:left;margin-right:5px;width:45%;">
-                <p>
-
-                </div>
-                <div id="Chart2" style="float:left;width:45%;">
-                </p>
-                <p>
-                        <p>
-                        <label style="width:40%;" for=widgetChartType>Ext Legend:
-                        </label> <input type="checkbox"
-                        ng-init="config.chart.legend.enabled ? true : false" id=widgetLegend ng-model="config.chart.legend.enabled">                        
-                        </p>
-                        <p>
-                        <label style="width:40%;" for=widgetChartType>Align: </label>                        
-                            <select ng-init="config.chart.legend.align = config.chart.legend.align || legend_align[0].value"                        
-                            ng-disabled="!config.chart.legend.enabled" ng-options="option.value as option.name for option in legend_align" ng-model="config.chart.legend.align"></select>                                                               
-                        </p>
-                    <p>
-                        <label style="width:40%;" for=widgetChartType>Layout: </label>                       
-                            <select 
-                                ng-init="config.chart.legend.layout = config.chart.legend.layout || legend_layout[0].value" 
-                                ng-disabled="!config.chart.legend.enabled" ng-options="option.value as option.name for option in legend_layout" ng-model="config.chart.legend.layout"></select>                                                             
-                        </p>
-
-                        <p>
-                        <p>Series Colors (optional):  
-                          <input style="width:80%;" type=text class=form-control id=widgetColors ng-model="config.chart.ccc" placeholder="red,green,blue"> 
-                        </p>
-                        </p>
-
-                </p>                                     
-                </div><div style="clear:both;"/>-->     
       </div> 
       <!-- </form> -->
     </uib-tab>
   <uib-tab heading="Data" class="nav-justified">
-
+      <div ng-hide="displayExpertMode">
           <!--<label for="path">API Query Fields</label>-->
           <div class="row">
             <div class="col-md-12">
@@ -174,40 +121,7 @@
               </div>
             </div>
           </div>
-<!--
-          <hr>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="row">
-                <div class="input-group">
-                    <label for="widgetFieldValue">Value Field</label>
-                    <select id="widgetFieldValue" ng-options="valuefields as valuefields.field for valuefields in config.panel.datasource.settings.fieldvalues track by valuefields.field " ng-model="config.panel.fieldvalue" class="form-control" required></select>
-                </div>
-              </div>
-              <div class="row text-center">
-                <button class="btn btn-default" type="submit" ng-click="addValue()">Add</button>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="row">
-                <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th class="text-center">Value Field</th>
-                      <th class="text-center">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr ng-repeat="value in config.panel.values">
-                      <td class="text-center">{{value}}</td> 
-                      <td class="text-center"><a ng-click="removeValue($index)"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>     
--->
+
           <hr>
           <div class="row">
             <div class="col-md-6">
@@ -248,23 +162,8 @@
               </div>
             </div>
           </div>
-
-<!--
-                <div class="col-md-6 fix-left-6-column">
-                    <div class="input-group">
-                        <label for="widgetFieldName">Fieldname(s)</label>
-                        <select id="widgetFieldName" ng-options="namefields as namefields.type for namefields in config.panel.datasource.settings.filters track by namefields.type " ng-model="config.panel.fieldname" class="form-control"  multiple="multiple" required></select>
-                    </div>
-                </div>
-                <div class="col-md-6 fix-right-6-column">
-                    <div class="input-group">
-                        <label for="widgetValue">FieldValue(s)</label>
-                        <select id="widgetFieldName" ng-options="valuefields as valuefields.field for valuefields in config.panel.datasource.settings.fieldvalues track by valuefields.field " ng-model="config.panel.fieldvalue" class="form-control"  multiple="multiple" required></select>
--->                        <!--FieldValue sum: 
-                        <input type="checkbox" id=widgetValue ng-model="config.panel.fieldsum">-->
-<!--                    </div>
-                </div>
--->
+      </div>
+      // Expert Mode
               <div class="row">
                   <a ng-click="showExpertMode();" class="seeMore"><span class="text">{{expertMode}}</span><span ng-class="expertClass" aria-hidden="true"></span></a>
                 </div>
@@ -272,67 +171,28 @@
               <div id="chartExpert" ng-show="displayExpertMode">
                   <hr>
                   <uib-tabset>
-                      <uib-tab>
-                        <tab-heading>Query</tab-heading>
+                      <uib-tab heading="Query">
                         <div id="queryTab">
                             <label for="path">API Query Path</label>
                             <input type="text" class="form-control" id="path" ng-model="config.path" ng-change="updateDebugUrl()" placeholder="Enter Path (call/function)">
 
                             <label for="query">API Query Value</label>
-                            <textarea style="height: 235px;" class="form-control" id="query" ng-change="updateDebugUrl()" ng-model="config.query" placeholder="Query"></textarea>
+                            <textarea style="height: 235px;font-size:12px;" class="form-control" id="query" ng-change="updateDebugUrl()" ng-model="config.query" placeholder="Query"></textarea>
                             <br>
-                            <p ng-class="parsingColorClass">{{parsingStatus}}</p>
+                            <p ng-class="parsingColorClass" style="top:6rem;width:auto;height:auto;">{{parsingStatus}}</p>
                         </div>
                       </uib-tab>
-                      <uib-tab>
-                        <tab-heading>Debug</tab-heading>
+                      <uib-tab heading="Debug">
                         <label for="path">CURL Debug:</label>
                             <div class="input-group">
-                                <textarea style="height: 100px; font-size:12px" class="form-control" id="debugquery" ng-model="debug" placeholder="Debug query"></textarea>
+                                <textarea style="height: 100px; font-size:12px;" class="form-control" id="debugquery" ng-model="debug" placeholder="Debug query"></textarea>
                         </div>
                         <div class="input-group">
                             <label for="path">CURL Response:</label>
-                            <textarea style="height: 120px; font-size:12px" class="form-control" id="debugqueryresp" ng-model="config.debugresp" placeholder="Debug query response"></textarea>
+                            <textarea style="height: 120px; font-size:12px;" class="form-control" id="debugqueryresp" ng-model="config.debugresp" placeholder="Debug query response"></textarea>
                         </div>
                     </uib-tab>
               </div>
-
-              <!--
-         
-      <uib-tabset>
-          <uib-tab>
-          <tab-heading>Query</tab-heading>
-          </uib-tab>
-          <uib-tab>
-          <tab-heading>Expert</tab-heading>
-                </uib-tab>
-                <uib-tab>
--->
-            <!--        
-                    <tab-heading>Queries</tab-heading>
-                    <label for="path">API Query Path</label>
-                    <input type="text" class="form-control" id="path" ng-model="config.path" ng-change="updateDebugUrl()" placeholder="Enter Path (call/function)">
-                    <label for="path">API Query Value</label>
-                    <textarea style="width: 549px; height: 235px;" class="form-control" id="query" ng-change="updateDebugUrl()" ng-model="config.query" placeholder="Query"></textarea>
-                    <br>
-                    <p ng-class="parsingColorClass">{{parsingStatus}}</p>
-                </uib-tab>
-                <uib-tab>
-            -->
-              <!--
-                <tab-heading>Debug</tab-heading>
-                    <label for="path">CURL Debug:</label>
-                    <p>
-                        <textarea style="width: 549px; height: 235px;" class="form-control" id="debugquery" ng-model="debug" placeholder="Debug query"></textarea>
-                    </p>
-                    <label for="path">CURL Response:</label>
-                    <p>
-                        <textarea style="width: 549px; height: 235px;" class="form-control" id="debugqueryresp" ng-model="config.debugresp" placeholder="Debug query response"></textarea>
-                    </p>
-                </uib-tab>
-           </uib-tabset>
--->
-
 
         </uib-tab>
    </uib-tabset>
