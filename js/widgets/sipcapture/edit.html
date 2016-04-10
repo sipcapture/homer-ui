@@ -165,7 +165,7 @@
       </div>
       <!-- Expert Mode -->
               <div class="row">
-                  <a ng-click="showExpertMode();" class="seeMore"><span class="text">{{expertMode}}</span><span ng-class="expertClass" aria-hidden="true"></span></a>
+                  <a ng-click="showExpertMode();" class="seeMore"><span class="text">{{expertMode}}</span><span ng-class="expertClass" aria-hidden="true" style="top:-3px;"></span></a>
                 </div>
               
               <div id="chartExpert" ng-show="displayExpertMode">
@@ -177,19 +177,19 @@
                             <input type="text" class="form-control" id="path" ng-model="config.path" ng-change="updateDebugUrl()" placeholder="Enter Path (call/function)">
 
                             <label for="query">API Query Value</label>
-                            <textarea style="height: 235px;font-size:12px;" class="form-control" id="query" ng-change="updateDebugUrl()" ng-model="config.query" placeholder="Query"></textarea>
+                            <textarea style="height: 200px;font-size:10px;" class="form-control" id="query" ng-change="updateDebugUrl()" ng-model="config.query" placeholder="Query"></textarea>
                             <br>
-                            <p ng-class="parsingColorClass" style="top:6rem;width:auto;height:auto;">{{parsingStatus}}</p>
+                            <p ng-class="parsingColorClass" style="top:6rem;right:2em;width:auto;height:auto;">{{parsingStatus}}</p>
                         </div>
                       </uib-tab>
                       <uib-tab heading="Debug">
                         <label for="path">CURL Debug:</label>
                             <div class="input-group">
-                                <textarea style="height: 100px; font-size:12px;" class="form-control" id="debugquery" ng-model="debug" placeholder="Debug query"></textarea>
+                                <textarea style="height: 100px; font-size:10px;" class="form-control" id="debugquery" ng-model="debug" placeholder="Debug query"></textarea>
                         </div>
                         <div class="input-group">
                             <label for="path">CURL Response:</label>
-                            <textarea style="height: 120px; font-size:12px;" class="form-control" id="debugqueryresp" ng-model="config.debugresp" placeholder="Debug query response"></textarea>
+                            <textarea style="height: 120px; font-size:10px;" class="form-control" id="debugqueryresp" ng-model="config.debugresp" placeholder="Debug query response"></textarea>
                         </div>
                     </uib-tab>
               </div>
