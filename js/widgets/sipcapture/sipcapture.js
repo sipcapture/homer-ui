@@ -929,9 +929,9 @@ sipcaptureWdgt.d3.lineChart.prepare = function($scope, animate, data) {
                      + ' '+d.series[0].key+'<br>'
                      + ' '+percd+'<br>'
                      + '<p>'
-                     + '<div class="box-codec blue" style="min-width:25px;"> < '+min+' </div>'
-                     + '<div class="box-codec green" style="min-width:25px;"> '+avg+' </div>'
-                     + '<div class="box-codec orange" style="min-width:25px;"> '+max+' > </div>'
+                     + '<div class="box-point blue" > < '+min+' </div>'
+                     + '<div class="box-point green" > '+avg+' </div>'
+                     + '<div class="box-point orange" > '+max+' > </div>'
                      + '</p>'
                      + '</div>';
                 return tip;
