@@ -694,13 +694,14 @@ svg.nvd3-svg {
 
 .center-modal {
     position: fixed;
-    top: 5%;
+    top: 8%;
     left: 18.5%;
     z-index: 1050;
-    width: 80%;
-  // height: 80%;
+    //  width: 80%;
+    // height: 80%;
     margin-left: -10%;
 }
+
 
 .msg-block {
     margin-top:5px;
