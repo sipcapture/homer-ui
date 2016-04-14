@@ -330,6 +330,27 @@
             updateTimeRange(true);
         };        
         
+        $scope.dayselect = function(day, text) {
+        
+            var min = day * 1440;
+            var diff = (new Date().getTimezoneOffset() - $scope.timezone.value);                                     
+            var bdt = new Date(new Date().setMinutes(new Date().getMinutes() + min + diff));
+            var sdt = new Date(new Date().setMinutes(new Date().getMinutes() + min + diff));
+            bdt.setHours(0,0,0,0);
+            sdt.setHours(23,59,59,99);
+                        
+            $scope.timerange = {
+                from: bdt,
+                to: sdt,
+                custom: text
+            };
+            userProfile.setProfile("timerange", $scope.timerange);
+            userProfile.setProfile("timezone", $scope.timezone);
+            eventbus.broadcast("globalWidgetReload", 1);
+            $scope.timeWindow = false;
+            updateTimeRange(true);
+        };        
+        
         $scope.next = function(min, text) {
             var diff = (new Date().getTimezoneOffset() - $scope.timezone.value);                                     
             var dt = new Date(new Date().setMinutes(new Date().getMinutes() + min + diff));

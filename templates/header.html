@@ -297,6 +297,10 @@
                <li><a href ng-click="last(1440, 'Last 24 Hours');" ng-class="{active: isActive('Last 24 Hours')}">Last 24 Hours</a>
                </li>
                <li>&nbsp;&nbsp;</li>
+               <li><a href ng-click="dayselect(-1, 'Yesterday');" ng-class="{active: isActive('Yesterday')}">Yesterday</a></li>
+               <li><a href ng-click="dayselect(0, 'Today');" ng-class="{active: isActive('Today')}">Today</a></li>
+               <li><a href ng-click="dayselect(1, 'Tomorrow');" ng-class="{active: isActive('Tomorrow')}">Tomorrow</a></li>
+               <li>&nbsp;&nbsp;</li>
                <li><a href ng-click="next(5, 'Next 5 Minutes');" ng-class="{active: isActive('Next 5 Minutes')}">Next 5 Minutes</a></li>
                <li><a href ng-click="next(10, 'Next 10 Minutes');" ng-class="{active: isActive('Next 10 Minutes')}">Next 10 Minutes</a></li>
                <li><a href ng-click="next(30, 'Next 30 Minutes');" ng-class="{active: isActive('Next 30 Minutes')}">Next 30 Minutes</a></li>
