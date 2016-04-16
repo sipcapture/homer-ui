@@ -118,6 +118,7 @@ svg.nvd3-svg {
 
 .dashboard-container a i {
     color: #7F7F7F;
+    font-size: 14px;
     -webkit-transition: all 0.3s ease-in-out;
     -moz-transition: all 0.3s ease-in-out;
     -o-transition: all 0.3s ease-in-out;
