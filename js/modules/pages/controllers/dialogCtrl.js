@@ -160,6 +160,7 @@
                 $scope.enableRTCPReport = false;
                 $scope.enableLogReport = false;
                 $scope.enableXRTPReport = false;
+                $scope.enableRTPAgentReport = false;
                 $scope.enableQOSChart = false;
 
                 $scope.colorsChart = ['aqua', 'black', 'blue', 'fuchsia', 'gray', 'green', 'lime', 'maroon', 'navy', 'olive', 'orange', 'purple', 'red', 'silver', 'teal', 'white', 'yellow'];
@@ -462,7 +463,7 @@
 					} catch(e) { console.log('no call stats'); } 
 
 					try {
-                                          if (msg.reports.xrtpstats.main) {
+                                          if (msg.reports.xrtpstats && msg.reports.xrtpstats.main) {
 						$scope.calc_xrtp = msg.reports.xrtpstats.main;
 						$scope.calc_xrtp.mos_avg = $scope.calc_xrtp.mos_avg.toFixed(2);
 						$scope.calc_xrtp.mos_worst = $scope.calc_xrtp.mos_worst.toFixed(2);
@@ -472,9 +473,19 @@
 					} catch(e) { console.log('no x-rtp stats'); } 
 					
 
+					try {
+                                          if (msg.reports.rtpagent && msg.reports.rtpagent.main) {
+						$scope.calc_rtpagent = msg.reports.rtpagent.main;
+						$scope.calc_rtpagent.mos_average = $scope.calc_rtpagent.mos_average.toFixed(2);
+						$scope.calc_rtpagent.mos_worst = $scope.calc_rtpagent.mos_worst.toFixed(2);
+						$scope.calc_rtpagent.lost_avg = ($scope.calc_rtpagent.packets_lost * 100 / $scope.calc_rtpagent.total_pk ).toFixed(2);
+					  }
+					} catch(e) { console.log('no rtpagent stats'); } 
+					
+
 					// RTCP
 					try {
-					  if(msg.reports && msg.reports.rtcp && msg.reports.rtcp.chart) {					
+					  if(msg.reports && ( msg.reports.rtcp || msg.reports.rtpagent ) ) {					
 					            //$scope.showQOSChart();
 					            var charts =  msg.reports.rtcp.chart;
 
@@ -482,6 +493,15 @@
 						    if(msg.reports.rtcpxr && msg.reports.rtcpxr.chart) {
 						    	    //$scope.chartData.concat(msg.reports.rtcpxr.chart);	
 						    	    var xrcharts =  msg.reports.rtcpxr.chart;
+						    	    angular.forEach(xrcharts, function(count, key) {
+						    	            if(!charts[key]) charts[key] = count;						    	            
+						    	    });
+						    }
+
+						    // RTPAGENT
+						    if(msg.reports.rtpagent && msg.reports.rtpagent.chart) {
+						    	    //$scope.chartData.concat(msg.reports.rtcpxr.chart);	
+						    	    var xrcharts =  msg.reports.rtpagent.chart;
 						    	    angular.forEach(xrcharts, function(count, key) {
 						    	            if(!charts[key]) charts[key] = count;						    	            
 						    	    });
@@ -512,6 +532,7 @@
 					            
 					  }
 					} catch(e) { console.log('no chart data'); } 
+
 
                                 }
 

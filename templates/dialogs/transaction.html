@@ -175,6 +175,49 @@
                                                 </div>
                                             </div>
 
+					<!-- start rtpagent -->
+                                            <div class="row white-bg center-text" ng-if="calc_rtpagent">
+                                                <div class="col-md-12">
+							<div ng-show="!xcollapsed" style="margin:8px 0 0 10px;float:left;" ><i class="fa fa-toggle-on"></i></div>
+							<div ng-show="xcollapsed" style="margin:8px 0 0 10px;float:left;" ><i class="fa fa-toggle-off"></i></div>
+							<div class="row light-grey" style="padding-bottom:5px;margin-top:0px;" ng-model="xcollapsed" ng-click="xcollapsed=!xcollapsed"> RTP Agent Stats [ {{ calc_rtpagent.packets_all }} Packets ]</div>
+						</div>
+                                                <div class="col-md-4" ng-show="!xcollapsed">
+                                                    <div class="row light-orange">
+                                                        <p>Avg. Packet Loss</p>
+                                                        <p class="L-text">{{calc_rtpagent.lost_avg }}%</p>
+                                                    </div>
+                                                    <div class="row light-orange">
+                                                        <p>Tot Packets Lost</p>
+                                                        <p class="L-text">{{calc_rtpagent.packets_lost}}</p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4" ng-show="!xcollapsed">
+                                                    <div class="row light-blue">
+                                                        <p>Avg. Jitter (ms)</p>
+                                                        <p class="L-text">{{calc_rtpagent.jitter_avg}}</p>
+                                                    </div>
+                                                    <div class="row light-blue">
+                                                        <p>Max Jitter (ms)</p>
+                                                        <p class="L-text">{{calc_rtpagent.jitter_max}}</p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4" ng-show="!xcollapsed">
+                                                    <div class="row light-green">
+                                                        <p>Avg. MOS</p>
+                                                        <p class="L-text">{{calc_rtpagent.mos_average}}</p>
+                                                    </div>
+                                                    <div class="row light-green">
+                                                        <p>Min. MOS</p>
+                                                        <p class="L-text">{{calc_rtpagent.mos_worst}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+					<!-- end rtpagent -->
+
 					<!-- start xrtp -->
                                             <div class="row white-bg center-text" ng-if="calc_xrtp">
                                                 <div class="col-md-12">
