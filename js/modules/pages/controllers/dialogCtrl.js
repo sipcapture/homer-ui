@@ -485,24 +485,31 @@
 
 					// RTCP
 					try {
-					  if(msg.reports && ( msg.reports.rtcp || msg.reports.rtpagent ) ) {					
-					            //$scope.showQOSChart();
-					            var charts =  msg.reports.rtcp.chart;
+					  if(msg.reports) {					
 
+					            var charts = {};
+						    if(msg.reports.rtcp && msg.reports.rtcp.chart) {
+						            //$scope.showQOSChart();
+							    console.log('processing rtcp charts');
+						            charts =  msg.reports.rtcp.chart;
+						    }
+						    	
 						    // RTCP-XR
 						    if(msg.reports.rtcpxr && msg.reports.rtcpxr.chart) {
+							    console.log('processing rtcpxr charts');
 						    	    //$scope.chartData.concat(msg.reports.rtcpxr.chart);	
 						    	    var xrcharts =  msg.reports.rtcpxr.chart;
 						    	    angular.forEach(xrcharts, function(count, key) {
 						    	            if(!charts[key]) charts[key] = count;						    	            
 						    	    });
 						    }
-
+                                                    
 						    // RTPAGENT
 						    if(msg.reports.rtpagent && msg.reports.rtpagent.chart) {
+							    console.log('processing rtpagent charts');
 						    	    //$scope.chartData.concat(msg.reports.rtcpxr.chart);	
-						    	    var xrcharts =  msg.reports.rtpagent.chart;
-						    	    angular.forEach(xrcharts, function(count, key) {
+						    	    var agcharts =  msg.reports.rtpagent.chart;
+						    	    angular.forEach(agcharts, function(count, key) {		
 						    	            if(!charts[key]) charts[key] = count;						    	            
 						    	    });
 						    }
@@ -531,7 +538,7 @@
 						    $scope.showQOSChart(selData);
 					            
 					  }
-					} catch(e) { console.log('no chart data'); } 
+					} catch(e) { console.log('no chart data',e); } 
 
 
                                 }
