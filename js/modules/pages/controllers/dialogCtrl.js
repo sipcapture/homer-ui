@@ -459,6 +459,10 @@
                                           if (msg.global.calls) {
 						var leg = 1;
 						$scope.calc_calls = msg.global.calls;
+						if (!$scope.call_duration) {
+                                                        var adur = new Date(null); adur.setSeconds($scope.calc_calls[Object.keys($scope.calc_calls)[0]].aparty.metric.duration/1000); // seconds
+                                                        $scope.call_duration = adur.toISOString().substr(11, 8);  
+                                                }
 					  }
 					} catch(e) { console.log('no call stats'); } 
 
