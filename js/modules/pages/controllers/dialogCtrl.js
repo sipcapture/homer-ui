@@ -159,6 +159,7 @@
                 $scope.enableQualityReport = false;
                 $scope.enableRTCPReport = false;
                 $scope.enableLogReport = false;
+                $scope.enableRtcReport = false;
                 $scope.enableXRTPReport = false;
                 $scope.enableRTPAgentReport = false;
                 $scope.enableQOSChart = false;
@@ -489,7 +490,7 @@
 
 					// RTCP
 					try {
-					  if(msg.reports) {					
+					  if(msg.reports.lenght > 0) { 					
 
 					            var charts = {};
 						    if(msg.reports.rtcp && msg.reports.rtcp.chart) {
@@ -678,6 +679,22 @@
                     });
                 };
 
+                $scope.showRtcReport = function(rdata) {
+
+                    search.searchRtcReport(rdata).then(function(msg) {
+
+                            if (msg.length > 0) {
+                                $scope.enableRtcReport = true;
+                                $scope.rtcreport = msg;
+                            }
+                        },
+                        function(sdata) {
+                            return;
+                        }).finally(function() {
+                        $scope.dataLoading = false;
+                    });
+                };
+
                 $scope.setRtcpMembers = function() {
                     $scope.rtcpMembers = [];
                     var tmp = {};
@@ -700,6 +717,7 @@
                 // console.log(data);
                 $scope.showQOSReport(data);
                 $scope.showLogReport(data);
+                $scope.showRtcReport(data);
                 var makePcapText = function(fdata, type, callid) {
                     search.makePcapTextforTransaction(fdata, type).then(function(msg) {
 

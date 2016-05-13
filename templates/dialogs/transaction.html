@@ -60,7 +60,7 @@
 	     <uib-tab-heading><i class="fa fa-exchange"></i> Call-Flow </uib-tab-heading>	     	     
 	      <canvas id="cflowcanv" class="cflow" canvasclick style="left:15px;"></canvas>
 	     </uib-tab>
-		<uib-tab select="refreshChart()">	                          
+	     <uib-tab select="refreshChart()"  ng-show="enableQualityReport|| enableXRTPReport || enableRTCPReport">             
 		     <!-- hack for highcharts render in div size -->
 	 	     <uib-tab-heading><i class="glyphicon glyphicon-transfer"></i> QoS Reports </uib-tab-heading>
 
@@ -431,7 +431,7 @@
                                 </div>
 	
 		       </uib-tab>	     									
-	     <uib-tab>
+	     <uib-tab ng-show="enableLogReport">
 	     <uib-tab-heading><i class="fa fa-file-text-o"></i> Logs </uib-tab-heading>	     	     
 			<div id="no-reports" ng-hide="enableLogReport" class="alert alert-warning alert-dismissible" role="alert">
 				 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -457,6 +457,36 @@
 			</div>				
 
 	     </uib-tab>
+
+	     <uib-tab ng-show="enableRtcReport">
+	     <uib-tab-heading><i class="fa fa-exchange"></i> WSS/RTC </uib-tab-heading>	     	     
+			<div id="no-reports" ng-hide="enableRtcReport" class="alert alert-warning alert-dismissible" role="alert">
+				 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				  <strong>Oops!</strong> No RTC available for this session
+			</div>
+			<div id="rtc-root" ng-if="enableRtcReport" class="jumbotron" style="background-color:transparent;padding:8px;margin:5px;">				
+				
+				<p>RTC Session from {{ rtcreport[0].source_ip }}:{{rtcreport[0].source_port}}</p>
+				  <div class="form-group">
+					<input type="text" ng-model="rtcsearch" class="form-control" placeholder="Filter Data" style="margin-left:15px;width:98%;border-radius: 5px !important;" />
+				  </div>
+				</p>
+				
+				<!-- mermaid placeholder -->
+
+					<div ng-repeat="rtc in rtcreport  | filter :{msg:rtcsearch}" >
+						<!-- <div class="alert alert-info" role="alert" style="margin-bottom:5px;">{{rtc.msg}}</div> -->
+						<div ng-class-odd="(rtc.msg.indexOf('Authentication') > -1 ? 'alert alert-danger' : 'alert alert-success')" ng-class-even="(rtc.msg.indexOf('Authentication') > -1 ? 'alert alert-danger' : 'alert alert-info')" role="alert" style="margin-bottom:5px;">{{rtc.msg}}</div>
+					</div>
+				<!--	
+					<ol ng-model="rtcreport">
+						<li ng-repeat="rtc in rtcreport" ng-include="'rtc_renderer.html'"></li>
+					</ol>
+	   			-->
+			</div>				
+
+	     </uib-tab>
+
 	     <uib-tab>
 	     <uib-tab-heading><i class="fa fa-cloud"></i> Export</uib-tab-heading>
                 <div style="margin:15px;">

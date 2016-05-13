@@ -229,6 +229,29 @@
 		    
         		return defer.promise;		                                                 
                 };                
+
+                var searchRtcReport = function (data) {
+                
+                        var defer = $q.defer();
+                                                            
+                        $http.post('api/v1/report/rtc', data, {handleStatus:[403,503]}).then(
+        			/* good response */
+	                    function (results) {
+	        		    if(results.data.auth == "false") {				
+                                        defer.reject('user not authorized');
+	            		    }	
+		        	    else {
+                                        defer.resolve(results.data.data);                                                                        
+                                    }
+                            },
+        			/* bad response */
+	        		function (results) {
+		        		defer.reject('bad response combination');
+                                }
+        		 );   
+		    
+        		return defer.promise;		                                                 
+                };                
                 
                 var searchQualityReport = function (type, data) {
                 
@@ -390,6 +413,7 @@
                    searchRTCPReport: searchRTCPReport,
                    searchQOSReport: searchQOSReport,
                    searchLogReport: searchLogReport,
+                   searchRtcReport: searchRtcReport,
                    searchQualityReport: searchQualityReport,
                    loadNode: loadNode
                 };
