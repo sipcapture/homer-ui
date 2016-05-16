@@ -227,6 +227,8 @@
 		    }
 		};
 
+
+		/* here should be popup selection by transaction type. Here can trans['rtc'] == true */
 		search_data['param']['transaction'][localrow.entity.trans] = true;
 		var messagewindowId = ""+localrow.entity.id+"_"+localrow.entity.trans;
 
