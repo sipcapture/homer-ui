@@ -490,7 +490,7 @@
 
 					// RTCP
 					try {
-					  if(msg.reports.lenght > 0) { 					
+					  if(msg.reports.length != 0) { 					
 
 					            var charts = {};
 						    if(msg.reports.rtcp && msg.reports.rtcp.chart) {
