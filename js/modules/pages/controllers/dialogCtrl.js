@@ -159,6 +159,7 @@
                 $scope.enableQualityReport = false;
                 $scope.enableRTCPReport = false;
                 $scope.enableLogReport = false;
+                $scope.enableRemoteLogReport = false;
                 $scope.enableRtcReport = false;
                 $scope.enableXRTPReport = false;
                 $scope.enableRTPAgentReport = false;
@@ -678,6 +679,20 @@
                         $scope.dataLoading = false;
                     });
                 };
+                
+                $scope.showRemoteLogReport = function(rdata) {
+
+                    search.searchRemoteLog(rdata).then(function(msg) {
+
+                            $scope.enableRemoteLogReport = true;
+                            if(msg.hits && msg.hits.hits) $scope.remotelogreport = msg.hits.hits;                            
+                        },
+                        function(sdata) {
+                            return;
+                        }).finally(function() {
+                        $scope.dataLoading = false;
+                    });
+                };
 
                 $scope.showRtcReport = function(rdata) {
 
@@ -717,6 +732,7 @@
                 // console.log(data);
                 $scope.showQOSReport(data);
                 $scope.showLogReport(data);
+                $scope.showRemoteLogReport(data);
                 $scope.showRtcReport(data);
                 var makePcapText = function(fdata, type, callid) {
                     search.makePcapTextforTransaction(fdata, type).then(function(msg) {
