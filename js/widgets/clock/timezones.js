@@ -1,4 +1,5 @@
     var timeZoneData = {
+	  "UTC/UTC": 0,
 	  "Europe/London": 0,
 	  "Europe/Amsterdam": 1,
 	  "America/Los_Angeles":-8,
