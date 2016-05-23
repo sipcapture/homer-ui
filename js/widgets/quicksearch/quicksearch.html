@@ -103,8 +103,8 @@
                                                 <i ng-switch-when="destination_ip" class="fa fa-laptop"> {{field.selection}}</i>
                                                 <i ng-switch-when="destination_port" class="fa fa-laptop"> {{field.selection}}</i>
                                              </div>
-                                            </div>                                            
-                                            <input type="text" ng-enter="processSearchForm();" ng-focus="nullSafe(field.name)" class="form-control" ng-model="newObject[field.name]"/>
+                                            </div>                    					    
+                                            <input type="text" placeholder="{{field.name == 'limit' ? '100' : ''}}" ng-enter="processSearchForm();" ng-focus="nullSafe(field.name)" class="form-control" ng-model="newObject[field.name]"/>
                                         </div>
 	    </div>
 	   </div>

@@ -328,7 +328,7 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
                    {name:'orand', selection:'Logic OR'},
                    {name:'proto', selection:'Protocol'},
                    {name:'family', selection:'Family'},
-                   {name:'limit', selection:'Limit Query'},
+                   {name:'limit', selection:'Limit Query', placeholder: "100"},
                    {name:'transaction', selection:'Transaction'},
                    //{name:'methodtype', selection:'Methodtype'},
                    {name:'dbnode', selection:'DB Node'},
