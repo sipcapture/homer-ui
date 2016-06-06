@@ -92,8 +92,6 @@ String.prototype.hashCode = function() {
   return hash;
 };
 
-console.log(mermaid);
-
 var DEBUG = true;
 
 if(!DEBUG){
