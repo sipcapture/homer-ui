@@ -732,7 +732,7 @@
                 // console.log(data);
                 $scope.showQOSReport(data);
                 $scope.showLogReport(data);
-                $scope.showRemoteLogReport(data);
+                //$scope.showRemoteLogReport(data);
                 $scope.showRtcReport(data);
                 var makePcapText = function(fdata, type, callid) {
                     search.makePcapTextforTransaction(fdata, type).then(function(msg) {
