@@ -374,6 +374,10 @@
                             url+= "count";
                             response = { handleStatus:[403,503]};
                         }
+                        else if(type == 4) {
+                            url+= "archive";
+                            response = { handleStatus:[403,503]};
+                        }
                         else url+="pcap";
 
                         $http.post(url, data, response).then(
