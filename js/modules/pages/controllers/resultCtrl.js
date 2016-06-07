@@ -120,7 +120,6 @@
                     if(sObj.hasOwnProperty("enddate")) {
                             var v = new Date(sObj["enddate"]);
                             data.timestamp.to = v.getTime();
-                            console.log(data);
                     }                    
                     
                     if(sObj.hasOwnProperty("trancall")) data.param.transaction["call"] = true;
@@ -147,6 +146,8 @@
 
 		$scope.dataLoading = true;
 
+		$rootScope.searchData = data;
+		
 		search.searchByMethod(data).then(
 		function (sdata) {
 		    if (sdata) {
@@ -349,6 +350,9 @@
 			+ '<div ng-repeat="(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name" class="ui-grid-cell" ng-class="{ \'ui-grid-row-header-cell\': col.isRowHeader }" ui-grid-cell></div>'
 			+'</div>';
 
+	    $scope.export_row_type = "all";
+	    $scope.export_column_type = "all";		
+
 	    $scope.gridOpts = {
 	        saveWidths: true,
 	        saveOrder: true,
@@ -372,6 +376,24 @@
 		enableFiltering: true,
 		rowTemplate: rowtpl,
 		exporterMenuPdf: false,
+                exporterMenuCsv: false,
+		    
+
+		gridMenuCustomItems: [{
+                		icon: 'fa fa-file-excel-o', title: 'Download as CSV',
+	                	action: function($event) {
+	        	            var myElement = angular.element(document.querySelectorAll(".custom-csv-link-location"));
+        	        	    $scope.gridApi.exporter.csvExport($scope.export_row_type, $scope.export_column_type, myElement);
+	        	        },
+	        	        order: 99
+	            }, {
+        		        icon: 'fa fa-archive', title: 'Copy to Archive',
+                		action: function ($event) {
+	                	    $scope.exportArchive();
+	        		},
+		                order: 99
+	        }],
+		
 
 		filterOptions: {
 		    filterText: "",
@@ -475,10 +497,45 @@
 		//set gridApi on scope
 		$scope.gridApi = gridApi;
 	    };
+
+	
+	    $scope.exportArchive = function() {
+		//set gridApi on scope
+		var data = $rootScope.searchData;				
+		var type = 4;		
+		$scope.dataLoading = true;
+
+		search.makePcapTextData(data, type).then( 
+                    function (msg) {              
+                             
+                       $scope.dataLoading = false;
+                       
+                       if(msg.data) {
+                               window.sweetAlert({   title: "Export Done!",   text: "Your data has been archived",   html: true });
+                        }
+                        else {
+                            var error = "Please check your settings";
+                            if(msg.data && msg.data.hasOwnProperty("exceptions")) error = msg.data.exceptions;
+                            window.sweetAlert({   title: "Error", type: "error",  text: "Your data couldn't be archived!<BR>"+error,   html: true });
+                        }                               		
+                    },
+                    function(sdata) {
+		        return;
+                    }).finally( function() { $scope.dataLoading = false; }
+                );
+    	    };
+
 	    
 	    $scope.searchData = function() {
   	          $scope.gridOpts.data = $filter('messageSearch')($scope.Data, $scope.gridOpts, $scope.searchText);
 	    };	    
+
+	    $scope.export = function(){
+		    if ($scope.export_format == 'csv') {
+			      var myElement = angular.element(document.querySelectorAll(".custom-csv-link-location"));
+			      $scope.gridApi.exporter.csvExport( $scope.export_row_type, $scope.export_column_type, myElement );
+		    } 
+	    };
 	}
     ])
     .filter('unixts', function() {
