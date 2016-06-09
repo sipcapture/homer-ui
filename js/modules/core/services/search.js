@@ -378,6 +378,10 @@
                             url+= "archive";
                             response = { handleStatus:[403,503]};
                         }
+                        else if(type == 5) {
+                            url+= "transarchive";
+                            response = { handleStatus:[403,503]};
+                        }
                         else url+="pcap";
 
                         $http.post(url, data, response).then(

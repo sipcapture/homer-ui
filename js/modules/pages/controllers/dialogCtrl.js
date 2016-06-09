@@ -288,6 +288,31 @@
 
                     });
                 };
+                
+                $scope.exportArchive = function() {
+                    search.makePcapTextData(data, 5).then(function(msg) {
+                            if (msg) {
+                                window.sweetAlert({
+                                   title: "Copied to Archive!",
+                                   text: "Your session has been copied to your archive",
+                                   html: true
+                                });
+                                
+                            } else {
+                            	window.sweetAlert({
+                                   title: "Oops!",
+                                   type: "error",
+                                   text: "Your session could not be copied to archive!<br>If this persists, contact your Administrator",
+                                   html: true
+                                });
+                            }
+                        },
+                        function(sdata) {
+                            return;
+                        }).finally(function() {
+
+                    });
+                };
 
                 $scope.toggleTree = function(id) {
                     $scope.collapsed[id] = !$scope.collapsed[id];

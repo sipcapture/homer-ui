@@ -536,6 +536,13 @@
                                 <i class="fa fa-share-alt"></i><br>
                                 Share Link
                         </button>
+                        
+                        <!-- EXPORT to Archive -->
+                        <button class="btn btn-normal btn-success" ng-click="exportArchive()" data-placement="top-right" style="margin-top:18px;;margin-left:8px;width:18%;"><i class="fa fa-file-archive-o"></i><br>
+                                <i class="fa" ng-class="{'fa-cog fa-spin': isArchiveBusy, '': !isArchiveBusy}"></i>
+                                <span>Archive</span>
+                        </button>
+                        
                         <a ng-if="sharelink" href="{{sharelink}}" target="_blank" class="btn btn-normal btn-warning" data-placement="top-right" style="margin-top:18px;margin-left:8px;width:18%;background-color:#f39c12;color:#ffffff;">
                                 <i class="fa fa-share-alt fa-spin"></i><br>
                                 Link Ready
