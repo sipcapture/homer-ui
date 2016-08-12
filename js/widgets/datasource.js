@@ -65,7 +65,7 @@ var datasource_h5 = {
 	                    { "value": "isa", "desc": "counter of replies on INVITE: 408|50[03]" },
 	                    { "value": "sd", "desc": "counter of replies on INVITE: 50[034]" },
 	                    { "value": "ssr", "desc": "call success setup rate" }
-			] 
+			]
 		    }
                 ]
             }
@@ -109,7 +109,7 @@ var datasource_h5 = {
                             { "value": "cpu_user", "desc": "cpu_user" },
                             { "value": "cpu_system", "desc": "cpu_system" },
                             { "value": "cpu_io", "desc": "cpu_io" }
-			] 
+			]
 		    }
                 ]
             }
@@ -226,7 +226,36 @@ var datasource_h5 = {
   		    { "type": "country", "desc": "Source Country", options: [ {"value": "ALL"} ] }
                 ]
             }
+        },
+		{
+            "name": "Destination",
+            "type": "JSON",
+            "settings": {
+                "path": "statistic\/destination",
+                        "query": "{\n   \"timestamp\": {\n          \"from\": \"@from_ts\",\n          \"to\":  \"@to_ts\"\n   },\n  \"param\": {\n        \"filter\": [ \n             \"@filters\"\n       ],\n       \"limit\": \"@limit\",\n       \"total\": \"@total\"\n   }\n}",
+                "method": "GET",
+                "limit": 200,
+                "total": false,
+                "eval": {
+                    incoming: {
+                        name: "test incoming",
+                        value: "var object = @incoming; return object"
+                    }
+                },
+                "timefields" : [
+                    { "field": "from_ts", "desc": "From Timestamp" },
+                    { "field": "to_ts", "desc": "To Timestamp" }
+                ],
+                "fieldvalues": [
+                    { "field": "total", "desc": "All Destination stats" }
+                ],
+                "filters": [
+					{ "type": "country", "desc": "Destination Country", options: [ {"value": "ALL"}  ] },
+					{ "type": "prefix", "desc": "Destination Prefix", options: [ {"value": "ALL"}  ] },
+					{ "type": "method", "desc": "SIP Method", options: [ {"value": "ALL"}  ] },
+                ]
+            }
         }
-    
+
     ]
 };
