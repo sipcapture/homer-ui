@@ -225,39 +225,69 @@
 							<div ng-show="xcollapsed" style="margin:8px 0 0 10px;float:left;" ><i class="fa fa-toggle-off"></i></div>
 							<div class="row light-grey" style="padding-bottom:5px;margin-top:0px;" ng-model="xcollapsed" ng-click="xcollapsed=!xcollapsed"> X-RTP Stats [ {{ calc_xrtp.packets_all }} Packets ]</div>
 						</div>
-                                                <div class="col-md-4" ng-show="!xcollapsed">
+						<div class="col-md-4" ng-show="!xcollapsed">
                                                     <div class="row light-orange">
                                                         <p>Avg. Packet Loss</p>
-                                                        <p class="L-text">{{calc_xrtp.lost_avg }}%</p>
+                                                        <p class="M-text">{{calc_xrtp.lost_avg}}%</p>
                                                     </div>
                                                     <div class="row light-orange">
-                                                        <p>Tot Packets Lost</p>
-                                                        <p class="L-text">{{calc_xrtp.packets_lost}}</p>
+                                                        <p>Tot. Packets Lost</p>
+                                                        <p class="M-text">{{calc_xrtp.packets_lost}}</p>
+                                                    </div>
+                                                    <div class="row light-orange">
+                                                        <p>Packets Sent</p>
+                                                        <p class="M-text">{{calc_xrtp.expected_packets_sent}}</p>
+                                                    </div>
+                                                    <div class="row light-orange">
+                                                        <p>Packets Received</p>
+                                                        <p class="M-text">{{calc_xrtp.expected_packets_received}}</p>
+                                                    </div>
+                                                    <div class="row light-orange">
+                                                        <p>Encoders</p>
+                                                        <p class="S-text">{{calc_xrtp.encoders}}</p>
+                                                    </div>
+                                                    <div class="row light-orange">
+                                                        <p>Decoders</p>
+                                                        <p class="S-text">{{calc_xrtp.decoders}}</p>
                                                     </div>
                                                 </div>
-
                                                 <div class="col-md-4" ng-show="!xcollapsed">
                                                     <div class="row light-blue">
-                                                        <p>Avg. Jitter (ms)</p>
-                                                        <p class="L-text">{{calc_xrtp.jitter_avg}}</p>
+                                                        <p>Sent Jitter (ms)</p>
+                                                        <p class="M-text">{{calc_xrtp.jitter_max}}</p>
                                                     </div>
                                                     <div class="row light-blue">
-                                                        <p>Max Jitter (ms)</p>
-                                                        <p class="L-text">{{calc_xrtp.jitter_max}}</p>
+                                                        <p>Received Jitter (ms)</p>
+                                                        <p class="M-text">{{calc_xrtp.jitter_avg}}</p>
+                                                    </div>
+                                                    <div class="row light-blue">
+                                                        <p>Audio Octets Sent</p>
+                                                        <p class="M-text">{{calc_xrtp.audio_octets_sent}}</p>
+                                                    </div>
+                                                    <div class="row light-blue">
+                                                        <p>Audio Octets Received</p>
+                                                        <p class="M-text">{{calc_xrtp.audio_octets_received}}</p>
                                                     </div>
                                                 </div>
-
                                                 <div class="col-md-4" ng-show="!xcollapsed">
                                                     <div class="row light-green">
+                                                        <p>Call Setup Time (ms)</p>
+                                                        <p class="M-text">{{calc_xrtp.call_setup_time}}</p>
+                                                    </div>
+                                                    <div class="row light-green">
+                                                        <p>RTT (mean,min,max)</p>
+                                                        <p class="M-text">{{calc_xrtp.rtt_mean}}</p>
+                                                    </div>
+                                                    <div class="row light-green">
                                                         <p>Avg. MOS</p>
-                                                        <p class="L-text">{{calc_xrtp.mos_avg}}</p>
+                                                        <p class="M-text">{{calc_xrtp.mos_avg}}</p>
                                                     </div>
                                                     <div class="row light-green">
                                                         <p>Min. MOS</p>
-                                                        <p class="L-text">{{calc_xrtp.mos_worst}}</p>
+                                                        <p class="M-text">{{calc_xrtp.mos_worst}}</p>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> 
 
 					<!-- end xrtp -->
 
