@@ -1,5 +1,7 @@
 [![Logo](http://sipcapture.org/data/images/sipcapture_header.png)](http://sipcapture.org)
 
+<a href="https://cla-assistant.io/sipcapture/homer-ui"><img src="https://cla-assistant.io/readme/badge/sipcapture/homer-ui" alt="CLA assistant" /></a>
+
 ## HOMER 5 User-Interface
 
 Modular component for [HOMER 5](http://github.com/sipcapture/homer)

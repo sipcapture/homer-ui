@@ -124,6 +124,21 @@ angular.module("homer.widgets.geochart", [ "adf.provider", "googlechart"])
 
                 $scope.$parent.changeReloading(false);            
                 console.log("RELOADING MAP",sdata);
+                if(sdata.length == 0)
+                {
+                    var obj = {};
+                    obj.id = 1;
+                    obj.cnt = 0;
+                    obj.total = 0;
+                    obj.country = "UN";
+                    obj.lat = 0;
+                    obj.lon = 0;
+                    obj.method = "NO";
+                    sdata[0] = obj;                
+                    $scope.noChartData = true;
+                }
+                else $scope.noChartData = false;                                      
+                                
 		drawMap(sdata);
             
         }, function(sdata) {
@@ -244,6 +259,22 @@ angular.module("homer.widgets.geochart", [ "adf.provider", "googlechart"])
        if (config.chart && config.chart.hasOwnProperty("library") && config.chart.library.value == "google") {
 
            var seriesData = sipdata;
+           console.log("RELOADING MAP2",seriesData);
+           if(seriesData.length == 0)
+           {
+                    var obj = {};
+                    obj.id = 1;
+                    obj.cnt = 0;
+                    obj.total = 0;
+                    obj.country = "UN";
+                    obj.lat = 0;
+                    obj.lon = 0;
+                    obj.method = "NO";
+                    seriesData[0] = obj;          
+                    $scope.noChartData = true;
+           }
+           else $scope.noChartData = false;
+           
            drawMap(seriesData);
 
        }

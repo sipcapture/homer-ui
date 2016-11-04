@@ -2,6 +2,12 @@
     <div class="alert alert-info" ng-if="!mapConfig">
       Please select a query from the widget configuration
     </div>
+
+    <div class="alert alert-info" ng-if="noChartData">
+	We don't have any chart data. Please enable GEO STATS in the config
+	of your capture server.
+    </div>
+
     <div ng-if="mapConfig" google-chart chart="chart">
     </div>
   </div>

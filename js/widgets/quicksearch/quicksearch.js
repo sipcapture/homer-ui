@@ -302,6 +302,7 @@ angular.module('homer.widgets.quicksearch', ['adf.provider'])
                    {name:'from_domain', selection:'From Domain'},
                    {name:'to_user', selection:'To User'},
                    {name:'to_domain', selection:'To Domain'},
+                   {name:'ruri', selection:'RURI URL'},
                    {name:'ruri_user', selection:'RURI User'},
                    {name:'ruri_domain', selection:'RURI Domain'},
                    {name:'callid', selection:'Call-ID'},
