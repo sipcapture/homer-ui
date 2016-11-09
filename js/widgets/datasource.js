@@ -253,6 +253,7 @@ var datasource_h5 = {
 					{ "type": "country", "desc": "Destination Country", options: [ {"value": "ALL"}  ] },
 					{ "type": "prefix", "desc": "Destination Prefix", options: [ {"value": "ALL"}  ] },
 					{ "type": "method", "desc": "SIP Method", options: [ {"value": "ALL"}  ] },
+					{ "type": "status_code", "desc": "SIP Status Code", options: [ {"value": "ALL"}  ] },
                 ]
             }
         }
