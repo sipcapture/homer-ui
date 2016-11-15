@@ -291,7 +291,7 @@
 		var search_data =  {
 		    timestamp: {
 			from: localrow.entity.milli_ts-5*100,
-			to: localrow.entity.milli_ts+1800*100
+			to: localrow.entity.milli_ts+300*100
 		    },
 		    param: {
 			search: {
@@ -316,7 +316,7 @@
 
 		var timezone = userProfile.getProfile("timezone");                            				
 		var timedate = userProfile.getProfile("timerange");
-		//search_data['timestamp']['to'] = timedate.to.getTime() - diff + 300*100;
+		search_data['timestamp']['to'] = timedate.to.getTime() - diff + 300*100;
 
 		search_data['param']['transaction'][localrow.entity.trans] = true;
 		var trwindowId = ""+localrow.entity.callid + "_" +localrow.entity.dbnode;
