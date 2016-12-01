@@ -224,7 +224,7 @@
 	 {value: -420, offset: '+0700', name: 'GMT+7', desc: 'GMT +7'},
 	 {value: -480, offset: '+0800', name: 'GMT+8 CCT', desc: 'China Coast Time'},
 	 {value: -520, offset: '+0900', name: 'GMT+9 JST', desc: 'Japan Standard Time'},
-	 {value: -600, offset: '+1000', name: 'GMT+10 EAST', desc: 'East Australian Standard Time'},
+            {value: -600, offset: '+1000', name: 'GMT+10 AEST', desc: 'Australian Eastern Standard Time'},
             {value: -660, offset: '+1100', name: 'GMT+11 AEDT', desc: 'Australian Eastern Daylight Time'},
             {value: -720, offset: '+1200', name: 'GMT+12 NZST', desc: 'New Zealand Standard Time'},
             {value: -780, offset: '+1300', name: 'GMT+13 NZDT', desc: 'New Zealand Daylight Time'}
