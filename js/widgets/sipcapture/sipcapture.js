@@ -650,7 +650,10 @@ sipcaptureWdgt.d3.create = function($scope, chart, data, animate) {
         resizeEvent.clear();
     }
 
-    chart.showLegend($scope.config.chart.legend.enabled);
+	
+    if ($scope.config.chart.legend) {
+        chart.showLegend($scope.config.chart.legend.enabled);
+    }
 
     if (chart.xAxis) {
         if ($scope.config.chart.yaxis && $scope.config.chart.yaxis.title && $scope.config.chart.yaxis.title.length > 0) {
