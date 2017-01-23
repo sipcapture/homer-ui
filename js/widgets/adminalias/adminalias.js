@@ -150,6 +150,7 @@ angular.module('homer.widgets.adminalias', ['adf.provider'])
 		port: $scope.newalias.port,
 		capture_id: $scope.newalias.capture_id,
 		alias: $scope.newalias.alias,
+		is_stp: $scope.newalias.is_stp,
 		status: $scope.newalias.status				        
         };
         
@@ -181,6 +182,7 @@ angular.module('homer.widgets.adminalias', ['adf.provider'])
                     port: $scope.arec.port,
                     capture_id: $scope.arec.capture_id,
                     alias: $scope.arec.alias,
+                    is_stp: $scope.arec.is_stp,
                     status: $scope.arec.status,				                        
                     id: id
                 };
@@ -286,6 +288,7 @@ angular.module('homer.widgets.adminalias', ['adf.provider'])
 		{ name: 'ip', displayName: 'IP' },
 		{ name: 'port', displayName: 'Port' },
 		{ name: 'capture_id', displayName: 'Capture ID' },
+		{ name: 'is_stp', displayName: 'Is a STP' },
 		{ name: 'status', displayName: 'status' },
 		{ name: 'created', displayName: 'Created' , type: 'date', cellFilter: 'date:"yyyy-MM-dd"'}	      
       ];
