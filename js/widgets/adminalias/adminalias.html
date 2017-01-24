@@ -42,6 +42,10 @@
                                         <input type="text" class="form-control" name="capture_id" id="capture_id" ng-model="newalias.capture_id">
                                 </p>
 				<p>
+                                        <label class="control-label" for="dashboardname">STP:</label>
+					<input ng-model="newalias.is_stp" ng-value="false" type="checkbox" ng-init="newalias.is_stp='0'" ng-true-value="'1'" ng-false-value="'0'">
+				</p>
+				<p>
                                         <label class="control-label" for="dashboardname">Active:</label>
 					<input ng-model="newalias.status" ng-value="true" type="checkbox" ng-init="newalias.status=1" ng-true-value="1" ng-false-value="0"> 
                                 </p>
@@ -85,6 +89,10 @@
                                         <label class="control-label" for="dashboardname">Capture ID:</label>
                                         <input type="text" class="form-control" name="capture_id" id="capture_id" ng-model="arec.capture_id">
                                 </p>
+				<p>
+                                        <label class="control-label" for="dashboardname">STP:</label>
+					<input type="checkbox" class="form-control" name "is_stp" id="is_stp" ng-model="arec.is_stp" ng-true-value="'1'" ng-false-value="'0'">
+				</p>
 				<p>
                                         <label class="control-label" for="dashboardname">Active:</label>
 					<input ng-model="arec.status" ng-value="true" type="checkbox" ng-true-value="1" ng-false-value="0"> 

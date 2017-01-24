@@ -33,7 +33,8 @@
                           transaction: {
                               call: true,
                               registration: true,
-                              rest: true
+                              rest: true,
+                              isup: false
                           },
                           limit: 200
                         }
@@ -159,6 +160,56 @@
         		 );   
 		    
         		return defer.promise;		                                                 
+                };
+
+                var searchIsupForSIP = function (data, transaction) {
+                    var new_data = {};
+                    new_data['timestamp'] = data['timestamp'];
+                    new_data['param'] = {};
+                    new_data['param']['location'] = data['param']['location'];
+                    new_data['param']['timezone'] = data['param']['timezone'];
+
+
+                    var min_ts = null;
+                    var max_ts = null;
+                    var ruri = null;
+                    var src_ip = null;
+                    var dst_ip = null;
+
+                    /* find the number and start/end time of the transaction */
+                    transaction.calldata.forEach(function(call) {
+                        if (ruri === null)
+                            ruri = call.ruri_user;
+                        if (src_ip === null)
+                            src_ip = call.source_ip;
+                        if (dst_ip === null)
+                            dst_ip = call.destination_ip;
+                        if (min_ts === null || min_ts > call.micro_ts)
+                            min_ts = call.micro_ts;
+                        if (max_ts === null || max_ts < call.micro_ts)
+                            max_ts = call.micro_ts;
+                    });
+
+                    new_data['param']['search'] = { 'ruri' : ruri, 'min_ts': min_ts, 'max_ts': max_ts, 'src_ip': src_ip, 'dst_ip': dst_ip };
+
+                    var defer = $q.defer();
+
+                    $http.post('api/v1/search/isupForSIP', new_data, {handleStatus:[403,503]}).then(
+                        /* good response */
+                        function (results) {
+                            if(results.data.auth == "false") {
+                                defer.reject('user not authorized');
+                            }
+                            else {
+                                defer.resolve(results.data.data);
+                            }
+                        },
+                        /* bad response */
+                        function (results) {
+                            defer.reject('bad response combination');
+                        });
+
+                        return defer.promise;
                 };
                 
                 var searchRTCPReport = function (data) {
@@ -447,6 +498,7 @@
                    searchRtcReport: searchRtcReport,
                    searchRemoteLog: searchRemoteLog,
                    searchQualityReport: searchQualityReport,
+                   searchIsupForSIP: searchIsupForSIP,
                    loadNode: loadNode
                 };
           }

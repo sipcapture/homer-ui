@@ -343,7 +343,8 @@
                             transaction: {
                                 call: false,
                                 registration: false,
-                                rest: false
+                                rest: false,
+                                isup: false
                             }
                         }
                     };
@@ -421,11 +422,50 @@
                     $(window).resize();
                 };
 
+               /* search and merge */
+               $scope.searchIsupTransaction = function() {
+                    search.searchIsupForSIP($scope.data, $scope.transaction).then(function(isup) {
+                        var newHosts = [];
+                        var lastPos = 0;
+
+                        /* pick hosts not present yet */
+                        Object.keys(isup.hosts).forEach(function(host) {
+                            if (!Object.keys($scope.transaction.hosts).includes(host)) {
+                                newHosts.push(host);}});
+                        Object.keys($scope.transaction.hosts).forEach(function(hostName) {
+                            if ($scope.transaction.hosts[hostName].position > lastPos)
+                                lastPos = $scope.transaction.hosts[hostName].position;});
+
+                        newHosts.forEach(function(hostName) {
+                            var host = isup.hosts[hostName];
+                            host.position = lastPos + 1;
+                            lastPos += 1;
+                            $scope.transaction.hosts[hostName] = host;
+                        });
+                        $scope.transaction.calldata.push.apply($scope.transaction.calldata,
+                                                                isup.isupdata);
+                        $scope.transaction.calldata.sort(function(a, b) {
+                            return a.micro_ts - b.micro_ts;
+                        });
+                        $scope.drawCanvas($homerModalParams.id, $scope.transaction);
+                        $scope.no_isup = false;
+                    });
+               };
+
+               /* check if there is any STP involved */
+               $scope.checkContainsIsup = function(msg) {
+                   $scope.no_isup = Object.keys(msg.hosts).findIndex(function(name) {
+                       return msg.hosts[name].is_stp === 1}) < 0;
+               };
+
                 search.searchTransaction(data).then(function(msg) {
                         if (msg) {
                             $scope.transaction = msg;
+                            $scope.checkContainsIsup(msg);
                             $scope.drawCanvas($homerModalParams.id, msg);
-                        }
+                        } else {
+			    $scope.no_isup = true;
+			}
                     },
                     function(sdata) {
                         return;

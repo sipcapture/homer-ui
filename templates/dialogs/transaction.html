@@ -584,7 +584,11 @@
 	     <uib-tab disable="true" ng-show="call_duration">
 		     <uib-tab-heading><i class="fa fa-clock-o"></i> Session Duration: {{call_duration}}</uib-tab-heading>
 	     </uib-tab>
-
+             <ui-tab disable="true" ng-diabled="no_isup">
+                <ui-tab-heading><button class="btn btn-normal btn-info" ng-disabled="no_isup" ng-click="searchIsupTransaction()">
+		<span>Search isup</span>
+              </button></ui-tab-heading>
+             </ui-tab>
 	  </uib-tabset>
 </div>
 
