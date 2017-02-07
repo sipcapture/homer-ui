@@ -48,6 +48,62 @@
 
                 search.searchMethod(data).then(function(sdata) {
 
+                        var buildRow = function(key, val) {
+                            /* Trust input coming from homer-api */
+                            return "<tr><td>" + key + "</td><td>" + val + "</td></tr>";
+                        }
+
+                        var buildIsup = function(text) {
+                            var output = [];
+                            var manually = new Array("cic", "opc", "dpc", "called_number", "calling_number", "calling_party", "msg_name", "msg_type");
+                            var json = JSON.parse(text);
+
+                            output.push(buildRow("Message", json["msg_name"]));
+                            output.push(buildRow("CIC", json["cic"]));
+                            output.push(buildRow("OPC", json["opc"]));
+                            output.push(buildRow("DPC", json["dpc"]));
+                            if ("called_number" in json) {
+                                output.push(buildRow("Called Num", json["called_number"]["num"]));
+                                output.push(buildRow("Called Inn", json["called_number"]["inn_name"]));
+                                output.push(buildRow("Called NPI", json["called_number"]["npi_name"]));
+                                output.push(buildRow("Called TON", json["called_number"]["ton_name"]));
+                                output.push(buildRow("Calling Num", json["calling_number"]["num"]));
+                                output.push(buildRow("Calling NI", json["calling_number"]["ni_name"]));
+                                output.push(buildRow("Calling Restrict", json["calling_number"]["restrict_name"]));
+                                output.push(buildRow("Calling Screened", json["calling_number"]["screened_name"]));
+                                output.push(buildRow("Calling NPI", json["calling_number"]["npi_name"]));
+                                output.push(buildRow("Calling TON", json["calling_number"]["ton_name"]));
+                                output.push(buildRow("Calling Party", json["calling_party"]["name"]));
+                            };
+
+
+                            Object.keys(json).forEach(function(key) {
+                                if (manually.includes(key))
+                                    return;
+                                var val = json[key];
+                                if (typeof val === "object") {
+                                    Object.keys(val).forEach(function(subkey) {
+                                        if (subkey + "_name" in val)
+                                            return;
+                                        if (subkey === "num")
+                                            return;
+                                        if (subkey.endsWith("_num"))
+                                            return;
+                                        if (subkey + "_str" in val)
+                                            return;
+                                        var ui_key = subkey.replace('_name', '').replace("_str", "");
+                                        output.push(buildRow(key + " " + ui_key, val[subkey]));
+                                    });
+                                } else {
+                                    output.push(buildRow(key, val));
+                                }
+                            });
+
+                            return $sce.trustAsHtml("<table class='table table-striped'>" +
+                                                    output.join('') +
+                                                    "</table>");
+                        }
+
                         var swapText = function(text) {
                             var swpA, swpB;
 
@@ -78,7 +134,9 @@
                         //$scope.msgDate = sdata[0].date;
                         $scope.msgDate = sdata[0].micro_ts / 1000;
                         $scope.sipPath = sdata[0].source_ip + ":" + sdata[0].source_port + " -> " + sdata[0].destination_ip + ":" + sdata[0].destination_port;
-                        $scope.sipMessage = swapText(sdata[0].msg); //.replace(/</g, "&lt;");
+                        $scope.sipMessage = sdata[0].trans === "isup" ?
+                                                buildIsup(sdata[0].msg) :
+                                                swapText(sdata[0].msg); //.replace(/</g, "&lt;");
 
                         var tabjson = [];
                         for (var p in sdata[0]) {
