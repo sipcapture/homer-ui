@@ -395,6 +395,7 @@
             if ($state.current.name == "result") {
                 stop = $interval(function() {
                     $scope.timerange.to.setSeconds($scope.timerange.to.getSeconds() + seconds);
+		    $scope.timerange.from.setSeconds($scope.timerange.from.getSeconds() + seconds);
                     userProfile.setProfile("timerange", $scope.timerange);
                     userProfile.setProfile("timezone", $scope.timezone);
                     eventbus.broadcast(homer.modules.pages.events.resultSearchSubmit, "fullsearch");
