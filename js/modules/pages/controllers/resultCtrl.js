@@ -316,7 +316,8 @@
 
 		var timezone = userProfile.getProfile("timezone");                            				
 		var timedate = userProfile.getProfile("timerange");
-		search_data['timestamp']['to'] = timedate.to.getTime() - diff + 300*100;
+		/* TIMERANGE_TRANSACTION is in app.js */
+		search_data['timestamp']['to'] = timedate.to.getTime() - diff + TIMERANGE_TRANSACTION*100;
 
 		search_data['param']['transaction'][localrow.entity.trans] = true;
 		var trwindowId = ""+localrow.entity.callid + "_" +localrow.entity.dbnode;
