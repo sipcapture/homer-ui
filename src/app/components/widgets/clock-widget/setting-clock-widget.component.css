@@ -1,0 +1,6 @@
+.title {
+    margin: -1.5rem -1.5rem 2rem -1.5rem;
+    width: initial !important;
+    display: flex;
+    justify-content: space-between;
+}

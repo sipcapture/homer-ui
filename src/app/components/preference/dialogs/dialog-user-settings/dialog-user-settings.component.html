@@ -1,0 +1,44 @@
+<mat-toolbar class="title" color="primary">
+  <div>Account of</div>
+  <button mat-icon-button (click)="onNoClick()">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-toolbar>
+<div mat-dialog-content>
+  
+    <strong>User Settings</strong><hr />
+    <div>
+      <mat-form-field style="padding-right: 1rem;">
+        <mat-label>Username</mat-label>
+        <input matInput [(ngModel)]="data.data.username">
+      </mat-form-field>
+      <mat-form-field style="padding-right: 1rem;">
+        <mat-label>Category</mat-label>
+        <input matInput [(ngModel)]="data.data.category">
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field style="padding-right: 1rem;">
+        <mat-label>Param</mat-label>
+        <input matInput [(ngModel)]="data.data.param">
+      </mat-form-field>
+      <mat-form-field style="padding-right: 1rem;">
+        <mat-label>Partition ID</mat-label>
+        <input matInput [(ngModel)]="data.data.partid">
+      </mat-form-field>
+    </div>
+    <strong>Data</strong><hr />
+    <!-- <ngx-json-viewer [json]="data.data.data" [expanded]="false"></ngx-json-viewer> -->
+    <ace-editor
+      [mode]="'json'"
+      [theme]="'eclipse'"
+      [readOnly]="false"
+      [(text)]="data.data.data"
+      #data_view style="min-height:350px;"></ace-editor>
+</div>
+
+
+<div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
+  <button mat-raised-button (click)="onNoClick()">Cancel</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Save</button>
+</div>

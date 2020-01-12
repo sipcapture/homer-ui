@@ -1,0 +1,44 @@
+:host {
+	display: flex;
+    justify-content: center;
+    margin: 100px 0px;
+}
+
+.mat-form-field {
+	width: 100%;
+    min-width: 300px;
+}
+
+mat-card-title,
+mat-card-content {
+	display: flex;
+    justify-content: center;
+    .login-page-header {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        h2 {
+            margin-top: 2rem;
+        }
+        > img {
+            width: 190px;
+        }
+    }
+}
+.caps-lock {
+    background-color: gainsboro;
+    color: red;
+    padding: 3px;
+    border-radius: 4px;
+}
+.error {
+	padding: 16px;
+    width: 300px;
+    color: white;
+    background-color: red;
+}
+
+.button {
+	display: flex;
+    justify-content: flex-end;
+}

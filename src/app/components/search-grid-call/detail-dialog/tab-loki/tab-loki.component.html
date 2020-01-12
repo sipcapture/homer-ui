@@ -1,0 +1,25 @@
+<div style="display: flex;">
+    <div style="flex: 1">
+        <app-code-style-field
+            [queryText]="queryText"
+            (updateData)="onUpdateData($event)"
+        ></app-code-style-field>
+    </div>
+    <button mat-button style="min-width: 200px;" (click)="doSerchResult()">Refresh search</button>
+
+</div>
+<div>
+    <div *ngIf="resultData.length === 0" class="content-body">
+        <strong>Ready to Search Logs!</strong> Fine tune your query and hit Refresh
+        <div *ngIf="!isFirstSearch">
+            <i>[ No Result Found ]</i>
+        </div>
+    </div>
+    <div *ngIf="resultData.length > 0" >
+        <div *ngFor="let i of resultData" class="content-body item">
+            <span class="item-text">{{i.micro_ts}} </span>
+            <span style="color: red" class="item-text"> {{i.custom_2}} </span><br/>
+            <span class="item-text">{{i.custom_1}}</span>
+        </div>
+    </div>
+</div>

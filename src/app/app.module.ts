@@ -1,0 +1,86 @@
+/* @angular */
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+/* @app */
+import { JwtInterceptor, ErrorInterceptor } from '@app/helpers';
+import { routing } from '@app/app.routing';
+import { AppComponent } from '@app/app.component';
+import { AppRoutingModule } from '@app/app-routing.module';
+import { FilterPipe } from '@app/filter.pipe';
+import { SafePipe } from '@app/safe.pipe';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HepicMaterialModule } from '@app/app.material-module';
+
+/* @app/components */
+import * as components from '@app/components';
+import * as widgets from '@app/components/widgets';
+import * as dialogs from '@app/components/preference/dialogs';
+import * as dashboard from '@app/components/dashboard';
+import * as searchGridCall from '@app/components/search-grid-call';
+import { MenuComponent } from '@app/components/menu/menu.component';
+
+/* other modules */
+import { AgGridModule } from 'ag-grid-angular';
+import { NgxJsonViewerModule } from 'ngx-json-viewer';
+import { AceModule, ACE_CONFIG, AceConfigInterface } from 'ngx-ace-wrapper';
+import { AceEditorModule } from 'ng2-ace-editor';
+import { GridsterModule } from 'angular-gridster2';
+import { DynamicModule } from 'ng-dynamic-component';
+import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
+import { ChartsModule } from 'ng2-charts';
+import { MarkdownModule } from 'ngx-markdown';
+
+
+const DEFAULT_ACE_CONFIG: AceConfigInterface = {
+};
+
+@NgModule({
+    declarations: [
+        AppComponent,
+        MenuComponent,
+        FilterPipe,
+        SafePipe
+    ].concat(
+        Object.values<any>(dialogs),
+        Object.values<any>(widgets),
+        Object.values<any>(searchGridCall),
+        Object.values<any>(dashboard),
+        Object.values<any>(components)
+    ),
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        HttpClientModule,
+        ReactiveFormsModule,
+        HttpClientModule,
+        GridsterModule,
+        ChartsModule,
+        DynamicModule.withComponents([]),
+        routing,
+        AppRoutingModule,
+        HepicMaterialModule,
+        AgGridModule.withComponents([]),
+        NgxDaterangepickerMd.forRoot(),
+        NgxJsonViewerModule,
+        AceModule,
+        AceEditorModule,
+        MarkdownModule.forRoot(),
+    ],
+    entryComponents: [ MenuComponent ].concat(
+        Object.values<any>(dialogs),
+        Object.values<any>(widgets),
+        Object.values<any>(dashboard)
+    ),
+    providers: [
+        { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+        { provide: ACE_CONFIG, useValue: DEFAULT_ACE_CONFIG }
+    ],
+    bootstrap: [AppComponent]
+})
+
+export class AppModule { }

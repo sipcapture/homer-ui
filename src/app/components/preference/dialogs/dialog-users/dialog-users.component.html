@@ -1,0 +1,66 @@
+<mat-toolbar class="title" color="primary">
+  <div>Account of</div>
+  <button mat-icon-button (click)="onNoClick()">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-toolbar>
+<div mat-dialog-content>
+  
+  <strong>User Settings</strong><hr />
+  <div>
+    <mat-form-field style="padding-right: 1rem;">
+      <mat-label>Username</mat-label>
+      <input matInput autocomplete="none" [(ngModel)]="data.data.username" (change)="onValid()">
+    </mat-form-field>
+    <mat-form-field style="padding-right: 1rem;">
+      <mat-label>Group</mat-label>
+      <input matInput autocomplete="none" [(ngModel)]="data.data.usergroup" (change)="onValid()">
+    </mat-form-field>
+    <mat-form-field style="padding-right: 1rem;">
+      <mat-label>Partition ID</mat-label>
+      <input matInput autocomplete="none" [(ngModel)]="data.data.partid" (change)="onValid()">
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field style="padding-right: 1rem;">
+      <input matInput autocomplete="new-password" placeholder="Password" [type]="hidePass1 ? 'password' : 'text'" [(ngModel)]="data.data.password" (change)="onValid()">
+      <button mat-icon-button matSuffix (click)="hidePass1 = !hidePass1" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePass1">
+      <mat-icon>{{hidePass1 ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+    </mat-form-field>
+    <mat-form-field style="padding-right: 1rem;">
+      <input matInput autocomplete="new-password" placeholder="Repeat password" [type]="hidePass2 ? 'password' : 'text'" [(ngModel)]="pass2" (change)="onValid()">
+      <button mat-icon-button matSuffix (click)="hidePass2 = !hidePass2" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePass2">
+      <mat-icon>{{hidePass2 ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+  
+  <strong>Personal information</strong><hr />
+  <div>
+    <mat-form-field style="padding-right: 1rem;">
+      <mat-label>First name</mat-label>
+      <input matInput autocomplete="none" [(ngModel)]="data.data.firstname" (change)="onValid()">
+    </mat-form-field>
+    <mat-form-field style="padding-right: 1rem;">
+      <mat-label>Email</mat-label>
+      <input matInput autocomplete="none"  [(ngModel)]="data.data.email" (change)="onValid()" (validate)="onValid()" email="true">
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field style="padding-right: 1rem;">
+      <mat-label>Last name</mat-label>
+      <input matInput autocomplete="none" [(ngModel)]="data.data.lastname" (change)="onValid()">
+    </mat-form-field>
+    <mat-form-field style="padding-right: 1rem;">
+      <mat-label>Department</mat-label>
+      <input matInput autocomplete="none" [(ngModel)]="data.data.department" (change)="onValid()">
+    </mat-form-field>
+  </div>
+</div>
+
+
+<div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
+  <button mat-raised-button (click)="onNoClick()">Cancel</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="data" [disabled]="!isValidForm" cdkFocusInitial>Save</button>
+</div>

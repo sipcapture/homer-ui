@@ -1,0 +1,10 @@
+<div mat-dialog-content style="text-align: center">
+  <mat-icon class="alarm">warning</mat-icon>
+  <h1 mat-dialog-title>Are you sure?</h1>
+  <p>Your will not be able to recover this!</p>
+</div>
+
+<div mat-dialog-actions style="display: flex; margin-bottom: 0; justify-content: space-between;">
+  <button mat-raised-button (click)="onNoClick()">Cancel</button>
+  <button mat-raised-button color="warn" [mat-dialog-close]="true" cdkFocusInitial>Yes, delete it!</button>
+</div>

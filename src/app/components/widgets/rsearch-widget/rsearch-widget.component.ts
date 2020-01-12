@@ -1,0 +1,71 @@
+import { Component, Input } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { IWidget } from '../IWidget';
+import { Router } from '@angular/router';
+import { SearchGridCallComponent } from '@app/components/search-grid-call/search-grid-call.component';
+import { Widget } from '@app/helpers/widget';
+import { ConstValue } from '@app/models';
+
+@Component({
+    selector: 'app-rsearch-widget',
+    templateUrl: './rsearch-widget.component.html',
+    styleUrls: ['./rsearch-widget.component.css']
+})
+@Widget({
+    title: 'Loki Search',
+    description: 'Display Loki Search Form',
+    category: 'Search',
+    indexName: 'rsearch',
+    settingWindow: false
+})
+export class RsearchWidgetComponent implements IWidget {
+    @Input() id: string;
+
+    lokiQuery: string;
+    limit: number;
+    searchQueryLoki: any;
+    queryText: string;
+    constructor(
+        public dialog: MatDialog,
+        private router: Router
+    ) {
+    }
+
+    ngOnInit() {
+        const data = JSON.parse(localStorage.getItem(ConstValue.SEARCH_QUERY_LOKI));
+        if (data) {
+            this.queryText = data.text;
+            this.limit = data.limit || 100;
+        }
+    }
+    onCodeData(event) {
+        this.searchQueryLoki = event;
+        this.searchQueryLoki.limit = this.limit || 100;
+        this.searchQueryLoki.protocol_id = ConstValue.LOKI_PREFIX;
+        this.searchQueryLoki.fields = [];
+    }
+    doSearchResult() {
+        localStorage.setItem(ConstValue.SEARCH_QUERY, JSON.stringify(this.searchQueryLoki));
+
+        this.router.navigate(['call/result']);
+    }
+    onChangeField (event: any) {
+
+    }
+    handleEnterKeyPress (event) {
+        const tagName = event.target.tagName.toLowerCase();
+
+        if (tagName !== 'textarea') {
+            setTimeout(this.doSearchResult.bind(this), 100);
+            return false;
+        }
+    }
+    onClearFields () {
+        this.lokiQuery = '';
+        this.limit = 100;
+    }
+    openDialog(): void {
+    }
+
+    ngOnDestroy () { }
+}

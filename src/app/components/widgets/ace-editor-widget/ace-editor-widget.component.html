@@ -1,0 +1,6 @@
+<markdown *ngIf="isConfig" class="scrollable" [data]="_config.text"></markdown>
+<div *ngIf="!isConfig">
+    <button mat-raised-button color="primary" (click)="openDialog()">
+        <mat-icon>settings</mat-icon> Widget Settings
+    </button>
+</div>

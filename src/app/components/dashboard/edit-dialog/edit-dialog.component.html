@@ -1,0 +1,66 @@
+<mat-toolbar class="title" color="primary">
+  <div>Edit Panel</div>
+  <button mat-icon-button (click)="onNoClick()">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-toolbar>
+<div mat-dialog-content style="display: flex; flex-direction: column">
+  <h4>Panel Details</h4>
+  
+  <mat-form-field>
+    <mat-label>Name your panel</mat-label>
+    <input matInput [(ngModel)]="data.name">
+  </mat-form-field>
+  
+  <mat-form-field >
+    <mat-label>Type</mat-label>
+    <mat-select [(ngModel)]="data.type" [disabled]="isHomeOrSearch">
+      <mat-option
+        *ngFor="let itemlist of typeList"
+        [value]="itemlist.index"
+        [disabled]="itemlist.disabled">{{ itemlist.name }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  
+  <mat-form-field>
+    <mat-label>Param</mat-label>
+    <input matInput [(ngModel)]="data.param">
+  </mat-form-field>
+  
+  <mat-checkbox labelPosition="Before" [(ngModel)]="data.shared">Shared</mat-checkbox>
+  <div *ngIf="data.type !== 2" style="display: flex; flex-direction: column">
+      <hr style="width: 100%;">
+    <h4>Grid Configuration</h4>
+    <div>
+      <mat-form-field style="display: inline-block; min-width: 100px;">
+        <mat-label>Columns</mat-label>
+        <input matInput type="number" min="1" [(ngModel)]="data.columns">
+      </mat-form-field>
+      <mat-form-field style="display: inline-block; min-width: 100px; padding-left: 1rem;">
+        <mat-label>MaxRows</mat-label>
+        <input matInput type="number" min="1" [(ngModel)]="data.maxrows">
+      </mat-form-field>
+    </div>
+    <mat-form-field>
+      <mat-label>Grid Type</mat-label>
+      <mat-select [(ngModel)]="data.gridType">
+        <mat-option [value]="'fit'">Fit to screen</mat-option>
+        <mat-option [value]="'scrollVertical'">Scroll Vertical</mat-option>
+        <mat-option [value]="'scrollHorizontal'">Scroll Horizontal</mat-option>
+        <mat-option [value]="'fixed'">Fixed</mat-option>
+        <mat-option [value]="'verticalFixed'">Vertical Fixed</mat-option>
+        <mat-option [value]="'horizontalFixed'">Horizontal Fixed</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-checkbox labelPosition="Before" [(ngModel)]="data.pushing">Pushing</mat-checkbox>
+  </div>
+  <hr style="width: 100%;">
+  <div>
+    <button mat-raised-button color="primary" (click)="onExport()">Export dashboard settings</button>  
+  </div>
+  <hr style="width: 100%;">
+</div>
+<div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
+  <button mat-raised-button (click)="onNoClick()">Cancel</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+</div> 

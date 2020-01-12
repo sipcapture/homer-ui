@@ -1,0 +1,17 @@
+<mat-toolbar class="title" color="primary">
+    <div>Settings</div>
+    <button mat-icon-button (click)="onNoClick()">
+        <mat-icon>close</mat-icon>
+    </button>
+</mat-toolbar>
+
+<div mat-dialog-content style="text-align: center">
+    <mat-icon class="alarm">error_outline</mat-icon>
+    <h1 mat-dialog-title>OOPS!</h1>
+    <p>It seems that the settings are corrupted.</p>
+    <p>We recommend that you remove the widget and recreate it.</p>
+</div>
+
+<div mat-dialog-actions style="margin: 0">
+    <button mat-raised-button style="left: 0; right: 0; margin: auto;" (click)="onNoClick()">Close</button>
+</div> 

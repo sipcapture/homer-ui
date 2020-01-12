@@ -1,0 +1,43 @@
+<form *ngIf="isConfig">
+    <div class="example-container">
+        <div *ngFor="let item of fields" class="example-container">
+            <mat-form-field  *ngIf="item.field_name !== 'loki'">
+                <mat-label>{{item.selection}}</mat-label>
+                
+                <input matInput 
+                    *ngIf="'targetResultsContainer' !== item.field_name"
+                    [(ngModel)]="item.value"
+                    [ngModelOptions]="{standalone: true}"
+                    (change)="onChangeField($event)"
+                    (keydown.enter)="handleEnterKeyPress($event)"
+                >
+                <mat-select
+                    *ngIf="item.field_name === 'targetResultsContainer'"
+                    [formControl]="targetResultsContainerValue"
+                    [compareWith]="compareResultListItem"
+                    (selectionChange)="onChangeField($event)"
+                    name="hep_alias"
+                    ngDefaultControl>
+                    <mat-option *ngFor="let listItem of widgetResultList" [value]="listItem">
+                        {{listItem.type === 'widget' ? 'widget: ' : ''}} {{listItem.title}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <app-code-style-field
+                [queryText]="lokiQueryText"
+                (updateData)="onLokiCodeData($event)"
+                *ngIf="item.field_name === 'loki'"
+            ></app-code-style-field>
+        </div>
+    </div>
+    <div style="float: right;" [className]="buttonState ? 'show' : 'hide'">
+        <button mat-raised-button (click)="onClearFields()">Clear</button>
+        <button mat-raised-button color="primary" (click)="doSearchResult()">Search</button>
+    </div>
+</form>
+
+<div *ngIf="!isConfig">
+    <button mat-raised-button color="primary" (click)="openDialog()">
+        <mat-icon>settings</mat-icon> Widget Settings
+    </button>
+</div>

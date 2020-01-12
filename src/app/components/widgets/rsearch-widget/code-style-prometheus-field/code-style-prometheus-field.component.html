@@ -1,0 +1,29 @@
+
+<mat-label style="color: rgba(0, 0, 0, 0.54); font-size: 0.8em;">Query</mat-label>
+
+<div
+    spellcheck="false"
+    (keyup)="onKeyUpDiv($event)"
+    (keydown)="onKeyDownDiv($event)"
+    name="divContainer" ngDefaultControl
+    contenteditable="true"
+    class="div-field"
+    
+    #divContainer></div>
+
+<div [matMenuTriggerFor]="trigger" style="position: absolute;"></div>
+
+<div *ngIf="lokiConnectionDisapper" class="error">
+    <mat-icon>error</mat-icon>
+Error connecting to datasource: Data source connected, but no labels received. Verify that Loki and Promtail is configured properly.
+</div>
+
+<mat-menu #trigger="matMenu">
+    <p class="menu-title">{{menuTitle}}</p>
+    <button mat-menu-item *ngFor="let i of popupList" 
+    (click)="onMenuMessage(i)"
+    (keyup)="onMenuMessage(i, $event)"
+    
+    >{{ i }}</button>
+</mat-menu>
+

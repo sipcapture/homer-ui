@@ -1,0 +1,7 @@
+<iframe class="frame-base" [src]="url | safe" (load)="onLoadIframe()"
+    [ngStyle]="{'display' : iframeLoaded ? 'block' : 'none' }"></iframe>
+<div *ngIf="!iframeLoaded">
+    <button mat-raised-button color="primary" (click)="openDialog()">
+        <mat-icon>settings</mat-icon> Widget Settings
+    </button>
+</div>

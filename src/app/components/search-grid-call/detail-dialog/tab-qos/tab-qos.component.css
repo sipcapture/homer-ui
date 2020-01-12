@@ -1,0 +1,122 @@
+.chart-container {
+    position: relative;
+    height: calc(100% - 8.5rem);
+    width:100%;
+    min-width: 500px;
+    min-height: 400px;
+    flex: 2;
+}
+h5 {
+    text-align: center;
+    background-color: rgba(0,0,0,0.03);
+}
+.item-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    min-width: 600px;
+    width: 600px;
+}
+.item {
+    background-color: #673ab7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.4rem;
+    margin: 2px;
+    flex: 0.5;
+    min-width: 190px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+}
+.hide-button {
+    width: 149px;
+    padding: 0;
+    background: #eee;
+    border: 0;
+    border-radius: 4px;
+    height: 20px;
+    margin: 67px -62px 67px -60px;
+    outline: none;
+    cursor: pointer;
+    font-size: .9em;
+}
+.hide-button.rotate90deg {
+    -moz-transform: rotate(-90.0deg);
+    -o-transform: rotate(-90.0deg);
+    -webkit-transform: rotate(-90.0deg);
+    filter: progid: DXImageTransform.Microsoft.BasicImage(rotation=0.083);
+    -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=0.083)";
+    transform: rotate(-90.0deg);
+}
+.item > .text {
+    color: #000;
+}
+
+.item > .text-badge {
+    margin: 0 0.3rem;
+    padding: 0 5px;
+    min-width: 30px;
+    text-align: center;
+    background-color: white;
+    border-radius: 4px;
+    font-weight: bold;
+    color: #000;
+    box-shadow: inset 1px 1px 2px rgba(0,0,0,0.3);
+    
+}
+
+.labels {
+    flex: 1;
+    min-width: 650px;
+}
+.responcive {
+    width: 100%;
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: baseline;
+}
+
+.color-bable {
+    min-width: 27px;
+    min-height: 5px;
+    padding-bottom: 8px;
+    margin: 0 5px;
+    display: inline-block;
+    border-radius: 1rem;
+    box-shadow: 0px 1px 3px rgba(0,0,0,0.6);
+}
+.color1 {
+    background-color: rgba(255, 127, 127, 0.5);
+}
+.color2 {
+    background-color: rgba(124, 249, 177, 0.5);
+}
+.color3 {
+    background-color: rgba(0, 255, 255, 0.5);
+}
+.color4 {
+    background-color: rgba(222, 184, 135, 0.5);
+}
+.color5 {
+    background-color: rgba(100, 149, 237, 0.5);
+}
+.color6 {
+    background-color: rgba(7, 136, 24, 0.5);
+}
+
+.cardStreem {
+    margin: 0.3rem;
+    min-width: 300px;
+    flex: 0.3;
+}
+.error {
+    margin: 2rem;
+    padding: 1rem;
+    background-color: lemonchiffon;
+    color: red;
+    display: flex;
+    align-items: flex-end;
+    box-shadow: 0 0 5px red;
+}

@@ -1,0 +1,23 @@
+<div style="display: flex">
+  <div class="example-container">
+    <h3>Inactive</h3>
+
+    <div cdkDropList
+      #inactiveListView="cdkDropList" [cdkDropListData]="inactiveList"
+      [cdkDropListConnectedTo]="[activeListView]"
+      class="example-list disabled" (cdkDropListDropped)="drop($event)">
+        <div class="example-box" *ngFor="let item of inactiveList" cdkDrag>{{item.name}}</div>
+    </div>
+  </div>
+
+  <div class="example-container">
+    <h3>Active</h3>
+
+    <div cdkDropList
+      #activeListView="cdkDropList" [cdkDropListData]="activeList"
+      [cdkDropListConnectedTo]="[inactiveListView]"
+      class="example-list" (cdkDropListDropped)="drop($event)">
+        <div class="example-box" *ngFor="let item of activeList" cdkDrag>{{item.name}}</div>
+    </div>
+  </div>
+</div>
