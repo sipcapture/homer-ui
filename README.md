@@ -5,10 +5,13 @@
 This project provides the Front-End components of [HOMER 7.x](https://github.com/sipcapture) and higher, featuring native integration with all 
 supported backend components for search and analytics including `pgsql`, `influxdb`, `prometheus`, `loki` and more.
 
+HOMER-UI is designed to be bundled and served with the [homer-app](https://github.com/sipcapture/homer-app) project
+
+
 <img src="https://i.imgur.com/Yv9e9OL.gif"/>
 
 ## Status
-This project is still in Development. Please consult with a QXIP team member before using!
+This project is still in Development. Please open well documented issues to report bugs or inconsistencies.
 
 ## Developers Guide
 ### Installation
