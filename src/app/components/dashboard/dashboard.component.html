@@ -1,0 +1,47 @@
+<div class="top-tool">
+	<h3>{{ dashboardTitle | uppercase }}</h3>
+	<div style="float: right;">
+		<button title="Add widget" mat-icon-button *ngIf="!isIframe" (click)="onDashboardAdd()"><mat-icon>add</mat-icon></button>
+		<button title="Dashboard settings" mat-icon-button (click)="onDashboardSettings()"><mat-icon>settings</mat-icon></button>
+		<button title="Delete dashboard" mat-icon-button *ngIf="!isHome" (click)="onDashboarDelete()"><mat-icon>delete</mat-icon></button>
+	</div>
+</div>
+<div *ngIf="isIframe">
+	<iframe [src]="iframeUrl | safe"></iframe>
+</div>
+<gridster *ngIf="!isIframe" [options]="gridOptions">
+
+	<gridster-item [item]="item" *ngFor="let item of dashboardArray; let i = index;" class="widget-item">
+		<div class="box-header drag-handler" 
+			(mouseenter)="hoverme=true" 
+			(mouseleave)="hoverme=false">
+			
+			<h3 *ngIf="item.name !== 'rsearch'" class="ng-binding">
+				{{ item.config ? item.config.title: item.title || item.id }}
+			</h3>
+			<h3 *ngIf="item.name === 'rsearch'" class="ng-binding">LOKI Search</h3>
+			
+			<div class="box-header-btns pull-right" >
+				<div class="box-icon-header">
+					<mat-icon *ngIf="hesSettings(item)" [inline]="true" (click)="openSettings(item)" aria-label="settings">settings</mat-icon>
+					<mat-icon [inline]="true" (mousedown)="removeItem($event, item)" aria-label="delete">delete</mat-icon>
+				</div>
+			</div>
+		</div>
+		<div class="widget-block">
+			<div class="shadow-polygon" style="display: none;"></div>
+			<ndc-dynamic class="no-drag"
+				[ndcDynamicComponent]="getComponentWidget(item)"
+				[ndcDynamicInputs]="{ id: item.id, config: item.config }"
+				[ndcDynamicOutputs]="item.output"
+			></ndc-dynamic>
+		</div>
+	</gridster-item>
+</gridster>
+
+<div *ngIf="dashboardArray && dashboardArray.length === 0" class="no-content">	
+	<span style="text-align: center;">
+		<h1>Dashboard is empty</h1>
+		<button title="Add widget" mat-raised-button color="primary" (click)="onDashboardAdd()">Add widget <mat-icon>add</mat-icon></button>
+	</span>
+</div>

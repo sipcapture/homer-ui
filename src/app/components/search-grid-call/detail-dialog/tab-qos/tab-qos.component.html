@@ -1,0 +1,125 @@
+<div *ngIf="isError" class="error">
+  <mat-icon>error</mat-icon>
+  <div>Сorrupted data packet came from server</div>
+</div>
+<div *ngIf="!isError">
+<div *ngIf="isRTP"><!-- RTP -->
+  <h5 *ngIf="isRTCP">RTP</h5>
+  <div class="responcive">
+    <div class="chart-container">
+      <canvas baseChart
+        [datasets]="chartDataRTP"
+        [labels]="chartLabelsRTP"
+        [options]="chartOptions"
+        [legend]="chartLegend"
+        [chartType]="chartType">
+      </canvas>
+      <!-- [colors]="lineChartColorsRTP" -->
+    </div>
+    
+
+  </div>
+  <div class="responcive">
+    <button class="hide-button rotate90deg" (click)="hideLabelsFlagRTP = !hideLabelsFlagRTP">{{ hideLabelsFlagRTP ?  'show' : 'hide' }} labels</button>
+    <div *ngIf="!hideLabelsFlagRTP" class="item-container">
+      <div [className]="'item ' + item.color" *ngFor="let item of listRTP">
+        <div class="text" >{{ item.name | uppercase }}</div>
+        <div class="text-badge">{{ item.value }}</div>
+      </div>
+    </div>
+    <mat-card *ngFor="let item of streamsRTP" class="cardStreem">
+      <mat-checkbox [(ngModel)]="item._chacked" [(indeterminate)]="item._indeterminate" (change)="onChangeChackBoxRTP(item, true)">
+        <div style="display: flex; align-items: center; align-content: center;">
+          <span>{{ item.srcIp }}</span>
+          <mat-icon>trending_flat</mat-icon>
+          <span>{{ item.dstIp }}</span>
+        </div>
+      </mat-checkbox>
+      <div style="padding-left: 2rem; display: flex; flex-direction: column;">
+        <mat-checkbox (change)="onChangeChackBoxRTP(item)" [(ngModel)]="item.TOTAL_PK">
+          <span class="color-bable" [ngStyle]="{'backgroundColor': item.TOTAL_PK_color }"></span>
+          TOTAL_PK
+        </mat-checkbox>
+        <mat-checkbox (change)="onChangeChackBoxRTP(item)" [(ngModel)]="item.EXPECTED_PK">
+          <span class="color-bable" [ngStyle]="{'backgroundColor': item.EXPECTED_PK_color }"></span>
+          EXPECTED_PK
+        </mat-checkbox>
+        <mat-checkbox (change)="onChangeChackBoxRTP(item)" [(ngModel)]="item.JITTER">
+          <span class="color-bable" [ngStyle]="{'backgroundColor': item.JITTER_color }"></span>
+          JITTER
+        </mat-checkbox>
+        <mat-checkbox (change)="onChangeChackBoxRTP(item)" [(ngModel)]="item.MOS">
+          <span class="color-bable" [ngStyle]="{'backgroundColor': item.MOS_color }"></span>
+          MOS
+        </mat-checkbox>
+        <mat-checkbox (change)="onChangeChackBoxRTP(item)" [(ngModel)]="item.DELTA">
+          <span class="color-bable" [ngStyle]="{'backgroundColor': item.DELTA_color }"></span>
+          DELTA
+        </mat-checkbox>
+        <mat-checkbox (change)="onChangeChackBoxRTP(item)" [(ngModel)]="item.PACKET_LOSS">
+          <span class="color-bable" [ngStyle]="{'backgroundColor': item.PACKET_LOSS_color }"></span>
+          PACKET_LOSS
+        </mat-checkbox>
+      </div>
+    </mat-card>
+  </div>  
+</div>
+<div *ngIf="isRTCP"><!-- RTCP -->
+  <h5 *ngIf="isRTP">RTCP</h5>
+  <div class="responcive">
+    <div class="chart-container">
+      <canvas baseChart
+        [datasets]="chartData"
+        [labels]="chartLabels"
+        [options]="chartOptions"
+        [legend]="chartLegend"
+        [chartType]="chartType">
+      </canvas>
+      <!-- [colors]="lineChartColors" -->
+    </div>
+    
+
+  </div>
+  <div class="responcive">
+    <button class="hide-button rotate90deg" (click)="hideLabelsFlag = !hideLabelsFlag">{{ hideLabelsFlag ?  'show' : 'hide' }} labels</button>
+    <div *ngIf="!hideLabelsFlag" class="item-container">
+      <div [className]="'item ' + item.color" *ngFor="let item of list">
+        <div class="text" >{{ item.name | uppercase }}</div>
+        <div class="text-badge">{{ item.value }}</div>
+      </div>
+    </div>
+      
+    <mat-card *ngFor="let item of streams" class="cardStreem">
+      <mat-checkbox [(ngModel)]="item._chacked" [(indeterminate)]="item._indeterminate" (change)="onChangeChackBox(item, true)">
+        <div style="display: flex; align-items: center; align-content: center;">
+          <span>{{ item.srcIp }}</span>
+          <mat-icon>trending_flat</mat-icon>
+          <span>{{ item.dstIp }}</span>
+        </div>
+      </mat-checkbox>
+      <div style="padding-left: 2rem; display: flex; flex-direction: column;">
+        <mat-checkbox (change)="onChangeChackBox(item)" [(ngModel)]="item.packets">
+          <span class="color-bable" [ngStyle]="{'background-color': item.packets_color}"></span>
+          packets
+        </mat-checkbox>
+        <mat-checkbox (change)="onChangeChackBox(item)" [(ngModel)]="item.octets">
+          <span class="color-bable" [ngStyle]="{'background-color': item.octets_color}"></span>
+          octets
+        </mat-checkbox>
+        <mat-checkbox (change)="onChangeChackBox(item)" [(ngModel)]="item.highest_seq_no">
+          <span class="color-bable" [ngStyle]="{'background-color': item.highest_seq_no_color}"></span>
+          highest_seq_no
+        </mat-checkbox>
+        <mat-checkbox (change)="onChangeChackBox(item)" [(ngModel)]="item.ia_jitter">
+          <span class="color-bable" [ngStyle]="{'background-color': item.ia_jitter_color}"></span>
+          ia_jitter
+        </mat-checkbox>
+        <mat-checkbox (change)="onChangeChackBox(item)" [(ngModel)]="item.lsr">
+          <span class="color-bable" [ngStyle]="{'background-color': item.lsr_color}"></span>
+          lsr
+        </mat-checkbox>
+      </div>
+    </mat-card>
+  </div>
+</div>
+</div>

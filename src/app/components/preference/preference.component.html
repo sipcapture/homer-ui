@@ -1,0 +1,51 @@
+<div style="display: flex; height: calc(100vh - 45px);">
+  <!-- menu -->
+  <div class="nav-list">
+    <h3 class="menu-title">Admin Settings</h3>
+    <mat-nav-list>
+      <a mat-list-item (click)="preferenceGo(link)" style="text-align: right; float: right;"
+        *ngFor="let link of links"> {{ link | titlecase }} </a>
+    </mat-nav-list>
+  </div>
+  <!-- body -->
+  <div style="background-color: #fff; flex: 1; padding: 2rem; overflow-y: auto;">
+    <div style="display: flex">
+      <button mat-flat-button color="primary" (click)="settingDialog()">
+        <mat-icon>add_circle_outline</mat-icon>
+        Add
+      </button>
+      <h2 style="padding-left: 2rem;">{{ pageId | titlecase }}</h2>
+    </div>
+    <div>
+      <mat-form-field>
+        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+      </mat-form-field>
+      <div *ngIf="isLoading" class="loading">
+        <mat-spinner></mat-spinner>
+      </div>
+      <table *ngIf="!isLoading" mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      
+        <ng-container *ngFor="let item of pagesStructure[pageId]; let i = index" [matColumnDef]="item">
+
+          <ng-container *ngIf="item !== 'tools'" >
+            <th mat-header-cell *matHeaderCellDef> {{ item }} </th>
+            <td mat-cell *matCellDef="let element"> {{ element[item] }} </td>
+          </ng-container>
+
+          <ng-container *ngIf="item === 'tools'" >
+            <th mat-header-cell style="text-align: right" *matHeaderCellDef> Action </th>
+            <td mat-cell *matCellDef="let element" style="text-align: right"> 
+              <button mat-icon-button color="primary" (click)="settingDialog(element.item)"><mat-icon>edit</mat-icon></button>
+              <button mat-icon-button color="warn" style="margin-left: 1rem;" (click)="onDelete( element.item )"><mat-icon>delete</mat-icon></button>
+            </td>
+          </ng-container>
+
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="pagesStructure[pageId]"></tr>
+        <tr mat-row *matRowDef="let row; columns: pagesStructure[pageId];"></tr>
+      </table>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,35 @@
+<mat-toolbar class="title" color="primary">
+    <div>Add New Panel</div>
+    <button mat-icon-button (click)="onNoClick()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar>
+  <div mat-dialog-content style="display: flex; flex-direction: column">
+    <mat-form-field>
+      <mat-label>Name your panel</mat-label>
+      <input matInput [(ngModel)]="data.nameNewPanel">
+    </mat-form-field>
+    
+    <mat-form-field>
+      <mat-label>Type</mat-label>
+      <mat-select [(ngModel)]="data.type">
+        <mat-option *ngFor="let itemlist of typeList" [value]="itemlist.index">{{ itemlist.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    
+    <mat-form-field>
+      <mat-label>Param</mat-label>
+      <input matInput [(ngModel)]="data.param">
+    </mat-form-field>
+    
+    <hr class="hr-or">
+    <form>
+      <div class="file-upload-container">
+      <label for="fileSelect" [className]="'fileselect' + (idDrugOver ? ' drugOver' : '')"></label>
+        <input placeholder="" value="" type="file" id="fileSelect" #fileSelect></div>
+    </form>
+  </div>
+  <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
+    <button mat-raised-button (click)="onNoClick()">Cancel</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+  </div> 

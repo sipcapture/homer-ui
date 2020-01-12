@@ -1,0 +1,39 @@
+<mat-toolbar class="title" color="primary">
+	<div>Settings</div>
+	<button mat-icon-button (click)="onNoClick()">
+		<mat-icon>close</mat-icon>
+	</button>
+</mat-toolbar>
+
+<div mat-dialog-content>
+	<div class="example-container">
+		<mat-form-field>
+			<mat-label>Title</mat-label>
+			<input matInput [(ngModel)]="data.title">
+		</mat-form-field>
+	</div>
+
+	<div class="example-container">
+		<mat-form-field>
+			<mat-label>Link</mat-label>
+			<input matInput [(ngModel)]="data.url">
+		</mat-form-field>
+	</div>
+
+	<div class="example-container">
+		<mat-form-field>
+			<mat-label>Description</mat-label>
+			<input matInput [(ngModel)]="data.desc">
+		</mat-form-field>
+	</div>
+
+	<div class="example-container">
+		<mat-checkbox [(ngModel)]="data.refresh" name="refeshWidget">Refresh event</mat-checkbox>
+	</div>
+
+</div>
+
+<div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
+	<button mat-raised-button (click)="onNoClick()">Cancel</button>
+	<button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+</div>

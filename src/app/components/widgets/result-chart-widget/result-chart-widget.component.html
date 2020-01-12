@@ -1,0 +1,72 @@
+<div style="display: flex; height: 100%;" class="chart-container" >
+  <div style="flex: 1; position: relative;">
+    <div class="fill-container" >
+      <div *ngIf="!groupColumnAxis1">
+        <h1>No Chart!</h1>
+        <p>Set fields, please</p>
+      </div>
+      <div *ngIf="!!groupColumnAxis1 && _isLoaded" style="height: calc(100% - 1rem)">
+        <canvas *ngIf="!noChartData" baseChart
+          style="max-width: 100%"
+          [datasets]="objChart.chartData"
+          [labels]="objChart.chartLabels"
+          [options]="objChart.chartOptions"
+          [legend]="objChart.chartLegend"
+          [chartType]="objChart.chartType">
+        </canvas>
+      </div>
+    </div>
+    <div class="show-hide-label" (click)="isShowPanelSettings=!isShowPanelSettings; saveConfig();">
+      <mat-icon *ngIf="!isShowPanelSettings">chevron_left</mat-icon>
+      <mat-icon *ngIf="isShowPanelSettings">chevron_right</mat-icon>
+      <span style="padding: 0 0.5rem;">{{ isShowPanelSettings ? 'HIDE' : 'SHOW' }}</span>
+      <mat-icon>settings</mat-icon>
+      
+    </div>
+  </div>
+
+  <div class="panel-setting" [ngClass]="{'hide': !isShowPanelSettings}">
+    
+    <!-- Graph Type -->
+    <mat-form-field appearance="fill" style="width: 100%;">
+      <mat-label >Graph Type</mat-label>
+      <mat-select [(ngModel)]="objChart.chartType" (selectionChange)="onChangeType()">
+        <mat-option *ngFor="let type of chartTypeList" [value]="type">
+          {{ type | titlecase }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    
+    <!-- Group Column (Axis 1) -->
+    <mat-form-field appearance="fill" style="width: 100%;">
+      <mat-label >Group Column (Axis 1)</mat-label>
+      <mat-select [(ngModel)]="groupColumnAxis1" (selectionChange)="buildChart()">
+        <mat-option *ngFor="let type of columnKeysGroupColumn" [value]="type">
+          {{ type }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-checkbox *ngIf="isTimestamp()"
+      (click)="onChackBox()"
+      [(ngModel)]="isFormattedDateTime">Formated DateTime</mat-checkbox>
+    <div *ngFor="let column of dataColumns" style="display: flex">
+      <mat-form-field appearance="fill" [id]="column.name + '_' + column.id">
+        <mat-label >Select Axis {{ column.name }} (Axis 2)</mat-label>
+        <mat-select [(ngModel)]="column.value" (selectionChange)="buildChart()">
+          <mat-option *ngFor="let item of columnKeys" [value]="item">
+            {{ item }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button
+        mat-icon-button color="warn"
+        style="margin-top: 12px;"
+        aria-label="Example icon-button with a heart icon"
+        (click)="onDeleteSeries(column.id)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+
+    <button mat-raised-button color="primary" (click)="onAddSeries()">Add Series</button>
+  </div>
+</div>

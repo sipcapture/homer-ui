@@ -1,0 +1,54 @@
+<app-modal-resizable 
+  [title]="'Call-ID: ' + titleId"
+  [headerColor]="headerColor"
+  (close)="onClose()" 
+  [mouseEventData]="mouseEventData"
+  [width]="1400"
+  [height]="800"
+  [minWidth]="600"
+  [minHeight]="400"
+  (browserWindow)="onBrowserWindow($event)">
+  
+  <div *ngIf="!_isLoaded" class="loading">
+      <mat-spinner></mat-spinner>
+  </div>
+
+  <mat-tab-group *ngIf="_isLoaded" style="height: 100%;">
+    <mat-tab *ngIf="_isLoaded && tabs.messages" label="Messages">
+      <app-tab-messages
+        [dataItem]="sipDataItem"
+        (messageWindow)="addWindow($event)"
+      ></app-tab-messages>
+    </mat-tab>
+    <mat-tab *ngIf="_isLoaded && tabs.flow" label="Flow">
+      <app-tab-flow
+        [callid]="titleId"
+        [dataItem]="sipDataItem"
+        (messageWindow)="addWindow($event)"
+      ></app-tab-flow>
+    </mat-tab>
+    <mat-tab *ngIf="tabs.qos" label="QoS">
+      <app-tab-qos 
+        [callid]="titleId"
+        [dataItem]="sipDataItem"
+        [qosData]="qosData"
+        [id]="sipDataItem.data.messages[0].id"
+        (haveData)="onTabQos($event)"
+      ></app-tab-qos>
+    </mat-tab>
+    <mat-tab *ngIf="_isLoaded && tabs.logs" label="Logs">
+      <app-tab-logs
+        [data]="dataLogs"
+      ></app-tab-logs>
+    </mat-tab>
+    <mat-tab *ngIf="_isLoaded && tabs" label="Loki">
+      <app-tab-loki
+        [id]="titleId"
+        [dataItem]="sipDataItem"
+      ></app-tab-loki>
+    </mat-tab>
+    <mat-tab *ngIf="_isLoaded && tabs.export" label="Export">
+      <app-tab-export [callid]="titleId" [id]="sipDataItem.data.messages[0].id"></app-tab-export>
+    </mat-tab>
+  </mat-tab-group>
+</app-modal-resizable>

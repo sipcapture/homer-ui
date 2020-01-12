@@ -1,0 +1,63 @@
+<mat-toolbar class="title" color="primary">
+    <div>Advanced Settings</div>
+    <button mat-icon-button (click)="onNoClick()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar>
+  <div mat-dialog-content>
+    <strong>Mapping Settings</strong>
+    <p>Defines the identifier, format and lifetime of protocol data</p><hr />
+    <div>
+      <mat-form-field style="padding-right: 1rem;">
+        <mat-label>Partition ID</mat-label>
+        <input matInput [(ngModel)]="data.data.partid">
+      </mat-form-field>
+      <mat-form-field style="padding-right: 1rem;">
+        <mat-label>HEP Alias</mat-label>
+        <input matInput [(ngModel)]="data.data.hep_alias">
+      </mat-form-field>
+      <mat-form-field style="padding-right: 1rem;">
+        <mat-label>HEP ID</mat-label>
+        <input matInput [(ngModel)]="data.data.hepid">
+      </mat-form-field>
+      <mat-form-field style="padding-right: 1rem;">
+        <mat-label>Profile</mat-label>
+        <input matInput [(ngModel)]="data.data.profile">
+      </mat-form-field>
+ 
+      <mat-form-field style="padding-right: 1rem;">
+        <mat-label>Partition Step</mat-label>
+        <input matInput [(ngModel)]="data.data.partition_step">
+      </mat-form-field>
+      <mat-form-field style="padding-right: 1rem;">
+        <mat-label>Retention</mat-label>
+        <input matInput [(ngModel)]="data.data.retention">
+      </mat-form-field>
+    </div>
+
+    <strong>Correlation Mapping</strong>
+    <p>Defines any cross-protocol correlation mechanism</p><hr />
+    
+    <ace-editor
+      [mode]="'json'"
+      [theme]="'eclipse'"
+      [readOnly]="false"
+      [(text)]="data.data.correlation_mapping"
+      #correlation_mapping_view style="min-height:350px;"></ace-editor>
+    
+    <strong>Fields Mapping</strong>
+    <p>Defines schema and mapping for protocol fields</p><hr />
+    <ace-editor
+      [mode]="'json'"
+      [theme]="'eclipse'"
+      [readOnly]="false"
+      [(text)]="data.data.fields_mapping"
+      #fields_mapping_view style="min-height:350px;"></ace-editor>
+    
+
+  </div>
+
+<div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
+  <button mat-raised-button (click)="onNoClick()">Cancel</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Save</button>
+</div>

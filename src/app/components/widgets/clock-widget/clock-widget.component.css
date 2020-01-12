@@ -1,0 +1,5 @@
+.box.clock-widget > h3,
+.box.clock-widget > h5,
+.box.clock-widget > p {
+    text-align: center;
+}

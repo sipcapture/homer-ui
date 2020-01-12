@@ -1,0 +1,30 @@
+
+<mat-grid-list cols="2" rowHeight="100px">
+  <mat-grid-tile colspan="2">
+    <h3>Export Session Data</h3>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <button mat-raised-button color="primary" (click)="exportPCAP()">
+      <mat-icon>file_copy</mat-icon>
+      Export PCAP
+    </button>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <button mat-raised-button disabled> 
+      <mat-icon>cloud_download</mat-icon>
+      Share Cloud
+    </button>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <button mat-raised-button color="primary" (click)="exportTEXT()">
+      <mat-icon>file_copy</mat-icon>
+      Export TEXT
+    </button>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <button mat-raised-button disabled>
+      <mat-icon>share</mat-icon>
+      Share Link
+    </button>
+  </mat-grid-tile>
+</mat-grid-list>

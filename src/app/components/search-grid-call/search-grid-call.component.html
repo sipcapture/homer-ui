@@ -1,0 +1,63 @@
+<input [className]="'regex-filter' + (inContainer ? ' inContainer' : '')" placeholder="Regex Results Filter" type="search" [(ngModel)]="filterGridValue" (keyup)="setQuickFilter()">
+<div *ngIf="isLokiQuery" style="display: flex; justify-content: center; align-items: center;">
+    <strong  style="flex: 1;padding-left: 1.5rem;">LOKI Search</strong>
+    <div style="flex: 5">
+      <app-code-style-field
+        [queryText]="queryTextLoki"
+        (updateData)="onUpdateQueryLoki($event)"
+        (keyEnter)="update(true)"
+      ></app-code-style-field>
+    </div>
+    <button mat-button style="flex: 1"
+    (click)="update(true)">Refresh search</button>
+</div>
+<ag-grid-angular
+    [ngStyle]="{
+        'height': inContainer ?
+          (isLokiQuery ? 'calc(100% - 67px)': '100%') :
+          (isLokiQuery ? 'calc(100vh - 112px)' : 'calc(100vh - 45px)'),
+        'width': '100%'
+    }"
+    class="ag-theme-material"
+    [defaultColDef]="defaultColDef"
+    [gridOptions]="gridOptions"
+    [rowData]="rowData" 
+    [columnDefs]="columnDefs"
+    [enableRangeSelection]="true"
+    [rowMultiSelectWithClick]="true"
+    [pagination]="true"
+    (gridReady)="onGridReady($event)"
+    [context]="context"
+    [enableCellTextSelection]="true"
+    [frameworkComponents]="frameworkComponents"
+></ag-grid-angular>
+
+<app-detail-dialog
+    *ngFor="let item of arrWindow; let idx = index"
+    [titleId]="item.id"
+    [mouseEventData]="item.mouseEventData"
+    [sipDataItem]="item.data"
+    [qosData]="item.dataQOS"
+    [headerColor]="item.headerColor"
+    [isLoaded]="item.loaded"
+    (openMessage)="addWindowMessage($event)"
+    (close)="closeWindow(idx)"
+></app-detail-dialog>
+
+<app-modal-resizable
+    *ngFor="let item of arrMessageDetail; let idx = index" 
+    [title]="'Message ID: ' + item.id" 
+    [headerColor]="item.headerColor"
+    (close)="closeWindowMessage(idx)"
+    [mouseEventData]="item.mouseEventData"
+    [minWidth]="500"
+    [minHeight]="400"
+    [isBrowserWindow]="item.isBrowserWindow"
+    [width]="500" [height]="400">
+  <div *ngIf="!item.loaded" class="loading"><mat-spinner></mat-spinner></div>
+  <app-message-content *ngIf="item.loaded" [data]="item.data"></app-message-content>
+</app-modal-resizable>
+
+<div *ngIf="isLoading" class="loading">
+    <mat-spinner></mat-spinner>
+</div>

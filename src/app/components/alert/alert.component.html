@@ -1,0 +1,9 @@
+<div *ngIf="message" (mouseover) = "resetTimer()" (mouseout) = "clearMessageTimer()" [ngClass]="{ 'alert': message, 'alert-success': message.type === 'success', 'alert-danger': message.type === 'error' }">
+	<div class="alert-type">
+		<div class="circle">
+		<mat-icon *ngIf="message.type==='error'">close</mat-icon>
+		<mat-icon *ngIf="message.type==='success'">check</mat-icon>
+		</div>
+	</div>
+	<mat-icon class='close-message' (click) = 'clearMessage()'>close</mat-icon>	{{message.text}}
+</div>

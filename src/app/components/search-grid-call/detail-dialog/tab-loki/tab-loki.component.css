@@ -1,0 +1,15 @@
+.content-body {
+    padding: 1rem;
+    background-color: #efefef;
+    margin: 0.3rem;
+    box-shadow: 1px 1px 5px -2px #000;
+}
+
+.item {
+    padding-bottom: 1rem;
+    font-size: 0.8em;
+}
+
+.item-text {
+    word-break: break-word;
+}

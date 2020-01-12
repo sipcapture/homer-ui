@@ -1,0 +1,20 @@
+<div *ngIf="isConfig" class="chart-container">
+    <div *ngIf="!_isLoaded" class="loading">
+        <mat-spinner></mat-spinner>
+    </div>
+    <div *ngIf="_isLoaded" class="fill-container">
+        <h1 *ngIf="noChartData">No Data</h1>
+        <canvas *ngIf="!noChartData" baseChart
+            [datasets]="chartData"
+            [labels]="chartLabels"
+            [options]="chartOptions"
+            [legend]="chartLegend"
+            [chartType]="chartType">
+        </canvas>
+    </div>
+</div>
+<div *ngIf="!isConfig">
+    <button mat-raised-button color="primary" (click)="openDialog()">
+        <mat-icon>settings</mat-icon> Widget Settings
+    </button>
+</div>

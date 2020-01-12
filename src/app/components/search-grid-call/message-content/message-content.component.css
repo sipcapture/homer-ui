@@ -1,0 +1,10 @@
+
+.message-container {
+    height: 100%;
+}
+.message-container .ngx-json-viewer {
+    height: initial !important;
+}
+table tr {
+    height: 38px;
+}

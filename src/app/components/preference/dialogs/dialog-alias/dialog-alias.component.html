@@ -1,0 +1,41 @@
+<mat-toolbar class="title" color="primary">
+  <div>Alias: {{ data.isnew ? '': data.data.alias }}</div>
+  <button mat-icon-button (click)="onNoClick()">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-toolbar>
+<div mat-dialog-content>
+  <strong>Alias Settings</strong><hr />
+  <div><mat-form-field style="padding-right: 1rem;">
+    <mat-label>Alias Name</mat-label>
+    <input matInput [(ngModel)]="data.data.alias">
+  </mat-form-field></div>
+  
+  <div><mat-form-field style="padding-right: 1rem;">
+    <mat-label>IP Address</mat-label>
+    <input matInput [(ngModel)]="data.data.ip">
+  </mat-form-field></div>
+  
+  <div><mat-form-field style="padding-right: 1rem;">
+    <mat-label>Port</mat-label>
+    <input matInput [(ngModel)]="data.data.port">
+  </mat-form-field></div>
+  
+  <div><mat-form-field style="padding-right: 1rem;">
+    <mat-label>Mask</mat-label>
+    <input matInput [(ngModel)]="data.data.mask">
+  </mat-form-field></div>
+  
+  <div><mat-form-field style="padding-right: 1rem;">
+    <mat-label>CaptureID</mat-label>
+    <input matInput [(ngModel)]="data.data.captureID">
+  </mat-form-field></div>
+  
+  <div><mat-checkbox [(ngModel)]="data.data.status">Status</mat-checkbox></div>
+</div>
+
+
+<div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
+  <button mat-raised-button (click)="onNoClick()">Cancel</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Save</button>
+</div>

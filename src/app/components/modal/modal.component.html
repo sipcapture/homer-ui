@@ -1,0 +1,35 @@
+<!-- We show modal if modal variable value is set to true -->
+<h1 mat-dialog-title>Dashboard settings</h1>
+	<div mat-dialog-content>
+		<form>
+			<!-- 
+				Some form input
+				TODO: Transform in Angular form
+			-->
+			<section class="form-block">
+				<div class="form-group">
+					<label class="required">Min Grid Cols</label>
+					<input type="text" id="requiredInput">
+				</div>
+				<div class="form-group">
+					<label class="required">Max Grid Cols</label>
+					<input type="text" id="requiredInput">
+				</div>
+				<div class="form-group">
+					<label class="required">Min Grid Rows</label>
+					<input type="text" id="requiredInput">
+				</div>
+				<div class="form-group">
+					<label class="required">Max Grid Cols</label>
+					<input type="text" id="requiredInput">
+				</div>
+			</section>
+		</form>
+</div>
+		
+<div mat-dialog-actions> 
+		<!-- Call toggle function that emit an event to Parent component -->
+		<button type="button" class="btn btn-outline" (click)="toggle()">Cancel</button>
+		<button type="button" class="btn btn-primary" (click)="toggle()">Apply</button>
+</div>
+	

@@ -1,0 +1,281 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500");
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+@import url("//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css");
+
+@import '~@angular/material/theming';
+@import 'theme.scss';
+@include mat-core();
+
+// using deeppurple-amber color combo: https://github.com/angular/material2/blob/master/src/lib/core/theming/prebuilt/deeppurple-amber.scss
+$primary: mat-palette($homerprimary);
+$accent:  mat-palette($homeraccent);
+
+$theme: mat-light-theme($primary, $accent);
+
+// Include all theme styles for the components.
+@include angular-material-theme($theme);
+
+// adjust the icons path
+$ag-mat-icons-path: "~ag-grid-community/src/styles/ag-theme-material/icons/";
+$ag-icons-path: "~ag-grid-community/src/styles/ag-theme-base/icons/";
+
+/* ag-grid */
+// changes the default icon color
+$icon-color: #0077f9;
+// changes the selected checkbox check mark color
+$accent-color: #0077f9;
+$header-height: 50px;
+$row-height: 40px;
+$row-border-width: 1px;
+$hover-color: cornsilk;
+//$border-color: #0077f9;
+
+/* 
+.ag-cell {
+	-webkit-user-select:text;
+	-moz-user-select:text;
+	-ms-user-select:text;
+	user-select:text;
+}
+*/
+
+a:not([href]){
+  cursor: pointer; 
+  -webkit-user-select: none; 
+  -moz-user-select: none; 
+  user-select: none
+}
+
+.ag-row-selected {
+    background-color: #eee !important;
+}
+
+@import "~ag-grid-community/dist/styles/ag-grid.css";
+
+$ag-mat-primary: mat-color($homerprimary);
+$ag-mat-accent: mat-color($homeraccent);
+
+//@import "~ag-grid-community/dist/styles/ag-theme-balham.css";
+@import '~ag-grid-community/src/styles/ag-theme-material/sass/ag-theme-material';
+
+.material-icons.md-18 { font-size: 18px; }
+
+#grid-container {
+  width: 80%;
+  margin: 24px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.main-container {
+  height: calc(100vh - 104px);;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+}
+
+.content-container {
+  height: 100vh;
+}
+
+gridster {
+  background: #f2f2f2 !important;
+}
+
+
+
+gridster-item {
+  box-sizing: border-box;
+  background: #fff;
+  border-top-left-radius: .30rem;
+  border-top-right-radius: .30rem;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+.box-header {
+  border-bottom: 1px solid #fff;
+  padding: 0 30px 0 10px;
+  cursor: move;
+  position: relative;
+}
+
+.box-header h3 {
+  margin-top: 8px;
+  display: inline-block;
+  color: #909090;
+  /* color: #e4e4e4; */
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.box-header-btns {
+  top: 4px;
+  right: 10px;
+  cursor: pointer;
+  position: absolute;
+}
+
+.box-icon-header {
+  font-size: 16px; 
+}
+
+.pull-right {
+  font-size: 16px;
+  color: #333;
+  text-decoration: none;  
+}
+
+[draggable] {
+  user-select: none;
+  cursor: pointer;
+}
+
+.header .ng-star-inserted .md-drppicker .buttons {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+}
+
+.alert {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 9999;
+}
+
+.detail-container .mat-tab-body-wrapper {
+    height: 100%
+}
+
+.out-window .mat-tab-body-content.ng-trigger.ng-trigger-translateTab {
+  height: calc(100vh - 3.05rem) !important;
+}
+.out-window .ngx-json-viewer {
+  height: initial !important;
+}
+login-layout {
+  mat-card-header {
+    .mat-card-header-text {
+      margin: auto;
+    }
+  }
+}
+ace-editor {
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.4);
+}
+
+.md-drppicker .ranges ul {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.md-drppicker.double.drops-down-left.ltr.show-ranges.shown {
+    top: 4.5rem !important;
+    left: auto !important;
+    right: 1rem !important;
+}
+.md-drppicker .ranges ul li button {
+  padding: 0.2rem 0.7rem !important;
+}
+.md-drppicker .ranges ul li button.active {
+    border-radius: 3px;
+}
+.mat-dialog-content {
+  max-height: 100vh;
+}
+.mat-toolbar-row, .mat-toolbar-single-row {
+  height: 45px !important;
+}
+.message-container .ngx-json-viewer {
+  height: initial !important;
+}
+.detail-container {
+    border-radius: 8px !important;
+}
+/* top bar background & font */
+.mat-toolbar.mat-primary {
+    background: #000000;
+    color: white !important;
+}
+.calendar-table {
+    color: black !important;
+}
+/* page titles */
+h3 {
+    font-size: 1.35rem !important;
+}
+/* log containers */
+.red-container {
+    padding: 0.3rem;
+    background-color: rgb(243, 243, 243) !important;
+}
+/* export buttons */
+.mat-figure .mat-raised-button:not([class*=mat-elevation-z]) {
+    width: 80%;
+    height: 80%;
+}
+/* call-id legend */
+.label-callid {
+    background: #ffffff;
+}
+/* grid settings box */
+.mat-checkbox-layout .mat-checkbox-label {
+    line-height: 24px;
+    min-width: 95px;
+}
+/* modal-resizable (white space) */
+.modal-resizable .mat-dialog-content {
+  max-height: initial !important;
+}
+
+.div-field > span.Pwhite {
+  color: black;
+}
+.div-field > span.Pbracket {
+  color: darkred;
+}
+.div-field > span.Pequally {
+  color: darkgrey;
+}
+.div-field > span.Pquotes {
+  color: darkgreen;
+}
+.div-field > span.Plabel {
+  color: blue;
+}
+
+.add-widget-button{
+    width: 200px !important;
+}
+
+.md-drppicker td.active, .md-drppicker td.active:hover {
+    background-color: #10c1cf !important;
+    color: #000 !important;
+}
+
+.md-drppicker .ranges ul li button.active {
+    background-color: #10c1cf !important;
+    color: #000 !important;
+}
+
+.md-drppicker .btn {
+    background-color: #10c1cf !important;
+    color: #000 !important;
+}
