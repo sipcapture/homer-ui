@@ -40,6 +40,9 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     ngOnInit() {
         this.color_sid = Functions.getColorByString(this.callid);
 
+        /* sort it */
+        this.dataItem.data.hosts = this.sortProperties(this.dataItem.data.hosts, 'position', true, false);
+
         this.aliasTitle = Object.keys(this.dataItem.data.hosts).map( i => ({ ip: i, alias: this.dataItem.data.alias[i] }));
         const colCount = this.aliasTitle.length;
         const data = this.dataItem.data;
@@ -87,5 +90,42 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     onClickItem(id: any) {
         const row = this.dataSource.filter(i => i.id === id)[0];
         this.messageWindow.emit(row);
+    }
+
+    /**
+    * Sort object properties (only own properties will be sorted).
+    * @param {object} obj object to sort properties
+    * @param {string|int} sortedBy 1 - sort object properties by specific value.
+    * @param {bool} isNumericSort true - sort object properties as numeric value, false - sort as string value.
+    * @param {bool} reverse false - reverse sorting.
+    * @returns {Array} array of items in [[key,value],[key,value],...] format.
+    */
+    sortProperties(obj, sortedBy, isNumericSort, reverse) {
+            sortedBy = sortedBy || 1; // by default first key
+            isNumericSort = isNumericSort || false; // by default text sort
+            reverse = reverse || false; // by default no reverse
+
+            var reversed = (reverse) ? -1 : 1;
+
+            var sortable = [];
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    sortable.push([key, obj[key]]);
+                }
+            }
+            if (isNumericSort)
+                sortable.sort(function (a, b) {
+                    return reversed * (a[1][sortedBy] - b[1][sortedBy]);
+                });
+            else
+                sortable.sort(function (a, b) {
+                    var x = a[1][sortedBy].toLowerCase(),
+                        y = b[1][sortedBy].toLowerCase();
+                    return x < y ? reversed * -1 : x > y ? reversed : 0;
+                });
+            return sortable.reduce((obj, item) => {
+              obj[item[0]] = item[1]
+              return obj
+            }, {})
     }
 }
