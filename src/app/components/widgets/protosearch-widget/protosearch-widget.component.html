@@ -1,16 +1,30 @@
 <form *ngIf="isConfig">
-    <div class="example-container">
-        <div *ngFor="let item of fields" class="example-container">
-            <mat-form-field  *ngIf="item.field_name !== 'loki'">
+    <div class="example-container" [ngStyle]="{'grid-template-columns': getFieldColumns()}">
+        <div *ngFor="let item of fields" style="display: block" >
+            <mat-form-field style="display: block" *ngIf="item.field_name !== 'loki'">
                 <mat-label>{{item.selection}}</mat-label>
                 
                 <input matInput 
-                    *ngIf="'targetResultsContainer' !== item.field_name"
+                    *ngIf="'targetResultsContainer' !== item.field_name && item.form_default === null"
                     [(ngModel)]="item.value"
                     [ngModelOptions]="{standalone: true}"
                     (change)="onChangeField($event)"
                     (keydown.enter)="handleEnterKeyPress($event)"
                 >
+                <input matInput 
+                    *ngIf="'targetResultsContainer' !== item.field_name && item.form_default !== null"
+                    [(ngModel)]="item.value"
+                    [ngModelOptions]="{standalone: true}"
+                    (change)="onChangeField($event)"
+                    (keydown.enter)="handleEnterKeyPress($event)"
+                    [matAutocomplete]="form_default"
+                >
+                <mat-autocomplete #form_default="matAutocomplete">
+                    <mat-option *ngFor="let option of item.form_default" [value]="option">
+                        {{option}}
+                    </mat-option>
+                </mat-autocomplete>
+
                 <mat-select
                     *ngIf="item.field_name === 'targetResultsContainer'"
                     [formControl]="targetResultsContainerValue"
@@ -24,6 +38,7 @@
                 </mat-select>
             </mat-form-field>
             <app-code-style-field
+            style="display: block"
                 [queryText]="lokiQueryText"
                 (updateData)="onLokiCodeData($event)"
                 *ngIf="item.field_name === 'loki'"

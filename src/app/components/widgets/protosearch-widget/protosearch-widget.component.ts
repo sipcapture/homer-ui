@@ -51,6 +51,8 @@ export class ProtosearchWidgetComponent implements IWidget {
     lokiQueryText: string;
     searchQueryLoki: any;
 
+    countFieldColumns = 1;
+
     _cache: any;
     buttonState = true;
     searchQuery: any;
@@ -59,6 +61,7 @@ export class ProtosearchWidgetComponent implements IWidget {
     widgetResultList: Array<any>;
     widgetResultListLastSelect: string;
     isConfig = false;
+    mapping: any;
     targetResultsContainerValue = new FormControl();
     constructor(
         public dialog: MatDialog,
@@ -67,7 +70,7 @@ export class ProtosearchWidgetComponent implements IWidget {
         private _ds: DashboardService,
         private preferenceMappingProtocolService: PreferenceMappingProtocolService) {}
 
-    ngOnInit() {
+    async ngOnInit() {
         if (!this.config) {
             this.isConfig = false;
             this.config = {
@@ -93,6 +96,7 @@ export class ProtosearchWidgetComponent implements IWidget {
                 },
                 uuid: 'ed426bd0-ff21-40f7-8852-58700abc3762',
                 fields: [],
+                countFieldColumns: this.countFieldColumns,
                 row: 0,
                 col: 1,
                 cols: 2,
@@ -111,12 +115,15 @@ export class ProtosearchWidgetComponent implements IWidget {
             item.value = '';
             return item;
         });
-
+        this.mapping = await this.preferenceMappingProtocolService.getAll().toPromise();
         this.updateButtonState();
 
         this.initSubscribes();
     }
-
+    getFieldColumns() {
+        this.countFieldColumns = this.config.countFieldColumns || this.countFieldColumns;
+        return Array.from({length: this.countFieldColumns}, i => '1fr').join(' ');
+    }
     private initSubscribes() {
         this.subscriptionStorage = this._sss.sessionStorage.subscribe((data: UserSettings) => {
             this._cache = data.protosearchSettings[this.widgetId];
@@ -172,6 +179,22 @@ export class ProtosearchWidgetComponent implements IWidget {
 
         /* clone Object */
         this.fields = Functions.cloneObject(this.config.fields);
+        console.log('this.fields', this.fields, this.mapping);
+
+        const m = this.mapping.data.filter(i => i.profile === this.config.config.protocol_profile.value &&
+            i.hep_alias === this.config.config.protocol_id.name)[0];
+        if (m) {
+            this.fields.forEach(i => {
+                const f = m.fields_mapping.filter(j => j.id === i.field_name)[0];
+                if (f && f.form_default) {
+                    i.form_default = f.form_default;
+                } else {
+                    i.form_default = null;
+                }
+            });
+            console.log('this.fields', this.fields);
+
+        }
     }
 
     private saveState() {
@@ -191,7 +214,6 @@ export class ProtosearchWidgetComponent implements IWidget {
         };
 
         this._sss.saveProtoSearchConfig(this.widgetId, Functions.cloneObject(this.searchQuery));
-        // console.log({SQ: Functions.cloneObject(this.searchQuery)});
 
         this.searchQuery.fields = this.searchQuery.fields.filter(i => i.name !== ConstValue.CONTAINER);
     }
@@ -201,56 +223,56 @@ export class ProtosearchWidgetComponent implements IWidget {
         this._sss.removeProtoSearchConfig(this.widgetId);
     }
 
-    openDialog(): void {
-        const subscription = this.preferenceMappingProtocolService.getAll().subscribe(data => {
-            const dialogRef = this.dialog.open(SettingProtosearchWidgetComponent, {
-                width: '600px',
-                data: {
-                    config: this.config,
-                    mapping: data,
-                    isButton: this.buttonState
-                }
-            });
-
-            const dialogRefSubscription = dialogRef.afterClosed().subscribe(result => {
-                if (result) {
-                    if (result.fields && result.fields.length !== 0) {
-                        this.config.protocol_id = result.protocol_id;
-                        this.config.config.protocol_profile = {
-                            name: result.profile,
-                            value: result.profile,
-                        };
-                        this.config.fields = result.fields.map(item => {
-                            const res: SearchFieldItem = {
-                                field_name: item.id,
-                                form_type: item.proto.hep_alias,
-                                hepid: 1,
-                                name: `1:${result.profile}:${item.id}`,
-                                profile: item.proto.profile,
-                                selection: item.name,
-                                type: 'string',
-                            };
-                            return res;
-                        });
-                    }
-                    this.config.title = result.title;
-                    this.config.config.title = result.title;
-                    this.config.config.searchbutton = !!result.isButton;
-
-                    this._sss.removeProtoSearchConfig(this.widgetId);
-                    this.widgetId = '_' + Functions.md5(JSON.stringify(this.config));
-
-                    this.updateButtonState();
-                    this.changeSettings.emit({
-                        config: this.config,
-                        id: this.id
-                    });
-                    this.isConfig = true;
-                }
-                dialogRefSubscription.unsubscribe();
-            });
-            subscription.unsubscribe();
+    async openDialog() {
+        const mapping = await this.preferenceMappingProtocolService.getAll().toPromise();
+        this.config.countFieldColumns = this.config.countFieldColumns || this.countFieldColumns;
+        const dialogRef = this.dialog.open(SettingProtosearchWidgetComponent, {
+            width: '600px',
+            data: {
+                config: this.config,
+                mapping: mapping,
+                isButton: this.buttonState
+            }
         });
+
+        const result = await dialogRef.afterClosed().toPromise();
+        if (!result) {
+            return;
+        }
+        if (result.fields && result.fields.length !== 0) {
+            this.config.protocol_id = result.protocol_id;
+            this.config.config.protocol_profile = {
+                name: result.profile,
+                value: result.profile,
+            };
+            this.config.fields = result.fields.map(item => {
+                const res: SearchFieldItem = {
+                    field_name: item.id,
+                    form_type: item.proto.hep_alias,
+                    hepid: 1,
+                    name: `1:${result.profile}:${item.id}`,
+                    profile: item.proto.profile,
+                    selection: item.name,
+                    type: 'string',
+                };
+                return res;
+            });
+        }
+        this.config.title = result.title;
+        this.config.config.title = result.title;
+        this.config.config.searchbutton = !!result.isButton;
+
+        this.config.countFieldColumns = result.countFieldColumns;
+
+        this._sss.removeProtoSearchConfig(this.widgetId);
+        this.widgetId = '_' + Functions.md5(JSON.stringify(this.config));
+
+        this.updateButtonState();
+        this.changeSettings.emit({
+            config: this.config,
+            id: this.id
+        });
+        this.isConfig = true;
     }
 
     onChangeField (event) {
