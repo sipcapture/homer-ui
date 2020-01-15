@@ -169,7 +169,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                             Partid: item.partid,
                             Category: item.category,
                             Param: item.param,
-                            Data: JSON.stringify(item.data).slice(0, 40) + ' . . .',
+                            Data: JSON.stringify(item.data).slice(0, 50) + ' . . .',
                             item: item
                         };
                     });
@@ -197,6 +197,16 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 const subscription_phs = this._phs.getAll().subscribe(data => {
                     subscription_phs.unsubscribe();
                     this.isLoading = false;
+                    this.dataSource = data['data'].map(item => {
+                        return {
+                            'HEP alias': item.hep_alias,
+                            'HEP ID': item.hepid,
+                            'Profile': item.profile,
+                            'Version': item.version,
+                            'HepSub': JSON.stringify(item.mapping).slice(0, 40) + ' . . .',
+                            item: item
+                        };
+                    });
                 }, err => {
                     this.isLoading = true;
                     alert('error reques : 503');
