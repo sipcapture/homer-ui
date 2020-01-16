@@ -7,6 +7,9 @@ import { Subscription } from 'rxjs';
 import { Functions } from '@app/helpers/functions';
 import { Widget } from '@app/helpers/widget';
 
+import { Observable } from 'rxjs';
+import {map, startWith} from 'rxjs/operators';
+
 import {
     DashboardService,
     DashboardEventData,
@@ -139,6 +142,9 @@ export class ProtosearchWidgetComponent implements IWidget {
             } else if (this._cache && this._cache.fields) {
                 this.fields.forEach(item => {
                     item.value = (this._cache.fields.filter(i => i.name === item.field_name)[0] || {value: ''}).value;
+                    if (item.formControl) {
+                        item.formControl.setValue(item.value);
+                    }
                     if (item.field_name === ConstValue.CONTAINER) {
                         this.targetResultsContainerValue.setValue(item.value);
                     }
@@ -179,24 +185,68 @@ export class ProtosearchWidgetComponent implements IWidget {
 
         /* clone Object */
         this.fields = Functions.cloneObject(this.config.fields);
-        console.log('this.fields', this.fields, this.mapping);
 
         const m = this.mapping.data.filter(i => i.profile === this.config.config.protocol_profile.value &&
             i.hep_alias === this.config.config.protocol_id.name)[0];
-        if (m) {
+
+        if (m && m.fields_mapping) {
+            /* patch */
+            if (typeof m.fields_mapping === 'string') {
+                try {
+                    m.fields_mapping = JSON.parse(m.fields_mapping);
+                } catch (err) {
+                    m.fields_mapping = [];
+                }
+            }
             this.fields.forEach(i => {
                 const f = m.fields_mapping.filter(j => j.id === i.field_name)[0];
+                if (f && f.form_type) {
+                    i.form_type = f.form_type;
+                }
+                if (f && f.system_param) {
+                    i.system_param = f.system_param;
+                }
+                if (f && f.form_api) {
+                    i.form_api = f.form_api;
+                }
+
                 if (f && f.form_default) {
                     i.form_default = f.form_default;
+                    if (i.form_type === 'input') {
+                        i.formControl = new FormControl();
+                        i.formControl.setValue(i.value);
+                        this.autocompliteFiltring(i);
+                    }
                 } else {
                     i.form_default = null;
                 }
             });
-            console.log('this.fields', this.fields);
-
         }
     }
+    private autocompliteFiltring (item: any) {
+        const options: Array<any> = item.form_default;
+        console.log({item});
+        const _filter = (value: string): string[] => {
+            const filterValue = value.toLowerCase();
+            item.value = value;
+            return options.filter((option: any) => {
+                if (typeof option === 'string') {
+                    return option.toLowerCase().includes(filterValue);
+                } else if (typeof option === 'object') {
+                    console.log({option});
+                    return option.id.toLowerCase().includes(filterValue);
+                }
+            });
+        };
 
+        const filteredOptions: Observable<string[]> =
+            item.formControl.valueChanges.pipe(
+                startWith(''),
+                map((value: string) => _filter(value))
+            );
+
+        item.filteredOptions = filteredOptions;
+    }
     private saveState() {
         if (this.isLoki) {
             this._sss.saveProtoSearchConfig(this.widgetId, this.searchQuery);
@@ -275,7 +325,7 @@ export class ProtosearchWidgetComponent implements IWidget {
         this.isConfig = true;
     }
 
-    onChangeField (event) {
+    onChangeField (event = null) {
         this.fields.forEach(i => {
             if (i.field_name === ConstValue.CONTAINER) {
                 i.value = this.targetResultsContainerValue.value;

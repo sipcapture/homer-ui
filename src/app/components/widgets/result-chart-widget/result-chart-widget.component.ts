@@ -204,13 +204,19 @@ export class ResultChartWidgetComponent implements IWidget {
         const dataMapping: any = await this._pmps.getAll().toPromise();
         const result = await this._scs.getData(this.configQuery).toPromise();
 
-        const fields_mapping = dataMapping.data.filter(i => i.profile === this.protocol_profile.split('_')[1])[0].fields_mapping;
+        const dataMappingItem = dataMapping.data.filter(i =>
+            i.profile === this.protocol_profile.split('_')[1]
+        )[0];
 
-        this.columnKeysGroupColumn = result.keys;
-        this.columnKeys = fields_mapping.filter(i => i.type !== 'string').map(i => i.id.split('.')[1]);
-        this.dataForChart = result.data;
-
-        this.buildChart();
+        if (dataMappingItem && dataMappingItem.fields_mapping) {
+            const fields_mapping = dataMappingItem.fields_mapping;
+            
+            this.columnKeysGroupColumn = result.keys;
+            this.columnKeys = fields_mapping.filter(i => i.type !== 'string').map(i => i.id.split('.')[1]);
+            this.dataForChart = result.data;
+            
+            this.buildChart();
+        }
     }
     private groupByData() {
         const sort_by = this.groupColumnAxis1;

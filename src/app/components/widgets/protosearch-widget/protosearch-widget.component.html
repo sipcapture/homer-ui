@@ -1,32 +1,12 @@
 <form *ngIf="isConfig">
     <div class="example-container" [ngStyle]="{'grid-template-columns': getFieldColumns()}">
         <div *ngFor="let item of fields" style="display: block" >
-            <mat-form-field style="display: block" *ngIf="item.field_name !== 'loki'">
+            <!--
+                if item is targetResultsContainer
+            -->
+            <mat-form-field style="display: block" *ngIf="item.field_name === 'targetResultsContainer'">
                 <mat-label>{{item.selection}}</mat-label>
-                
-                <input matInput 
-                    *ngIf="'targetResultsContainer' !== item.field_name && item.form_default === null"
-                    [(ngModel)]="item.value"
-                    [ngModelOptions]="{standalone: true}"
-                    (change)="onChangeField($event)"
-                    (keydown.enter)="handleEnterKeyPress($event)"
-                >
-                <input matInput 
-                    *ngIf="'targetResultsContainer' !== item.field_name && item.form_default !== null"
-                    [(ngModel)]="item.value"
-                    [ngModelOptions]="{standalone: true}"
-                    (change)="onChangeField($event)"
-                    (keydown.enter)="handleEnterKeyPress($event)"
-                    [matAutocomplete]="form_default"
-                >
-                <mat-autocomplete #form_default="matAutocomplete">
-                    <mat-option *ngFor="let option of item.form_default" [value]="option">
-                        {{option}}
-                    </mat-option>
-                </mat-autocomplete>
-
                 <mat-select
-                    *ngIf="item.field_name === 'targetResultsContainer'"
                     [formControl]="targetResultsContainerValue"
                     [compareWith]="compareResultListItem"
                     (selectionChange)="onChangeField($event)"
@@ -37,12 +17,74 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <app-code-style-field
-            style="display: block"
+            
+            <!--
+                if LOKI Field
+            -->
+            <app-code-style-field *ngIf="item.field_name === 'loki'"
+                style="display: block"
                 [queryText]="lokiQueryText"
                 (updateData)="onLokiCodeData($event)"
-                *ngIf="item.field_name === 'loki'"
             ></app-code-style-field>
+
+            <!--
+                if other Fields
+            -->
+            <mat-form-field style="display: block" *ngIf="item.field_name !== 'loki' && item.field_name !== 'targetResultsContainer'">
+                <mat-label>{{item.selection}}</mat-label>
+                
+                <!--
+                    Text Field (by Default)
+                -->
+                <input matInput 
+                    *ngIf="item.form_default === null"
+                    [(ngModel)]="item.value"
+                    [ngModelOptions]="{standalone: true}"
+                    (change)="onChangeField($event)"
+                    (keydown.enter)="handleEnterKeyPress($event)"
+                >
+
+                <!--
+                    Autocomplete Text Field
+                -->
+                <input matInput *ngIf="item.form_default !== null && item.form_type === 'input'"
+                    [formControl]="item.formControl" [matAutocomplete]="form_default">
+                <mat-autocomplete #form_default="matAutocomplete">
+                    <mat-option *ngFor="let option of item.filteredOptions | async" [value]="option.id ? option.id : option">
+                        {{option.id ? option.id : option}}
+                    </mat-option>
+                </mat-autocomplete>
+
+                <!--
+                    SELECT FIELD
+                -->
+                <mat-select
+                    *ngIf="item.form_type === 'select'"
+                    [(ngModel)]="item.value"
+                    (selectionChange)="onChangeField($event)"
+                    name="select_field"
+                    ngDefaultControl>
+                    <mat-option *ngFor="let option of item.form_default" [value]="option.id ? option.id : option">
+                        {{option.id ? option.id : option}}
+                    </mat-option>
+                </mat-select>
+                
+                <!--
+                    MULTISELECT FIELD
+                -->
+                <mat-select multiple
+                    *ngIf="item.form_type === 'multiselect'"
+                    [(ngModel)]="item.value"
+                    (selectionChange)="onChangeField($event)"
+                    name="multiple_select_field"
+                    ngDefaultControl>
+                    <mat-option *ngFor="let option of item.form_default" [value]="option.id ? option.id : option">
+                        {{option.id ? option.id : option}}
+                    </mat-option>
+                </mat-select>
+                
+            </mat-form-field>
+            
         </div>
     </div>
     <div style="float: right;" [className]="buttonState ? 'show' : 'hide'">
