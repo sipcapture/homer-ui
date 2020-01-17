@@ -13,7 +13,7 @@ export class DialogAdvancedComponent {
     @Inject(MAT_DIALOG_DATA) public data: any) {
       if ( data.isnew ) {
         data.data = {
-          partid: '',
+          partid: 10,
           category: '',
           param: '',
           data: {},

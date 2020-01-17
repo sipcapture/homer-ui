@@ -23,6 +23,16 @@ import {
     DialogUsersComponent
 } from '@app/components/preference/dialogs';
 
+import {
+    PreferenceUsers,
+    PreferenceAdvanced,
+    PreferenceAlias,
+    PreferenceUsersSettings,
+    PreferenceMapping,
+    PreferenceHepsub
+} from '@app/models';
+
+
 @Component({
     selector: 'app-preference',
     templateUrl: './preference.component.html',
@@ -52,25 +62,14 @@ export class PreferenceComponent implements OnInit, OnDestroy {
     service: any;
 
     public pagesStructure: any = {
-        // (Users) Firstname / Lastname / Username / Email / Action
         users: ['Firstname', 'Lastname', 'Username', 'Email', 'tools'],
-
-        // (User Settings) Username / Partid / Category / Param / Data / Action
         'user settings': ['Username', 'Partid', 'Category', 'Param', 'Data', 'tools'],
-
-        // (Alias) IP Address / Port / Mask / CaptureID / Status / Action
         alias: ['Alias', 'IP Address', 'Port', 'Mask', 'CaptureID', 'Status', 'tools'],
-
-        // (Advanced Settings) Partid / Category / Param / Data / Action
         advanced: ['Partid', 'Category', 'Param', 'Data', 'tools'],
-
-        // (Mapping Settings) Partid / Profile / HEP alias / HEP ID / Retention / Mapping / Action
-        mapping: ['Partid', 'Profile', 'HEP alias', 'HEP ID', 'Retention', 'Mapping', 'tools'],
-
-        // (HepSub Settings) Profile / HEP alias / HEP ID / Version / HepSub / Action
+        mapping: ['Partid', 'Profile', 'HEP alias', 'HEP ID', 'Retention', 'tools'],
         hepsub: ['Profile', 'HEP alias', 'HEP ID', 'Version', 'HepSub', 'tools'],
+    };
 
-    }
     dataSource = new MatTableDataSource([{
     }]);
 
@@ -108,114 +107,105 @@ export class PreferenceComponent implements OnInit, OnDestroy {
         });
     }
 
-    updateData () {
+    async updateData () {
         this.isLoading = true;
+        let responce;
         switch (this.pageId) {
             case this.links[0]: /* users */
-                const subscription_pus = this._pus.getAll().subscribe(data => {
-                    subscription_pus.unsubscribe();
+                responce = await this._pus.getAll().toPromise();
 
-                    this.dataSource = data['data'].map(item => {
-                        return {
-                            'Firstname': item.firstname,
-                            'Lastname': item.lastname,
-                            'Username': item.username,
-                            'Email': item.email,
-                            item: item
-                        };
-                    });
-                    this.isLoading = false;
-                });
+                this.dataSource = responce.data.map(
+                    (item: PreferenceUsers) => ({
+                        Firstname: item.firstname,
+                        Lastname: item.lastname,
+                        Username: item.username,
+                        Email: item.email,
+                        item: item
+                }));
+                this.isLoading = false;
+
                 break;
             case this.links[1]: /* user settings */
-                const subscription_puss = this._puss.getAll().subscribe(data => {
-                    subscription_puss.unsubscribe();
-                    this.dataSource = data['data'].map(item => {
-                        return {
-                            Username: item.username,
-                            Partid: item.partid,
-                            Category: item.category,
-                            Param: item.param,
-                            data: JSON.stringify(item.data).slice(0, 40) + ' . . .',
-                            item: item
-                        };
-                    });
-                    this.isLoading = false;
-                });
+                responce = await this._puss.getAll().toPromise();
+
+                this.dataSource = responce.data.map(
+                    (item: PreferenceUsersSettings) => ({
+                        Username: item.username,
+                        Partid: item.partid,
+                        Category: item.category,
+                        Param: item.param,
+                        data: JSON.stringify(item.data).slice(0, 40) + ' . . .',
+                        item: item
+                }));
+                this.isLoading = false;
                 break;
             case this.links[2]: /* alias */
-                const subscription_pas = this._pas.getAll().subscribe(data => {
-                    subscription_pas.unsubscribe();
-                    // 'IP Address':0;'Port':0;'Mask':0;'CaptureID':0;'Status'
-                    this.dataSource = data['data'].map(item => {
-                        return {
-                            Alias: item.alias,
-                            'IP Address': item.ip,
-                            Port: item.port,
-                            Mask: item.mask,
-                            CaptureID: item.captureID,
-                            Status: item.status,
-                            item: item
-                        };
-                    });
-                    this.isLoading = false;
-                });
+                responce = await this._pas.getAll().toPromise();
+
+                this.dataSource = responce.data.map(
+                    (item: PreferenceAlias) => ({
+                        Alias: item.alias,
+                        'IP Address': item.ip,
+                        Port: item.port,
+                        Mask: item.mask,
+                        CaptureID: item.captureID,
+                        Status: item.status,
+                        item: item
+                }));
+                this.isLoading = false;
+
                 break;
             case this.links[3]: /* advanced */
-                const subscription_pads = this._pads.getAll().subscribe(data => {
-                    subscription_pads.unsubscribe();
-                    this.dataSource = data['data'].map(item => {
-                        return {
-                            Partid: item.partid,
-                            Category: item.category,
-                            Param: item.param,
-                            Data: JSON.stringify(item.data).slice(0, 50) + ' . . .',
-                            item: item
-                        };
-                    });
-                    this.isLoading = false;
-                });
+                responce = await this._pads.getAll().toPromise();
+                this.dataSource = responce.data.map(
+                    (item: PreferenceAdvanced) => ({
+                        Partid: item.partid,
+                        Category: item.category,
+                        Param: item.param,
+                        Data: JSON.stringify(item.data).slice(0, 50) + ' . . .',
+                        item: item
+                }));
+                this.isLoading = false;
+
                 break;
             case this.links[4]: /* mapping */
-                const subscription_pmps = this._pmps.getAll().subscribe(data => {
-                    subscription_pmps.unsubscribe();
-                    this.dataSource = data['data'].map(item => {
-                        return {
-                            'Partid': item.partid,
-                            'Profile': item.profile,
-                            'HEP alias': item.hep_alias,
-                            'HEP ID': item.hepid,
-                            'Retention': item.retention,
-                            'Mapping': item.mapping_settings,
-                            item: item
-                        };
-                    });
-                    this.isLoading = false;
-                });
+                responce = await this._pmps.getAll().toPromise();
+                this.dataSource = responce.data.map(
+                    (item: PreferenceMapping) => ({
+                        Partid: item.partid,
+                        Profile: item.profile,
+                        'HEP alias': item.hep_alias,
+                        'HEP ID': item.hepid,
+                        Retention: item.retention,
+                        Mapping: item.correlation_mapping,
+                        item: item
+                }));
+                this.isLoading = false;
+
                 break;
             case this.links[5]: /* hepsub */
-                const subscription_phs = this._phs.getAll().subscribe(data => {
-                    subscription_phs.unsubscribe();
+                try {
+                    responce = await this._phs.getAll().toPromise();
                     this.isLoading = false;
-                    this.dataSource = data['data'].map(item => {
-                        return {
+                    this.dataSource = responce.data.map(
+                        (item: PreferenceHepsub) => ({
                             'HEP alias': item.hep_alias,
                             'HEP ID': item.hepid,
-                            'Profile': item.profile,
-                            'Version': item.version,
-                            'HepSub': JSON.stringify(item.mapping).slice(0, 40) + ' . . .',
+                            Profile: item.profile,
+                            Version: item.version,
+                            HepSub: JSON.stringify(item.mapping).slice(0, 40) + ' . . .',
                             item: item
-                        };
-                    });
-                }, err => {
+                    }));
+                } catch (err) {
                     this.isLoading = true;
                     alert('error reques : 503');
-                });
+                }
                 break;
         }
+        console.log(this.pageId, {responce});
     }
 
-    openDialog(type: any, data: any = null, cb: Function = null): void {
+    async openDialog(type: any, data: any = null, cb: Function = null) {
         const dialogRef = this.dialog.open(type, {
             width: '800px',
             data: {
@@ -224,14 +214,24 @@ export class PreferenceComponent implements OnInit, OnDestroy {
             }
         });
 
-        const dialogRefSubscription = dialogRef.afterClosed().subscribe(result => {
-            if (cb) {
-                cb(result);
+        const result = await dialogRef.afterClosed().toPromise();
+        if (cb && result) {
+            if (result.data) {
+                result.data = this.jsonValidateAndForrmatted(result.data);
             }
-            dialogRefSubscription.unsubscribe();
-        });
+            cb(result);
+        }
     }
-
+    private jsonValidateAndForrmatted (data) {
+        Object.keys(data).forEach(item => {
+            if (typeof data[item] === 'string') {
+                try {
+                    data[item] = JSON.parse(data[item]);
+                } catch (e) { }
+            }
+        });
+        return data;
+    }
     applyFilter(filterValue: string) {
         this.dataSource.filter = filterValue.trim().toLowerCase();
     }
@@ -243,8 +243,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
     settingDialog (item: any = null) {
         this.openDialog(this.dialogs[this.pageId], item, result => {
             if (result) {
-                const subscription = this.service[this.pageId][result.isnew ? 'add' : 'update'](result.data).subscribe(data => {
-                    subscription.unsubscribe();
+                this.service[this.pageId][result.isnew ? 'add' : 'update'](result.data).toPromise().then(() => {
                     this.updateData();
                 });
             }
@@ -254,8 +253,8 @@ export class PreferenceComponent implements OnInit, OnDestroy {
     onDelete (item: any = null) {
         this.openDialog(DialogDeleteAlertComponent, null, result => {
             if (result) {
-                const subscription = this.service[this.pageId].delete(item.guid).subscribe(data => {
-                    subscription.unsubscribe();
+                console.log({result, item})
+                this.service[this.pageId].delete(item.guid).toPromise().then(() => {
                     this.updateData();
                 });
             }

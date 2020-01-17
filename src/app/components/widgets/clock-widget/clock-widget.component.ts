@@ -57,8 +57,8 @@ export class ClockWidgetComponent implements IWidget {
             id: this.id,
             datePattern: ConstTime.DATA_PATTERN,
             location: {
-                desc: 'Moscow Standard Time',
-                name: 'GMT+3 MSK',
+                desc: 'Europe/Amsterdam',
+                name: 'GMT+1 AMS',
                 offset: '+3',
                 value: -180,
             },

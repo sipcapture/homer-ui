@@ -11,7 +11,12 @@
       <mat-label>Panel Title</mat-label>
       <input matInput [(ngModel)]="resultConfig.title" (keydown)="onChange()">
     </mat-form-field>
+
     <mat-checkbox [(ngModel)]="resultConfig.isButton" labelPosition="Before" (click)="onChange()">Search Button</mat-checkbox>
+    <mat-form-field>
+      <mat-label>Columns</mat-label>
+      <input matInput [(ngModel)]="resultConfig.countFieldColumns" type="number" (keydown)="onChange()">
+    </mat-form-field>
     <mat-form-field>
       <mat-label>Proto</mat-label>
       <mat-select

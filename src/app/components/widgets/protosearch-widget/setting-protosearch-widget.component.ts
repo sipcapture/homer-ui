@@ -21,6 +21,7 @@ export class SettingProtosearchWidgetComponent implements OnInit {
         isButton: true,
         fields: [],
         profile: '',
+        countFieldColumns: 1,
         protocol_id: {
             name: '',
             value: 100
@@ -67,7 +68,7 @@ export class SettingProtosearchWidgetComponent implements OnInit {
                 this.resultConfig.isButton = data.isButton;
                 this.resultConfig.profile = data.config.config.protocol_profile.value;
                 this.resultConfig.protocol_id = data.config.protocol_id;
-
+                this.resultConfig.countFieldColumns = data.config.countFieldColumns || 1;
                 for (const item of data.mapping.data) {
                     if (item.profile === 'loki') {
                         item.fields_mapping = this.lokiFields;

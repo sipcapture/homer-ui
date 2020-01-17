@@ -8,6 +8,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class MessageContentComponent implements OnInit {
     _data: any;
     raw;
+    decoded: any = null;
     raw_isJSON = false;
     get data() {
         return this._data;
@@ -15,6 +16,10 @@ export class MessageContentComponent implements OnInit {
     @Input('data') set data(val) {
         this._data = val;
         this.messageDetaiTableData = this._data.messageDetaiTableData;
+
+
+        this.decoded = this._data.decoded ? this._data.decoded : null;
+        console.log('@Input ', this.decoded);
         this.raw = this._data.item.raw;
         if (typeof this.raw === 'string') {
             try {
