@@ -17,9 +17,12 @@ export class MessageContentComponent implements OnInit {
         this._data = val;
         this.messageDetaiTableData = this._data.messageDetaiTableData;
 
-
         this.decoded = this._data.decoded ? this._data.decoded : null;
+        if (this.decoded[0] && this.decoded[0]._source){ 
+            this.decoded = this.decoded[0]._source.layers;
+        }
         console.log('@Input ', this.decoded);
+
         this.raw = this._data.item.raw;
         if (typeof this.raw === 'string') {
             try {
