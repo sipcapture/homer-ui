@@ -627,6 +627,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
         const result = await this._scs.getMessage(request).toPromise();
 
+        console.log('message data', {result});
+
         mData.data = result.data[0];
         mData.data.item = {
             raw: mData.data.raw
@@ -642,6 +644,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             }
             return {name: i, value: val};
         }).filter(i => typeof i.value !== 'object' && i.name !== 'raw');
+
+        if (result.decoded) {
+            mData.data.decoded = result.decoded;
+        }
         this.changeDetectorRefs.detectChanges();
         mData.loaded = true;
     }

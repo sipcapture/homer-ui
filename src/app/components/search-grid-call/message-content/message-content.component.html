@@ -2,7 +2,7 @@
   <mat-tab label="Message" style="padding: 1rem;">
       <ngx-json-viewer *ngIf="raw_isJSON" [json]="raw" [expanded]="true"></ngx-json-viewer>
       
-      <pre *ngIf="!raw_isJSON" style="font-family: monospace;font-size: 10pt;padding: 0.5rem 2rem; height: 100%; box-sizing: border-box;margin: 0;">{{
+      <pre *ngIf="!raw_isJSON" class="pre-content">{{
           raw
       }}</pre>
   </mat-tab>
@@ -23,5 +23,9 @@
         <tr mat-row *matRowDef="let row; columns: ['name', 'value']" ></tr>
       </table>
     </div>
+  </mat-tab>
+
+  <mat-tab label="Decoded" *ngIf="decoded" style="padding: 1rem;">
+    <ngx-json-viewer [json]="decoded" [expanded]="true"></ngx-json-viewer>
   </mat-tab>
 </mat-tab-group>

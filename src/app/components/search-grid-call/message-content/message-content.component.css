@@ -8,3 +8,11 @@
 table tr {
     height: 38px;
 }
+.pre-content {
+    font-family: monospace;
+    font-size: 10pt;
+    padding: 0.5rem 2rem;
+    height: 100%;
+    box-sizing: border-box;
+    margin: 0;
+}
