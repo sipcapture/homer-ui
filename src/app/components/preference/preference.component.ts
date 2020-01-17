@@ -140,7 +140,8 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 this.isLoading = false;
                 break;
             case this.links[2]: /* alias */
-                data = this._pas.getAll().toPromise();
+                data = await this._pas.getAll().toPromise();
+                console.log('Alias::',{data})
                 this.dataSource = data['data'].map(item => ({
                     Alias: item.alias,
                     'IP Address': item.ip,
@@ -181,7 +182,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 break;
             case this.links[5]: /* hepsub */
                 try {
-                    data = this._phs.getAll().toPromise();
+                    data = await this._phs.getAll().toPromise();
                     this.isLoading = false;
                     this.dataSource = data['data'].map(item => ({
                         'HEP alias': item.hep_alias,
