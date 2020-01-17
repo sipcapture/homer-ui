@@ -13,14 +13,21 @@ export class DialogAliasComponent {
     @Inject(MAT_DIALOG_DATA) public data: any) {
       if (data.isnew ) {
         data.data = {
-          alias: '',
-          ip: '',
-          port: '',
-          mask: '',
-          captureID: '',
+          alias: "localhost",
+          ip: "127.0.0.1",
+          port: 5060,
+          mask: 32,
+          captureID: "CAP101",
           status: false,
         }
       }
+
+      data.data.captureID = data.isnew ? 
+      'CAP101' :
+      (typeof data.data.captureID === 'number' ?
+          data.data.captureID : String(data.data.captureID)
+      );
+
     }
 
   onNoClick(): void {

@@ -19,7 +19,7 @@ export class DialogUsersComponent {
         data.data = {
           username: '',
           usergroup: '',
-          partid: '',
+          partid: 10,
           password: '',
           firstname: '',
           email: '',
@@ -27,6 +27,10 @@ export class DialogUsersComponent {
           department: '',
         }
       }
+
+      /* be sure that this is string */
+      data.data.password = String(data.data.password);
+
       this.isValidForm = true;
     }
 

@@ -16,11 +16,11 @@ export class DialogMappingComponent {
     ) {
         if (data.isnew) {
             data.data = {
-                partid: '',
+                partid: 10,
                 hep_alias: '',
-                hepid: '',
+                hepid: 10,
                 profile: '',
-                partition_step: '',
+                partition_step: 10,
                 retention: '',
                 correlation_mapping: {},
                 fields_mapping: {}
@@ -40,7 +40,6 @@ export class DialogMappingComponent {
                 data.data.fields_mapping :
                 JSON.stringify(data.data.fields_mapping, null, 4)
             );
-      
     }
 
     onNoClick(): void {

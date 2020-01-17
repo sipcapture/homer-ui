@@ -14,7 +14,7 @@ export class DialogHepsubComponent {
       if (data.isnew) {
         data.data = {
           hep_alias: '',
-          hepid: '',
+          hepid: 1,
           profile: '',
           data: {}
         }
