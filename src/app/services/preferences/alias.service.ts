@@ -16,11 +16,14 @@ export class PreferenceAliasService {
         return this.http.get<PreferenceAlias[]>(`${this.url}`);
     }
 
-    add(pa: any) {
+    add(pa: PreferenceAlias) {
+        pa.captureID = String(pa.captureID);
         return this.http.post(`${this.url}`, pa);
     }
 
-    update(pa: any) {
+    update(pa: PreferenceAlias) {
+        pa.captureID = String(pa.captureID);
+
         const guid = pa.guid;
         delete pa.guid;
         return this.http.put(`${this.url}/${guid}`, pa);

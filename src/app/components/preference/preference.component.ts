@@ -216,7 +216,9 @@ export class PreferenceComponent implements OnInit, OnDestroy {
 
         const result = await dialogRef.afterClosed().toPromise();
         if (cb && result) {
-            result.data = this.jsonValidateAndForrmatted(result.data);
+            if (result.data) {
+                result.data = this.jsonValidateAndForrmatted(result.data);
+            }
             cb(result);
         }
     }
@@ -251,6 +253,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
     onDelete (item: any = null) {
         this.openDialog(DialogDeleteAlertComponent, null, result => {
             if (result) {
+                console.log({result, item})
                 this.service[this.pageId].delete(item.guid).toPromise().then(() => {
                     this.updateData();
                 });
