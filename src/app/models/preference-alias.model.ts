@@ -1,11 +1,10 @@
 export interface PreferenceAlias {
-    id?: number;
+    id: number;
+    guid: string;
     alias: string;
-    ip: string;    
-    guid?: string;
+    ip: string;
     port: number;
     mask: number;
     captureID: string;
     status: boolean;
-    token?: string;
 }

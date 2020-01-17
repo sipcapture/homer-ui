@@ -1,6 +1,13 @@
 import * as moment from 'moment';
 import { Md5 } from 'ts-md5/dist/md5';
 export class Functions {
+    static newGuid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+            let r: any = Math.random() * 16 | 0;
+            const v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
     static protoCheck (protocol: number) {
         if (protocol === 1) {
             return 'udp';

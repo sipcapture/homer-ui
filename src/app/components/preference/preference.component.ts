@@ -23,6 +23,16 @@ import {
     DialogUsersComponent
 } from '@app/components/preference/dialogs';
 
+import {
+    PreferenceUsers,
+    PreferenceAdvanced,
+    PreferenceAlias,
+    PreferenceUsersSettings,
+    PreferenceMapping,
+    PreferenceHepsub
+} from '@app/models';
+
+
 @Component({
     selector: 'app-preference',
     templateUrl: './preference.component.html',
@@ -52,24 +62,12 @@ export class PreferenceComponent implements OnInit, OnDestroy {
     service: any;
 
     public pagesStructure: any = {
-        // (Users) Firstname / Lastname / Username / Email / Action
         users: ['Firstname', 'Lastname', 'Username', 'Email', 'tools'],
-
-        // (User Settings) Username / Partid / Category / Param / Data / Action
         'user settings': ['Username', 'Partid', 'Category', 'Param', 'Data', 'tools'],
-
-        // (Alias) IP Address / Port / Mask / CaptureID / Status / Action
         alias: ['Alias', 'IP Address', 'Port', 'Mask', 'CaptureID', 'Status', 'tools'],
-
-        // (Advanced Settings) Partid / Category / Param / Data / Action
         advanced: ['Partid', 'Category', 'Param', 'Data', 'tools'],
-
-        // (Mapping Settings) Partid / Profile / HEP alias / HEP ID / Retention / Mapping / Action
         mapping: ['Partid', 'Profile', 'HEP alias', 'HEP ID', 'Retention', 'Mapping', 'tools'],
-
-        // (HepSub Settings) Profile / HEP alias / HEP ID / Version / HepSub / Action
         hepsub: ['Profile', 'HEP alias', 'HEP ID', 'Version', 'HepSub', 'tools'],
-
     };
 
     dataSource = new MatTableDataSource([{
@@ -111,86 +109,92 @@ export class PreferenceComponent implements OnInit, OnDestroy {
 
     async updateData () {
         this.isLoading = true;
-        let data;
+        let responce;
         switch (this.pageId) {
             case this.links[0]: /* users */
-                data = await this._pus.getAll().toPromise();
+                responce = await this._pus.getAll().toPromise();
 
-                this.dataSource = data['data'].map(item => ({
-                    Firstname: item.firstname,
-                    Lastname: item.lastname,
-                    Username: item.username,
-                    Email: item.email,
-                    item: item
+                this.dataSource = responce.data.map(
+                    (item: PreferenceUsers) => ({
+                        Firstname: item.firstname,
+                        Lastname: item.lastname,
+                        Username: item.username,
+                        Email: item.email,
+                        item: item
                 }));
                 this.isLoading = false;
 
                 break;
             case this.links[1]: /* user settings */
-                data = await this._puss.getAll().toPromise();
+                responce = await this._puss.getAll().toPromise();
 
-                this.dataSource = data['data'].map(item => ({
-                    Username: item.username,
-                    Partid: item.partid,
-                    Category: item.category,
-                    Param: item.param,
-                    data: JSON.stringify(item.data).slice(0, 40) + ' . . .',
-                    item: item
+                this.dataSource = responce.data.map(
+                    (item: PreferenceUsersSettings) => ({
+                        Username: item.username,
+                        Partid: item.partid,
+                        Category: item.category,
+                        Param: item.param,
+                        data: JSON.stringify(item.data).slice(0, 40) + ' . . .',
+                        item: item
                 }));
                 this.isLoading = false;
                 break;
             case this.links[2]: /* alias */
-                data = await this._pas.getAll().toPromise();
-                console.log('Alias::',{data})
-                this.dataSource = data['data'].map(item => ({
-                    Alias: item.alias,
-                    'IP Address': item.ip,
-                    Port: item.port,
-                    Mask: item.mask,
-                    CaptureID: item.captureID,
-                    Status: item.status,
-                    item: item
+                responce = await this._pas.getAll().toPromise();
+
+                this.dataSource = responce.data.map(
+                    (item: PreferenceAlias) => ({
+                        Alias: item.alias,
+                        'IP Address': item.ip,
+                        Port: item.port,
+                        Mask: item.mask,
+                        CaptureID: item.captureID,
+                        Status: item.status,
+                        item: item
                 }));
                 this.isLoading = false;
 
                 break;
             case this.links[3]: /* advanced */
-                data = await this._pads.getAll().toPromise();
-                this.dataSource = data['data'].map(item => ({
-                    Partid: item.partid,
-                    Category: item.category,
-                    Param: item.param,
-                    Data: JSON.stringify(item.data).slice(0, 50) + ' . . .',
-                    item: item
+                responce = await this._pads.getAll().toPromise();
+                this.dataSource = responce.data.map(
+                    (item: PreferenceAdvanced) => ({
+                        Partid: item.partid,
+                        Category: item.category,
+                        Param: item.param,
+                        Data: JSON.stringify(item.data).slice(0, 50) + ' . . .',
+                        item: item
                 }));
                 this.isLoading = false;
 
                 break;
             case this.links[4]: /* mapping */
-                data = await this._pmps.getAll().toPromise();
-                this.dataSource = data['data'].map(item => ({
-                    Partid: item.partid,
-                    Profile: item.profile,
-                    'HEP alias': item.hep_alias,
-                    'HEP ID': item.hepid,
-                    Retention: item.retention,
-                    Mapping: item.mapping_settings,
-                    item: item
+                responce = await this._pmps.getAll().toPromise();
+                this.dataSource = responce.data.map(
+                    (item: PreferenceMapping) => ({
+                        Partid: item.partid,
+                        Profile: item.profile,
+                        'HEP alias': item.hep_alias,
+                        'HEP ID': item.hepid,
+                        Retention: item.retention,
+                        Mapping: item.mapping_settings,
+                        item: item
                 }));
                 this.isLoading = false;
 
                 break;
             case this.links[5]: /* hepsub */
                 try {
-                    data = await this._phs.getAll().toPromise();
+                    responce = await this._phs.getAll().toPromise();
                     this.isLoading = false;
-                    this.dataSource = data['data'].map(item => ({
-                        'HEP alias': item.hep_alias,
-                        'HEP ID': item.hepid,
-                        Profile: item.profile,
-                        Version: item.version,
-                        HepSub: JSON.stringify(item.mapping).slice(0, 40) + ' . . .',
-                        item: item
+                    this.dataSource = responce.data.map(
+                        (item: PreferenceHepsub) => ({
+                            'HEP alias': item.hep_alias,
+                            'HEP ID': item.hepid,
+                            Profile: item.profile,
+                            Version: item.version,
+                            HepSub: JSON.stringify(item.mapping).slice(0, 40) + ' . . .',
+                            item: item
                     }));
                 } catch (err) {
                     this.isLoading = true;
@@ -198,6 +202,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 }
                 break;
         }
+        console.log(this.pageId, {responce});
     }
 
     async openDialog(type: any, data: any = null, cb: Function = null) {
