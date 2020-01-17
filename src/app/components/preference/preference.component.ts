@@ -66,7 +66,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
         'user settings': ['Username', 'Partid', 'Category', 'Param', 'Data', 'tools'],
         alias: ['Alias', 'IP Address', 'Port', 'Mask', 'CaptureID', 'Status', 'tools'],
         advanced: ['Partid', 'Category', 'Param', 'Data', 'tools'],
-        mapping: ['Partid', 'Profile', 'HEP alias', 'HEP ID', 'Retention', 'Mapping', 'tools'],
+        mapping: ['Partid', 'Profile', 'HEP alias', 'HEP ID', 'Retention', 'tools'],
         hepsub: ['Profile', 'HEP alias', 'HEP ID', 'Version', 'HepSub', 'tools'],
     };
 
@@ -177,7 +177,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                         'HEP alias': item.hep_alias,
                         'HEP ID': item.hepid,
                         Retention: item.retention,
-                        Mapping: item.mapping_settings,
+                        Mapping: item.correlation_mapping,
                         item: item
                 }));
                 this.isLoading = false;

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@environments/environment';
 import { PreferenceAdvanced } from '@app/models';
+import { Functions } from '@app/helpers/functions';
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +14,11 @@ export class PreferenceAdvancedService {
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<any>(`${this.url}`);
+        return this.http.get<PreferenceAdvanced>(`${this.url}`);
     }
 
     add(pa: PreferenceAdvanced) {
+        pa.guid = Functions.newGuid();
         return this.http.post(`${this.url}`, pa);
     }
 
@@ -24,7 +26,7 @@ export class PreferenceAdvancedService {
         return this.http.put(`${this.url}/${pa.guid}`, pa);
     }
 
-    delete(guid: number) {
+    delete(guid: string) {
         return this.http.delete(`${this.url}/${guid}`);
     }
 

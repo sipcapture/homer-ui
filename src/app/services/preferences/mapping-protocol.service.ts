@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@environments/environment';
-import { PreferenceMappingProtocol } from '@app/models';
+import { PreferenceMapping } from '@app/models';
+import { Functions } from '@app/helpers/functions';
 
 @Injectable({
   providedIn: 'root'
@@ -13,14 +14,19 @@ export class PreferenceMappingProtocolService {
   constructor(private http: HttpClient) { }
 
   getAll() {
-      return this.http.get<PreferenceMappingProtocol[]>(`${this.url}`);
+      return this.http.get<PreferenceMapping[]>(`${this.url}`);
   }
-
-  add(pmp: PreferenceMappingProtocol) {
+/**
+ * Key: 'TableMappingSchema.Version' Error:Field validation for 'Version' failed on the 'required' tag"
+ */
+  add(pmp: PreferenceMapping) {
+      pmp.guid = Functions.newGuid();
+      pmp.version = 1;
       return this.http.post(`${this.url}`, pmp);
   }
 
-  update(pmp: PreferenceMappingProtocol) {
+  update(pmp: PreferenceMapping) {
+
       return this.http.put(`${this.url}/${pmp.guid}`, pmp);
   }
 

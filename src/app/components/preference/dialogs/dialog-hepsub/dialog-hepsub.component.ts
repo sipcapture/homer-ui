@@ -16,14 +16,14 @@ export class DialogHepsubComponent {
           hep_alias: '',
           hepid: 1,
           profile: '',
-          data: {}
+          mapping: {}
         }
       }
-      data.data.data = data.isnew ? 
+      data.data.mapping = data.isnew ?
             '' :
-            (typeof data.data.data === 'string' ?
-                data.data.data :
-                JSON.stringify(data.data.data, null, 4)
+            (typeof data.data.mapping === 'string' ?
+                data.data.mapping :
+                JSON.stringify(data.data.mapping, null, 4)
             );
     }
 
