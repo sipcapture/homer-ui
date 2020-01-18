@@ -198,6 +198,10 @@ export class ResultChartWidgetComponent implements IWidget {
         }
         this.protocol_profile = this.localData.protocol_id;
 
+        if( this.localData.location && this.localData.location.value !== '' && this.localData.location.mapping !== '') {
+            this.configQuery.param.location[this.localData.location.mapping] = this.localData.location.value;
+        }
+
         this.configQuery.param.search[this.protocol_profile] = this.localData.fields;
         this.configQuery.timestamp = this._dtrs.getDatesForQuery(true);
 
