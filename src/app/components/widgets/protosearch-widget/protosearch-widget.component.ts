@@ -280,7 +280,6 @@ export class ProtosearchWidgetComponent implements IWidget {
                             value: item.value,
                             mapping: paramMapping.length == 3 ? paramMapping[2] : ""
                         };
-                        console.log("SSS", this.searchQuery);
                     }
                 }
             }            
