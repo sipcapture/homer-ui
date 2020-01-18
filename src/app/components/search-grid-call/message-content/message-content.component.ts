@@ -30,6 +30,7 @@ export class MessageContentComponent implements OnInit {
                 }
         }
         //console.log('@Input ', this.decoded);
+
         this.raw = this._data.item.raw;
         if (typeof this.raw === 'string') {
             try {                
