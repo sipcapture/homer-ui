@@ -76,6 +76,11 @@ export class ResultChartWidgetComponent implements IWidget {
         }],
         chartLabels: [],
         chartOptions: {
+            legend: {
+              labels: {
+                usePointStyle: true
+              }
+            },
             responsive: true,
             maintainAspectRatio: false,
             animation: {
