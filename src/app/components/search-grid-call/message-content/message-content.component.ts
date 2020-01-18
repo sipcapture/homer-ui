@@ -16,13 +16,23 @@ export class MessageContentComponent implements OnInit {
     @Input('data') set data(val) {
         this._data = val;
         this.messageDetaiTableData = this._data.messageDetaiTableData;
+        this.decoded = null;
 
-
-        this.decoded = this._data.decoded ? this._data.decoded : null;
-        console.log('@Input ', this.decoded);
+        if (this._data.decoded ) {
+                if(this._data.decoded[0]) {
+                    if (this._data.decoded[0]["_source"] && this._data.decoded[0]["_source"]["layers"]) {                                            
+                        this.decoded = this._data.decoded[0]["_source"]["layers"];
+                    } else {
+                        this.decoded = this._data.decoded[0];
+                    }
+                } else {
+                    this.decoded = this._data.decoded;
+                }
+        }
+        //console.log('@Input ', this.decoded);
         this.raw = this._data.item.raw;
         if (typeof this.raw === 'string') {
-            try {
+            try {                
                 this.raw = JSON.parse(this.raw);
                 this.raw_isJSON = true;
             } catch (e) {

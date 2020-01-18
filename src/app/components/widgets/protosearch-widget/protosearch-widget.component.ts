@@ -206,6 +206,9 @@ export class ProtosearchWidgetComponent implements IWidget {
                 if (f && f.system_param) {
                     i.system_param = f.system_param;
                 }
+                if (f && f.system_param) {
+                    i.mapping = f.mapping;
+                }              
                 if (f && f.form_api) {
                     i.form_api = f.form_api;
                 }
@@ -225,7 +228,7 @@ export class ProtosearchWidgetComponent implements IWidget {
     }
     private autocompliteFiltring (item: any) {
         const options: Array<any> = item.form_default;
-        console.log({item});
+        //console.log({item});
         const _filter = (value: string): string[] => {
             const filterValue = value.toLowerCase();
             item.value = value;
@@ -252,8 +255,9 @@ export class ProtosearchWidgetComponent implements IWidget {
             this._sss.saveProtoSearchConfig(this.widgetId, this.searchQuery);
             return;
         }
+
         this.searchQuery = {
-            fields: this.fields.filter((item: any) => item.value !== '')
+            fields: this.fields.filter((item: any) => item.value !== '' && !item.hasOwnProperty("system_param"))
                 .map((item: any) => ({
                     name: item.field_name,
                     value: item.value,
@@ -262,6 +266,26 @@ export class ProtosearchWidgetComponent implements IWidget {
                 })),
             protocol_id: '1_' + this.config.config.protocol_profile.value // 1_call | 1_ default | 1_registration
         };
+
+
+        /* system params */
+        this.fields.filter((item: any) => {
+            if (item.value !== '' && item.hasOwnProperty("system_param"))
+            {           
+                if (item.mapping !== '')
+                {
+                    var paramMapping = item.mapping.split("."); 
+                    if (paramMapping.length > 1) {
+                        this.searchQuery[paramMapping[1]] = {
+                            value: item.value,
+                            mapping: paramMapping.length == 3 ? paramMapping[2] : ""
+                        };
+                        console.log("SSS", this.searchQuery);
+                    }
+                }
+            }            
+            return true; // keep
+        });
 
         this._sss.saveProtoSearchConfig(this.widgetId, Functions.cloneObject(this.searchQuery));
 
