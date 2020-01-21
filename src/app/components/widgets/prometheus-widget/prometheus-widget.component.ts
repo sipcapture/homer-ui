@@ -158,7 +158,7 @@ export class PrometheusWidgetComponent implements IWidget {
 
 
     }
-    private querybuilder (config: any) {
+    private querybuilder (config: any) { /** depricated, need use {SearchService} */
         const dataquery: Array<any> = config.dataquery.data;
         let formattedQuery: Array<any> = [];
         dataquery.forEach(item => {

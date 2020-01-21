@@ -184,7 +184,7 @@ export class SettingInfluxdbchartWidgetComponent {
         const res = await this._ss.getStatisticMeasurements(this.selecedEditQuery.database).toPromise();
 
         if (res && res.data) {
-            this.measurementList = res.data.map(i => ({name: i, value: i}));
+            this.measurementList = res.data.Results[0].Series[0].values.map(i => ({name: i[0], value: i[0]}));
         }
     }
 
@@ -201,7 +201,7 @@ export class SettingInfluxdbchartWidgetComponent {
     async onPanelDatasource() {
         const res = await this._ss.getStatisticDbList().toPromise();
         if (res && res.data) {
-            this.databaseList = res.data.map(i => ({name: i, value: i}));
+            this.databaseList = res.data.Results[0].Series[0].values.map(i => ({name: i[0], value: i[0]}));
             this.updateResult();
         }
     }
@@ -219,7 +219,7 @@ export class SettingInfluxdbchartWidgetComponent {
         };
         const res = await this._ss.getStatisticRetentions(reqData).toPromise();
         if (res && res.data) {
-            this.retentionPolicyList = res.data.map(i => ({name: i.name, value: i.name}));
+            this.retentionPolicyList = res.data.Results[0].Series[0].values.map(i => ({name: i[0], value: i[0]}));
             this.retentionPolicyList.push({ name: 'none', value: 'none'});
 
             this.updateResult();
@@ -243,7 +243,7 @@ export class SettingInfluxdbchartWidgetComponent {
         }).toPromise();
 
         if (res && res.data) {
-            this.counterList = res.data.results[0].series[0].values.map(i => ({name: i[0], value: i[0]}));
+            this.counterList = res.data.Results[0].Series[0].values.map(i => ({name: i[0], value: i[0]}));
             this.counter.setValue(this.selecedEditQuery.detail.counter);
             this.selecedEditQuery.detail.measurement = this.measurement;
         }
@@ -263,7 +263,7 @@ export class SettingInfluxdbchartWidgetComponent {
         }).toPromise();
 
         if (res2 && res2.data) {
-            this.tagsList = res2.data.results[0].series[0].values.map(i => ({name: i[0], value: i[0]}));
+            this.tagsList = res2.data.Results[0].Series[0].values.map(i => ({name: i[0], value: i[0]}));
             this.tags.setValue(this.selecedEditQuery.detail.tags);
         }
         this.updateCss('counter');

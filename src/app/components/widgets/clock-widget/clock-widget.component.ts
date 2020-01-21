@@ -81,8 +81,6 @@ export class ClockWidgetComponent implements IWidget {
             }
         }
 
-        // console.log('>>> CLOCK <<< this.config', this._config.location, moment());
-
         this.desc = this._config.location.desc;
         this.name = this._config.location.name;
         this.location_value = this._config.location.value;
@@ -123,8 +121,6 @@ export class ClockWidgetComponent implements IWidget {
 
             this.location_value = this._config.location.value;
             this.update();
-
-            console.log(data);
 
             this.changeSettings.emit({
                 config: this._config,

@@ -4,13 +4,13 @@
             <!--
                 if item is targetResultsContainer
             -->
-            <mat-form-field style="display: block" *ngIf="item.field_name === 'targetResultsContainer'">
+            <mat-form-field style="display: block" *ngIf="item.field_name !== 'loki' && item.field_name === 'targetResultsContainer'">
                 <mat-label>{{item.selection}}</mat-label>
                 <mat-select
                     [formControl]="targetResultsContainerValue"
                     [compareWith]="compareResultListItem"
-                    (selectionChange)="onChangeField($event)"
-                    name="hep_alias"
+                    (selectionChange)="onChangeTargetResultsContainer()"
+                    name="targetResultsContainer"
                     ngDefaultControl>
                     <mat-option *ngFor="let listItem of widgetResultList" [value]="listItem">
                         {{listItem.type === 'widget' ? 'widget: ' : ''}} {{listItem.title}}
@@ -21,23 +21,27 @@
             <!--
                 if LOKI Field
             -->
-            <app-code-style-field *ngIf="item.field_name === 'loki'"
+            
+            <app-code-style-field *ngIf="item.field_name === 'loki' && item.field_name !== 'targetResultsContainer'"
                 style="display: block"
                 [queryText]="lokiQueryText"
                 (updateData)="onLokiCodeData($event)"
             ></app-code-style-field>
+        
 
             <!--
                 if other Fields
             -->
-            <mat-form-field style="display: block" *ngIf="item.field_name !== 'loki' && item.field_name !== 'targetResultsContainer'">
+            <mat-form-field style="display: block" *ngIf="
+                item.field_name !== 'loki' &&
+                item.field_name !== 'targetResultsContainer'
+            ">
                 <mat-label>{{item.selection}}</mat-label>
                 
                 <!--
                     Text Field (by Default)
                 -->
-                <input matInput 
-                    *ngIf="item.form_default === null"
+                <input matInput *ngIf="!item.form_default"
                     [(ngModel)]="item.value"
                     [ngModelOptions]="{standalone: true}"
                     (change)="onChangeField($event)"
@@ -47,11 +51,11 @@
                 <!--
                     Autocomplete Text Field
                 -->
-                <input matInput *ngIf="item.form_default !== null && item.form_type === 'input'"
+                <input matInput *ngIf="item.form_default && item.form_type === 'input'"
                     [formControl]="item.formControl" [matAutocomplete]="form_default">
                 <mat-autocomplete #form_default="matAutocomplete">
-                    <mat-option *ngFor="let option of item.filteredOptions | async" [value]="option.id ? option.id : option">
-                        {{option.id ? option.id : option}}
+                    <mat-option *ngFor="let option of item.filteredOptions | async" [value]="option.name ? option.name : option">
+                        {{option.name ? option.name : option}}
                     </mat-option>
                 </mat-autocomplete>
 
@@ -59,13 +63,13 @@
                     SELECT FIELD
                 -->
                 <mat-select
-                    *ngIf="item.form_type === 'select'"
+                    *ngIf="item.form_type === 'select' && item.form_default"
                     [(ngModel)]="item.value"
                     (selectionChange)="onChangeField($event)"
                     name="select_field"
                     ngDefaultControl>
-                    <mat-option *ngFor="let option of item.form_default" [value]="option.id ? option.id : option">
-                        {{option.id ? option.id : option}}
+                    <mat-option *ngFor="let option of item.form_default" [value]="option.name ? option.name : option">
+                        {{option.name ? option.name : option}}
                     </mat-option>
                 </mat-select>
                 
@@ -73,13 +77,13 @@
                     MULTISELECT FIELD
                 -->
                 <mat-select multiple
-                    *ngIf="item.form_type === 'multiselect'"
+                    *ngIf="item.form_type === 'multiselect' && item.form_default"
                     [(ngModel)]="item.value"
-                    (selectionChange)="onChangeField($event)"
+                    (selectionChange)="onChangeField($event, item)"
                     name="multiple_select_field"
                     ngDefaultControl>
-                    <mat-option *ngFor="let option of item.form_default" [value]="option.id ? option.id : option">
-                        {{option.id ? option.id : option}}
+                    <mat-option *ngFor="let option of item.form_default" [value]="option.name ? option.name : option">
+                        {{option.name ? option.name : option}}
                     </mat-option>
                 </mat-select>
                 

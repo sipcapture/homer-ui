@@ -1,4 +1,9 @@
-<input [className]="'regex-filter' + (inContainer ? ' inContainer' : '')" placeholder="Regex Results Filter" type="search" [(ngModel)]="filterGridValue" (keyup)="setQuickFilter()">
+<input [className]="'regex-filter' + (inContainer ? ' inContainer' : '')"
+  placeholder="Regex Results Filter"
+  type="search"
+  [(ngModel)]="filterGridValue"
+  (keyup)="setQuickFilter()"
+>
 <div *ngIf="isLokiQuery" style="display: flex; justify-content: center; align-items: center;">
     <strong  style="flex: 1;padding-left: 1.5rem;">LOKI Search</strong>
     <div style="flex: 5">

@@ -18,7 +18,6 @@ export class SettingClockWidgetComponent {
         public dialogRef: MatDialogRef<SettingClockWidgetComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any
     ) {
-        console.log({moment});
         this.arrayTimeZones = moment.tz.names();
     }
     onSelectTimeZone(timeZone) {
@@ -31,8 +30,6 @@ export class SettingClockWidgetComponent {
         this.data.location.offset = moment.tz(timeZone)._offset;
         this.data.location.name = timeZone;
         this.data.location.desc = timeZone;
-
-        console.log(this.data);
     }
     onNoClick(): void {
         this.dialogRef.close();

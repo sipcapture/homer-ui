@@ -64,7 +64,6 @@ export class DialogSettingsGridDialog {
         localStorage.setItem(lsIndex, JSON.stringify(this._bufferData));
     }
     onChange(event: boolean, field: string): void {
-        console.log('onChange', {field, event});
         this.apiColumn.setColumnVisible(field, event);
         this.apiPoint.sizeColumnsToFit();
     }

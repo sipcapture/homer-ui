@@ -144,19 +144,31 @@ export class InfluxdbchartWidgetComponent implements IWidget {
     getDataByQuery(requestList: Array<any>, chartType) {
         const request = requestList.shift();
         if (requestList.length > 0 || request) {
-            const subscription = this._ss.getStatisticData(request).subscribe( (res: any) => {
-                subscription.unsubscribe();
-                res.data = res.data.map(i => {
-                    i.main = request.param.query[0].main;
-                    return i;
+            this._ss.getStatisticData(request).toPromise().then(
+                (res: any) => {
+                    const {columns, values, name} = res.data.Results[0].Series[0];
+
+                    let s = values.map(i => {
+                        const o = {};
+                        columns.forEach((j, k) => {
+                            o[j] = i[k];
+                        });
+                        return o;
+                    });
+
+                    s = s.map(i => {
+                        i.main = name;
+                        return i;
+                    });
+
+                    this.multiDataArr = this.multiDataArr.concat(s);
+                    this.getDataByQuery(requestList, chartType);
+                },
+                err => {
+                    console.error('err >> ', err);
+                    this._isLoaded = true;
+                    this.noChartData = true;
                 });
-                this.multiDataArr = this.multiDataArr.concat(res.data);
-                this.getDataByQuery(requestList, chartType);
-            }, err => {
-                console.error('err >> ', err);
-                this._isLoaded = true;
-                this.noChartData = true;
-            });
         } else {
             this.multiDataArr = [].concat(...(Object.values(this.multiDataArr.reduce((a, b) => {
                 if (!a[b.time]) {
@@ -181,7 +193,6 @@ export class InfluxdbchartWidgetComponent implements IWidget {
                     return a;
                 }, []);
             })));
-
             this.renderingChart(this.multiDataArr, chartType);
         }
     }

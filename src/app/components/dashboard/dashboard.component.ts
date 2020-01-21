@@ -207,7 +207,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     async onDashboardAdd() {
-        console.log('onDashboardAdd');
         const dialogRef = this.dialog.open(AddDialogComponent, {
             width: '600px',
             data: {}
@@ -227,8 +226,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.save();
 
                 this._ds.update();
-            } else {
-                console.log({indexName, strongIndex});
             }
         } catch (err) {
         }
