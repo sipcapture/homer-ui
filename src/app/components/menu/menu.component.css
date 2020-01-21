@@ -55,13 +55,13 @@ button:focus {
     color: rgb(255, 255, 255);
     display: inline-block;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    font-size: 32px;
+    font-size: 30px;
     height: 42px;
     line-height: 32px;
     margin-bottom: 0px;
     margin-left: 0px;
     margin-right: 0px;
-    margin-top: 0px;
+    margin-top: -4px;
     outline-color: rgb(255, 255, 255);
     outline-style: none;
     outline-width: 0px;
@@ -79,6 +79,7 @@ button:focus {
 }
 .logo-base > img {
     width: 32px;
+    transform: rotate(50deg);
 }
 .header {
     justify-content: space-between;
