@@ -51,7 +51,11 @@ export class SearchService {
 
     public getLocalStorageQuery() {
         this.currentQuery = JSON.parse(localStorage.getItem(ConstValue.SEARCH_QUERY));
-        return this.currentQuery;
+        const localData = Functions.cloneObject(this.currentQuery);
+        if (localData && localData.fields && localData.fields instanceof Array) {
+            localData.fields = localData.fields.filter(i => i.name !== ConstValue.CONTAINER);
+        }
+        return localData;
     }
 
     public setTypeIsLoki(bool: boolean) {
