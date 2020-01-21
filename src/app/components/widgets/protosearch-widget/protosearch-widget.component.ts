@@ -274,6 +274,8 @@ export class ProtosearchWidgetComponent implements IWidget {
                         b = item.value !== '';
                     } else if (item.value instanceof Array) {
                         b = item.value.length > 0;
+                    } else if (item.field_name === ConstValue.CONTAINER) {
+                        b = true;
                     } else {
                         b = false;
                     }
@@ -303,15 +305,14 @@ export class ProtosearchWidgetComponent implements IWidget {
                 }
             }
         });
-
+        
         this._sss.saveProtoSearchConfig(this.widgetId, Functions.cloneObject(this.searchQuery));
 
         this.searchQuery.fields = this.searchQuery.fields.filter(i => i.name !== ConstValue.CONTAINER);
     }
 
     onClearFields () {
-        console.log(Functions.cloneObject(this.fields));
-        this.fields.forEach(item => {
+        this.fields.forEach(item => {            
             if (item.formControl) {
                 item.formControl.setValue('');
             }
@@ -382,7 +383,7 @@ export class ProtosearchWidgetComponent implements IWidget {
         }
         this.fields.forEach(i => {
             if (i.field_name === ConstValue.CONTAINER) {
-                return;
+                i.value = this.targetResultsContainerValue.value;
             }
             if (item && item.field_name === i.field_name && i.form_type === 'multiselect') {
                 i.value = item.value;

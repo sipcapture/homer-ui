@@ -20,7 +20,10 @@ export class SearchService {
     constructor (
         private _dtrs: DateTimeRangeService
     ) {
-        this.currentQuery = this.getLocalStorageQuery();
+        this.currentQuery = this.getLocalStorageQuery() || {
+            protocol_id: null,
+            location: {}
+        };
         this.protocol = this.currentQuery.protocol_id;
 
         if (!this.protocol) {
