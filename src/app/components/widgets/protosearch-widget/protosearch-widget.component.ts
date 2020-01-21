@@ -143,6 +143,7 @@ export class ProtosearchWidgetComponent implements IWidget {
                     }
                 });
             } else if (this._cache && this._cache.fields) {
+                const cacheQuery = this.searchService.getLocalStorageQuery();
                 this.fields.forEach(item => {
                     item.value = (this._cache.fields.filter(i => i.name === item.field_name)[0] || {value: ''}).value;
                     if (item.formControl) {
@@ -151,6 +152,13 @@ export class ProtosearchWidgetComponent implements IWidget {
                     if (item.field_name === ConstValue.CONTAINER && item.value !== '') {
                         this.targetResultsContainerValue.setValue(item.value);
                     }
+
+                    if (cacheQuery.location && cacheQuery.location.mapping) {
+                        if (item.field_name === cacheQuery.location.mapping) {
+                            item.value = cacheQuery.location.value;
+                        }
+                    }
+
                 });
             }
         });
@@ -306,6 +314,7 @@ export class ProtosearchWidgetComponent implements IWidget {
             }
         });
         
+        this.searchService.setLocalStorageQuery(Functions.cloneObject(this.searchQuery));
         this._sss.saveProtoSearchConfig(this.widgetId, Functions.cloneObject(this.searchQuery));
 
         this.searchQuery.fields = this.searchQuery.fields.filter(i => i.name !== ConstValue.CONTAINER);
@@ -406,16 +415,13 @@ export class ProtosearchWidgetComponent implements IWidget {
         if (targetResult) {
             _targetResult = Functions.cloneObject(targetResult);
             if ( _targetResult.type === 'page') {
-                this.searchService.setLocalStorageQuery(this.searchQuery);
-                // localStorage.setItem(ConstValue.SEARCH_QUERY, JSON.stringify(this.searchQuery));
                 this.router.navigate(['call/result']);
             } else {
                 this._ds.setQueryToWidgetResult(_targetResult.id, this.searchQuery);
             }
             return;
         }
-        this.searchService.setLocalStorageQuery(this.searchQuery);
-        // localStorage.setItem(ConstValue.SEARCH_QUERY, JSON.stringify(this.searchQuery));
+        
         this.router.navigate(['call/result']);
     }
 

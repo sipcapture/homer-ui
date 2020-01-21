@@ -22,23 +22,36 @@ export class SearchService {
     ) {
         this.currentQuery = this.getLocalStorageQuery() || {
             protocol_id: null,
-            location: {}
+            location: this.location || {}
         };
-        this.protocol = this.currentQuery.protocol_id;
-
+        this.protocol = this.currentQuery.protocol_id || this.protocol;
+        this.location = this.currentQuery.location || this.location;
+        
+        this.currentQuery
         if (!this.protocol) {
             console.error('this.protocol is undefined')
         }
     }
 
     public setLocalStorageQuery(query: any) {
+        console.log('setLocalStorageQuery', query);
+        if (query.location) {
+            this.location = query.location;
+        } else {
+            this.currentQuery.location = this.location;
+        }
+        if (query.protocol) {
+            this.protocol = query.protocol;
+        } else {
+            this.currentQuery.protocol = this.protocol;
+        }
         this.currentQuery = Functions.cloneObject(query);
         localStorage.setItem(ConstValue.SEARCH_QUERY, JSON.stringify(query));
     }
 
     public getLocalStorageQuery() {
-        const localData = this.currentQuery ? this.currentQuery : JSON.parse(localStorage.getItem(ConstValue.SEARCH_QUERY));
-        return localData;
+        this.currentQuery = JSON.parse(localStorage.getItem(ConstValue.SEARCH_QUERY));
+        return this.currentQuery;
     }
 
     public setTypeIsLoki(bool: boolean) {
@@ -49,10 +62,18 @@ export class SearchService {
         this.location = location;
     }
 
+    public getQueryLocation(){
+        return this.location;
+    }
+
     public setQueryProtocolId(protocol: any) {
         this.protocol = protocol;
     }
 
+    public getQueryProtocolId() {
+        return this.protocol
+    }
+    
     public setQuerySearch(search: any) {
         this.search = search;
     }
@@ -78,7 +99,12 @@ export class SearchService {
 
     private getLocation() {
         const localData = this.currentQuery;
+        
         const locationArray = {};
+        if (this.location) {
+            localData.location = this.location;
+        }
+        console.log({localData})
         if (localData.location && localData.location.value !== '' && localData.location.mapping !== '') {
             locationArray[localData.location.mapping] = localData.location.value;
         }

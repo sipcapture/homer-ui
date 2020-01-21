@@ -143,7 +143,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
                     this.lastTimestamp = dataId.timestamp;
 
-                    if (dataId.query.protocol_id === ConstValue.LOKI_PREFIX ) {
+                    if (this.protocol_profile === ConstValue.LOKI_PREFIX ) {
                         this.queryTextLoki = dataId.query.text;
                         this.isLokiQuery = true;
                     } else {
@@ -217,7 +217,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         this.searchQueryLoki.fields = [];
 
         this.searchService.setLocalStorageQuery(this.searchQueryLoki);
-        // localStorage.setItem(ConstValue.SEARCH_QUERY, JSON.stringify(this.searchQueryLoki));
     }
     private queryBuilderForLoki() {
         if (!this.localData) {
@@ -419,6 +418,11 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     private getBkgColorTable(params) {
+        if (this.isLokiQuery) {
+            return {
+                'background-color': '#fff'
+            }
+        }
         const callid = params.data.callid;
         const his = this.hashCode(callid);
         const color = 'hsla(' + this.intToARGB(his) + ', 75%, 85%, 0.3)';
