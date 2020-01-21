@@ -54,8 +54,8 @@
                 <input matInput *ngIf="item.form_default && item.form_type === 'input'"
                     [formControl]="item.formControl" [matAutocomplete]="form_default">
                 <mat-autocomplete #form_default="matAutocomplete">
-                    <mat-option *ngFor="let option of item.filteredOptions | async" [value]="option.id ? option.id : option">
-                        {{option.id ? option.id : option}}
+                    <mat-option *ngFor="let option of item.filteredOptions | async" [value]="option.name ? option.name : option">
+                        {{option.name ? option.name : option}}
                     </mat-option>
                 </mat-autocomplete>
 
@@ -68,8 +68,8 @@
                     (selectionChange)="onChangeField($event)"
                     name="select_field"
                     ngDefaultControl>
-                    <mat-option *ngFor="let option of item.form_default" [value]="option.id ? option.id : option">
-                        {{option.id ? option.id : option}}
+                    <mat-option *ngFor="let option of item.form_default" [value]="option.name ? option.name : option">
+                        {{option.name ? option.name : option}}
                     </mat-option>
                 </mat-select>
                 
@@ -82,8 +82,8 @@
                     (selectionChange)="onChangeField($event, item)"
                     name="multiple_select_field"
                     ngDefaultControl>
-                    <mat-option *ngFor="let option of item.form_default" [value]="option.id ? option.id : option">
-                        {{option.id ? option.id : option}}
+                    <mat-option *ngFor="let option of item.form_default" [value]="option.name ? option.name : option">
+                        {{option.name ? option.name : option}}
                     </mat-option>
                 </mat-select>
                 

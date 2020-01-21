@@ -155,7 +155,7 @@ export class ProtosearchWidgetComponent implements IWidget {
 
                     if (cacheQuery.location && cacheQuery.location.mapping) {
                         if (item.field_name === cacheQuery.location.mapping) {
-                            item.value = cacheQuery.location.value;
+                            item.value = cacheQuery.location.value.map(i => item.form_default.filter(j => j.value === i)[0].name);
                         }
                     }
 
@@ -255,7 +255,7 @@ export class ProtosearchWidgetComponent implements IWidget {
                 if (typeof option === 'string') {
                     return option.toLowerCase().includes(filterValue);
                 } else if (typeof option === 'object') {
-                    return option.id.toLowerCase().includes(filterValue);
+                    return option.name.toLowerCase().includes(filterValue);
                 }
             });
         };
@@ -305,8 +305,9 @@ export class ProtosearchWidgetComponent implements IWidget {
                 if (item.mapping !== '') {
                     const paramMapping = item.mapping.split('.');
                     if (paramMapping.length > 1) {
+                        console.log('===========>',item.value, item.value.map(i=> item.form_default.filter(j => i === j.name)[0].value))
                         this.searchQuery[paramMapping[1]] = {
-                            value: item.value,
+                            value: item.value.map(i=> item.form_default.filter(j => i === j.name)[0].value),
                             mapping: paramMapping.length === 3 ? paramMapping[2] : ''
                         };
                     }
