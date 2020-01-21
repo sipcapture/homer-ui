@@ -408,10 +408,11 @@ export class ProtosearchWidgetComponent implements IWidget {
         this.saveState();
     }
     doSearchResult () {
+        const isResultContainer = this.fields.filter(i => i.field_name === ConstValue.CONTAINER).length > 0;
         const targetResult = this.targetResultsContainerValue.value;
         let _targetResult: any;
         this.saveState();
-        if (targetResult) {
+        if (targetResult && isResultContainer) {
             _targetResult = Functions.cloneObject(targetResult);
             if ( _targetResult.type === 'page') {
                 this.router.navigate(['call/result']);
@@ -420,7 +421,7 @@ export class ProtosearchWidgetComponent implements IWidget {
             }
             return;
         }
-        
+
         this.router.navigate(['call/result']);
     }
 
