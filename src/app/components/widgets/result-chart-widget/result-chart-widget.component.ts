@@ -214,11 +214,11 @@ export class ResultChartWidgetComponent implements IWidget {
 
         if (dataMappingItem && dataMappingItem.fields_mapping) {
             const fields_mapping = dataMappingItem.fields_mapping;
-            
+
             this.columnKeysGroupColumn = result.keys;
             this.columnKeys = fields_mapping.filter(i => i.type !== 'string').map(i => i.id.split('.')[1]);
             this.dataForChart = result.data;
-            
+
             this.buildChart();
         }
     }
@@ -336,16 +336,12 @@ export class ResultChartWidgetComponent implements IWidget {
             }
         });
 
-        console.log('before close dialog{result}');
-
         const result = await dialogRef.afterClosed().toPromise();
         if (!result) {
             return;
         }
         this.sortType = result.sortType;
         this.title = result.title;
-
-        console.log({result});
 
         this.buildChart();
 

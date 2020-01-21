@@ -29,7 +29,6 @@ export class MessageContentComponent implements OnInit {
                     this.decoded = this._data.decoded;
                 }
         }
-        //console.log('@Input ', this.decoded);
 
         this.raw = this._data.item.raw;
         if (typeof this.raw === 'string') {

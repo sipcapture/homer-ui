@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { DateTimeRangeService } from '@app/services/data-time-range.service';
 import { SearchRemoteService } from '@app/services';
 import { Functions } from '@app/helpers/functions';
+import { SearchService } from '@app/services';
 
 @Component({
     selector: 'app-tab-loki',
@@ -19,7 +20,8 @@ export class TabLokiComponent implements OnInit {
     labels: Array<any> = [];
     constructor(
         private _srs: SearchRemoteService,
-        private _dtrs: DateTimeRangeService
+        private _dtrs: DateTimeRangeService,
+        private searchService: SearchService
     ) { }
 
     ngOnInit() {
@@ -43,16 +45,13 @@ export class TabLokiComponent implements OnInit {
         this.queryObject = event;
         this.queryObject.limit = 100;
     }
-    queryBuilder() {
+    queryBuilder() { /** depricated, need use {SearchService} */
         return {
             param: {
                 server: this.queryObject.serverLoki, // 'http://127.0.0.1:3100',
                 limit: this.queryObject.limit * 1,
                 search: this.queryObject.text,
-                timezone: {
-                    value: -120,
-                    name: 'Local'
-                }
+                timezone: this.searchService.getTimeZoneLocal()
             },
             timestamp: this._dtrs.getDatesForQuery(true)
         };

@@ -202,7 +202,6 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 }
                 break;
         }
-        console.log(this.pageId, {responce});
     }
 
     async openDialog(type: any, data: any = null, cb: Function = null) {
@@ -253,7 +252,6 @@ export class PreferenceComponent implements OnInit, OnDestroy {
     onDelete (item: any = null) {
         this.openDialog(DialogDeleteAlertComponent, null, result => {
             if (result) {
-                console.log({result, item})
                 this.service[this.pageId].delete(item.guid).toPromise().then(() => {
                     this.updateData();
                 });

@@ -34,3 +34,4 @@ export * from './search/remote.service';
 
 export * from './session-storage.service';
 export * from './data-time-range.service';
+export * from './search.service'

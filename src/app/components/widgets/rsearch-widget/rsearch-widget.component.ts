@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { SearchGridCallComponent } from '@app/components/search-grid-call/search-grid-call.component';
 import { Widget } from '@app/helpers/widget';
 import { ConstValue } from '@app/models';
+import { SearchService } from '@app/services';
 
 @Component({
     selector: 'app-rsearch-widget',
@@ -27,7 +28,8 @@ export class RsearchWidgetComponent implements IWidget {
     queryText: string;
     constructor(
         public dialog: MatDialog,
-        private router: Router
+        private router: Router,
+        private searchService: SearchService
     ) {
     }
 
@@ -45,7 +47,8 @@ export class RsearchWidgetComponent implements IWidget {
         this.searchQueryLoki.fields = [];
     }
     doSearchResult() {
-        localStorage.setItem(ConstValue.SEARCH_QUERY, JSON.stringify(this.searchQueryLoki));
+        this.searchService.setLocalStorageQuery(this.searchQueryLoki);
+        // localStorage.setItem(ConstValue.SEARCH_QUERY, JSON.stringify(this.searchQueryLoki));
 
         this.router.navigate(['call/result']);
     }

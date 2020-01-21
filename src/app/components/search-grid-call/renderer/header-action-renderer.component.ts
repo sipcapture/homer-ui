@@ -22,11 +22,9 @@ export class HeaderActionRenderer {
     public params: any;
     constructor(public dialog: MatDialog) {
         console.groupEnd();
-        console.log('init header ag-grid');
     }
 
     agInit(headerParams: IHeaderParams): void {
-        console.log({headerParams});
         this.params = headerParams;
     }
 
