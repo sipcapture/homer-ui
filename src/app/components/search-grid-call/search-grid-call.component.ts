@@ -380,7 +380,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     ngAfterViewInit () {
-        // window.addEventListener('resize', this.onSizeToFit.bind(this));
         window.document.body.addEventListener('mouseup', this.onSizeToFit.bind(this));
     }
 
@@ -627,18 +626,27 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             return {name: i, value: val};
         }).filter(i => typeof i.value !== 'object' && i.name !== 'raw');
 
-        if (result.decoded) {            
-            if(result.decoded[0]) 
-            {
-                if (result.decoded[0]["_source"] && result.decoded[0]["_source"]["layers"]) {
-                    mData.data.decoded = result.decoded[0]["_source"]["layers"];
+        result.decoded = null;
+        this._scs.getDecodedData(request).toPromise().then(res => {
+            if (res.data) {
+                result.decoded = res.data[0].decoded;
+            }
+            if (result.decoded) {            
+                if(result.decoded[0]) 
+                {
+                    if (result.decoded[0]["_source"] && result.decoded[0]["_source"]["layers"]) {
+                        mData.data.decoded = result.decoded[0]["_source"]["layers"];
+                    } else {
+                        mData.data.decoded = result.decoded[0];
+                    }
                 } else {
-                    mData.data.decoded = result.decoded[0];
-                }
-            } else {
-                 mData.data.decoded = result.decoded;
-            }            
-        }
+                    mData.data.decoded = result.decoded;
+                }            
+                /* for update Dialog window */
+                mData.data = Functions.cloneObject(mData.data);
+                this.changeDetectorRefs.detectChanges();
+            }
+        });
         this.changeDetectorRefs.detectChanges();
         mData.loaded = true;
     }

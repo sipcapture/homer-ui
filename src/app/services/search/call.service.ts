@@ -28,5 +28,8 @@ export class SearchCallService {
         return this.http.get<any>(`${this.url}/export/data`);
     }
 
+    getDecodedData(searchConfig: SearchCallModel) {
+        return this.http.post<any>(`${this.url}/decode/message`, searchConfig);
+    }
 
 }
