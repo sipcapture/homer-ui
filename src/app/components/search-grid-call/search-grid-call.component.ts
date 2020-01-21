@@ -182,9 +182,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         });
     }
     private getQueryData() {
-        if (!this.id /* && localStorage.getItem(ConstValue.SEARCH_QUERY) */) {
+        if (!this.id) {
             this.localData = this.searchService.getLocalStorageQuery();
-            // this.localData = JSON.parse(localStorage.getItem(ConstValue.SEARCH_QUERY));
+
             this.protocol_profile = this.localData.protocol_id;
 
             if (this.protocol_profile === ConstValue.LOKI_PREFIX) {
@@ -195,7 +195,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             }
             this.config.param.search[this.protocol_profile] = this.localData.fields;
 
-            if( this.localData.location && this.localData.location.value !== '' && this.localData.location.mapping !== '') {
+            if (this.localData.location && this.localData.location.value !== '' && this.localData.location.mapping !== '') {
                 this.config.param.location[this.localData.location.mapping] = this.localData.location.value;
             }
         }
@@ -204,7 +204,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             this.protocol_profile = this.comingRequest.protocol_id;
             this.config.param.search[this.comingRequest.protocol_id] = this.comingRequest.fields;
 
-            if( this.comingRequest.location && this.comingRequest.location.value !== '' && this.comingRequest.location.mapping !== '') {
+            if (this.comingRequest.location && this.comingRequest.location.value !== '' && this.comingRequest.location.mapping !== '') {
                 this.config.param.location[this.comingRequest.location.mapping] = this.comingRequest.location.value;
             }
         }
