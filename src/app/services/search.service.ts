@@ -26,8 +26,7 @@ export class SearchService {
         };
         this.protocol = this.currentQuery.protocol_id || this.protocol;
         this.location = this.currentQuery.location || this.location;
-        
-        this.currentQuery
+
         if (!this.protocol) {
             console.error('this.protocol is undefined')
         }
@@ -62,11 +61,11 @@ export class SearchService {
         this.isLoki = bool;
     }
 
-    public setQueryLocation(location: any){
+    public setQueryLocation(location: any) {
         this.location = location;
     }
 
-    public getQueryLocation(){
+    public getQueryLocation() {
         return this.location;
     }
 
@@ -75,9 +74,9 @@ export class SearchService {
     }
 
     public getQueryProtocolId() {
-        return this.protocol
+        return this.protocol;
     }
-    
+
     public setQuerySearch(search: any) {
         this.search = search;
     }
@@ -103,12 +102,12 @@ export class SearchService {
 
     private getLocation() {
         const localData = this.currentQuery;
-        
+
         const locationArray = {};
         if (this.location) {
             localData.location = this.location;
         }
-        console.log({localData})
+
         if (localData.location && localData.location.value !== '' && localData.location.mapping !== '') {
             locationArray[localData.location.mapping] = localData.location.value;
         }

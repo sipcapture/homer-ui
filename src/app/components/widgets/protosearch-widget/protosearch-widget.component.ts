@@ -153,12 +153,12 @@ export class ProtosearchWidgetComponent implements IWidget {
                         this.targetResultsContainerValue.setValue(item.value);
                     }
 
-                    if (cacheQuery.location && cacheQuery.location.mapping) {
-                        if (item.field_name === cacheQuery.location.mapping) {
+                    if (cacheQuery.location &&
+                        cacheQuery.location.mapping &&
+                        item.field_name === cacheQuery.location.mapping &&
+                        item.form_default) {
                             item.value = cacheQuery.location.value.map(i => item.form_default.filter(j => j.value === i)[0].name);
                         }
-                    }
-
                 });
             }
         });
@@ -301,20 +301,19 @@ export class ProtosearchWidgetComponent implements IWidget {
 
         /* system params */
         this.fields.forEach((item: any) => {
-            if (item.value !== '' && item.hasOwnProperty('system_param')) {
+            if (item.value && item.value !== '' && item.hasOwnProperty('system_param')) {
                 if (item.mapping !== '') {
                     const paramMapping = item.mapping.split('.');
                     if (paramMapping.length > 1) {
-                        console.log('===========>',item.value, item.value.map(i=> item.form_default.filter(j => i === j.name)[0].value))
                         this.searchQuery[paramMapping[1]] = {
-                            value: item.value.map(i=> item.form_default.filter(j => i === j.name)[0].value),
+                            value: item.value.map(i => item.form_default.filter(j => i === j.name)[0].value),
                             mapping: paramMapping.length === 3 ? paramMapping[2] : ''
                         };
                     }
                 }
             }
         });
-        
+
         this.searchService.setLocalStorageQuery(Functions.cloneObject(this.searchQuery));
         this._sss.saveProtoSearchConfig(this.widgetId, Functions.cloneObject(this.searchQuery));
 
@@ -322,7 +321,7 @@ export class ProtosearchWidgetComponent implements IWidget {
     }
 
     onClearFields () {
-        this.fields.forEach(item => {            
+        this.fields.forEach(item => {
             if (item.formControl) {
                 item.formControl.setValue('');
             }
@@ -377,7 +376,6 @@ export class ProtosearchWidgetComponent implements IWidget {
         this.config.countFieldColumns = result.countFieldColumns;
 
         this._sss.removeProtoSearchConfig(this.widgetId);
-        // this.widg etId = '_' + Functions.md5(JSON.stringify(this.config));
 
         this.updateButtonState();
         this.changeSettings.emit({
