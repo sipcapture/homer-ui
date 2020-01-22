@@ -83,6 +83,24 @@ export class Functions {
 
         return src;
     }
+    static getUriParams(): any {
+        return window.location.search ? window.location.search.split('&')
+            .map(i => i.replace('?', '').split('='))
+                .reduce((a, b) => (a[b[0]] = b[1], a), {}) : null;
+    }
+    static getUriJson(): any {
+        if (window.location.search) {
+            try {
+                return JSON.parse(decodeURIComponent(window.location.search.slice(1,-1)));
+            } catch (err) {
+                console.error(new Error(err));
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+    
     static md5(str: string): string {
         return Md5.hashStr(str) + '';
     }

@@ -198,7 +198,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
     private getQueryData() {
         if (!this.id) {
-            this.localData = this.searchService.getLocalStorageQuery();
+            this.localData = Functions.getUriJson() || this.searchService.getLocalStorageQuery();
 
             this.protocol_profile = this.localData.protocol_id;
 
