@@ -338,7 +338,6 @@ export class TabQosComponent implements OnInit {
         this.listRTP[13].value = parseFloat(((this.listRTP[12].value + this.listRTP[14].value) / 2).toFixed(2));
         this.listRTP[16].value = parseFloat(((this.listRTP[15].value + this.listRTP[17].value) / 2).toFixed(2));
 
-        console.log('this.listRTP', this.listRTP)
         this.renderChartData(this.streamsRTP, this.chartDataRTP);
 
         this.isRTP = true;

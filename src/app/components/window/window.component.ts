@@ -1,12 +1,12 @@
 import {
-    Component,
-    ViewChild,
-    OnInit,
     ComponentFactoryResolver,
     ApplicationRef,
     EventEmitter,
-    Injector,
+    Component,
+    ViewChild,
     OnDestroy,
+    Injector,
+    OnInit,
     Output,
     Input
 } from '@angular/core';
@@ -63,15 +63,15 @@ export class WindowComponent implements OnInit, OnDestroy {
             'status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' +
             this.width + ', height=' + this.height + ', top=' + top + ', left=' + left);
 
-        // try {
-        //     this.externalWindow.onbeforeunload = evt => {
-        //         this._isWindow = false;
-        //         this.close.emit(evt);
-        //     };
-        // } catch (e) {
-        //     this._isWindow = false;
-        //     this.close.emit(e);
-        // }
+        try {
+            this.externalWindow.onbeforeunload = evt => {
+                this._isWindow = false;
+                this.close.emit(evt);
+            };
+        } catch (e) {
+            this._isWindow = false;
+            this.close.emit(e);
+        }
 
         this.externalOnLoad();
     }
