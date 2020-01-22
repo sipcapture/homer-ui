@@ -221,6 +221,7 @@ export class TabQosComponent implements OnInit {
                 this.onErrorMessage(err);
                 return;
             }
+
             const i = item.raw;
             this.chartLabelsRTP.push(moment( item.create_date ).format('YYYY-MM-DD HH:mm:ss'));
 
@@ -269,35 +270,59 @@ export class TabQosComponent implements OnInit {
 
 
                     // min TOTAL_PK
-                    this.listRTP[0].value = Math.min(this.listRTP[0].value, i.TOTAL_PK * 1);
-                    // max packets
-                    this.listRTP[2].value = Math.max(this.listRTP[2].value, i.TOTAL_PK * 1);
+                    if (!isNaN(i.TOTAL_PK)) {
+                        this.listRTP[0].value = Math.min(this.listRTP[0].value, i.TOTAL_PK * 1);
+                    }
+                    // max TOTAL_PK
+                    if (!isNaN(i.TOTAL_PK)) {
+                        this.listRTP[2].value = Math.max(this.listRTP[2].value, i.TOTAL_PK * 1);
+                    }
 
                     // min EXPECTED_PK
-                    this.listRTP[3].value = Math.min(this.listRTP[3].value, i.EXPECTED_PK * 1);
+                    if (!isNaN(i.EXPECTED_PK)) {
+                        this.listRTP[3].value = Math.min(this.listRTP[3].value, i.EXPECTED_PK * 1);
+                    }
 
                     // max EXPECTED_PK
-                    this.listRTP[5].value = Math.max(this.listRTP[5].value, i.EXPECTED_PK * 1);
+                    if (!isNaN(i.EXPECTED_PK)) {
+                        this.listRTP[5].value = Math.max(this.listRTP[5].value, i.EXPECTED_PK * 1);
+                    }
 
                     // min JITTER
-                    this.listRTP[6].value = Math.min(this.listRTP[5].value, i.JITTER * 1);
+                    if (!isNaN(i.JITTER)) {
+                        this.listRTP[6].value = Math.min(this.listRTP[5].value, i.JITTER * 1);
+                    }
                     // max JITTER
-                    this.listRTP[8].value = Math.max(this.listRTP[8].value, i.JITTER * 1);
+                    if (!isNaN(i.JITTER)) {
+                        this.listRTP[8].value = Math.max(this.listRTP[8].value, i.JITTER * 1);
+                    }
 
                     // min MOS
-                    this.listRTP[9].value = Math.min(this.listRTP[9].value, i.MOS * 1);
+                    if (!isNaN(i.MOS)) {
+                        this.listRTP[9].value = Math.min(this.listRTP[9].value, i.MOS * 1);
+                    }
                     // max MOS
-                    this.listRTP[11].value = Math.max(this.listRTP[11].value, i.MOS * 1);
+                    if (!isNaN(i.MOS)) {
+                        this.listRTP[11].value = Math.max(this.listRTP[11].value, i.MOS * 1);
+                    }
 
                     // min DELTA
-                    this.listRTP[12].value = Math.min(this.listRTP[12].value, i.DELTA * 1);
+                    if (!isNaN(i.DELTA)) {
+                        this.listRTP[12].value = Math.min(this.listRTP[12].value, i.DELTA * 1);
+                    }
                     // max DELTA
-                    this.listRTP[14].value = Math.max(this.listRTP[14].value, i.DELTA * 1);
+                    if (!isNaN(i.DELTA)) {
+                        this.listRTP[14].value = Math.max(this.listRTP[14].value, i.DELTA * 1);
+                    }
 
                     // min PACKET_LOSS
-                    this.listRTP[15].value = Math.min(this.listRTP[15].value, i.PACKET_LOSS * 1);
+                    if (!isNaN(i.PACKET_LOSS)) {
+                        this.listRTP[15].value = Math.min(this.listRTP[15].value, i.PACKET_LOSS * 1);
+                    }
                     // max PACKET_LOSS
-                    this.listRTP[17].value = Math.max(this.listRTP[17].value, i.PACKET_LOSS * 1);
+                    if (!isNaN(i.PACKET_LOSS)) {
+                        this.listRTP[17].value = Math.max(this.listRTP[17].value, i.PACKET_LOSS * 1);
+                    }
                 }
             });
         });
@@ -306,13 +331,14 @@ export class TabQosComponent implements OnInit {
             item.value = item.value === Number.MAX_VALUE ? 0 : item.value;
         });
 
-        this.listRTP[1].value = Math.floor((this.listRTP[0].value + this.listRTP[2].value) / 2);
-        this.listRTP[4].value = Math.floor((this.listRTP[3].value + this.listRTP[5].value) / 2);
-        this.listRTP[7].value = Math.floor((this.listRTP[6].value + this.listRTP[8].value) / 2);
-        this.listRTP[10].value = Math.floor((this.listRTP[9].value + this.listRTP[11].value) / 2);
-        this.listRTP[13].value = Math.floor((this.listRTP[12].value + this.listRTP[14].value) / 2);
-        this.listRTP[16].value = Math.floor((this.listRTP[15].value + this.listRTP[17].value) / 2);
+        this.listRTP[1].value = parseFloat(((this.listRTP[0].value + this.listRTP[2].value) / 2).toFixed(2));
+        this.listRTP[4].value = parseFloat(((this.listRTP[3].value + this.listRTP[5].value) / 2).toFixed(2));
+        this.listRTP[7].value = parseFloat(((this.listRTP[6].value + this.listRTP[8].value) / 2).toFixed(2));
+        this.listRTP[10].value = parseFloat(((this.listRTP[9].value + this.listRTP[11].value) / 2).toFixed(2));
+        this.listRTP[13].value = parseFloat(((this.listRTP[12].value + this.listRTP[14].value) / 2).toFixed(2));
+        this.listRTP[16].value = parseFloat(((this.listRTP[15].value + this.listRTP[17].value) / 2).toFixed(2));
 
+        console.log('this.listRTP', this.listRTP)
         this.renderChartData(this.streamsRTP, this.chartDataRTP);
 
         this.isRTP = true;
@@ -377,29 +403,49 @@ export class TabQosComponent implements OnInit {
                         /* end chart */
 
                         // min packets
-                        this.list[0].value = Math.min(this.list[0].value, i.sender_information.packets);
+                        if (!isNaN(i.sender_information.packets)) {
+                            this.list[0].value = Math.min(this.list[0].value, i.sender_information.packets * 1);
+                        }
                         // max packets
-                        this.list[2].value = Math.max(this.list[2].value, i.sender_information.packets);
+                        if (!isNaN(i.sender_information.packets)) {
+                            this.list[2].value = Math.max(this.list[2].value, i.sender_information.packets * 1);
+                        }
 
                         // min octets
-                        this.list[3].value = Math.min(this.list[3].value, i.sender_information.octets);
+                        if (!isNaN(i.sender_information.octets)) {
+                            this.list[3].value = Math.min(this.list[3].value, i.sender_information.octets * 1);
+                        }
                         // max octets
-                        this.list[5].value = Math.max(this.list[5].value, i.sender_information.octets);
+                        if (!isNaN(i.sender_information.octets)) {
+                            this.list[5].value = Math.max(this.list[5].value, i.sender_information.octets * 1);
+                        }
 
                         // min highest_seq_no
-                        this.list[6].value = Math.min(this.list[5].value, i.report_blocks[0].highest_seq_no);
+                        if (!isNaN(i.report_blocks[0].highest_seq_no)) {
+                            this.list[6].value = Math.min(this.list[5].value, i.report_blocks[0].highest_seq_no * 1);
+                        }
                         // max highest_seq_no
-                        this.list[8].value = Math.max(this.list[8].value, i.report_blocks[0].highest_seq_no);
+                        if (!isNaN(i.report_blocks[0].highest_seq_no)) {
+                            this.list[8].value = Math.max(this.list[8].value, i.report_blocks[0].highest_seq_no * 1);
+                        }
 
                         // min ia_jitter
-                        this.list[9].value = Math.min(this.list[9].value, i.report_blocks[0].ia_jitter);
+                        if (!isNaN(i.report_blocks[0].ia_jitter)) {
+                            this.list[9].value = Math.min(this.list[9].value, i.report_blocks[0].ia_jitter * 1);
+                        }
                         // max ia_jitter
-                        this.list[11].value = Math.max(this.list[11].value, i.report_blocks[0].ia_jitter);
+                        if (!isNaN(i.report_blocks[0].ia_jitter)) {
+                            this.list[11].value = Math.max(this.list[11].value, i.report_blocks[0].ia_jitter * 1);
+                        }
 
                         // min lsr
-                        this.list[12].value = Math.min(this.list[12].value, i.report_blocks[0].lsr * 1);
+                        if (!isNaN(i.report_blocks[0].lsr)) {
+                            this.list[12].value = Math.min(this.list[12].value, i.report_blocks[0].lsr * 1);
+                        }
                         // max lsr
-                        this.list[14].value = Math.max(this.list[14].value, i.report_blocks[0].lsr * 1);
+                        if (!isNaN(i.report_blocks[0].lsr)) {
+                            this.list[14].value = Math.max(this.list[14].value, i.report_blocks[0].lsr * 1);
+                        }
                     } else {
                         // highest_seq_no
                         k.highest_seq_noData.push(0);
@@ -419,19 +465,19 @@ export class TabQosComponent implements OnInit {
         });
 
         // avg packets
-        this.list[1].value = Math.floor((this.list[0].value + this.list[2].value) / 2);
+        this.list[1].value = parseFloat(((this.list[0].value + this.list[2].value) / 2).toFixed(2));
 
         // avg octets
-        this.list[4].value = Math.floor((this.list[3].value + this.list[5].value) / 2);
+        this.list[4].value = parseFloat(((this.list[3].value + this.list[5].value) / 2).toFixed(2));
 
         // avg highest_seq_no
-        this.list[7].value = Math.floor((this.list[6].value + this.list[8].value) / 2);
+        this.list[7].value = parseFloat(((this.list[6].value + this.list[8].value) / 2).toFixed(2));
 
         // avg ia_jitter
-        this.list[10].value = Math.floor((this.list[9].value + this.list[11].value) / 2);
+        this.list[10].value = parseFloat(((this.list[9].value + this.list[11].value) / 2).toFixed(2));
 
         // avg lsr
-        this.list[13].value = Math.floor((this.list[12].value + this.list[14].value) / 2);
+        this.list[13].value = parseFloat(((this.list[12].value + this.list[14].value) / 2).toFixed(2));
 
         this.renderChartData(this.streams, this.chartData);
         this.isRTCP = true;
