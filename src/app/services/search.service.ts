@@ -33,7 +33,6 @@ export class SearchService {
     }
 
     public setLocalStorageQuery(query: any) {
-        console.log('setLocalStorageQuery', query);
         if (query.location) {
             this.location = query.location;
         } else {
