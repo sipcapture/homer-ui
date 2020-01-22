@@ -164,6 +164,8 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
         this.layerZIndex.nativeElement.style.display = null;
         this.onFocus();
         this.browserWindow.emit(this.__isBrowserWindow);
+
+        this.onClose();
     }
 
     newWindow () {
