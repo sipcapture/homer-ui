@@ -33,7 +33,6 @@ export class SearchService {
     }
 
     public setLocalStorageQuery(query: any) {
-        console.log('setLocalStorageQuery', query);
         if (query.location) {
             this.location = query.location;
         } else {
@@ -169,7 +168,7 @@ export class SearchService {
         const search = {};
         search[localData.protocol_id] = {
             id: id,
-            callid: [callid],
+            callid: callid,
             uuid: []
         };
 

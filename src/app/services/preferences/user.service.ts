@@ -23,6 +23,9 @@ export class PreferenceUserService {
     update(user: PreferenceUsers) {
         const guid = user.guid;
         delete user.guid;
+        if (user.password === '') {
+            delete user.password;
+        }
         return this.http.put(`${environment.apiUrl}/users/${guid}`, user);
     }
 

@@ -48,7 +48,12 @@
       ></app-tab-loki>
     </mat-tab>
     <mat-tab *ngIf="_isLoaded && tabs.export" label="Export">
-      <app-tab-export [callid]="titleId" [id]="sipDataItem.data.messages[0].id"></app-tab-export>
+      <app-tab-export
+        [snapShotTimeRange]="snapShotTimeRange"
+        [dataItem]="sipDataItem"
+        [callid]="titleId"
+        [id]="sipDataItem.data.messages[0].id"
+      ></app-tab-export>
     </mat-tab>
   </mat-tab-group>
 </app-modal-resizable>

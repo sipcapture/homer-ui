@@ -1,6 +1,7 @@
 import { Component, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Functions } from '@app/helpers/functions';
+import { AuthenticationService } from '@app/services';
 
 @Component({
     selector: 'app-dialog-users',
@@ -9,13 +10,15 @@ import { Functions } from '@app/helpers/functions';
 })
 export class DialogUsersComponent {
     isValidForm = false;
-
+    isAdmin = false;
     pass2: string;
     hidePass1 = true;
     hidePass2 = true;
     constructor(
+        private authenticationService: AuthenticationService,
         public dialogRef: MatDialogRef<DialogUsersComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any) {
+
         if ( data.isnew ) {
             data.data = {
                 username: '',
@@ -29,6 +32,10 @@ export class DialogUsersComponent {
                 guid: Functions.newGuid()
             };
         }
+        
+        const userData = this.authenticationService.currentUserValue;
+        this.isAdmin = userData && userData.user && userData.user.admin && userData.user.admin == true;
+        
 
         /* be sure that this is string */
         data.data.password = String(data.data.password);
@@ -45,11 +52,12 @@ export class DialogUsersComponent {
     }
     onValid() {
         const d = this.data.data;
-
+        const isNew = this.data.isNew;
         this.isValidForm = d.username !== '' &&
         d.usergroup !== '' &&
         d.partid !== '' &&
-        d.password !== '' &&
+        (isNew ? d.password !== '' : true) &&
+        d.password === this.pass2 &&
         d.firstname !== '' &&
         d.email !== '' &&
         this.validateEmail(d.email) &&

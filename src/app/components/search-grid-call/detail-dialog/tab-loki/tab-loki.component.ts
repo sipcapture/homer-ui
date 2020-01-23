@@ -15,6 +15,7 @@ export class TabLokiComponent implements OnInit {
 
     queryText: string;
     queryObject: any;
+    rxText: string;
     resultData: Array<any> = [];
     isFirstSearch = true;
     labels: Array<any> = [];
@@ -35,10 +36,15 @@ export class TabLokiComponent implements OnInit {
 
         this.queryText = `{job="heplify-server"} ${labels}`;
     }
-    doSerchResult () {
+    async doSerchResult () {
+        this.rxText = this.queryObject.rxText
         this.isFirstSearch = false;
-        this._srs.getData(this.queryBuilder()).subscribe(data => {
-            this.resultData = data.data as Array<any>;
+        const data = await this._srs.getData(this.queryBuilder()).toPromise();
+
+        this.resultData = data.data as Array<any>;
+        this.resultData = this.resultData.map(i => {
+            i.custom_1 = this.highlight(i.custom_1);
+            return i;
         });
     }
     onUpdateData (event) {
@@ -55,5 +61,21 @@ export class TabLokiComponent implements OnInit {
             },
             timestamp: this._dtrs.getDatesForQuery(true)
         };
+    }
+    private highlight(value: string = ''): void {
+        let data;
+        if (!!this.rxText) {
+            const rxText = this.rxText.replace(/\s/g, '');
+            const regex = new RegExp('(' + rxText + ')', 'g');
+            data = value
+                .replace(/\</g, '&lt;')
+                .replace(/\>/g, '&gt;')
+                .replace(regex, (g, a) => {
+                    return `<span>${a}</span>`;
+                });
+        } else {
+            data = value || '';
+        }
+        return data;
     }
 }

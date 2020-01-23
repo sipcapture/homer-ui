@@ -39,7 +39,7 @@
 	</gridster-item>
 </gridster>
 
-<div *ngIf="dashboardArray && dashboardArray.length === 0" class="no-content">	
+<div *ngIf="!isIframe && (dashboardArray && dashboardArray.length === 0)" class="no-content">	
 	<span style="text-align: center;">
 		<h1>Dashboard is empty</h1>
 		<button title="Add widget" mat-raised-button color="primary" (click)="onDashboardAdd()">Add widget <mat-icon>add</mat-icon></button>

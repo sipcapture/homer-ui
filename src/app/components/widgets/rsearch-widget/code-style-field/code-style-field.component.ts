@@ -155,6 +155,13 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
 
     }
     onKeyUpDiv(event) {
+        console.log('key UP event.keyCode=', event.keyCode);
+        // 16 - Shift
+        // 13 - Enter
+        // 17 - Ctrl
+        if (16 === event.keyCode) {
+            return;
+        }
         if (this.editor.innerText === '' || [17, 16].indexOf(event.keyCode) !== -1) {
             this.trigger.closeMenu();
             return;

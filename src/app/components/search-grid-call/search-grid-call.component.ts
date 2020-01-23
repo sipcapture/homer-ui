@@ -1,6 +1,24 @@
-import { Component,  OnInit, OnDestroy, AfterViewInit, ChangeDetectorRef, Input, HostListener } from '@angular/core';
-import { ColumnActionRenderer, ColumnCallidRenderer, ColumnMethodRenderer, HeaderActionRenderer } from './renderer';
 import { GridOptions } from 'ag-grid-community';
+import { Subscription } from 'rxjs';
+import { Functions } from '@app/helpers/functions';
+import * as moment from 'moment';
+import { ConstValue } from '@app/models';
+import {
+    Component,
+    OnInit,
+    OnDestroy,
+    AfterViewInit,
+    ChangeDetectorRef,
+    Input,
+    HostListener
+} from '@angular/core';
+import {
+    ColumnActionRenderer,
+    ColumnCallidRenderer,
+    ColumnMethodRenderer,
+    HeaderActionRenderer,
+    LokiHighlightRenderer
+} from './renderer';
 import {
     SearchCallService,
     DashboardService,
@@ -12,10 +30,6 @@ import {
     CallReportService,
     SearchService
 } from '@app/services';
-import { Subscription } from 'rxjs';
-import { Functions } from '@app/helpers/functions';
-import * as moment from 'moment';
-import { ConstValue } from '@app/models';
 
 
 @Component({
@@ -118,7 +132,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         this.frameworkComponents = {
             columnActionRenderer: ColumnActionRenderer,
             columnCallidRenderer: ColumnCallidRenderer,
-            columnMethodRenderer: ColumnMethodRenderer
+            columnMethodRenderer: ColumnMethodRenderer,
+            LokiHighlightRenderer: LokiHighlightRenderer
         };
     }
 
@@ -163,6 +178,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 }
             });
         } else {
+            setTimeout(() => { /** <== fixing ExpressionChangedAfterItHasBeenCheckedError */
+                const params = Functions.getUriJson();
+                if (params && params.datetime) {
+                    this._dtrs.updateDataRange(params.datetime);
+                }
+            });
             if (!this.subscriptionRangeUpdateTimeout) {
                 this.subscriptionRangeUpdateTimeout = this._dtrs.castRangeUpdateTimeout.subscribe(() => {
                     this.update(true);
@@ -183,7 +204,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
     private getQueryData() {
         if (!this.id) {
-            this.localData = this.searchService.getLocalStorageQuery();
+            const params = Functions.getUriJson();
+            if (params && params.query) {
+                this.localData = params.query;
+            } else {
+                this.localData = Functions.getUriJson() || this.searchService.getLocalStorageQuery();
+            }
 
             this.protocol_profile = this.localData.protocol_id;
 
@@ -258,7 +284,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 const keyHep = a.hepid + '_' + a.profile;
 
                 if (marData.length === 0 && this.config.param.search && this.config.param.search.hasOwnProperty(keyHep)) {
-                    marData = a['fields_mapping'];
+                    marData = a.fields_mapping;
                     hepVersion = parseInt(a.hepid + '', 10);
                 }
             });
@@ -273,39 +299,43 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 }
                 for (const h of marData) {
                     const idArray = h.id.split('.');
-                    const idColumn = idArray[idArray.length - 1];
+                    const idColumn: any = idArray[idArray.length - 1];
 
                     /* skip if skip == true */
-                    if (idColumn === 'raw' || idColumn === ConstValue.LIMIT || (h.hasOwnProperty('skip') && h['skip'] === true)) {
+                    if (idColumn === 'raw' || idColumn === ConstValue.LIMIT || (h.hasOwnProperty('skip') && h.skip === true)) {
                         continue;
                     }
-
+                    
+                    
                     /* default column values */
-                    const vaColumn =  { headerName: h.name, field: idColumn, filter: true, resizable: true};
-                    if (idColumn === 'sid' || idColumn === 'callid' || (h.hasOwnProperty('sid_type') && h['sid_type'] === true)) {
-                        vaColumn['cellStyle'] = this.getCallIDColor.bind(this);
-                        vaColumn['cellRenderer'] = 'columnCallidRenderer';
+                    const vaColumn: any =  { headerName: h.name, field: idColumn, filter: true, resizable: true};
+                    if (idColumn === 'sid' || idColumn === 'callid' || (h.hasOwnProperty('sid_type') && h.sid_type === true)) {
+                        vaColumn.cellStyle = this.getCallIDColor.bind(this);
+                        vaColumn.cellRenderer = 'columnCallidRenderer';
                     }
-                    if (idColumn === 'method' || (h.hasOwnProperty('method_type') && h['method_type'] === true)) {
-                        vaColumn['cellRenderer'] = 'columnMethodRenderer';
-                        vaColumn['cellStyle'] = this.getMethodColor.bind(this);
+                    if (idColumn === 'custom_1') { /** Loki column 'Message' */
+                        vaColumn.cellRenderer = 'LokiHighlightRenderer';
                     }
-                    if ((h.hasOwnProperty('date_field') && h['date_field'] === true)) {
-                        vaColumn['valueFormatter'] =
+                    if (idColumn === 'method' || (h.hasOwnProperty('method_type') && h.method_type === true)) {
+                        vaColumn.cellRenderer = 'columnMethodRenderer';
+                        vaColumn.cellStyle = this.getMethodColor.bind(this);
+                    }
+                    if ((h.hasOwnProperty('date_field') && h.date_field === true)) {
+                        vaColumn.valueFormatter =
                             (data: any) => data.value ? moment(data.value).format('YYYY-MM-DD HH:mm:ss.SSS') : null;
                     }
-                    if (h.hasOwnProperty('hide') && h['hide'] === true) {
-                        vaColumn['hide'] = true;
+                    if (h.hasOwnProperty('hide') && h.hide === true) {
+                        vaColumn.hide = true;
                     }
-                    if (h.hasOwnProperty('suppressSizeToFit') && h['suppressSizeToFit'] === true) {
-                        vaColumn['suppressSizeToFit'] = true;
+                    if (h.hasOwnProperty('suppressSizeToFit') && h.suppressSizeToFit === true) {
+                        vaColumn.suppressSizeToFit = true;
                     }
-                    if (h.hasOwnProperty('autoheight') && h['autoheight'] === true) {
-                        vaColumn['cellStyle'] = {
+                    if (h.hasOwnProperty('autoheight') && h.autoheight === true) {
+                        vaColumn.cellStyle = {
                             'white-space': 'normal',
                             'line-height': '1.5rem'
                         };
-                        vaColumn['autoHeight'] = true;
+                        vaColumn.autoHeight = true;
                     }
                     myRemoteColumns.push(vaColumn);
                 }
@@ -365,14 +395,15 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }
 
         if ( this.isLokiQuery ) {
-            const subscription = this._srs.getData(this.queryBuilderForLoki()).subscribe(result => {
-                subscription.unsubscribe();
+            this._srs.getData(this.queryBuilderForLoki()).toPromise().then(result => {
                 this.rowData = result.data;
                 this.sizeToFit();
+                setTimeout(() => { /** for grid updated autoHeight and sizeToFit */
+                    this.rowData = Functions.cloneObject(this.rowData);
+                }, 600)
             });
         } else {
-            const getDataSubscribe = this._scs.getData(this.config).subscribe(result => {
-                getDataSubscribe.unsubscribe();
+            this._scs.getData(this.config).toPromise().then(result => {
                 this.rowData = result.data;
                 this.sizeToFit();
             });
@@ -430,13 +461,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         };
     }
 
-    private getSelectedRows() { /* depricated */
-        const selectedNodes = this.gridApi.getSelectedNodes();
-        const selectedData = selectedNodes.map( node => node.data );
-        const selectedDataStringPresentation = selectedData.map( node => node.callid + ' ' + node.ruri_user).join(', ');
-        this.showPortal = true;
-    }
-
     private sizeToFit() {
         if (this._interval) {
             clearInterval(this._interval);
@@ -448,14 +472,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }, 300);
     }
 
-    private autoSizeAll() { /** depricated */
-        const allColumnIds: Array<any> = [];
-        this.gridColumnApi.getAllColumns().forEach(function(column) {
-            allColumnIds.push(column.colId);
-        });
-        this.gridColumnApi.autoSizeColumns(allColumnIds);
-        this.sizeToFit();
-    }
     private setQuickFilter() {
         this.gridApi.setQuickFilter(this.filterGridValue);
     }
@@ -518,6 +534,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             dataQOS: null,
             id: row.data.sid,
             mouseEventData: mouseEventData,
+            snapShotTimeRange: Functions.cloneObject(request.timestamp),
             headerColor: color || ''
         };
 

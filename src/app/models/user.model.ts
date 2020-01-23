@@ -1,12 +1,15 @@
 export interface User {
-    id?: number;
     firstname: string;
     lastname: string;
     username: string;
     email: string;
-    guid?: string;
     partid: number;
     usergroup: string;
     department: string;
+    id?: number;
+    guid?: string;
     token?: string;
+    user? : {
+        admin: boolean;
+    }
 }

@@ -57,7 +57,9 @@ export class SessionStorageService {
         this.userSettings.dateTimeRange = dtr;
         this.saveUserData(this.DATA_TIME_RANGE);
     }
-
+    public getDateTimeRange() {
+        return this.userSettings.dateTimeRange;
+    }
     private saveUserData(updateType = this.FULL) {
         Object.keys(this.userSettings.protosearchSettings).forEach(widgetId => {
             if (!this.userSettings.protosearchSettings[widgetId] ||
