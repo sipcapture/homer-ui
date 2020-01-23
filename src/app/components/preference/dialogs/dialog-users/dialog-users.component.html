@@ -10,15 +10,15 @@
   <div>
     <mat-form-field style="padding-right: 1rem;">
       <mat-label>Username</mat-label>
-      <input matInput autocomplete="none" [(ngModel)]="data.data.username" (change)="onValid()">
+      <input matInput autocomplete="none" [(ngModel)]="data.data.username" (change)="onValid()" [disabled]="!isAdmin">
     </mat-form-field>
     <mat-form-field style="padding-right: 1rem;">
       <mat-label>Group</mat-label>
-      <input matInput autocomplete="none" [(ngModel)]="data.data.usergroup" (change)="onValid()">
+      <input matInput autocomplete="none" [(ngModel)]="data.data.usergroup" (change)="onValid()" [disabled]="!isAdmin">
     </mat-form-field>
     <mat-form-field style="padding-right: 1rem;">
       <mat-label>Partition ID</mat-label>
-      <input matInput autocomplete="none" [(ngModel)]="data.data.partid" (change)="onValid()">
+      <input matInput autocomplete="none" [(ngModel)]="data.data.partid" (change)="onValid()" [disabled]="!isAdmin">
     </mat-form-field>
   </div>
   <div>
