@@ -12,6 +12,8 @@ import { SearchService, SessionStorageService } from '@app/services';
 export class TabExportComponent implements OnInit {
     @Input() callid;
     @Input() id;
+    @Input() dataItem: any;
+    @Input() snapShotTimeRange: any;
 
     constructor(
         private _ecs: ExportCallService,
@@ -20,9 +22,20 @@ export class TabExportComponent implements OnInit {
     ) { }
 
     ngOnInit() { }
-
+    private getCallIdArray() {
+        const data = this.dataItem.data;
+        const callidArray = data.calldata.map(i => i.sid).reduce((a, b) => {
+            if (a.indexOf(b) === -1) {
+                a.push(b);
+            }
+            return a;
+        }, []);
+        return callidArray
+    }
     private getQuery(): any {
-        return this.searchService.queryBuilder_EXPORT(this.id, this.callid);
+        const query = this.searchService.queryBuilder_EXPORT(this.id, this.getCallIdArray());
+        query.timestamp = Functions.cloneObject(this.snapShotTimeRange);
+        return query;
     }
 
     async exportPCAP () {
@@ -42,7 +55,7 @@ export class TabExportComponent implements OnInit {
             datetime: this.sessionStorageService.getDateTimeRange()
         };
         const queryJson = encodeURIComponent(JSON.stringify(json)) + '=';
-        const url = window.location.origin + window.location.pathname + '?' + queryJson;
+        const url = window.location.origin + '/call/result/?' + queryJson;
 
         window.open(url, '_blank');
     }

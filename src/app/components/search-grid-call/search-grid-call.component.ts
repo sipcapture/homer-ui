@@ -534,6 +534,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             dataQOS: null,
             id: row.data.sid,
             mouseEventData: mouseEventData,
+            snapShotTimeRange: Functions.cloneObject(request.timestamp),
             headerColor: color || ''
         };
 

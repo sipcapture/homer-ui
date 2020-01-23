@@ -12,6 +12,7 @@ export class DetailDialogComponent implements OnInit {
     @Input() qosData: any;
     @Input() headerColor: any;
     @Input() mouseEventData: any;
+    @Input() snapShotTimeRange: any;
     tabs = {
         messages: false,
         flow: false,
@@ -51,7 +52,9 @@ export class DetailDialogComponent implements OnInit {
         this.tabs.export = this.sipDataItem.data.messages && !!this.sipDataItem.data.messages[0].id;
     }
     onTabQos(isVisible: boolean) {
-        this.tabs.qos = isVisible;
+        setTimeout(() => {
+            this.tabs.qos = isVisible;
+        });
     }
     onClose () {
         this.close.emit();
