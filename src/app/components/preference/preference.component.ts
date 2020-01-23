@@ -31,6 +31,7 @@ import {
     PreferenceMapping,
     PreferenceHepsub
 } from '@app/models';
+import { AuthenticationService } from '@app/services';
 
 
 @Component({
@@ -40,15 +41,11 @@ import {
 })
 export class PreferenceComponent implements OnInit, OnDestroy {
     isLoading = false;
+
+    isAdmin = false;
+
     public pageId: string;
-    public links: Array<string> = [
-        'users',
-        'user settings',
-        'alias',
-        'advanced',
-        'mapping',
-        'hepsub'
-    ];
+    public links: Array<string> = [];
 
     public dialogs = {
         users: DialogUsersComponent,
@@ -61,19 +58,12 @@ export class PreferenceComponent implements OnInit, OnDestroy {
 
     service: any;
 
-    public pagesStructure: any = {
-        users: ['Firstname', 'Lastname', 'Username', 'Email', 'tools'],
-        'user settings': ['Username', 'Partid', 'Category', 'Param', 'Data', 'tools'],
-        alias: ['Alias', 'IP Address', 'Port', 'Mask', 'CaptureID', 'Status', 'tools'],
-        advanced: ['Partid', 'Category', 'Param', 'Data', 'tools'],
-        mapping: ['Partid', 'Profile', 'HEP alias', 'HEP ID', 'Retention', 'tools'],
-        hepsub: ['Profile', 'HEP alias', 'HEP ID', 'Version', 'HepSub', 'tools'],
-    };
+    public pagesStructure: any = {};
 
-    dataSource = new MatTableDataSource([{
-    }]);
-
+    dataSource = new MatTableDataSource([{}]);
+    isAccess = {};
     constructor(
+        private authenticationService: AuthenticationService,
         private router: Router,
         private _route: ActivatedRoute,
         private _pus: PreferenceUserService,
@@ -84,15 +74,75 @@ export class PreferenceComponent implements OnInit, OnDestroy {
         private _phs: PreferenceHepsubService,
         public dialog: MatDialog,
     ) {
-        this.service = {
-            users: this._pus,
-            'user settings': this._puss,
-            alias: this._pas,
-            advanced: this._pads,
-            mapping: this._pmps,
-            hepsub: this._phs
-        };
+        
+        const userData = this.authenticationService.currentUserValue;
+        this.isAdmin = userData && userData.user && userData.user.admin && userData.user.admin == true;
+        
+        if (this.isAdmin) {
+            this.isAccess = {
+                users: true,
+                'user settings': true,
+                alias: true,
+                advanced: true,
+                mapping: true,
+                hepsub: true
+            };
+            
+            this.pagesStructure = {
+                users: ['Firstname', 'Lastname', 'Username', 'Email', 'tools'],
+                'user settings': ['Username', 'Partid', 'Category', 'Param', 'Data', 'tools'],
+                alias: ['Alias', 'IP Address', 'Port', 'Mask', 'CaptureID', 'Status', 'tools'],
+                advanced: ['Partid', 'Category', 'Param', 'Data', 'tools'],
+                mapping: ['Partid', 'Profile', 'HEP alias', 'HEP ID', 'Retention', 'tools'],
+                hepsub: ['Profile', 'HEP alias', 'HEP ID', 'Version', 'HepSub', 'tools'],
+            };
 
+            this.service = {
+                users: this._pus,
+                'user settings': this._puss,
+                alias: this._pas,
+                advanced: this._pads,
+                mapping: this._pmps,
+                hepsub: this._phs
+            };
+
+            this.links = [
+                'users',
+                'user settings',
+                'alias',
+                'advanced',
+                'mapping',
+                'hepsub'
+            ]
+        } else {
+            this.pagesStructure = {
+                users: ['Firstname', 'Lastname', 'Username', 'Email', 'tools'],
+                'user settings': ['Username', 'Partid', 'Category', 'Param', 'Data', 'tools'],
+                advanced: ['Partid', 'Category', 'Param', 'Data'],
+            };
+
+            this.service = {
+                users: this._pus,
+                'user settings': this._puss,
+                advanced: this._pads,
+            };
+
+            this.links = [
+                'users',
+                'user settings',
+                'advanced',
+            ]
+            this.isAccess = {
+                users: false,
+                'user settings': true,
+                alias: false,
+                advanced: false,
+                mapping: false,
+                hepsub: false
+            };
+            
+        }
+        console.log('this.isAdmin', this.isAdmin);
         router.events.pipe(
             filter(e => e instanceof ActivationEnd)
         ).subscribe((evt: ActivationEnd) => {
@@ -110,25 +160,26 @@ export class PreferenceComponent implements OnInit, OnDestroy {
     async updateData () {
         this.isLoading = true;
         let responce;
+
         switch (this.pageId) {
-            case this.links[0]: /* users */
+            case 'users':
                 responce = await this._pus.getAll().toPromise();
 
-                this.dataSource = responce.data.map(
+                this.dataSource = new MatTableDataSource(responce.data.map(
                     (item: PreferenceUsers) => ({
                         Firstname: item.firstname,
                         Lastname: item.lastname,
                         Username: item.username,
                         Email: item.email,
                         item: item
-                }));
+                })));
                 this.isLoading = false;
 
                 break;
-            case this.links[1]: /* user settings */
+            case 'user settings':
                 responce = await this._puss.getAll().toPromise();
 
-                this.dataSource = responce.data.map(
+                this.dataSource = new MatTableDataSource(responce.data.map(
                     (item: PreferenceUsersSettings) => ({
                         Username: item.username,
                         Partid: item.partid,
@@ -136,13 +187,13 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                         Param: item.param,
                         data: JSON.stringify(item.data).slice(0, 40) + ' . . .',
                         item: item
-                }));
+                })));
                 this.isLoading = false;
                 break;
-            case this.links[2]: /* alias */
+            case 'alias':
                 responce = await this._pas.getAll().toPromise();
 
-                this.dataSource = responce.data.map(
+                this.dataSource = new MatTableDataSource(responce.data.map(
                     (item: PreferenceAlias) => ({
                         Alias: item.alias,
                         'IP Address': item.ip,
@@ -151,43 +202,47 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                         CaptureID: item.captureID,
                         Status: item.status,
                         item: item
-                }));
+                })));
                 this.isLoading = false;
 
                 break;
-            case this.links[3]: /* advanced */
+            case 'advanced':
                 responce = await this._pads.getAll().toPromise();
-                this.dataSource = responce.data.map(
+                this.dataSource = new MatTableDataSource(responce.data.map(
                     (item: PreferenceAdvanced) => ({
                         Partid: item.partid,
                         Category: item.category,
                         Param: item.param,
                         Data: JSON.stringify(item.data).slice(0, 50) + ' . . .',
                         item: item
-                }));
+                })));
                 this.isLoading = false;
 
                 break;
-            case this.links[4]: /* mapping */
-                responce = await this._pmps.getAll().toPromise();
-                this.dataSource = responce.data.map(
-                    (item: PreferenceMapping) => ({
-                        Partid: item.partid,
-                        Profile: item.profile,
-                        'HEP alias': item.hep_alias,
-                        'HEP ID': item.hepid,
-                        Retention: item.retention,
-                        Mapping: item.correlation_mapping,
-                        item: item
-                }));
-                this.isLoading = false;
-
+            case 'mapping':
+                try {
+                    responce = await this._pmps.getAll().toPromise();
+                    this.dataSource = new MatTableDataSource(responce.data.map(
+                        (item: PreferenceMapping) => ({
+                            Partid: item.partid,
+                            Profile: item.profile,
+                            'HEP alias': item.hep_alias,
+                            'HEP ID': item.hepid,
+                            Retention: item.retention,
+                            Mapping: item.correlation_mapping,
+                            item: item
+                    })));
+                    this.isLoading = false;
+                } catch (err) {
+                    this.isLoading = false;
+                    alert('error reques : 503');
+                }
                 break;
-            case this.links[5]: /* hepsub */
+            case 'hepsub':
                 try {
                     responce = await this._phs.getAll().toPromise();
                     this.isLoading = false;
-                    this.dataSource = responce.data.map(
+                    this.dataSource = new MatTableDataSource(responce.data.map(
                         (item: PreferenceHepsub) => ({
                             'HEP alias': item.hep_alias,
                             'HEP ID': item.hepid,
@@ -195,9 +250,9 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                             Version: item.version,
                             HepSub: JSON.stringify(item.mapping).slice(0, 40) + ' . . .',
                             item: item
-                    }));
+                    })));
                 } catch (err) {
-                    this.isLoading = true;
+                    this.isLoading = false;
                     alert('error reques : 503');
                 }
                 break;
