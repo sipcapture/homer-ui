@@ -178,6 +178,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 }
             });
         } else {
+            setTimeout(() => { /** <== fixing ExpressionChangedAfterItHasBeenCheckedError */
+                const params = Functions.getUriJson();
+                if (params && params.datetime) {
+                    this._dtrs.updateDataRange(params.datetime);
+                }
+            });
             if (!this.subscriptionRangeUpdateTimeout) {
                 this.subscriptionRangeUpdateTimeout = this._dtrs.castRangeUpdateTimeout.subscribe(() => {
                     this.update(true);
@@ -198,7 +204,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
     private getQueryData() {
         if (!this.id) {
-            this.localData = Functions.getUriJson() || this.searchService.getLocalStorageQuery();
+            const params = Functions.getUriJson();
+            if (params && params.query) {
+                this.localData = params.query;
+            } else {
+                this.localData = Functions.getUriJson() || this.searchService.getLocalStorageQuery();
+            }
 
             this.protocol_profile = this.localData.protocol_id;
 
@@ -450,13 +461,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         };
     }
 
-    private getSelectedRows() { /* depricated */
-        const selectedNodes = this.gridApi.getSelectedNodes();
-        const selectedData = selectedNodes.map( node => node.data );
-        const selectedDataStringPresentation = selectedData.map( node => node.callid + ' ' + node.ruri_user).join(', ');
-        this.showPortal = true;
-    }
-
     private sizeToFit() {
         if (this._interval) {
             clearInterval(this._interval);
@@ -468,14 +472,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }, 300);
     }
 
-    private autoSizeAll() { /** depricated */
-        const allColumnIds: Array<any> = [];
-        this.gridColumnApi.getAllColumns().forEach(function(column) {
-            allColumnIds.push(column.colId);
-        });
-        this.gridColumnApi.autoSizeColumns(allColumnIds);
-        this.sizeToFit();
-    }
     private setQuickFilter() {
         this.gridApi.setQuickFilter(this.filterGridValue);
     }

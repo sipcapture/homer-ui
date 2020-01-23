@@ -42,7 +42,7 @@ export class DetailDialogComponent implements OnInit {
     ngOnInit () {
         if (this.sipDataItem) {
             this.dataLogs = this.sipDataItem.data.messages.filter(i => !i.method).map(i => ({ payload: i }));
-            this.checkStatusTabs();
+            setTimeout(this.checkStatusTabs.bind(this));
         }
     }
     checkStatusTabs() {

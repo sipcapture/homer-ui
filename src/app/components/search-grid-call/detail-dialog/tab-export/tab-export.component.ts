@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ExportCallService } from '../../../../services/export/call.service';
 import { Functions } from '@app/helpers/functions';
-import { SearchService } from '@app/services';
+import { SearchService, SessionStorageService } from '@app/services';
 
 
 @Component({
@@ -15,7 +15,8 @@ export class TabExportComponent implements OnInit {
 
     constructor(
         private _ecs: ExportCallService,
-        private searchService: SearchService
+        private searchService: SearchService,
+        private sessionStorageService: SessionStorageService
     ) { }
 
     ngOnInit() { }
@@ -34,9 +35,15 @@ export class TabExportComponent implements OnInit {
         Functions.saveToFile(data, `export_${this.id}.txt`, 'text/plain;charset=utf-8');
     }
     onShareLink () {
-        const queryJson = encodeURIComponent(JSON.stringify(Functions.getUriJson() || this.searchService.getLocalStorageQuery())) + '=';
+        const param = Functions.getUriJson();
+
+        const json = {
+            query: (param ? (param.query ? param.query : param) : null) || this.searchService.getLocalStorageQuery(),
+            datetime: this.sessionStorageService.getDateTimeRange()
+        };
+        const queryJson = encodeURIComponent(JSON.stringify(json)) + '=';
         const url = window.location.origin + window.location.pathname + '?' + queryJson;
-        console.log(url);
+
         window.open(url, '_blank');
     }
 }
