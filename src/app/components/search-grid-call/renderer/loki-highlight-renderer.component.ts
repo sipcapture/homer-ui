@@ -22,7 +22,7 @@ export class LokiHighlightRenderer implements ICellRendererAngularComp{
             this.data = this.params.value
                 .replace(/\</g, '&lt;')
                 .replace(/\>/g, '&gt;')
-                .replace(regex, (g, a, b, c) => {
+                .replace(regex, (g, a) => {
                     return `<span>${a}</span>`;
                 });
         } else {
