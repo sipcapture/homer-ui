@@ -28,7 +28,8 @@ import {
     PreferenceMappingProtocolService,
     PreferenceUserSettingsService,
     CallReportService,
-    SearchService
+    SearchService,
+    PreferenceAdvancedService
 } from '@app/services';
 
 
@@ -50,7 +51,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     myPredefColumns: Array<Object>;
     rowData: Object;
     showPortal = false;
-    isOpenDialog = false;
+    private isOpenDialog = false;
     title = 'Call Result';
     isLoading = false;
     activeRow = '';
@@ -76,7 +77,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         suppressCellSelection: true
     };
     protocol_profile: string;
-    config = {
+    config: any = {
         param: {
             transaction: {},
             limit: 200,
@@ -111,6 +112,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         private _cts: CallTransactionService,
         private _dtrs: DateTimeRangeService,
         private _ds: DashboardService,
+        private _pas: PreferenceAdvancedService,
         private changeDetectorRefs: ChangeDetectorRef,
         private searchService: SearchService
     ) {
@@ -166,7 +168,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     }
                     this.config.param.search[this.protocol_profile] = this.localData.fields;
 
-                    if( this.localData.location && this.localData.location.value !== '' && this.localData.location.mapping !== '') {
+                    if (this.localData.location && this.localData.location.value !== '' && this.localData.location.mapping !== '') {
                         this.config.param.location[this.localData.location.mapping] = this.localData.location.value;
                     }
 
@@ -179,9 +181,22 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             });
         } else {
             setTimeout(() => { /** <== fixing ExpressionChangedAfterItHasBeenCheckedError */
+                /**
+                 * update DateTimeRange from GET params
+                 */
                 const params = Functions.getUriJson();
-                if (params && params.datetime) {
-                    this._dtrs.updateDataRange(params.datetime);
+                if (params && params.timestamp) {
+                    const format = d => new Date(d).toLocaleString().split(',').map(i => i.replace(/\./g, '/')).join('');
+                    this._dtrs.updateDataRange({
+                        title: [
+                            format(params.timestamp.from),
+                            format(params.timestamp.to)
+                        ].join(' - '),
+                        dates: [
+                            new Date(params.timestamp.from).toISOString(),
+                            new Date(params.timestamp.to).toISOString()
+                        ]
+                    });
                 }
             });
             if (!this.subscriptionRangeUpdateTimeout) {
@@ -202,27 +217,58 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             }
         });
     }
+
+    // get
+
     private getQueryData() {
         if (!this.id) {
             const params = Functions.getUriJson();
-            if (params && params.query) {
-                this.localData = params.query;
-            } else {
-                this.localData = Functions.getUriJson() || this.searchService.getLocalStorageQuery();
-            }
 
-            this.protocol_profile = this.localData.protocol_id;
+            if (params && params.param) {
+                console.log('params >>> ', params.param);
+                console.log('this.searchService.getLocalStorageQuery()>>>', this.searchService.getLocalStorageQuery());
+                /**
+                 * query configuration from GET params
+                 */
+                this.localData = params.param;
+                this.protocol_profile = Object.keys(params.param.search)[0];
+                this.config.param = Functions.cloneObject(params.param);
 
-            if (this.protocol_profile === ConstValue.LOKI_PREFIX) {
-                this.isLokiQuery = true;
-                this.queryTextLoki = this.localData.text;
-            } else {
+                if (params.param.search &&
+                    params.param.search[this.protocol_profile] &&
+                    params.param.search[this.protocol_profile].callid
+                ) {
+                    const callid: Array<string>  = params.param.search[this.protocol_profile].callid;
+                    this.config.param.search[this.protocol_profile] = [{
+                        name: 'sid',
+                        value: callid.join(';'),
+                        type: 'string',
+                        hepid: 1
+                    }];
+                } else {
+                    this.config.param.search[this.protocol_profile] = [];
+                }
+                this.config.param.transaction = {};
+                this.config.param.limit = 200;
+                delete this.config.param.id;
                 this.isLokiQuery = false;
-            }
-            this.config.param.search[this.protocol_profile] = this.localData.fields;
+            } else {
+                this.localData = this.searchService.getLocalStorageQuery();
 
-            if (this.localData.location && this.localData.location.value !== '' && this.localData.location.mapping !== '') {
-                this.config.param.location[this.localData.location.mapping] = this.localData.location.value;
+
+                this.protocol_profile = this.localData.protocol_id;
+
+                if (this.protocol_profile === ConstValue.LOKI_PREFIX) {
+                    this.isLokiQuery = true;
+                    this.queryTextLoki = this.localData.text;
+                } else {
+                    this.isLokiQuery = false;
+                }
+                this.config.param.search[this.protocol_profile] = this.localData.fields;
+
+                if (this.localData.location && this.localData.location.value !== '' && this.localData.location.mapping !== '') {
+                    this.config.param.location[this.localData.location.mapping] = this.localData.location.value;
+                }
             }
         }
 
@@ -258,7 +304,53 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             timestamp: this._dtrs.getDatesForQuery(true)
         };
     }
+    private selectCallIdFromGetParams() {
+        const params = Functions.getUriJson();
 
+        if (params && params.param) {
+            console.log(params.param.search[this.protocol_profile]);
+            const callid: Array<string>  = params.param.search[this.protocol_profile].callid;
+            if (callid.length > 1) {
+                this.gridApi.forEachLeafNode(node => {
+                    if (callid.indexOf(node.data.callid) !== -1) {
+                        node.setSelected(true, true);
+                        console.log(false);
+                    } else {
+                        console.log(true);
+                    }
+                });
+
+            } else if (callid.length === 1) {
+                /** under construction */
+            } else {
+                /** under construction */
+            }
+        }
+    }
+    private openTransactionByAdvencedSettings() {
+        const params = Functions.getUriJson();
+        if (params && params.param && !this.isOpenDialog) {
+            this.isOpenDialog = true;
+            this._pas.getAll().toPromise().then(advenced => {
+                if (advenced && advenced.data) {
+                    try {
+                        const setting = advenced.data.filter(i => i.category === 'export' && i.param === 'transaction');
+                        if (setting && setting[0] && setting[0].data) {
+                            const { openwindow } = setting[0].data;
+                            if (openwindow === true) {
+                                const callid = params.param.search[this.protocol_profile].callid;
+                                const rowData: Array<any>  = Functions.cloneObject(this.rowData) as Array<any>;
+
+                                this.openTransactionDialog({
+                                    data: callid.map(j => rowData.filter(i => i.callid === j)[0])[0]
+                                }, null, callid);
+                            }
+                        }
+                    } catch (err) { }
+                }
+            });
+        }
+    }
     private getHeaders() {
         this.columnDefs = [];
         this.config.timestamp = this._dtrs.getDatesForQuery(true);
@@ -295,7 +387,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 if (hepVersion < 2000) {
                     myRemoteColumns.push({ headerName: 'ID', field: 'id', minWidth: 20, maxWidth: 40, hide: true});
                     myRemoteColumns.push({ headerName: 'Date', field: 'create_date', filter: true, suppressSizeToFit: true,
-                        valueFormatter: (data: any) => data.value ? moment(data.value).format('YYYY-MM-DD HH:mm:ss.SSS') : null});
+                        valueFormatter: (item: any) => item.value ? moment(item.value).format('YYYY-MM-DD HH:mm:ss.SSS') : null});
                 }
                 for (const h of marData) {
                     const idArray = h.id.split('.');
@@ -305,8 +397,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     if (idColumn === 'raw' || idColumn === ConstValue.LIMIT || (h.hasOwnProperty('skip') && h.skip === true)) {
                         continue;
                     }
-                    
-                    
+
                     /* default column values */
                     const vaColumn: any =  { headerName: h.name, field: idColumn, filter: true, resizable: true};
                     if (idColumn === 'sid' || idColumn === 'callid' || (h.hasOwnProperty('sid_type') && h.sid_type === true)) {
@@ -322,7 +413,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     }
                     if ((h.hasOwnProperty('date_field') && h.date_field === true)) {
                         vaColumn.valueFormatter =
-                            (data: any) => data.value ? moment(data.value).format('YYYY-MM-DD HH:mm:ss.SSS') : null;
+                            (item: any) => item.value ? moment(item.value).format('YYYY-MM-DD HH:mm:ss.SSS') : null;
                     }
                     if (h.hasOwnProperty('hide') && h.hide === true) {
                         vaColumn.hide = true;
@@ -400,12 +491,14 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.sizeToFit();
                 setTimeout(() => { /** for grid updated autoHeight and sizeToFit */
                     this.rowData = Functions.cloneObject(this.rowData);
-                }, 600)
+                }, 600);
             });
         } else {
             this._scs.getData(this.config).toPromise().then(result => {
                 this.rowData = result.data;
                 this.sizeToFit();
+                this.selectCallIdFromGetParams();
+                this.openTransactionByAdvencedSettings();
             });
         }
     }
@@ -490,16 +583,16 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         this.addWindowMessage(data, mouseEventData);
     }
 
-    public openTransactionDialog (row, mouseEventData = null) {
+    public openTransactionDialog (row, mouseEventData = null, callisArray = null) {
         // do not open duplicate window
-        if ((this.arrWindow.filter(i => i.data.data.sid[row.data.callid] != null)[0] != null)) {
+        if ((this.arrWindow.filter(i => i.id === row.data.callid)[0] != null)) {
             return;
         }
 
         const selectedRows = this.gridApi.getSelectedRows();
 
         /* clear from clones */
-        const selectedCallId = selectedRows.map(i => i.callid).reduce((a, b) => {
+        const selectedCallId = callisArray || selectedRows.map(i => i.callid).reduce((a, b) => {
             if (a.indexOf(b) === -1) {
                 a.push(b);
             }
@@ -625,7 +718,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
         this.arrMessageDetail.push(mData);
 
-        const result = await this._scs.getMessage(request).toPromise();
+        const result: any = await this._scs.getMessage(request).toPromise();
 
         mData.data = result.data[0];
         mData.data.item = {
@@ -648,17 +741,16 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             if (res.data) {
                 result.decoded = res.data[0].decoded;
             }
-            if (result.decoded) {            
-                if(result.decoded[0]) 
-                {
-                    if (result.decoded[0]["_source"] && result.decoded[0]["_source"]["layers"]) {
-                        mData.data.decoded = result.decoded[0]["_source"]["layers"];
+            if (result.decoded) {
+                if(result.decoded[0]) {
+                    if (result.decoded[0]._source && result.decoded[0]._source.layers) {
+                        mData.data.decoded = result.decoded[0]._source.layers;
                     } else {
                         mData.data.decoded = result.decoded[0];
                     }
                 } else {
                     mData.data.decoded = result.decoded;
-                }            
+                }
                 /* for update Dialog window */
                 mData.data = Functions.cloneObject(mData.data);
                 this.changeDetectorRefs.detectChanges();

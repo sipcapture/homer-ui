@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { Functions } from '../../../helpers/functions';
+import { PreferenceAdvancedService } from '@app/services';
 
 @Component({
     selector: 'app-detail-dialog',
@@ -22,6 +23,7 @@ export class DetailDialogComponent implements OnInit {
     };
     isBrowserWindow = false;
     _isLoaded = false;
+    tabIndexByDefault = 0;
     get isLoaded(): boolean {
         return this._isLoaded;
     }
@@ -38,9 +40,12 @@ export class DetailDialogComponent implements OnInit {
 
     dataLogs: Array<any>;
 
-    constructor() { }
+    constructor(
+        private _pas: PreferenceAdvancedService
+    ) { }
 
     ngOnInit () {
+        this.setTabByAdvenced();
         if (this.sipDataItem) {
             this.dataLogs = this.sipDataItem.data.messages.filter(i => !i.method).map(i => ({ payload: i }));
             setTimeout(this.checkStatusTabs.bind(this));
@@ -78,5 +83,24 @@ export class DetailDialogComponent implements OnInit {
 
     onBrowserWindow (event) {
         this.isBrowserWindow = event;
+    }
+
+    setTabByAdvenced() {
+        const params = Functions.getUriJson();
+        if (params && params.param) {
+            this._pas.getAll().toPromise().then(advenced => {
+                if (advenced && advenced.data) {
+                    try {
+                        const setting = advenced.data.filter(i => i.category === 'export' && i.param === 'transaction');
+                        if (setting && setting[0] && setting[0].data) {
+                            const { tabpositon } = setting[0].data;
+                            if (tabpositon && typeof tabpositon === 'string' && tabpositon !== '') {
+                                this.tabIndexByDefault = Object.keys(this.tabs).indexOf(tabpositon);
+                            }
+                        }
+                    } catch (err) { }
+                }
+            });
+        }
     }
 }

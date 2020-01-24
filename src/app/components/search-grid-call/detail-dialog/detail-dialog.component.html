@@ -13,7 +13,9 @@
       <mat-spinner></mat-spinner>
   </div>
 
-  <mat-tab-group *ngIf="_isLoaded" style="height: 100%;">
+  <mat-tab-group  mat-stretch-tabs
+  [selectedIndex]="this.tabIndexByDefault"
+  *ngIf="_isLoaded" style="height: 100%;">
     <mat-tab *ngIf="_isLoaded && tabs.messages" label="Messages">
       <app-tab-messages
         [dataItem]="sipDataItem"
