@@ -28,7 +28,8 @@ import {
     PreferenceMappingProtocolService,
     PreferenceUserSettingsService,
     CallReportService,
-    SearchService
+    SearchService,
+    PreferenceAdvancedService
 } from '@app/services';
 
 
@@ -76,7 +77,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         suppressCellSelection: true
     };
     protocol_profile: string;
-    config = {
+    config: any = {
         param: {
             transaction: {},
             limit: 200,
@@ -111,6 +112,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         private _cts: CallTransactionService,
         private _dtrs: DateTimeRangeService,
         private _ds: DashboardService,
+        private _pas: PreferenceAdvancedService,
         private changeDetectorRefs: ChangeDetectorRef,
         private searchService: SearchService
     ) {
@@ -166,7 +168,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     }
                     this.config.param.search[this.protocol_profile] = this.localData.fields;
 
-                    if( this.localData.location && this.localData.location.value !== '' && this.localData.location.mapping !== '') {
+                    if (this.localData.location && this.localData.location.value !== '' && this.localData.location.mapping !== '') {
                         this.config.param.location[this.localData.location.mapping] = this.localData.location.value;
                     }
 
@@ -179,9 +181,22 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             });
         } else {
             setTimeout(() => { /** <== fixing ExpressionChangedAfterItHasBeenCheckedError */
+                /**
+                 * update DateTimeRange from GET params
+                 */
                 const params = Functions.getUriJson();
-                if (params && params.datetime) {
-                    this._dtrs.updateDataRange(params.datetime);
+                if (params && params.timestamp) {
+                    const format = d => new Date(d).toLocaleString().split(',').map(i => i.replace(/\./g, '/')).join('');
+                    this._dtrs.updateDataRange({
+                        title: [
+                            format(params.timestamp.from),
+                            format(params.timestamp.to)
+                        ].join(' - '),
+                        dates: [
+                            new Date(params.timestamp.from).toISOString(),
+                            new Date(params.timestamp.to).toISOString()
+                        ]
+                    });
                 }
             });
             if (!this.subscriptionRangeUpdateTimeout) {
@@ -202,27 +217,44 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             }
         });
     }
+
+    // get
+
     private getQueryData() {
         if (!this.id) {
             const params = Functions.getUriJson();
-            if (params && params.query) {
-                this.localData = params.query;
-            } else {
-                this.localData = Functions.getUriJson() || this.searchService.getLocalStorageQuery();
-            }
 
-            this.protocol_profile = this.localData.protocol_id;
-
-            if (this.protocol_profile === ConstValue.LOKI_PREFIX) {
-                this.isLokiQuery = true;
-                this.queryTextLoki = this.localData.text;
-            } else {
+            if (params && params.param) {
+                console.log('params >>> ', params.param);
+                console.log('this.searchService.getLocalStorageQuery()>>>', this.searchService.getLocalStorageQuery());
+                /**
+                 * query configuration from GET params
+                 */
+                this.localData = params.param;
+                this.protocol_profile = Object.keys(params.param.search)[0];
+                this.config.param = Functions.cloneObject(params.param);
+                this.config.param.search[this.protocol_profile] = [];
+                this.config.param.transaction = {};
+                this.config.param.limit = 200;
+                delete this.config.param.id;
                 this.isLokiQuery = false;
-            }
-            this.config.param.search[this.protocol_profile] = this.localData.fields;
+            } else {
+                this.localData = this.searchService.getLocalStorageQuery();
 
-            if (this.localData.location && this.localData.location.value !== '' && this.localData.location.mapping !== '') {
-                this.config.param.location[this.localData.location.mapping] = this.localData.location.value;
+
+                this.protocol_profile = this.localData.protocol_id;
+
+                if (this.protocol_profile === ConstValue.LOKI_PREFIX) {
+                    this.isLokiQuery = true;
+                    this.queryTextLoki = this.localData.text;
+                } else {
+                    this.isLokiQuery = false;
+                }
+                this.config.param.search[this.protocol_profile] = this.localData.fields;
+
+                if (this.localData.location && this.localData.location.value !== '' && this.localData.location.mapping !== '') {
+                    this.config.param.location[this.localData.location.mapping] = this.localData.location.value;
+                }
             }
         }
 
@@ -258,7 +290,29 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             timestamp: this._dtrs.getDatesForQuery(true)
         };
     }
+    private selectCallIdFromGetParams() {
+        const params = Functions.getUriJson();
 
+        if (params && params.param) {
+            console.log(params.param.search[this.protocol_profile]);
+            const callid: Array<string>  = params.param.search[this.protocol_profile].callid;
+            if (callid.length > 1) {
+                this.gridApi.forEachLeafNode(node => {
+                    if (callid.indexOf(node.data.callid) !== -1) {
+                        node.setSelected(true, true);
+                        console.log(false);
+                    } else {
+                        console.log(true);
+                    }
+                });
+
+            } else if (callid.length === 1) {
+
+            } else {
+
+            }
+        }
+    }
     private getHeaders() {
         this.columnDefs = [];
         this.config.timestamp = this._dtrs.getDatesForQuery(true);
@@ -295,7 +349,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 if (hepVersion < 2000) {
                     myRemoteColumns.push({ headerName: 'ID', field: 'id', minWidth: 20, maxWidth: 40, hide: true});
                     myRemoteColumns.push({ headerName: 'Date', field: 'create_date', filter: true, suppressSizeToFit: true,
-                        valueFormatter: (data: any) => data.value ? moment(data.value).format('YYYY-MM-DD HH:mm:ss.SSS') : null});
+                        valueFormatter: (item: any) => item.value ? moment(item.value).format('YYYY-MM-DD HH:mm:ss.SSS') : null});
                 }
                 for (const h of marData) {
                     const idArray = h.id.split('.');
@@ -305,8 +359,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     if (idColumn === 'raw' || idColumn === ConstValue.LIMIT || (h.hasOwnProperty('skip') && h.skip === true)) {
                         continue;
                     }
-                    
-                    
+
                     /* default column values */
                     const vaColumn: any =  { headerName: h.name, field: idColumn, filter: true, resizable: true};
                     if (idColumn === 'sid' || idColumn === 'callid' || (h.hasOwnProperty('sid_type') && h.sid_type === true)) {
@@ -322,7 +375,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     }
                     if ((h.hasOwnProperty('date_field') && h.date_field === true)) {
                         vaColumn.valueFormatter =
-                            (data: any) => data.value ? moment(data.value).format('YYYY-MM-DD HH:mm:ss.SSS') : null;
+                            (item: any) => item.value ? moment(item.value).format('YYYY-MM-DD HH:mm:ss.SSS') : null;
                     }
                     if (h.hasOwnProperty('hide') && h.hide === true) {
                         vaColumn.hide = true;
@@ -406,6 +459,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             this._scs.getData(this.config).toPromise().then(result => {
                 this.rowData = result.data;
                 this.sizeToFit();
+                this.selectCallIdFromGetParams();
             });
         }
     }

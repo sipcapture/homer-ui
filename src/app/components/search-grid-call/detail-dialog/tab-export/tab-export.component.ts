@@ -48,21 +48,8 @@ export class TabExportComponent implements OnInit {
         Functions.saveToFile(data, `export_${this.id}.txt`, 'text/plain;charset=utf-8');
     }
     onShareLink () {
-        const param = Functions.getUriJson();
-        const format = d => new Date(d).toLocaleString().split(',').map(i => i.replace(/\./g, '/')).join('');
-        const json = {
-            query: (param ? (param.query ? param.query : param) : null) || this.searchService.getLocalStorageQuery(),
-            datetime: {
-                title: [
-                    format(this.snapShotTimeRange.from),
-                    format(this.snapShotTimeRange.to)
-                ].join(' - '),
-                dates: [
-                    new Date(this.snapShotTimeRange.from).toISOString(),
-                    new Date(this.snapShotTimeRange.to).toISOString()
-                ]
-             }
-        };
+        // const param = Functions.getUriJson();
+        const json = this.getQuery();
         const queryJson = encodeURIComponent(JSON.stringify(json)) + '=';
         const url = window.location.origin + '/call/result/?' + queryJson;
 
