@@ -51,7 +51,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     myPredefColumns: Array<Object>;
     rowData: Object;
     showPortal = false;
-    isOpenDialog = false;
+    private isOpenDialog = false;
     title = 'Call Result';
     isLoading = false;
     activeRow = '';
@@ -329,19 +329,17 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
     private openTransactionByAdvencedSettings() {
         const params = Functions.getUriJson();
-        if (params && params.param) {
+        if (params && params.param && !this.isOpenDialog) {
+            this.isOpenDialog = true;
             this._pas.getAll().toPromise().then(advenced => {
                 if (advenced && advenced.data) {
                     try {
                         const setting = advenced.data.filter(i => i.category === 'export' && i.param === 'transaction');
                         if (setting && setting[0] && setting[0].data) {
-                            const {openwindow, tabpositon} = setting[0].data;
-                            console.log({openwindow, tabpositon});
+                            const { openwindow } = setting[0].data;
                             if (openwindow === true) {
-
                                 const callid = params.param.search[this.protocol_profile].callid;
                                 const rowData: Array<any>  = Functions.cloneObject(this.rowData) as Array<any>;
-                                callid.map(j => rowData.filter(i => i.callid === j)[0]);
 
                                 this.openTransactionDialog({
                                     data: callid.map(j => rowData.filter(i => i.callid === j)[0])[0]
@@ -493,7 +491,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.sizeToFit();
                 setTimeout(() => { /** for grid updated autoHeight and sizeToFit */
                     this.rowData = Functions.cloneObject(this.rowData);
-                }, 600)
+                }, 600);
             });
         } else {
             this._scs.getData(this.config).toPromise().then(result => {
@@ -587,11 +585,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
     public openTransactionDialog (row, mouseEventData = null, callisArray = null) {
         // do not open duplicate window
-        try {
-            if ((this.arrWindow.filter(i => i.data.data.sid[row.data.callid] != null)[0] != null)) {
-                return;
-            }
-        } catch (err) { }
+        if ((this.arrWindow.filter(i => i.id === row.data.callid)[0] != null)) {
+            return;
+        }
 
         const selectedRows = this.gridApi.getSelectedRows();
 
@@ -722,7 +718,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
         this.arrMessageDetail.push(mData);
 
-        const result = await this._scs.getMessage(request).toPromise();
+        const result: any = await this._scs.getMessage(request).toPromise();
 
         mData.data = result.data[0];
         mData.data.item = {
@@ -745,17 +741,16 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             if (res.data) {
                 result.decoded = res.data[0].decoded;
             }
-            if (result.decoded) {            
-                if(result.decoded[0]) 
-                {
-                    if (result.decoded[0]["_source"] && result.decoded[0]["_source"]["layers"]) {
-                        mData.data.decoded = result.decoded[0]["_source"]["layers"];
+            if (result.decoded) {
+                if(result.decoded[0]) {
+                    if (result.decoded[0]._source && result.decoded[0]._source.layers) {
+                        mData.data.decoded = result.decoded[0]._source.layers;
                     } else {
                         mData.data.decoded = result.decoded[0];
                     }
                 } else {
                     mData.data.decoded = result.decoded;
-                }            
+                }
                 /* for update Dialog window */
                 mData.data = Functions.cloneObject(mData.data);
                 this.changeDetectorRefs.detectChanges();
