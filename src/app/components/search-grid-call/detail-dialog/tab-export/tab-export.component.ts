@@ -30,7 +30,7 @@ export class TabExportComponent implements OnInit {
             }
             return a;
         }, []);
-        return callidArray
+        return callidArray;
     }
     private getQuery(): any {
         const query = this.searchService.queryBuilder_EXPORT(this.id, this.getCallIdArray());
@@ -49,10 +49,19 @@ export class TabExportComponent implements OnInit {
     }
     onShareLink () {
         const param = Functions.getUriJson();
-
+        const format = d => new Date(d).toLocaleString().split(',').map(i => i.replace(/\./g, '/')).join('');
         const json = {
             query: (param ? (param.query ? param.query : param) : null) || this.searchService.getLocalStorageQuery(),
-            datetime: this.sessionStorageService.getDateTimeRange()
+            datetime: {
+                title: [
+                    format(this.snapShotTimeRange.from),
+                    format(this.snapShotTimeRange.to)
+                ].join(' - '),
+                dates: [
+                    new Date(this.snapShotTimeRange.from).toISOString(),
+                    new Date(this.snapShotTimeRange.to).toISOString()
+                ]
+             }
         };
         const queryJson = encodeURIComponent(JSON.stringify(json)) + '=';
         const url = window.location.origin + '/call/result/?' + queryJson;
