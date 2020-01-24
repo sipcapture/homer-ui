@@ -318,20 +318,23 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         if (params && params.param) {
             this._pas.getAll().toPromise().then(advenced => {
                 if (advenced && advenced.data) {
-                    const setting = advenced.data.filter(i => i.category === 'export' && i.param === 'transaction');
-                    if (setting && setting[0] && setting[0].data) {
-                        const {openwindow, tabpositon} = setting[0].data;
-                        console.log({openwindow, tabpositon});
-                        if (openwindow === true) {
+                    try {
+                        const setting = advenced.data.filter(i => i.category === 'export' && i.param === 'transaction');
+                        if (setting && setting[0] && setting[0].data) {
+                            const {openwindow, tabpositon} = setting[0].data;
+                            console.log({openwindow, tabpositon});
+                            if (openwindow === true) {
 
-                            const callid = params.param.search[this.protocol_profile].callid;
-                            const rowData: Array<any>  = Functions.cloneObject(this.rowData) as Array<any>;
-                            callid.map(j => rowData.filter(i => i.callid === j)[0]);
+                                const callid = params.param.search[this.protocol_profile].callid;
+                                const rowData: Array<any>  = Functions.cloneObject(this.rowData) as Array<any>;
+                                callid.map(j => rowData.filter(i => i.callid === j)[0]);
 
-                            this.openTransactionDialog({data: callid.map(j => rowData.filter(i => i.callid === j)[0])[0]}, null, callid);
-                            console.log('this.rowData >>> ', this.rowData);
+                                this.openTransactionDialog({
+                                    data: callid.map(j => rowData.filter(i => i.callid === j)[0])[0]
+                                }, null, callid);
+                            }
                         }
-                    }
+                    } catch (err) { }
                 }
             });
         }
