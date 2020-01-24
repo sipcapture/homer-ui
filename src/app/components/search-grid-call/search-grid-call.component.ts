@@ -233,7 +233,21 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.localData = params.param;
                 this.protocol_profile = Object.keys(params.param.search)[0];
                 this.config.param = Functions.cloneObject(params.param);
-                this.config.param.search[this.protocol_profile] = [];
+
+                if (params.param.search &&
+                    params.param.search[this.protocol_profile] &&
+                    params.param.search[this.protocol_profile].callid
+                ) {
+                    const callid: Array<string>  = params.param.search[this.protocol_profile].callid;
+                    this.config.param.search[this.protocol_profile] = [{
+                        name: 'sid',
+                        value: callid.join(';'),
+                        type: 'string',
+                        hepid: 1
+                    }];
+                } else {
+                    this.config.param.search[this.protocol_profile] = [];
+                }
                 this.config.param.transaction = {};
                 this.config.param.limit = 200;
                 delete this.config.param.id;
