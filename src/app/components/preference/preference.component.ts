@@ -10,6 +10,7 @@ import {
     PreferenceAliasService,
     PreferenceMappingProtocolService,
     PreferenceHepsubService,
+    PreferenceAgentsubService,
     PreferenceAdvancedService
 } from '@app/services/preferences/index';
 
@@ -18,6 +19,7 @@ import {
     DialogAliasComponent,
     DialogDeleteAlertComponent,
     DialogHepsubComponent,
+    DialogAgentsubComponent,
     DialogMappingComponent,
     DialogUserSettingsComponent,
     DialogUsersComponent
@@ -29,7 +31,8 @@ import {
     PreferenceAlias,
     PreferenceUsersSettings,
     PreferenceMapping,
-    PreferenceHepsub
+    PreferenceHepsub,
+    PreferenceAgentsub
 } from '@app/models';
 import { AuthenticationService } from '@app/services';
 
@@ -53,7 +56,8 @@ export class PreferenceComponent implements OnInit, OnDestroy {
         alias: DialogAliasComponent,
         advanced: DialogAdvancedComponent,
         mapping: DialogMappingComponent,
-        hepsub: DialogHepsubComponent
+        hepsub: DialogHepsubComponent,
+        agentsub: DialogAgentsubComponent
     };
 
     service: any;
@@ -61,7 +65,9 @@ export class PreferenceComponent implements OnInit, OnDestroy {
     public pagesStructure: any = {};
 
     dataSource = new MatTableDataSource([{}]);
-    isAccess = {};
+    isAccessAdd = {};
+    isAccessEdit = {};
+    isAccessDelete = {};
     constructor(
         private authenticationService: AuthenticationService,
         private router: Router,
@@ -72,6 +78,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
         private _pads: PreferenceAdvancedService,
         private _pmps: PreferenceMappingProtocolService,
         private _phs: PreferenceHepsubService,
+        private _pags: PreferenceAgentsubService,
         public dialog: MatDialog,
     ) {
         
@@ -79,13 +86,34 @@ export class PreferenceComponent implements OnInit, OnDestroy {
         this.isAdmin = userData && userData.user && userData.user.admin && userData.user.admin == true;
         
         if (this.isAdmin) {
-            this.isAccess = {
+            this.isAccessAdd = {
                 users: true,
                 'user settings': true,
                 alias: true,
                 advanced: true,
                 mapping: true,
-                hepsub: true
+                hepsub: true,
+                agentsub: false
+            };
+
+            this.isAccessEdit = {
+                users: true,
+                'user settings': true,
+                alias: true,
+                advanced: true,
+                mapping: true,
+                hepsub: true,
+                agentsub: false
+            };
+
+            this.isAccessDelete = {
+                users: true,
+                'user settings': true,
+                alias: true,
+                advanced: true,
+                mapping: true,
+                hepsub: true,
+                agentsub: true
             };
             
             this.pagesStructure = {
@@ -95,6 +123,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 advanced: ['Partid', 'Category', 'Param', 'Data', 'tools'],
                 mapping: ['Partid', 'Profile', 'HEP alias', 'HEP ID', 'Retention', 'tools'],
                 hepsub: ['Profile', 'HEP alias', 'HEP ID', 'Version', 'HepSub', 'tools'],
+                agentsub: ['GUID', 'Host', 'Port', 'Node', 'Type','Expire', 'tools'],
             };
 
             this.service = {
@@ -103,7 +132,8 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 alias: this._pas,
                 advanced: this._pads,
                 mapping: this._pmps,
-                hepsub: this._phs
+                hepsub: this._phs,
+                agentsub: this._pags
             };
 
             this.links = [
@@ -112,7 +142,8 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 'alias',
                 'advanced',
                 'mapping',
-                'hepsub'
+                'hepsub',
+                'agentsub'
             ]
         } else {
             this.pagesStructure = {
@@ -132,14 +163,37 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 'user settings',
                 'advanced',
             ]
-            this.isAccess = {
+
+            this.isAccessAdd = {
                 users: false,
                 'user settings': true,
                 alias: false,
                 advanced: false,
                 mapping: false,
-                hepsub: false
+                hepsub: false,
+                agentsub: true
             };
+
+            this.isAccessEdit = {
+                users: false,
+                'user settings': true,
+                alias: false,
+                advanced: false,
+                mapping: false,
+                hepsub: false,
+                agentsub: false
+            };
+
+            this.isAccessDelete = {
+                users: false,
+                'user settings': true,
+                alias: false,
+                advanced: false,
+                mapping: false,
+                hepsub: false,
+                agentsub: false
+            };
+
             
         }
         console.log('this.isAdmin', this.isAdmin);
@@ -256,6 +310,26 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                     alert('error reques : 503');
                 }
                 break;
+            case 'agentsub':
+                    try {
+                        responce = await this._pags.getAll().toPromise();
+                        this.isLoading = false;
+                        this.dataSource = new MatTableDataSource(responce.data.map(
+                            (item: PreferenceAgentsub) => ({
+                                agentsub: ['GUID', 'Host', 'Port', 'Node', 'Type','Expire', 'tools'],
+                                'GUID': item.guid,
+                                'Host': item.host,
+                                Port: item.port,
+                                Node: item.node,
+                                Type: item.type,
+                                Expire: item.expire_date,                                
+                                item: item
+                        })));
+                    } catch (err) {
+                        this.isLoading = false;
+                        alert('error reques : 503');
+                    }
+                    break;
         }
     }
 
