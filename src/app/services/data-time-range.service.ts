@@ -102,14 +102,14 @@ export class DateTimeRangeService {
             'Tomorrow': [moment().add(1, 'days').startOf('day'), moment().add(1, 'days').endOf('day')],
                         'Last 30 minutes': [moment().subtract(30, 'minutes'), moment()],
             'Last 7 days': [moment().subtract(6, 'days').startOf('day'), moment().endOf('day')],
-                        'Last 1 Hour': [moment().subtract(1, 'hour'), moment()],
+                        'Last 1 hour': [moment().subtract(1, 'hour'), moment()],
             'Last 15 days': [moment().subtract(15, 'days').startOf('day'), moment().endOf('day')],
                         'Last 3 hours': [moment().subtract(3, 'hours'), moment()],
             'Last 30 days': [moment().subtract(29, 'days').startOf('day'), moment().endOf('day')],
                         'Last 6 hours': [moment().subtract(6, 'hours'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'This month': [moment().startOf('month'), moment().endOf('month')],
                         'Last 12 hours': [moment().subtract(12, 'hours'), moment()],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+            'Last month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
                         'Last 24 hours': [moment().subtract(24, 'hours'), moment()],
         }
         if (isAll) {
