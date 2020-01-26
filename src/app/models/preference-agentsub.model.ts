@@ -1,5 +1,5 @@
 export interface PreferenceAgentsub {
-    guid: string;
+    uuid: string;
     gid: number;
     host: string;
     port: number;

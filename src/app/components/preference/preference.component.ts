@@ -11,6 +11,7 @@ import {
     PreferenceMappingProtocolService,
     PreferenceHepsubService,
     PreferenceAgentsubService,
+    PreferenceAuthKeyService,
     PreferenceAdvancedService
 } from '@app/services/preferences/index';
 
@@ -18,10 +19,12 @@ import {
     DialogAdvancedComponent,
     DialogAliasComponent,
     DialogDeleteAlertComponent,
+    DialogAuthTokenDisplayComponent,
     DialogHepsubComponent,
     DialogAgentsubComponent,
     DialogMappingComponent,
     DialogUserSettingsComponent,
+    DialogAuthKeyComponent,
     DialogUsersComponent
 } from '@app/components/preference/dialogs';
 
@@ -32,6 +35,7 @@ import {
     PreferenceUsersSettings,
     PreferenceMapping,
     PreferenceHepsub,
+    PreferenceAuthKey,
     PreferenceAgentsub
 } from '@app/models';
 import { AuthenticationService } from '@app/services';
@@ -57,6 +61,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
         advanced: DialogAdvancedComponent,
         mapping: DialogMappingComponent,
         hepsub: DialogHepsubComponent,
+        'auth token': DialogAuthKeyComponent,
         agentsub: DialogAgentsubComponent
     };
 
@@ -65,9 +70,8 @@ export class PreferenceComponent implements OnInit, OnDestroy {
     public pagesStructure: any = {};
 
     dataSource = new MatTableDataSource([{}]);
-    isAccessAdd = {};
-    isAccessEdit = {};
-    isAccessDelete = {};
+    isAccess = {};
+    
     constructor(
         private authenticationService: AuthenticationService,
         private router: Router,
@@ -78,6 +82,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
         private _pads: PreferenceAdvancedService,
         private _pmps: PreferenceMappingProtocolService,
         private _phs: PreferenceHepsubService,
+        private _aks: PreferenceAuthKeyService,
         private _pags: PreferenceAgentsubService,
         public dialog: MatDialog,
     ) {
@@ -86,34 +91,47 @@ export class PreferenceComponent implements OnInit, OnDestroy {
         this.isAdmin = userData && userData.user && userData.user.admin && userData.user.admin == true;
         
         if (this.isAdmin) {
-            this.isAccessAdd = {
-                users: true,
-                'user settings': true,
-                alias: true,
-                advanced: true,
-                mapping: true,
-                hepsub: true,
-                agentsub: false
-            };
-
-            this.isAccessEdit = {
-                users: true,
-                'user settings': true,
-                alias: true,
-                advanced: true,
-                mapping: true,
-                hepsub: true,
-                agentsub: false
-            };
-
-            this.isAccessDelete = {
-                users: true,
-                'user settings': true,
-                alias: true,
-                advanced: true,
-                mapping: true,
-                hepsub: true,
-                agentsub: true
+            this.isAccess = {
+                users: {
+                    "add": true,
+                    "edit": true,
+                    "delete": true
+                },
+                'user settings':  {
+                    "add": true,
+                    "edit": true,
+                    "delete": true
+                },
+                alias:  {
+                    "add": true,
+                    "edit": true,
+                    "delete": true
+                },
+                advanced:  {
+                    "add": true,
+                    "edit": true,
+                    "delete": true
+                },
+                mapping:  {
+                    "add": true,
+                    "edit": true,
+                    "delete": true
+                },
+                hepsub:  {
+                    "add": true,
+                    "edit": true,
+                    "delete": true
+                },
+                'auth token':  {
+                    "add": true,
+                    "edit": true,
+                    "delete": true
+                },
+                agentsub:  {
+                    "add": false,
+                    "edit": false,
+                    "delete": true
+                },
             };
             
             this.pagesStructure = {
@@ -123,6 +141,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 advanced: ['Partid', 'Category', 'Param', 'Data', 'tools'],
                 mapping: ['Partid', 'Profile', 'HEP alias', 'HEP ID', 'Retention', 'tools'],
                 hepsub: ['Profile', 'HEP alias', 'HEP ID', 'Version', 'HepSub', 'tools'],
+                'auth token': ['GUID', 'Name', 'Create Date', 'Expire Date', 'Active', 'tools'],
                 agentsub: ['GUID', 'Host', 'Port', 'Node', 'Type','Expire', 'tools'],
             };
 
@@ -133,6 +152,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 advanced: this._pads,
                 mapping: this._pmps,
                 hepsub: this._phs,
+                'auth token': this._aks,
                 agentsub: this._pags
             };
 
@@ -143,6 +163,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 'advanced',
                 'mapping',
                 'hepsub',
+                'auth token',
                 'agentsub'
             ]
         } else {
@@ -164,37 +185,48 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 'advanced',
             ]
 
-            this.isAccessAdd = {
-                users: false,
-                'user settings': true,
-                alias: false,
-                advanced: false,
-                mapping: false,
-                hepsub: false,
-                agentsub: true
+            this.isAccess= {
+                users:  {
+                    "add": false,
+                    "edit": true,
+                    "delete": false,
+                },
+                'user settings':  {
+                    "add": true,
+                    "edit": true,
+                    "delete": true
+                },
+                alias:  {
+                    "add": false,
+                    "edit": false,
+                    "delete": false
+                },
+                advanced:  {
+                    "add": false,
+                    "edit": false,
+                    "delete": false
+                },
+                mapping: {
+                    "add": false,
+                    "edit": false,
+                    "delete": false
+                },
+                hepsub: {
+                    "add": false,
+                    "edit": false,
+                    "delete": false
+                },
+                'auth token': {
+                    "add": false,
+                    "edit": false,
+                    "delete": false
+                },
+                agentsub: {
+                    "add": false,
+                    "edit": false,
+                    "delete": true
+                }
             };
-
-            this.isAccessEdit = {
-                users: false,
-                'user settings': true,
-                alias: false,
-                advanced: false,
-                mapping: false,
-                hepsub: false,
-                agentsub: false
-            };
-
-            this.isAccessDelete = {
-                users: false,
-                'user settings': true,
-                alias: false,
-                advanced: false,
-                mapping: false,
-                hepsub: false,
-                agentsub: false
-            };
-
-            
         }
         console.log('this.isAdmin', this.isAdmin);
         router.events.pipe(
@@ -292,6 +324,20 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                     alert('error reques : 503');
                 }
                 break;
+            case 'auth token':
+                    responce = await this._aks.getAll().toPromise();                    
+                    this.dataSource = new MatTableDataSource(responce.data.map(
+                        (item: PreferenceAuthKey) => ({
+                            GUID: item.guid,
+                            Name: item.name,
+                            'Create Date': item.create_date,
+                            'Expire Date': item.expire_date,                            
+                            Active: item.active,
+                            item: item
+                    })));
+                    this.isLoading = false;
+    
+                    break;
             case 'hepsub':
                 try {
                     responce = await this._phs.getAll().toPromise();
@@ -316,8 +362,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                         this.isLoading = false;
                         this.dataSource = new MatTableDataSource(responce.data.map(
                             (item: PreferenceAgentsub) => ({
-                                agentsub: ['GUID', 'Host', 'Port', 'Node', 'Type','Expire', 'tools'],
-                                'GUID': item.guid,
+                                'GUID': item.uuid,
                                 'Host': item.host,
                                 Port: item.port,
                                 Node: item.node,
@@ -369,10 +414,20 @@ export class PreferenceComponent implements OnInit, OnDestroy {
     }
 
     settingDialog (item: any = null) {
+
         this.openDialog(this.dialogs[this.pageId], item, result => {
-            if (result) {
-                this.service[this.pageId][result.isnew ? 'add' : 'update'](result.data).toPromise().then(() => {
-                    this.updateData();
+            if (result) {                
+                this.service[this.pageId][result.isnew ? 'add' : 'update'](result.data).toPromise().then((response) => {                               
+                    if(this.pageId == "auth token" && result.isnew && response.data) {
+                        this.openDialog(DialogAuthTokenDisplayComponent, response.data, result => {
+                            if (result) {
+                                this.service[this.pageId].delete(item.guid).toPromise().then(() => {
+                                    this.updateData();
+                                });
+                            }
+                        });                        
+                    }         
+                    this.updateData();           
                 });
             }
         });

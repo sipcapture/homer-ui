@@ -12,12 +12,7 @@ export class DialogAgentsubComponent {
     public dialogRef: MatDialogRef<DialogAgentsubComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
       if (data.isnew) {
-        data.data = {
-          hep_alias: '',
-          hepid: 1,
-          profile: '',
-          mapping: {}
-        }
+        data.data = {}
       }
       data.data.mapping = data.isnew ?
             '' :
