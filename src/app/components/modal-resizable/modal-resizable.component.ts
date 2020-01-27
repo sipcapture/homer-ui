@@ -22,6 +22,7 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
     @Input() minHeight = 300;
     @Input() mouseEventData = null;
     @Input() isBrowserWindow = false;
+    @Input() startZIndex: number = 0;
     __isBrowserWindow = false;
     @Output() close: EventEmitter<any> = new EventEmitter();
     @Output() browserWindow: EventEmitter<any> = new EventEmitter();
@@ -77,7 +78,7 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     onFocus () {
-        this.layerZIndex.nativeElement.style.zIndex = '' + (ModalResizableComponent.ZIndex += 2);
+        this.layerZIndex.nativeElement.style.zIndex = '' + ((ModalResizableComponent.ZIndex += 2) + this.startZIndex);
     }
 
     onResize(event: any, controlName: string) {
@@ -169,11 +170,13 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     newWindow () {
-        this.__isBrowserWindow = true;
-        this._content = this.inWindow.nativeElement.parentElement;
-        this.outWindow.nativeElement.appendChild(this.inWindow.nativeElement);
-        this.layerZIndex.nativeElement.style.display = 'none';
-        this.browserWindow.emit(this.__isBrowserWindow);
+        setTimeout(() => {
+            this.__isBrowserWindow = true;
+            this._content = this.inWindow.nativeElement.parentElement;
+            this.outWindow.nativeElement.appendChild(this.inWindow.nativeElement);
+            this.layerZIndex.nativeElement.style.display = 'none';
+            this.browserWindow.emit(this.__isBrowserWindow);
+        });
     }
     ngOnDestroy () {
         document.body.removeChild(this.layerZIndex.nativeElement);
