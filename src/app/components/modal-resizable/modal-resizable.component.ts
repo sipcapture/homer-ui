@@ -53,14 +53,18 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
         })(this.containerWindow.nativeElement.style);
 
         if (this.mouseEventData) {
-            this.setPositionWindow(this.mouseEventData.clientX, this.mouseEventData.clientY);
+            const mouseOffset = 50; // 50px inside window
+            this.setPositionWindow({
+                x: this.mouseEventData.clientX - mouseOffset,
+                y: this.mouseEventData.clientY - mouseOffset
+            });
         }
         this.onFocus();
         if (this.isBrowserWindow) {
             this.newWindow();
         }
     }
-    setPositionWindow(x = 0, y = 0) {
+    setPositionWindow({x = 0, y = 0}) {
         const el = this.containerWindow.nativeElement;
         const positionLocal = this.getTranslatePosition(el);
         const positionGlobal = el.getBoundingClientRect();
