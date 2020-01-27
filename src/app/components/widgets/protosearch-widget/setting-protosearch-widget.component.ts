@@ -134,6 +134,9 @@ export class SettingProtosearchWidgetComponent implements OnInit {
     }
     validate() {
         this.isValidForm = this.proto.fields_mapping.filter(item => item.selected === true).length > 0;
+        if (this.isValidForm) {
+            this.onChange();
+        }
     }
     onUpdateProto(event: any) {
         this.proto.fields_mapping = event;
