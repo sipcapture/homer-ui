@@ -8,7 +8,7 @@ import { PreferenceAgentsub } from '@app/models';
   providedIn: 'root'
 })
 export class AgentsubService {
-Redfoo
+
   private url = `${environment.apiUrl}/agent`;
 
   constructor(private http: HttpClient) { }
@@ -22,5 +22,15 @@ Redfoo
   getFields(): Observable<PreferenceAgentsub> {
       return this.http.get<PreferenceAgentsub>(`${this.url}/fields`);
   }
-
+  /**
+   * 
+   * 
+   */
+  getHepsubElements({uuid, type, data}): Observable<any> {
+    return this.http.post<any>(`${this.url}/search/${uuid}/${type}`, data);
+  }
+  // type = 'cdr' | 'wav' | 'json'
+  getType(type: string): Observable<any> {
+    return this.http.get<any>(`${this.url}/type/${type}`);
+  }
 }

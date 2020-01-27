@@ -5,6 +5,7 @@ export * from './detail-dialog/tab-logs/tab-logs.component';
 export * from './detail-dialog/tab-loki/tab-loki.component';
 export * from './detail-dialog/tab-messages/tab-messages.component';
 export * from './detail-dialog/tab-qos/tab-qos.component';
+export * from './detail-dialog/tab-hepsub/tab-hepsub.component';
 export * from './grid-settings-dialog/grid-settings-dialog';
 export * from './message-content/message-content.component';
 export * from './renderer/index';

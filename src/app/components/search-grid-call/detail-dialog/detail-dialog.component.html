@@ -57,5 +57,14 @@
         [id]="sipDataItem.data.messages[0].id"
       ></app-tab-export>
     </mat-tab>
+    <!-- app-tab-hepsub -->
+    <mat-tab *ngIf="_isLoaded && tabs.export" label="HepSub">
+      <app-tab-hepsub
+        [snapShotTimeRange]="snapShotTimeRange"
+        [dataItem]="sipDataItem"
+        [callid]="titleId"
+        [id]="sipDataItem.data.messages[0].id"
+      ></app-tab-hepsub>
+    </mat-tab>
   </mat-tab-group>
 </app-modal-resizable>
