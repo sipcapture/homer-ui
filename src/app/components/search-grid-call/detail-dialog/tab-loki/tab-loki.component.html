@@ -3,6 +3,7 @@
         <app-code-style-field
             [queryText]="queryText"
             (updateData)="onUpdateData($event)"
+            (keyEnter)="doSerchResult()"
         ></app-code-style-field>
     </div>
     <button mat-button style="min-width: 200px;" (click)="doSerchResult()">Refresh search</button>
