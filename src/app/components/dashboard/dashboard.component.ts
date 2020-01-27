@@ -80,6 +80,17 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     ngAfterViewInit () {
         this.updateTrigger();
+        
+    }
+    scrollTop() {
+        setTimeout(() => {
+            const dom = document.querySelector('.scrollVertical');
+            if (dom && dom.scrollTop) {
+                dom.scrollTop = 0;
+            } else {
+                this.scrollTop();
+            }
+        }, 100)
     }
     updateTrigger() {
         setTimeout(() => {
@@ -149,6 +160,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.updateTrigger();
 
             this.changedOptions();
+            this.scrollTop();
         });
     }
 
