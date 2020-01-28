@@ -69,6 +69,8 @@ export class ProtosearchWidgetComponent implements IWidget {
     isConfig = false;
     mapping: any;
     targetResultsContainerValue = new FormControl();
+    SmartInputQueryText: string = '';
+
     constructor(
         public dialog: MatDialog,
         private router: Router,
@@ -226,14 +228,23 @@ export class ProtosearchWidgetComponent implements IWidget {
 
                 if (f && f.form_default) { /* high priority */
                     i.form_default = f.form_default;
-                } else if (f && f.form_api) { /* seccond priority */
-                    this.preferenceMappingProtocolService.getListByUrl(f.form_api).toPromise().then((list: any) => {
-                        if (list && list.data) {
-                            i.form_default = list.data;
-                        } else {
-                            i.form_default = null;
-                        }
-                    });
+                } else if (i.form_api) { /* seccond priority */
+                    if (i.form_type === 'smart-input') {
+                        i.full_api_link = String(i.form_api)
+                            .replace(':hepid', this.config.config.protocol_id.value)
+                            .replace(':hepprofile', this.config.config.protocol_profile.value);
+                        
+                        console.log(i)
+                            
+                    } else {
+                        this.preferenceMappingProtocolService.getListByUrl(i.form_api).toPromise().then((list: any) => {
+                            if (list && list.data) {
+                                i.form_default = list.data;
+                            } else {
+                                i.form_default = null;
+                            }
+                        });
+                    }
                 } else {
                     i.form_default = null;
                 }
@@ -446,7 +457,9 @@ export class ProtosearchWidgetComponent implements IWidget {
         this.searchQuery.protocol_id = ConstValue.LOKI_PREFIX;
         this.searchQuery.fields = [];
     }
-
+    onSmartInputCodeData(event) {
+        // console.log('onSmartInputCodeData', {event});
+    }
     private get isLoki(): boolean {
         return this.fields.filter(i => i.field_name === 'loki').length !== 0;
     }

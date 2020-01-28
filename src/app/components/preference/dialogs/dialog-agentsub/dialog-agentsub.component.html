@@ -1,0 +1,41 @@
+<mat-toolbar class="title" color="primary">
+  <div>AgentSub Settings</div>
+  <button mat-icon-button (click)="onNoClick()">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-toolbar>
+<div mat-dialog-content>
+  
+    <strong>AgentSub Settings</strong>
+    <p>Defines the identifier, format and lifetime of protocol data</p><hr />
+    <div>
+      <mat-form-field style="padding-right: 1rem;">
+        <mat-label>HEP Alias</mat-label>
+        <input matInput [(ngModel)]="data.data.hep_alias">
+      </mat-form-field>
+      <mat-form-field style="padding-right: 1rem;">
+        <mat-label>HEP ID</mat-label>
+        <input matInput [(ngModel)]="data.data.hepid">
+      </mat-form-field>
+      <mat-form-field style="padding-right: 1rem;">
+        <mat-label>Profile</mat-label>
+        <input matInput [(ngModel)]="data.data.profile">
+      </mat-form-field>
+    </div>
+    <strong>AgentSub Mapping</strong>
+    <p>Defines any cross-protocol correlation mechanism</p><hr />
+    <ace-editor
+      [mode]="'json'"
+      [theme]="'eclipse'"
+      [readOnly]="false"
+      [(text)]="data.data.mapping"
+      #data_view style="min-height:150px;"></ace-editor>
+  </div>
+  
+  
+  
+  <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
+    <button mat-raised-button (click)="onNoClick()">Cancel</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Save</button>
+  </div>
+  

@@ -1,0 +1,28 @@
+<mat-toolbar class="title" color="primary">
+  <div>Auth Token: {{ data.isnew ? '': data.data.guid }}</div>
+  <button mat-icon-button (click)="onNoClick()">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-toolbar>
+<div mat-dialog-content>
+  <strong>Auth Token Settings</strong><hr />
+  <div><mat-form-field style="padding-right: 1rem;">
+    <mat-label>Auth Token Name</mat-label>
+    <input matInput [(ngModel)]="data.data.name">
+  </mat-form-field></div>
+  
+  <div><mat-form-field style="padding-right: 1rem;">
+    <mat-label>Expire Date</mat-label>
+    <input matInput [matDatepicker]="picker" [(ngModel)]="data.data.expire_date">
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field></div>
+
+  <div><mat-checkbox [(ngModel)]="data.data.active">Active</mat-checkbox></div>
+</div>
+
+
+<div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
+  <button mat-raised-button (click)="onNoClick()">Cancel</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Save</button>
+</div>

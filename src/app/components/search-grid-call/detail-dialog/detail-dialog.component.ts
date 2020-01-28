@@ -18,7 +18,7 @@ export class DetailDialogComponent implements OnInit {
         messages: false,
         flow: false,
         qos: true,
-        logs: false,
+        logs: true,
         export: false
     };
     isBrowserWindow = false;
@@ -52,7 +52,7 @@ export class DetailDialogComponent implements OnInit {
         }
     }
     checkStatusTabs() {
-        this.tabs.logs = this.dataLogs.length > 0;
+        this.tabs.logs = true; // this.dataLogs.length > 0;
         this.tabs.messages = this.tabs.flow = this.sipDataItem.data.messages.length > 0;
         this.tabs.export = this.sipDataItem.data.messages && !!this.sipDataItem.data.messages[0].id;
     }

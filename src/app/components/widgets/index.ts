@@ -9,6 +9,7 @@ export * from './ace-editor-widget/ace-editor-widget.component';
 export * from './result-widget/result-widget.component';
 export * from './rsearch-widget/code-style-field/code-style-field.component';
 export * from './rsearch-widget/code-style-prometheus-field/code-style-prometheus-field.component';
+export * from './rsearch-widget/code-style-smart-input-field/code-style-smart-input-field.component';
 export * from './protosearch-widget/drag-drop-list/drag-drop-list.component';
 export * from './result-chart-widget/result-chart-widget.component';
 

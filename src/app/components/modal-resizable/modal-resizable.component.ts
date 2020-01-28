@@ -22,6 +22,7 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
     @Input() minHeight = 300;
     @Input() mouseEventData = null;
     @Input() isBrowserWindow = false;
+    @Input() startZIndex: number = 0;
     __isBrowserWindow = false;
     @Output() close: EventEmitter<any> = new EventEmitter();
     @Output() browserWindow: EventEmitter<any> = new EventEmitter();
@@ -52,14 +53,18 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
         })(this.containerWindow.nativeElement.style);
 
         if (this.mouseEventData) {
-            this.setPositionWindow(this.mouseEventData.clientX, this.mouseEventData.clientY);
+            const mouseOffset = 50; // 50px inside window
+            this.setPositionWindow({
+                x: this.mouseEventData.clientX - mouseOffset,
+                y: this.mouseEventData.clientY - mouseOffset
+            });
         }
         this.onFocus();
         if (this.isBrowserWindow) {
             this.newWindow();
         }
     }
-    setPositionWindow(x = 0, y = 0) {
+    setPositionWindow({x = 0, y = 0}) {
         const el = this.containerWindow.nativeElement;
         const positionLocal = this.getTranslatePosition(el);
         const positionGlobal = el.getBoundingClientRect();
@@ -77,7 +82,7 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     onFocus () {
-        this.layerZIndex.nativeElement.style.zIndex = '' + (ModalResizableComponent.ZIndex += 2);
+        this.layerZIndex.nativeElement.style.zIndex = '' + ((ModalResizableComponent.ZIndex += 2) + this.startZIndex);
     }
 
     onResize(event: any, controlName: string) {
@@ -160,20 +165,19 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
 
     onWindowClose (event: any) {
         this._content.appendChild(this.inWindow.nativeElement);
-        this.__isBrowserWindow = false;
-        this.layerZIndex.nativeElement.style.display = null;
-        this.onFocus();
         this.browserWindow.emit(this.__isBrowserWindow);
 
         this.onClose();
     }
 
     newWindow () {
-        this.__isBrowserWindow = true;
-        this._content = this.inWindow.nativeElement.parentElement;
-        this.outWindow.nativeElement.appendChild(this.inWindow.nativeElement);
-        this.layerZIndex.nativeElement.style.display = 'none';
-        this.browserWindow.emit(this.__isBrowserWindow);
+        setTimeout(() => {
+            this.__isBrowserWindow = true;
+            this._content = this.inWindow.nativeElement.parentElement;
+            this.outWindow.nativeElement.appendChild(this.inWindow.nativeElement);
+            this.layerZIndex.nativeElement.style.display = 'none';
+            this.browserWindow.emit(this.__isBrowserWindow);
+        });
     }
     ngOnDestroy () {
         document.body.removeChild(this.layerZIndex.nativeElement);

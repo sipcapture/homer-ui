@@ -1,0 +1,9 @@
+<div mat-dialog-content style="text-align: center">
+  <h1 mat-dialog-title>This is your token</h1>
+  <p>Please add it to a http request as a param of header Auth-Token:</p>
+  <p>{{token}}</p>
+</div>
+
+<div mat-dialog-actions style="display: flex; margin-bottom: 0; justify-content: flex-end;">
+  <button mat-raised-button (click)="onNoClick()">Close</button>  
+</div>

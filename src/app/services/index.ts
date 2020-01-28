@@ -7,6 +7,8 @@ export * from './global-profile-store.service';
 export * from './profile-store.service';
 export * from './mapping.service';
 export * from './hepsub.service';
+export * from './agentsub.service';
+
 export * from './share-link.service';
 export * from './registration-transaction.service';
 export * from './proto-transaction.service';
@@ -14,6 +16,7 @@ export * from './proto-transaction.service';
 export * from './preferences/advanced.service';
 export * from './preferences/alias.service';
 export * from './preferences/hepsub.service';
+export * from './preferences/agentsub.service';
 export * from './preferences/mapping-protocol.service';
 export * from './preferences/user-settings.service';
 export * from './preferences/user.service';
@@ -31,6 +34,7 @@ export * from './search/method.service';
 export * from './search/proto.service';
 export * from './search/registration.service';
 export * from './search/remote.service';
+export * from './search/smart.service';
 
 export * from './session-storage.service';
 export * from './data-time-range.service';

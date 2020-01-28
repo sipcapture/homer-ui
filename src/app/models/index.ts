@@ -9,7 +9,9 @@ export * from './const-value.model';
 
 export * from './preference-advanced.model';
 export * from './preference-alias.model';
+export * from './preference-authkey.model';
 export * from './preference-hepsub.model';
+export * from './preference-agentsub.model';
 export * from './preference-mapping.model';
 export * from './preference-mapping-protocol.model';
 export * from './preference-users.model';

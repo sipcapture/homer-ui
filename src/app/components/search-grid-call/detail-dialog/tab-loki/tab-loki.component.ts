@@ -41,7 +41,7 @@ export class TabLokiComponent implements OnInit {
         this.isFirstSearch = false;
         const data = await this._srs.getData(this.queryBuilder()).toPromise();
 
-        this.resultData = data.data as Array<any>;
+        this.resultData = data && data.data ? data.data as Array<any> : [];
         this.resultData = this.resultData.map(i => {
             i.custom_1 = this.highlight(i.custom_1);
             return i;

@@ -27,14 +27,26 @@
                 [queryText]="lokiQueryText"
                 (updateData)="onLokiCodeData($event)"
             ></app-code-style-field>
-        
+            <!-- 
+                smart-input
+            -->
+            <app-code-style-smart-input-field
+                *ngIf="item.form_type === 'smart-input'"
+                [apiLink]="item.full_api_link"
+                [queryText]="SmartInputQueryText"
+                (updateData)="onSmartInputCodeData($event)"
+            >
+                
+            </app-code-style-smart-input-field>
+
 
             <!--
                 if other Fields
             -->
             <mat-form-field style="display: block" *ngIf="
                 item.field_name !== 'loki' &&
-                item.field_name !== 'targetResultsContainer'
+                item.field_name !== 'targetResultsContainer' &&
+                item.form_type !== 'smart-input'
             ">
                 <mat-label>{{item.selection}}</mat-label>
                 
@@ -47,12 +59,14 @@
                     (change)="onChangeField($event)"
                     (keydown.enter)="handleEnterKeyPress($event)"
                 >
+                
 
                 <!--
                     Autocomplete Text Field
                 -->
                 <input matInput *ngIf="item.form_default && item.form_type === 'input'"
-                    [formControl]="item.formControl" [matAutocomplete]="form_default">
+                    [formControl]="item.formControl" [matAutocomplete]="form_default"
+                    (keydown.enter)="handleEnterKeyPress($event)">
                 <mat-autocomplete #form_default="matAutocomplete">
                     <mat-option *ngFor="let option of item.filteredOptions | async" [value]="option.name ? option.name : option">
                         {{option.name ? option.name : option}}

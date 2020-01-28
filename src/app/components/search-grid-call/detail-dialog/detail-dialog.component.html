@@ -13,7 +13,7 @@
       <mat-spinner></mat-spinner>
   </div>
 
-  <mat-tab-group  mat-stretch-tabs
+  <mat-tab-group
   [selectedIndex]="this.tabIndexByDefault"
   *ngIf="_isLoaded" style="height: 100%;">
     <mat-tab *ngIf="_isLoaded && tabs.messages" label="Messages">
@@ -39,15 +39,13 @@
       ></app-tab-qos>
     </mat-tab>
     <mat-tab *ngIf="_isLoaded && tabs.logs" label="Logs">
-      <app-tab-logs
-        [data]="dataLogs"
-      ></app-tab-logs>
-    </mat-tab>
-    <mat-tab *ngIf="_isLoaded && tabs" label="Loki">
-      <app-tab-loki
-        [id]="titleId"
+      <app-tab-hepsub
+        [snapShotTimeRange]="snapShotTimeRange"
         [dataItem]="sipDataItem"
-      ></app-tab-loki>
+        [callid]="titleId"
+        [dataLogs]="dataLogs"
+        [id]="sipDataItem.data.messages[0].id"
+      ></app-tab-hepsub>
     </mat-tab>
     <mat-tab *ngIf="_isLoaded && tabs.export" label="Export">
       <app-tab-export

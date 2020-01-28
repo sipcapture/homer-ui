@@ -186,15 +186,16 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                  */
                 const params = Functions.getUriJson();
                 if (params && params.timestamp) {
+                    const { from, to } = params.timestamp;
                     const format = d => new Date(d).toLocaleString().split(',').map(i => i.replace(/\./g, '/')).join('');
                     this._dtrs.updateDataRange({
                         title: [
-                            format(params.timestamp.from),
-                            format(params.timestamp.to)
+                            format(from),
+                            format(to)
                         ].join(' - '),
                         dates: [
-                            new Date(params.timestamp.from).toISOString(),
-                            new Date(params.timestamp.to).toISOString()
+                            new Date(from).toISOString(),
+                            new Date(to).toISOString()
                         ]
                     });
                 }
@@ -225,8 +226,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             const params = Functions.getUriJson();
 
             if (params && params.param) {
-                console.log('params >>> ', params.param);
-                console.log('this.searchService.getLocalStorageQuery()>>>', this.searchService.getLocalStorageQuery());
                 /**
                  * query configuration from GET params
                  */
@@ -308,15 +307,13 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         const params = Functions.getUriJson();
 
         if (params && params.param) {
-            console.log(params.param.search[this.protocol_profile]);
+            
             const callid: Array<string>  = params.param.search[this.protocol_profile].callid;
             if (callid.length > 1) {
                 this.gridApi.forEachLeafNode(node => {
                     if (callid.indexOf(node.data.callid) !== -1) {
                         node.setSelected(true, true);
-                        console.log(false);
-                    } else {
-                        console.log(true);
+                        
                     }
                 });
 
