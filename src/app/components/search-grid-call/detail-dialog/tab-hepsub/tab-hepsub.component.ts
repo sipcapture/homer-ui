@@ -14,7 +14,7 @@ export class TabHepsubComponent implements OnInit {
     @Input() dataLogs: Array<any>;
     @Input() snapShotTimeRange: any;
     @Output() haveData = new EventEmitter();
-
+    isLogs = false;
     subTabList = [];
     jsonData: any;
 
@@ -38,6 +38,9 @@ export class TabHepsubComponent implements OnInit {
                 this.haveData.emit(false);
                 console.log('error', res);
             }
+        })
+        setTimeout(() => {
+            this.isLogs = this.dataLogs.length > 0;
         })
     }
     async onTabClick(uuid, type) {

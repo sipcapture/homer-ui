@@ -1,5 +1,5 @@
 <mat-tab-group [selectedIndex]="0">
-  <mat-tab label="HEP Logs">
+  <mat-tab *ngIf="isLogs" label="HEP Logs">
     <app-tab-logs [data]="dataLogs"></app-tab-logs>
   </mat-tab>
   <mat-tab *ngFor="let item of subTabList"
