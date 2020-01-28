@@ -19,7 +19,8 @@ export class DetailDialogComponent implements OnInit {
         flow: false,
         qos: true,
         logs: false,
-        export: false
+        export: false,
+        hepsub: true
     };
     isBrowserWindow = false;
     _isLoaded = false;
@@ -61,6 +62,12 @@ export class DetailDialogComponent implements OnInit {
             this.tabs.qos = isVisible;
         });
     }
+    onTabHebSub(isVisible: boolean) {
+        setTimeout(() => {
+            this.tabs.hepsub = isVisible;
+        });
+    }
+    
     onClose () {
         this.close.emit();
     }

@@ -226,8 +226,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             const params = Functions.getUriJson();
 
             if (params && params.param) {
-                console.log('params >>> ', params.param);
-                console.log('this.searchService.getLocalStorageQuery()>>>', this.searchService.getLocalStorageQuery());
                 /**
                  * query configuration from GET params
                  */
@@ -309,15 +307,13 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         const params = Functions.getUriJson();
 
         if (params && params.param) {
-            console.log(params.param.search[this.protocol_profile]);
+            
             const callid: Array<string>  = params.param.search[this.protocol_profile].callid;
             if (callid.length > 1) {
                 this.gridApi.forEachLeafNode(node => {
                     if (callid.indexOf(node.data.callid) !== -1) {
                         node.setSelected(true, true);
-                        console.log(false);
-                    } else {
-                        console.log(true);
+                        
                     }
                 });
 
@@ -479,7 +475,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             return;
         }
         this.config.timestamp = this._dtrs.getDatesForQuery(true);
-        console.log({config: this.config});
+
         if (this.inContainer) { /* if ag-grid in result widget */
             this.getHeaders();
         } else {

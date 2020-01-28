@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AgentsubService, SearchService } from '@app/services';
 import { Functions } from '@app/helpers/functions';
 
@@ -8,13 +8,14 @@ import { Functions } from '@app/helpers/functions';
     styleUrls: ['./tab-hepsub.component.css']
 })
 export class TabHepsubComponent implements OnInit {
-    @Input() dataItem: any;
-    @Input() callid: any;
     @Input() id: any;
+    @Input() callid: any;
+    @Input() dataItem: any;
+    @Input() dataLogs: Array<any>;
     @Input() snapShotTimeRange: any;
+    @Output() haveData = new EventEmitter();
 
     subTabList = [];
-
     jsonData: any;
 
     constructor(
@@ -23,30 +24,27 @@ export class TabHepsubComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        console.log(this.dataItem, this.callid, this.id);
-        // this.agentsubService.getType('cdr').toPromise().then(data => {
         this.agentsubService.getType('cdr').toPromise().then(res => {
             console.log(`this.agentsubService.getType('cdr')`, {res});
             if (res && res.data ) {
                 let {uuid, type} = res.data[0];
-                this.subTabList = res.data;
+                this.subTabList = res.data.map(i => {
+                    i.title = `"${i.node}"/ ${i.type}`;
+                    return i;
+                });
                 this.onTabClick(uuid, type); // open first TAB by default
+                this.haveData.emit(true);
             } else {
+                this.haveData.emit(false);
                 console.log('error', res);
             }
         })
-
-        // this.agentsubService.getType('json').toPromise().then(data => {
-        //     console.log(`this.agentsubService.getType('json')`, {data});
-        // })
     }
-    onTabClick(uuid, type) {
-        this.agentsubService.getHepsubElements({uuid, type, data: this.getQuery()}).toPromise().then(res2 => {
-            console.log('res2', res2)
-            if (res2 && res2.data) {
-                this.jsonData = res2.data;
-            }
-        })
+    async onTabClick(uuid, type) {
+        const res2 = await this.agentsubService.getHepsubElements({uuid, type, data: this.getQuery()}).toPromise();
+        if (res2 && res2.data) {
+            this.jsonData = res2.data;
+        }
     }
     private getCallIdArray() {
         const data = this.dataItem.data;
