@@ -186,15 +186,16 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                  */
                 const params = Functions.getUriJson();
                 if (params && params.timestamp) {
+                    const { from, to } = params.timestamp;
                     const format = d => new Date(d).toLocaleString().split(',').map(i => i.replace(/\./g, '/')).join('');
                     this._dtrs.updateDataRange({
                         title: [
-                            format(params.timestamp.from),
-                            format(params.timestamp.to)
+                            format(from),
+                            format(to)
                         ].join(' - '),
                         dates: [
-                            new Date(params.timestamp.from).toISOString(),
-                            new Date(params.timestamp.to).toISOString()
+                            new Date(from).toISOString(),
+                            new Date(to).toISOString()
                         ]
                     });
                 }
@@ -478,7 +479,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             return;
         }
         this.config.timestamp = this._dtrs.getDatesForQuery(true);
-
+        console.log({config: this.config});
         if (this.inContainer) { /* if ag-grid in result widget */
             this.getHeaders();
         } else {

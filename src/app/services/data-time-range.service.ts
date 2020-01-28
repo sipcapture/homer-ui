@@ -94,6 +94,9 @@ export class DateTimeRangeService {
     }
 
     getRangeByLabel(label: string, isAll = false) {
+        if (!label || label === '') {
+            label = 'Today';
+        }
         const arr = {
             'Today': [moment().startOf('day'), moment().endOf('day')],
             'Yesterday': [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days').endOf('day')],
