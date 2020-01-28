@@ -261,6 +261,25 @@ h3 {
   color: blue;
 }
 
+
+.div-field > span.SIwhite {
+  color: black;
+}
+.div-field > span.SIbracket {
+  color: darkred;
+}
+.div-field > span.SIequally {
+  color: darkgrey;
+}
+.div-field > span.SIquotes {
+  color: darkgreen;
+  font-style: italic;
+  font-weight: bold;
+}
+.div-field > span.SIlabel {
+  color: blue;
+  font-weight: bold;
+}
 .add-widget-button{
     width: 200px !important;
 }

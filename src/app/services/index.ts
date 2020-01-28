@@ -34,6 +34,7 @@ export * from './search/method.service';
 export * from './search/proto.service';
 export * from './search/registration.service';
 export * from './search/remote.service';
+export * from './search/smart.service';
 
 export * from './session-storage.service';
 export * from './data-time-range.service';
