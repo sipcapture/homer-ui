@@ -19,8 +19,8 @@ export class DetailDialogComponent implements OnInit {
         flow: false,
         qos: true,
         logs: false,
-        export: false,
-        hepsub: true
+        hepsub: true,
+        export: false
     };
     isBrowserWindow = false;
     _isLoaded = false;

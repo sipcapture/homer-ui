@@ -38,19 +38,7 @@
         (haveData)="onTabQos($event)"
       ></app-tab-qos>
     </mat-tab>
-    <mat-tab *ngIf="_isLoaded && tabs.logs" label="Logs">
-      <app-tab-logs [data]="dataLogs"></app-tab-logs>
-    </mat-tab>
-    <!--
-      <mat-tab *ngIf="_isLoaded && tabs" label="Loki">
-        <app-tab-loki
-          [id]="titleId"
-          [dataItem]="sipDataItem"
-        ></app-tab-loki>
-      </mat-tab>
-    -->
-    <!-- app-tab-hepsub -->
-    <mat-tab *ngIf="_isLoaded && tabs.hepsub" label="HepSub">
+    <mat-tab *ngIf="_isLoaded && tabs.hepsub" label="Logs">
       <app-tab-hepsub
         [snapShotTimeRange]="snapShotTimeRange"
         [dataItem]="sipDataItem"
