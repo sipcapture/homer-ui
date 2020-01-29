@@ -33,11 +33,9 @@
             <app-code-style-smart-input-field
                 *ngIf="item.form_type === 'smart-input'"
                 [apiLink]="item.full_api_link"
-                [queryText]="SmartInputQueryText"
-                (updateData)="onSmartInputCodeData($event)"
-            >
-                
-            </app-code-style-smart-input-field>
+                [queryText]="item.value"
+                (updateData)="onSmartInputCodeData($event, item)"
+            ></app-code-style-smart-input-field>
 
 
             <!--

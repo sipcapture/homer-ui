@@ -158,9 +158,10 @@ export class ProtosearchWidgetComponent implements IWidget {
                     if (cacheQuery.location &&
                         cacheQuery.location.mapping &&
                         item.field_name === cacheQuery.location.mapping &&
-                        item.form_default) {
-                            item.value = cacheQuery.location.value.map(i => item.form_default.filter(j => j.value === i)[0].name);
-                        }
+                        item.form_default
+                    ) {
+                        item.value = cacheQuery.location.value.map(i => item.form_default.filter(j => j.value === i)[0].name);
+                    }
                 });
             }
         });
@@ -233,9 +234,6 @@ export class ProtosearchWidgetComponent implements IWidget {
                         i.full_api_link = String(i.form_api)
                             .replace(':hepid', this.config.config.protocol_id.value)
                             .replace(':hepprofile', this.config.config.protocol_profile.value);
-                        
-                        console.log(i)
-                            
                     } else {
                         this.preferenceMappingProtocolService.getListByUrl(i.form_api).toPromise().then((list: any) => {
                             if (list && list.data) {
@@ -457,8 +455,14 @@ export class ProtosearchWidgetComponent implements IWidget {
         this.searchQuery.protocol_id = ConstValue.LOKI_PREFIX;
         this.searchQuery.fields = [];
     }
-    onSmartInputCodeData(event) {
-        // console.log('onSmartInputCodeData', {event});
+    onSmartInputCodeData(event, item = null) {
+        this.fields.forEach(i => {
+            if (item && item.field_name === i.field_name && i.form_type === 'smart-input') {
+                i.value = event.text;
+            }
+        });
+        
+        this.saveState();
     }
     private get isLoki(): boolean {
         return this.fields.filter(i => i.field_name === 'loki').length !== 0;
