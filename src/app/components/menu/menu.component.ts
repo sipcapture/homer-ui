@@ -120,7 +120,17 @@ export class MenuComponent implements OnInit, OnDestroy {
     updateDashboardList() {
         const subscription = this._ds.getDashboardInfo().subscribe((resData: any) => {
             if (resData) {
-                this.dashboards = resData.data;
+                this.dashboards = resData.data.sort(function (a, b) {
+                    a = (a.name + '').charCodeAt(0);
+                    b = (b.name + '').charCodeAt(0);
+                    if (a > b) {
+                        return 1;
+                    }
+                    if (b > a) {
+                        return -1;
+                    }
+                    return 0;
+                });
                 this.panelList = this.dashboards.map(item => item.name);
                 try {
                     this.panelName = this.dashboards.filter(item => item.href === this._ds.getCurrentDashBoardId())[0].name;
