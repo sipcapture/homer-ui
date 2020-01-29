@@ -1,7 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ExportCallService } from '../../../../services/export/call.service';
 import { Functions } from '@app/helpers/functions';
-import { SearchService, SessionStorageService } from '@app/services';
+import { SearchService } from '@app/services';
 
 
 @Component({
@@ -15,10 +15,10 @@ export class TabExportComponent implements OnInit {
     @Input() dataItem: any;
     @Input() snapShotTimeRange: any;
 
+    @Output() exportFlowAsPNG: EventEmitter<any> = new EventEmitter();
     constructor(
         private _ecs: ExportCallService,
-        private searchService: SearchService,
-        private sessionStorageService: SessionStorageService
+        private searchService: SearchService
     ) { }
 
     ngOnInit() { }
@@ -51,8 +51,11 @@ export class TabExportComponent implements OnInit {
         // const param = Functions.getUriJson();
         const json = this.getQuery();
         const queryJson = encodeURIComponent(JSON.stringify(json)) + '=';
-        const url = window.location.origin + '/call/result/?' + queryJson;
+        const url = window.location.origin + '/call/result?' + queryJson;
 
         window.open(url, '_blank');
+    }
+    onExportFlowAsPNG() {
+        this.exportFlowAsPNG.emit({});
     }
 }

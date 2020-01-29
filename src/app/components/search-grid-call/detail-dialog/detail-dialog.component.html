@@ -49,11 +49,23 @@
     </mat-tab>
     <mat-tab *ngIf="_isLoaded && tabs.export" label="Export">
       <app-tab-export
+        (exportFlowAsPNG)="onExportFlowAsPNG()"
         [snapShotTimeRange]="snapShotTimeRange"
         [dataItem]="sipDataItem"
         [callid]="titleId"
         [id]="sipDataItem.data.messages[0].id"
       ></app-tab-export>
+      <!--  -->
+      <div style="position: relative; overflow: hidden; height: 1px; width: 1px;">
+        <div style="position: absolute;">
+          <app-tab-flow
+            [callid]="titleId"
+            [dataItem]="sipDataItem"
+            [exportAsPNG]="exportAsPNG"
+            (messageWindow)="addWindow($event)"
+          ></app-tab-flow>
+        </div>
+      </div>
     </mat-tab>
   </mat-tab-group>
 </app-modal-resizable>

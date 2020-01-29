@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild, OnDestroy, ElementRef } from '@angular/core';
 import * as moment from 'moment';
 import { MesagesData } from '../tab-messages/tab-messages.component';
 import { Functions } from '../../../../helpers/functions';
+import * as html2canvas from 'html2canvas';
 
 @Component({
     selector: 'app-tab-flow',
@@ -10,17 +11,33 @@ import { Functions } from '../../../../helpers/functions';
 })
 export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('flowtitle', {static: false}) flowtitle;
-    @ViewChild('flowpage', {static: false}) flowpage;
     @Input() callid: any;
     @Input() dataItem: any;
+    @Input() set exportAsPNG(val) {
+        if(val) {
+            this.isExport = true;
+            setTimeout(() => {
+                this.onSavePng();
+            });
+        }
+    }
     @Output() messageWindow: EventEmitter<any> = new EventEmitter();
 
+    @ViewChild('flowpage', {static: true}) flowpage: ElementRef;
+    @ViewChild('flowscreen', {static: true}) flowscreen: ElementRef;
+    // </div>
+    @ViewChild('canvas', {static: true}) canvas: ElementRef;
+    @ViewChild('downloadLink', {static: true}) downloadLink: ElementRef;
+    isExport = false;
     aliasTitle: Array<any>;
     dataSource: Array<MesagesData> = [];
     arrayItems: Array<any>;
     color_sid: string;
     _interval: any;
     labels: Array<any> = [];
+
+
+
     constructor() { }
 
     ngAfterViewInit() {
@@ -127,5 +144,17 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
               obj[item[0]] = item[1]
               return obj
             }, {})
+    }
+
+    onSavePng() {
+        if (html2canvas && typeof html2canvas === 'function') {
+            const f: Function = html2canvas as Function;
+            f(this.flowscreen.nativeElement).then(canvas => {
+                this.canvas.nativeElement.src = canvas.toDataURL();
+                this.downloadLink.nativeElement.href = canvas.toDataURL('image/png');
+                this.downloadLink.nativeElement.download = `${this.callid}.png`;
+                this.downloadLink.nativeElement.click();
+            });
+        }
     }
 }

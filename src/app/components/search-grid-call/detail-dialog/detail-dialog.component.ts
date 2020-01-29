@@ -21,6 +21,7 @@ export class DetailDialogComponent implements OnInit {
         logs: true,
         export: false
     };
+    exportAsPNG = false;
     isBrowserWindow = false;
     _isLoaded = false;
     tabIndexByDefault = 0;
@@ -102,5 +103,10 @@ export class DetailDialogComponent implements OnInit {
                 }
             });
         }
+    }
+
+    onExportFlowAsPNG() {
+        this.exportAsPNG = true;
+        setTimeout(()=> {this.exportAsPNG = false});
     }
 }

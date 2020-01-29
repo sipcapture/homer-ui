@@ -21,7 +21,7 @@ export class Functions {
             return 'tls';
         } else if (protocol === 132) { // tls
             return 'sctp';
-        } else if (protocol === 8) { // tcp
+        } else if (protocol === 6) { // tcp
             return 'tcp';
         } else if (protocol === 4) {
             return 'sctp';

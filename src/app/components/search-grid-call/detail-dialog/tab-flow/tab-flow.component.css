@@ -18,7 +18,8 @@
     background-color: #eee;
     padding: 0.3rem;
     font-size: 0.8em;
-    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+    border: 1px solid #aaa;
+    /* box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5); */
 }
 
 .title-container > .grid-vertical-line {

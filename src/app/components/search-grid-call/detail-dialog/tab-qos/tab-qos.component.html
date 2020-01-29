@@ -110,6 +110,10 @@
           <span class="color-bable" [ngStyle]="{'background-color': item.highest_seq_no_color}"></span>
           highest_seq_no
         </mat-checkbox>
+        <mat-checkbox (change)="onChangeChackBox(item)" [(ngModel)]="item.mos">
+          <span class="color-bable" [ngStyle]="{'background-color': item.mos_color}"></span>
+          mos
+        </mat-checkbox>
         <mat-checkbox (change)="onChangeChackBox(item)" [(ngModel)]="item.ia_jitter">
           <span class="color-bable" [ngStyle]="{'background-color': item.ia_jitter_color}"></span>
           ia_jitter

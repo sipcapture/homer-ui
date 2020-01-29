@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, AfterViewInit, Output, EventEmitter, Input } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { SearchRemoteService, PreferenceAdvancedService, SmartService } from '@app/services';
+import { SmartService } from '@app/services';
 
 @Component({
     selector: 'app-code-style-smart-input-field',
@@ -12,10 +12,7 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
     divText: string;
     serverLoki: string;
     editor: HTMLElement;
-    isLabel = true;
     _queryText: string;
-
-    lokiConnectionDisapper = false;
 
     menuTitle: string;
     private _menuDOM: HTMLElement;
@@ -35,19 +32,7 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
 
     popupList: Array<string>;
 
-    constructor(
-        private _pas: PreferenceAdvancedService,
-        private _srs: SearchRemoteService,
-        private smartService: SmartService
-    ) {
-        const subscription = this._pas.getAll().subscribe((data: any) => {
-            this.serverLoki = data.data
-                .filter(i => i.category === 'search' && i.param === 'lokiserver')
-                .map(i => i.data.host)[0];
-            this.updateEditor(null);
-            subscription.unsubscribe();
-        });
-    }
+    constructor( private smartService: SmartService ) { }
 
     ngOnInit() {
     }
@@ -67,21 +52,13 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
             this.setMenuXPosition();
             this.editor.focus();
 
-            // console.log(this.apiLink);
-            const labelsData: any = (await this.smartService.getLabelByUrl(this.apiLink).toPromise());
+            
+            const labelsData: any = await this.smartService.getLabelByUrl(this.apiLink, this.editor.innerText).toPromise();
             let labels: Array<string> = [];
             if (labelsData && labelsData.data && labelsData.data.length > 0) {
                 labels = labelsData.data.map(i => i.value);
             }
             
-            console.log({labels});
-
-            this.isLabel = true;
-            if (labels.length === 0) {
-                this.lokiConnectionDisapper = true;
-                return;
-            }
-            this.lokiConnectionDisapper = false;
 
             const readyAdded = this.getObject(this.editor.innerText);
 
@@ -100,33 +77,7 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
             console.error({error});
         }
     }
-    // async getVariabls (label: string = null) {
-    //     label = label || this.editor.innerText.split(',').pop().replace(/[\=\"\,\{\}]+/g, '');
-    //     try {
-    //         setTimeout(() => {
-    //             this.isLabel = false;
-    //             this.popupList = ['loading...'];
-    //             this.menuTitle = `Label value for "${label}"`;
-    //             this.trigger.openMenu();
-    //             this.setMenuXPosition();
-    //             this.editor.focus();
-    //         }, 0);
 
-    //         this.popupList = await this._srs.getValues(label, this.serverLoki).toPromise();
-
-    //         this.isLabel = false;
-    //         if ( this.popupList.length > 0) {
-    //             this.menuTitle = `Label value for "${label}"`;
-    //             this.trigger.openMenu();
-    //             this.setMenuXPosition();
-    //             this.editor.focus();
-    //         } else {
-    //             this.trigger.closeMenu();
-    //         }
-    //     } catch (error) {
-    //         console.error({error});
-    //     }
-    // }
     private setMenuXPosition() {
         if (this.getCaretPosition() === -1) {
             return;
@@ -164,54 +115,19 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
 
     }
     onKeyUpDiv(event) {
-        console.log('key UP event.keyCode=', event.keyCode);
-        // 16 - Shift
-        // 13 - Enter
-        // 17 - Ctrl
-        if (16 === event.keyCode) {
+        if (!!{Shift:1, Control: 1, Alt: 1}[event.key]) {
             return;
         }
-        if (this.editor.innerText === '' || [17, 16].indexOf(event.keyCode) !== -1) {
-            this.trigger.closeMenu();
-            return;
-        }
+
         if (!!({ArrowDown: 1, ArrowUp: 1, Enter: 1})[event.key]) {
             this.triggerNavMenu(event.key);
             event.preventDefault();
             return;
         }
-
-        if ([8, 221].indexOf(event.keyCode) !== -1) {
-            if (')}]'.indexOf(this.editor.innerText[0]) !== -1) {
-                this.editor.innerText = this.editor.innerText.slice(1);
-            }
-            if (this.editor.innerText === '') {
-                this.trigger.closeMenu();
-                return;
-            }
-            event.preventDefault();
-            return false;
-        }
-        if ([219, 222, 188, 187, 192, 190].indexOf(event.keyCode) !== -1) {
-            const getLastLetter = window.getSelection().anchorNode.textContent.split('')[0];
-
-            if ('.' === getLastLetter) {
-                // this.editor.innerText = '()';
-                this.updateEditor(null);
-                // this.restoreSelection(1, 1);
-            }
-            
-            if ('="'.indexOf(getLastLetter) !== -1) { // '=' | '"'
-                // this.getVariabls();
-            } else {
-                const o = this.getObject(this.editor.innerText);
-                const _label = Object.keys(o).filter(i => o[i] === null);
-                if (_label.length > 0) {
-                    // this.getVariabls(_label[0]);
-                } else {
-                    this.getLabels();
-                }
-            }
+        
+        if (event.key === '.') {
+            this.updateEditor(null);
+            this.getLabels();
             this.editor.focus();
         } else {
             this.trigger.closeMenu();
@@ -261,19 +177,12 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
     }
     onMenuMessage (item, event: any = null) {
         if (!event || (event.keyCode === 13 || event.keyCode === 32 )) {
-            if (this.isLabel ) {
-                item = item.split('.')[1];
-                this.typeInTextarea(item + '=');
-                this.updateEditor(null, true);
-                const c = this.editor.innerText.length - 1;
-                // this.restoreSelection(c, c);
-                // this.getVariabls();
-            } else {
-                this.typeInTextarea(`"${item}"`);
-                this.updateEditor(null);
-                const c = this.editor.innerText.length - 1;
-                // this.restoreSelection(c, c);
-            }
+            
+            item = item.split('.')[1];
+            this.typeInTextarea(item + '=');
+            this.updateEditor(null, true);
+            const c = this.editor.innerText.length - 1;
+        
         }
         if (event && event.keyCode === 27) {
             this.trigger.closeMenu();
@@ -281,8 +190,7 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
     }
 
     private setStyleCodeColors(str) {
-        const s = str.match(/([\=\>\<]{1,3}[A-Za-z\d_]+)|(\.[A-Za-z\d_]+)|([A-Za-z\d_]+)|([^A-Za-z\d_]+)/g);
-        // console.log(s);
+        const s = str.match(/([!@#$%&][\w\d]*[!@#$%&])|([\=\>\<\s]{1,3}[A-Za-z_]+)|(\.[A-Za-z_]+)|([A-Za-z_]+)|(\d+)|([^A-Za-z_])/g);
         if (!s) {
             return '';
         }
@@ -290,11 +198,11 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
             let cssClass = 'SIwhite';
             if ('{}[]()'.indexOf(i) !== -1) {
                 cssClass = 'SIbracket';
-            } else if ('!@#$%^&.,'.indexOf(i) !== -1) {
+            } else if (i.match(/[0-9]+/g)) {
+                cssClass = 'SInumber';
+            } else if (i.match(/[!@#$%&][\w\d]+[!@#$%&]/g)) {
                 cssClass = 'SIequally';
-            // } else if (i.match(/[\"\'\`]+/g)) {
-            //     cssClass = 'SIquotes';
-            } else if (i.match(/[\=\>\<]{1,3}[a-zA-Z\d_]+/g)) {
+            } else if (i.match(/[\=\>\<]{1,3}\s?[a-zA-Z\d_]+/g)) {
                 cssClass = 'SIwhite';
             } else if (i.match(/\.[a-zA-Z_]+/g)) {
                 cssClass = 'SIquotes';
@@ -348,7 +256,7 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
         });
 
         try {
-            this.editor.innerHTML = this.setStyleCodeColors(textContent); // this.renderText(textContent);
+            this.editor.innerHTML = this.setStyleCodeColors(textContent);
         } catch (err) { }
 
         if (setEnd) {
