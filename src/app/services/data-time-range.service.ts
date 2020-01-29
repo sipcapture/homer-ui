@@ -114,6 +114,11 @@ export class DateTimeRangeService {
                         'Last 12 hours': [moment().subtract(12, 'hours'), moment()],
             'Last month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
                         'Last 24 hours': [moment().subtract(24, 'hours'), moment()],
+            'Last 2 months': [moment().subtract(2, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                        'Last 48 hours': [moment().subtract(48, 'hours'), moment()],
+            'Last 3 months': [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                        'Last 72 hours': [moment().subtract(72, 'hours'), moment()],
+
         }
         if (isAll) {
             return arr;
