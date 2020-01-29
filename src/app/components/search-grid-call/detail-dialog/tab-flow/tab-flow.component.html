@@ -1,50 +1,52 @@
-<!-- title hosts / alias -->
-<div class="title-container" #flowtitle>
-  <div *ngFor="let title of aliasTitle">
-      <span *ngIf="title.alias + '' !== title.ip + ''" class="title">
-        <strong>{{ title.alias }}</strong>
-        <br>
-        {{ title.ip }}
-      </span>
-      <span *ngIf="title.alias + '' === title.ip + ''" class="title">
-        {{ title.ip }}
-      </span>
-  </div>
-</div>
-
-<div [ngStyle]="{
-  'position': 'relative',
-  'margin-top': '4rem',
-  'margin-bottom': '6rem',
-  'min-width': (aliasTitle.length * 150) + 'px'
-}" #flowpage>
-  <!-- grid lines -->
-  <div class="title-container grid-container">
-    <div *ngFor="let title of aliasTitle" class="grid-vertical-line"></div>
+<div #flowscreen>
+  <!-- title hosts / alias -->
+  <div class="title-container" [ngStyle]="{
+    'top': '0px',
+    'position': (isExport ? 'inherit' : 'absolute')
+  }" #flowtitle>
+    <div *ngFor="let title of aliasTitle">
+        <span *ngIf="title.alias + '' !== title.ip + ''" class="title">
+          <strong>{{ title.alias }}</strong>
+          <br>
+          {{ title.ip }}
+        </span>
+        <span *ngIf="title.alias + '' === title.ip + ''" class="title">
+          {{ title.ip }}
+        </span>
+    </div>
   </div>
 
-  <!-- content -->
-  <div 
-    *ngFor="let item of arrayItems; let idx = index"
-    [className]="'arrow ' + item.course + (item.method_text === 'RTCP' ? ' rtcp' : '')"
-    [ngStyle]="{'width': item.style.width + '%', 'left': item.style.left + '%', 'color': item.color }"
-    (click)="onClickItem(item.id)"> 
-      <div [ngStyle]="{'color': item.color_method}"><strong>{{ item.method_text }} </strong></div>
-      <div style="color: darkblue; font-size: 0.9em;">{{ item.ruri_user }} </div>
-      <div style="color: grey;">[{{ idx + 1 }}][{{ item.proto | uppercase }}] {{ item.micro_ts }}</div>
-      <div style="color: grey;">{{ item.diffTs }} ms</div>
+  <div [ngStyle]="{
+    'position': 'relative',
+    'margin-top': '4rem',
+    'margin-bottom': '6rem',
+    'min-width': (aliasTitle.length * 150) + 'px'
+  }" #flowpage>
+    <!-- grid lines -->
+    <div class="title-container grid-container">
+      <div *ngFor="let title of aliasTitle" class="grid-vertical-line"></div>
+    </div>
+
+    <!-- content -->
+    <div 
+      *ngFor="let item of arrayItems; let idx = index"
+      [className]="'arrow ' + item.course + (item.method_text === 'RTCP' ? ' rtcp' : '')"
+      [ngStyle]="{'width': item.style.width + '%', 'left': item.style.left + '%', 'color': item.color }"
+      (click)="onClickItem(item.id)"> 
+        <div [ngStyle]="{'color': item.color_method}"><strong>{{ item.method_text }} </strong></div>
+        <div style="color: darkblue; font-size: 0.9em;">{{ item.ruri_user }} </div>
+        <div style="color: grey;">[{{ idx + 1 }}][{{ item.proto | uppercase }}] {{ item.micro_ts }}</div>
+        <div style="color: grey;">{{ item.diffTs }} ms</div>
+    </div>
+  </div>
+  <div class="label-callid-container" [ngStyle]="{
+    'position': (isExport ? 'inherit' : 'absolute')
+  }">
+      <div class="label-callid" *ngFor="let itemLabel of labels"
+        [ngStyle]="{'color': itemLabel.color_sid}"> * {{ itemLabel.callid }} </div>
   </div>
 </div>
-<div class="label-callid-container">
-    <div class="label-callid" *ngFor="let itemLabel of labels"
-      [ngStyle]="{'color': itemLabel.color_sid}"> * {{ itemLabel.callid }} </div>
-</div>
-<div style="position: absolute; bottom: 0; left: 0;">
-  <button mat-raised-button color="primary" aria-label="Download FLOW as .PNG" (click)="onSavePng()">
-    <mat-icon>save_alt</mat-icon> PNG
-  </button>
-</div>
-<div id="download">
+<div id="download" style="display: none;">
   <img #canvas>
   <a #downloadLink></a>
 </div>
