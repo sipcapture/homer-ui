@@ -14,7 +14,8 @@ export class TabHepsubComponent implements OnInit {
     @Input() dataLogs: Array<any>;
     @Input() snapShotTimeRange: any;
     @Output() haveData = new EventEmitter();
-    isLogs = false;
+    indexTabPosition = 0;
+    isLogs = true;
     subTabList = [];
     jsonData: any;
 
@@ -25,7 +26,6 @@ export class TabHepsubComponent implements OnInit {
 
     ngOnInit() {
         this.agentsubService.getType('cdr').toPromise().then(res => {
-            console.log(`this.agentsubService.getType('cdr')`, {res});
             if (res && res.data ) {
                 let {uuid, type} = res.data[0];
                 this.subTabList = res.data.map(i => {
@@ -33,6 +33,7 @@ export class TabHepsubComponent implements OnInit {
                     return i;
                 });
                 this.onTabClick(uuid, type); // open first TAB by default
+                this.indexTabPosition = 0;
                 this.haveData.emit(true);
             } else {
                 this.haveData.emit(false);
@@ -47,6 +48,7 @@ export class TabHepsubComponent implements OnInit {
         const res2 = await this.agentsubService.getHepsubElements({uuid, type, data: this.getQuery()}).toPromise();
         if (res2 && res2.data) {
             this.jsonData = res2.data;
+            this.indexTabPosition = 0;
         }
     }
     private getCallIdArray() {
