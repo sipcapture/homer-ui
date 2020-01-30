@@ -61,7 +61,7 @@ button:focus {
     margin-bottom: 0px;
     margin-left: 0px;
     margin-right: 0px;
-    margin-top: -4px;
+    margin-top: -5px;
     outline-color: rgb(255, 255, 255);
     outline-style: none;
     outline-width: 0px;
@@ -75,11 +75,10 @@ button:focus {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 .logo-text:first-letter {
-    color: #EE3324;
+    color: #E0121A;
 }
 .logo-base > img {
     width: 32px;
-    transform: rotate(50deg);
 }
 .header {
     justify-content: space-between;
