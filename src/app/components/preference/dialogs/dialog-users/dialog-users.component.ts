@@ -1,7 +1,8 @@
 import { Component, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Functions } from '@app/helpers/functions';
-import { AuthenticationService } from '@app/services';
+import { AuthenticationService, AlertService } from '@app/services';
+import { Validators, FormControl } from '@angular/forms';
 
 @Component({
     selector: 'app-dialog-users',
@@ -13,10 +14,24 @@ export class DialogUsersComponent {
     isAdmin = false;
     pass2: string;
     hidePass1 = true;
-    hidePass2 = true;
+
+    // formControls
+    
+    username = new FormControl('', [Validators.required]);
+    usergroup = new FormControl('', [Validators.required]);
+    partid = new FormControl('', [Validators.required]);
+    password = new FormControl('');
+    password2 = new FormControl('');
+
+    firstname = new FormControl('', [Validators.required]);
+    email = new FormControl('', [Validators.required, Validators.email]);
+    lastname = new FormControl('', [Validators.required]);
+    department = new FormControl('', [Validators.required]);
+
     constructor(
         private authenticationService: AuthenticationService,
         public dialogRef: MatDialogRef<DialogUsersComponent>,
+        private alertService: AlertService,
         @Inject(MAT_DIALOG_DATA) public data: any) {
 
         if ( data.isnew ) {
@@ -39,6 +54,15 @@ export class DialogUsersComponent {
 
         /* be sure that this is string */
         data.data.password = String(data.data.password);
+        (d => {
+            this.username.setValue(d.username);
+            this.usergroup.setValue(d.usergroup);
+            this.partid.setValue(d.partid);
+            this.firstname.setValue(d.firstname);
+            this.email.setValue(d.email);
+            this.lastname.setValue(d.lastname);
+            this.department.setValue(d.department);
+        })(data.data);
 
         this.isValidForm = true;
     }
@@ -64,4 +88,49 @@ export class DialogUsersComponent {
         d.lastname !== '' &&
         d.department !== '';
     }
+
+    onSubmit() {
+        if (!this.username.invalid && 
+            !this.usergroup.invalid && 
+            !this.partid.invalid && 
+            (this.data.isNew ? !this.password.invalid : true) && 
+            !this.firstname.invalid && 
+            !this.email.invalid && 
+            !this.lastname.invalid && 
+            !this.department.invalid
+        ) {
+            (d => {
+                d.username = this.username.value;
+                d.usergroup = this.usergroup.value;
+                d.partid = this.partid.value;
+                d.password = this.password.value;
+                d.firstname = this.firstname.value;
+                d.email = this.email.value;
+                d.lastname = this.lastname.value;
+                d.department = this.department.value;
+            })(this.data.data)
+
+            this.dialogRef.close(this.data);
+        } else {
+            this.username.markAsTouched();
+            this.usergroup.markAsTouched();
+            this.partid.markAsTouched();
+
+            this.password.markAsTouched();
+            this.password2.markAsTouched();
+            
+            this.firstname.markAsTouched();
+            this.email.markAsTouched();
+            
+            this.lastname.markAsTouched();
+            this.department.markAsTouched();
+            
+            // this.alertService.error('invalid Form');
+        }
+    }
+    getErrorMessage() {
+        return this.email.hasError('required') ? 'You must enter a value' :
+            this.email.hasError('email') ? 'Not a valid email' :
+                '';
+      }
 }

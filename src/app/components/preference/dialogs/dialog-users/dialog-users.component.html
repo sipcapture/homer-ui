@@ -8,53 +8,104 @@
   
   <strong>User Settings</strong><hr />
   <div>
+    
     <mat-form-field style="padding-right: 1rem;">
       <mat-label>Username</mat-label>
-      <input matInput autocomplete="none" [(ngModel)]="data.data.username" (change)="onValid()" [disabled]="!isAdmin">
+      <input matInput autocomplete="none"
+        [formControl]="username"
+        [disabled]="!isAdmin"
+        required>
+      <mat-error *ngIf="username.invalid">Should not be empty</mat-error>
     </mat-form-field>
+    
     <mat-form-field style="padding-right: 1rem;">
       <mat-label>Group</mat-label>
-      <input matInput autocomplete="none" [(ngModel)]="data.data.usergroup" (change)="onValid()" [disabled]="!isAdmin">
+      <input matInput autocomplete="none"
+        [formControl]="usergroup"
+        [disabled]="!isAdmin"
+        required>
+      <mat-error *ngIf="usergroup.invalid">Should not be empty</mat-error>
     </mat-form-field>
+    
     <mat-form-field style="padding-right: 1rem;">
       <mat-label>Partition ID</mat-label>
-      <input matInput autocomplete="none" [(ngModel)]="data.data.partid" (change)="onValid()" [disabled]="!isAdmin">
+      <input matInput autocomplete="none"
+        [formControl]="partid"
+        [disabled]="!isAdmin"
+        required>
+      <mat-error *ngIf="partid.invalid">Should not be empty</mat-error>
     </mat-form-field>
   </div>
   <div>
+    
     <mat-form-field style="padding-right: 1rem;">
-      <input matInput autocomplete="new-password" placeholder="Password" [type]="hidePass1 ? 'password' : 'text'" [(ngModel)]="data.data.password" (change)="onValid()">
-      <button mat-icon-button matSuffix (click)="hidePass1 = !hidePass1" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePass1">
-      <mat-icon>{{hidePass1 ? 'visibility_off' : 'visibility'}}</mat-icon>
+      <input matInput autocomplete="new-password"
+        placeholder="Password"
+        [type]="hidePass1 ? 'password' : 'text'"
+        [formControl]="password"
+        required>
+      <button mat-icon-button matSuffix
+        (click)="hidePass1 = !hidePass1"
+        [attr.aria-label]="'Hide password'"
+        [attr.aria-pressed]="hidePass1">
+        <mat-icon>{{hidePass1 ? 'visibility_off' : 'visibility'}}</mat-icon>
       </button>
+      <!-- data.isnew -->
+      <mat-error *ngIf="data.isNew && password.invalid">The password should not be empty</mat-error>
     </mat-form-field>
+    
     <mat-form-field style="padding-right: 1rem;">
-      <input matInput autocomplete="new-password" placeholder="Repeat password" [type]="hidePass2 ? 'password' : 'text'" [(ngModel)]="pass2" (change)="onValid()">
-      <button mat-icon-button matSuffix (click)="hidePass2 = !hidePass2" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePass2">
-      <mat-icon>{{hidePass2 ? 'visibility_off' : 'visibility'}}</mat-icon>
+      <input matInput autocomplete="new-password"
+        placeholder="Confirm"
+        [type]="hidePass1 ? 'password' : 'text'"
+        [formControl]="password2"
+        required>
+      <button mat-icon-button matSuffix
+        (click)="hidePass1 = !hidePass1"
+        [attr.aria-label]="'Hide password'"
+        [attr.aria-pressed]="hidePass1">
+        <mat-icon>{{hidePass1 ? 'visibility_off' : 'visibility'}}</mat-icon>
       </button>
+      <mat-error *ngIf="password.value !== password2.value">The password and its confirmation do not coincide</mat-error>
     </mat-form-field>
   </div>
   
   <strong>Personal information</strong><hr />
   <div>
+    
     <mat-form-field style="padding-right: 1rem;">
       <mat-label>First name</mat-label>
-      <input matInput autocomplete="none" [(ngModel)]="data.data.firstname" (change)="onValid()">
+      <input matInput autocomplete="none"
+        [formControl]="firstname"
+        required>
+        <mat-error *ngIf="firstname.invalid">Should not be empty</mat-error>
     </mat-form-field>
+    
+    
     <mat-form-field style="padding-right: 1rem;">
       <mat-label>Email</mat-label>
-      <input matInput autocomplete="none"  [(ngModel)]="data.data.email" (change)="onValid()" (validate)="onValid()" email="true">
+      <input matInput autocomplete="none"
+        [formControl]="email"
+        required>
+      <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
     </mat-form-field>
   </div>
   <div>
+    
     <mat-form-field style="padding-right: 1rem;">
       <mat-label>Last name</mat-label>
-      <input matInput autocomplete="none" [(ngModel)]="data.data.lastname" (change)="onValid()">
+      <input matInput autocomplete="none"
+      [formControl]="lastname"
+      required>
+      <mat-error *ngIf="lastname.invalid">Should not be empty</mat-error>
     </mat-form-field>
+    
     <mat-form-field style="padding-right: 1rem;">
       <mat-label>Department</mat-label>
-      <input matInput autocomplete="none" [(ngModel)]="data.data.department" (change)="onValid()">
+      <input matInput autocomplete="none"
+      [formControl]="department"
+      required>
+      <mat-error *ngIf="department.invalid">Should not be empty</mat-error>
     </mat-form-field>
   </div>
 </div>
@@ -62,5 +113,6 @@
 
 <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
   <button mat-raised-button (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="data" [disabled]="!isValidForm" cdkFocusInitial>Save</button>
+  <button mat-raised-button color="primary" (click)="onSubmit()"
+    cdkFocusInitial>Save</button>
 </div>
