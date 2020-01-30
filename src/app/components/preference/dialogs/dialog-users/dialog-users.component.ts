@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Functions } from '@app/helpers/functions';
 import { AuthenticationService, AlertService } from '@app/services';
 import { Validators, FormControl } from '@angular/forms';
+import { emailValidator } from '@app/helpers/email-validator.directive';
 
 @Component({
     selector: 'app-dialog-users',
@@ -24,7 +25,7 @@ export class DialogUsersComponent {
     password2 = new FormControl('');
 
     firstname = new FormControl('', [Validators.required]);
-    email = new FormControl('', [Validators.required, Validators.email]);
+    email = new FormControl('', [Validators.required, emailValidator()]);
     lastname = new FormControl('', [Validators.required]);
     department = new FormControl('', [Validators.required]);
 
@@ -51,9 +52,9 @@ export class DialogUsersComponent {
         const userData = this.authenticationService.currentUserValue;
         this.isAdmin = userData && userData.user && userData.user.admin && userData.user.admin == true;
         
-
         /* be sure that this is string */
         data.data.password = String(data.data.password);
+
         (d => {
             this.username.setValue(d.username);
             this.usergroup.setValue(d.usergroup);
@@ -70,25 +71,7 @@ export class DialogUsersComponent {
     onNoClick(): void {
         this.dialogRef.close();
     }
-    private validateEmail(email) {
-        const re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-        return re.test(String(email).toLowerCase());
-    }
-    onValid() {
-        const d = this.data.data;
-        const isNew = this.data.isNew;
-        this.isValidForm = d.username !== '' &&
-        d.usergroup !== '' &&
-        d.partid !== '' &&
-        (isNew ? d.password !== '' : true) &&
-        d.password === this.pass2 &&
-        d.firstname !== '' &&
-        d.email !== '' &&
-        this.validateEmail(d.email) &&
-        d.lastname !== '' &&
-        d.department !== '';
-    }
-
+    
     onSubmit() {
         if (!this.username.invalid && 
             !this.usergroup.invalid && 
@@ -124,13 +107,9 @@ export class DialogUsersComponent {
             
             this.lastname.markAsTouched();
             this.department.markAsTouched();
-            
-            // this.alertService.error('invalid Form');
         }
     }
     getErrorMessage() {
-        return this.email.hasError('required') ? 'You must enter a value' :
-            this.email.hasError('email') ? 'Not a valid email' :
-                '';
-      }
+        return this.email.hasError('required') ? 'You must enter a value' : 'Not a valid email';
+    }
 }
