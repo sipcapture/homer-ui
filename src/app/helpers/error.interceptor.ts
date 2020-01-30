@@ -23,7 +23,11 @@ export class ErrorInterceptor implements HttpInterceptor {
 
                 this.router.navigate([{
                     outlets: { primary: null, system: 'login'}
-                }]);
+                }], {
+                    queryParams: {
+                        returnUrl: this.router.routerState.snapshot.url
+                    }
+                });
             }
 
             const error = err.error.message || err.statusText;
