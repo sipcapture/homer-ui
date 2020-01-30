@@ -104,8 +104,9 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         this.dataSource = Functions.messageFormatter(this.dataItem.data.messages);
     }
 
-    onClickItem(id: any) {
-        const row = this.dataSource.filter(i => i.id === id)[0];
+    onClickItem(id: any, event = null) {
+        const row: any = this.dataSource.filter(i => i.id === id)[0];
+        row.mouseEventData = event;
         this.messageWindow.emit(row);
     }
 
