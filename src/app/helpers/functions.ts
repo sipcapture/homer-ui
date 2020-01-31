@@ -29,6 +29,70 @@ export class Functions {
             return 'udp';
         }
     }
+
+    static methodCheck (method: string, payload: number ) {
+        if(method) return method;
+
+        if (payload === 5) {
+            return 'RTCP';
+        } else if (payload === 8) {
+            return 'ISUP';
+        } else if (payload === 38) {
+            return 'DIAMETER';
+        } else if (payload === 39) {
+            return 'GSM-MAP';
+        } else if (payload === 34) {
+            return 'RTP-SHORT-R';
+        } else if (payload === 35) {
+            return 'RTP-FULL-R';
+        } else if (payload === 100) {
+            return 'LOG';
+        } else {
+            return 'LOG';
+        }
+    }
+
+    static colorByMethod (method: string,payload: number) {
+
+        if(method) {
+            if (method === "INVITE") {
+                return '#00cc00';
+            } else if (method === "BYE") {
+                return '#6600cc';
+            } else if (method === "CANCEL") {
+                return 'red';
+            } else if (method=== "180" || method=== "183") {
+                return '#0099cc';
+            } else if (method=== "200") {
+                return '#0000cc';
+            } else if (method=== "401" || method=== "407" || method ==="404") {
+                return '#cc0033';
+            } else if (method=== "486") {
+                return '#cc6600';
+            } else {
+                return 'black';
+            }
+        } else {
+            if (payload === 5) {
+                return 'blue';
+            } else if (payload === 8) {
+                return 'blue';
+            } else if (payload === 38) {
+                return 'blue';
+            } else if (payload === 39) {
+                return 'green';
+            } else if (payload === 34) {
+                return 'green';
+            } else if (payload === 35) {
+                return 'blue';
+            } else if (payload === 100) {
+                return 'red';
+            } else {
+                return 'red';
+            }
+        }
+    }
+
     static getColorByString(str: string) {
         const col = Functions.getColorByStringHEX(str);
         const num = parseInt(col, 16) % 360;
@@ -63,7 +127,9 @@ export class Functions {
             timeSeconds: moment( item.timeSeconds * 1000 ).format('HH:mm:ss.SSS'),
             timeUseconds: (item.timeUseconds / 1000).toFixed(3) + 's',
 
-            method: item.method || 'LOG',
+            //method: item.method || 'LOG',
+            method: Functions.methodCheck(item.method, item.payloadType),
+            mcolor: Functions.colorByMethod(item.method, item.payloadType),
             Msg_Size: (item.raw + '').length,
             srcIp_srcPort: item.srcIp + ':' + item.srcPort,
             srcPort: item.srcPort,
