@@ -308,20 +308,3 @@ h3 {
   padding: 3px 0;
   border-radius: 4px;
 }
-
-
-::ng-deep.mat-tab-label,
-::ng-deep.mat-tab-label-active {
-    min-width: 0!important;
-    padding: 1rem!important;
-    transition: background-color 0.3s!important;
-}
-::ng-deep.mat-tab-label-active {
-    background-color: #3a89e6!important;
-    color: white!important;
-    opacity: 1!important;
-}
-
-::ng-deep.mat-ink-bar {
-    opacity: 0!important;
-}

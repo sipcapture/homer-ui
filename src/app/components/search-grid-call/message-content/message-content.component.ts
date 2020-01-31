@@ -1,18 +1,23 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
+import { MatTabGroup } from '@angular/material/tabs';
 
 @Component({
     selector: 'app-message-content',
     templateUrl: './message-content.component.html',
     styleUrls: ['./message-content.component.css']
 })
-export class MessageContentComponent implements OnInit {
+export class MessageContentComponent implements OnInit, OnDestroy {
     _data: any;
     raw;
     decoded: any = null;
     raw_isJSON = false;
+    private _interval: any;
     get data() {
         return this._data;
     }
+    
+    @ViewChild('matTabGroup', {static: false}) matTabGroup: MatTabGroup;
+
     @Input('data') set data(val) {
         this._data = val;
         this.messageDetaiTableData = this._data.messageDetaiTableData;
@@ -48,6 +53,14 @@ export class MessageContentComponent implements OnInit {
 
     }
 
-    ngOnInit() { }
-
+    ngOnInit() {
+        this._interval = setInterval(() => {
+            this.matTabGroup.realignInkBar();
+        }, 350)
+    }
+    ngOnDestroy() {
+        if (this._interval) {
+            clearInterval(this._interval);
+        }
+    }
 }

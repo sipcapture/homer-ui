@@ -1,24 +1,28 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, OnDestroy } from '@angular/core';
 import { AgentsubService, SearchService } from '@app/services';
 import { Functions } from '@app/helpers/functions';
+import { MatTabGroup } from '@angular/material/tabs';
 
 @Component({
     selector: 'app-tab-hepsub',
     templateUrl: './tab-hepsub.component.html',
     styleUrls: ['./tab-hepsub.component.css']
 })
-export class TabHepsubComponent implements OnInit {
+export class TabHepsubComponent implements OnInit, OnDestroy {
     @Input() id: any;
     @Input() callid: any;
     @Input() dataItem: any;
     @Input() dataLogs: Array<any>;
     @Input() snapShotTimeRange: any;
     @Output() haveData = new EventEmitter();
+
+    @ViewChild('matTabGroup', {static: false}) matTabGroup: MatTabGroup;
     indexTabPosition = 0;
+    
     isLogs = true;
     subTabList = [];
     jsonData: any;
-
+    _interval: any;
     constructor(
         private agentsubService: AgentsubService,
         private searchService: SearchService
@@ -43,6 +47,9 @@ export class TabHepsubComponent implements OnInit {
         setTimeout(() => {
             this.isLogs = this.dataLogs.length > 0;
         })
+        this._interval = setInterval(() => {
+            this.matTabGroup.realignInkBar();
+        }, 350)
     }
     async onTabClick(uuid, type) {
         const res2 = await this.agentsubService.getHepsubElements({uuid, type, data: this.getQuery()}).toPromise();
@@ -66,5 +73,9 @@ export class TabHepsubComponent implements OnInit {
         query.timestamp = Functions.cloneObject(this.snapShotTimeRange);
         return query;
     }
-
+    ngOnDestroy () {
+        if (this._interval) {
+            clearInterval(this._interval);
+        }
+    }
 }
