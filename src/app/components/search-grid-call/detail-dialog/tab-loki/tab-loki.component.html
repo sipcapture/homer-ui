@@ -6,8 +6,9 @@
             (keyEnter)="doSerchResult()"
         ></app-code-style-field>
     </div>
-    <button mat-button style="min-width: 200px;" (click)="doSerchResult()">Refresh search</button>
-
+    <div style="display: flex; align-items: center;padding-left: 1rem;">
+        <button mat-raised-button (click)="doSerchResult()">Refresh search</button>
+    </div>
 </div>
 <div>
     <div *ngIf="resultData.length === 0" class="content-body">
