@@ -16,7 +16,8 @@ import { Functions } from '@app/helpers/functions';
     description: 'Display Search results in Widgets',
     category: 'Visualize',
     indexName: 'result',
-    settingWindow: true
+    settingWindow: true,
+    className: 'ResultWidgetComponent'
 })
 export class ResultWidgetComponent implements IWidget {
     @Input() id: string;

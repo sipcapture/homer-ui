@@ -35,7 +35,8 @@ export interface ClockConfig {
     title: 'World Clock',
     description: 'Display date and time',
     category: 'Visualize',
-    indexName: 'clock'
+    indexName: 'clock',
+    className: 'ClockWidgetComponent'
 })
 export class ClockWidgetComponent implements IWidget {
     @Input() config: ClockConfig;
