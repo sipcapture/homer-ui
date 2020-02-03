@@ -367,6 +367,11 @@ export class TabQosComponent implements OnInit {
                 this.onErrorMessage(err);
                 return;
             }
+            
+            if ( 1 * item.raw.type !== 200 || !!item.raw.sender_information ) {
+                return;
+            }
+
             const i = item.raw;
 
             this.chartLabels.push(moment( item.create_date ).format('YYYY-MM-DD HH:mm:ss'));
@@ -402,7 +407,7 @@ export class TabQosComponent implements OnInit {
                     // octets
                     k.octetsData.push(i.sender_information.octets);
 
-                    if (i.report_blocks[0]) {
+                    if (i.report_blocks && i.report_blocks[0]) {
                         const block = i.report_blocks[0];
                         const tmpMos = Math.round(this.calculateJitterMos({
                             rtt: (block.dlsr < 1000 ? block.dlsr : 0) ,
@@ -482,7 +487,6 @@ export class TabQosComponent implements OnInit {
                         // mos
                         k.mosData.push(0);
                     }
-                    console.warn('k.mosData', k.mosData);
                 }
             });
         });
@@ -528,7 +532,7 @@ export class TabQosComponent implements OnInit {
             }, 0) / t.filter(e=> e > 0).length;
             return isNaN(out) ? 0 : Math.round(out * 100) / 100; 
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
     }
     private renderChartData(streams, chartData) {
