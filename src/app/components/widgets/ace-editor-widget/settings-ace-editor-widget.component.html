@@ -20,15 +20,17 @@
     </mat-select>
   </mat-form-field>
 </div>
+
 <ace-editor #editor
-      [theme]    =  "data.theme"
-      [(text)]   =  "data.text" 
-      [mode]   =  "'markdown'"
-      [options]  =  "options"
-      [readOnly] =  "false"
-      [autoUpdateContent]="true" 
-      [durationBeforeCallback]="1000"
-      style="min-height: 300px; width:100%; overflow: auto;"></ace-editor>
+  [theme]="data.theme"
+  [(text)]="data.text"
+  [mode]="'markdown'"
+  [readOnly]="false"
+  [autoUpdateContent]="true"
+  [durationBeforeCallback]="1000"
+  style="min-height: 300px; width:100%; overflow: auto;"
+></ace-editor>
+
 <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
   <button mat-raised-button (click)="onNoClick()">Cancel</button>
   <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Ok</button>

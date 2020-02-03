@@ -51,7 +51,7 @@
 					(datesUpdated)="onDatesUpdated($event)"
 					[value]="selectedDateTimeRangeTitle" />
 			</span>
-			<button mat-button (click)="refresh()" [classname]="'btn-refrash ' + loadingAnim">
+			<button mat-button (click)="refresh()" [className]="'btn-refrash ' + loadingAnim">
 				<mat-icon>refresh</mat-icon>
 			</button>
 			<button mat-button class="btn-refrash-timer" name="refresherName" [matMenuTriggerFor]="refrasher" [(ngModel)]="refresherName" ngDefaultControl>
