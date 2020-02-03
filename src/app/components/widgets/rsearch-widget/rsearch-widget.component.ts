@@ -17,7 +17,8 @@ import { SearchService } from '@app/services';
     description: 'Display Loki Search Form',
     category: 'Search',
     indexName: 'rsearch',
-    settingWindow: false
+    settingWindow: false,
+    className: 'RsearchWidgetComponent'
 })
 export class RsearchWidgetComponent implements IWidget {
     @Input() id: string;

@@ -20,7 +20,8 @@ import * as moment from 'moment';
     description: 'Display an Prometheus Metrics',
     category: 'Metrics',
     indexName: 'prometheuschart',
-    advancedName: 'promserver'
+    advancedName: 'promserver',
+    className: 'PrometheusWidgetComponent'
 })
 export class PrometheusWidgetComponent implements IWidget {
     @Input() id: string;
