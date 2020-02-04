@@ -585,7 +585,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         if ((this.arrWindow.filter(i => i.id === row.data.callid)[0] != null)) {
             return;
         }
+        const payloadType = row && row.data && row.data.payloadType ? row.data.payloadType : 1;
+        const _protocol_profile = row && row.data && row.data.profile ? row.data.profile : this.protocol_profile;
 
+        console.log('openTransactionDialog ROW', {row});
         const selectedRows = this.gridApi.getSelectedRows();
 
         /* clear from clones */
@@ -605,17 +608,20 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 to: row.data.create_date + this.limitRange.to
             }
         };
-
-        request.param.search[this.protocol_profile] = {
+        if(_protocol_profile !== this.protocol_profile) {
+            delete request.param.search[this.protocol_profile];
+        }
+        
+        request.param.search[_protocol_profile] = {
             id: row.data.id,
             callid: selectedCallId.length > 0 ? selectedCallId : [row.data.callid],
             uuid: []
         };
 
         request.param.transaction = {
-            call: this.protocol_profile === '1_call',
-            registration: this.protocol_profile === '1_registration',
-            rest: this.protocol_profile === '1_default'
+            call: !!_protocol_profile.match('call'),
+            registration: !!_protocol_profile.match('registration'),
+            rest: !!_protocol_profile.match('default')
         };
 
         const windowData = {
@@ -659,6 +665,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         if ((this.arrMessageDetail.filter(i => i.id === row.data.id)[0] != null)) {
             return;
         }
+
+        const payloadType = row && row.data && row.data.payloadType ? row.data.payloadType : 1;
+        const _protocol_profile = row && row.data && row.data.profile ? row.data.profile : this.protocol_profile;
+
         const color = Functions.getColorByString(row.data.method || 'LOG');
         const mData = {
             loaded: false,
@@ -668,9 +678,58 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             mouseEventData: mouseEventData || row.data.mouseEventData,
             isBrowserWindow: row.isBrowserWindow
         };
+        console.log('row ==> ', row);
 
-        if (row.isLog) {
-            const data = row.data.item;
+        
+        let _timestamp = {
+            from: row.data.create_date + this.limitRange.message_from, // - 1sec
+            to: row.data.create_date + this.limitRange.message_to // + 1sec
+        };
+        if (!_timestamp.from || !_timestamp.to) {
+            _timestamp = this.config.timestamp;
+        }
+        const request = {
+            param: Functions.cloneObject(this.config.param || {} as any),
+            timestamp: _timestamp
+        };
+
+        request.param.limit = 1;
+        if(_protocol_profile !== this.protocol_profile) {
+            delete request.param.search[this.protocol_profile];
+        }
+        request.param.search[_protocol_profile] = { id: row.data.id };
+        request.param.transaction = {
+            call: !!_protocol_profile.match('call'),
+            registration: !!_protocol_profile.match('registration'),
+            rest: !!_protocol_profile.match('default')
+        };
+
+        this.arrMessageDetail.push(mData);
+        if(!row.isLog) {
+            this._scs.getDecodedData(request).toPromise().then(res => {
+                let _decoded;
+                if (res.data) {
+                    _decoded = res.data[0].decoded;
+                }
+                if (_decoded) {
+                    if(_decoded[0]) {
+                        if (_decoded[0]._source && _decoded[0]._source.layers) {
+                            mData.data.decoded = _decoded[0]._source.layers;
+                        } else {
+                            mData.data.decoded = _decoded[0];
+                        }
+                    } else {
+                        mData.data.decoded = _decoded;
+                    }
+                    /* for update Dialog window */
+                    mData.data = Functions.cloneObject(mData.data);
+                    this.changeDetectorRefs.detectChanges();
+                }
+            });
+        }
+        
+        if ( row.isLog || (row.data.payloadType === 1 && (row.data.raw || row.data.item && row.data.item.raw))) {
+            const data = row.data.item || row.data;
             mData.data = data;
             mData.data.item = {
                 raw: mData.data.raw
@@ -690,71 +749,29 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 .filter(i => typeof i.value !== 'object' && i.name !== 'raw');
             this.changeDetectorRefs.detectChanges();
             mData.loaded = true;
-            this.arrMessageDetail.push(mData);
             return;
-        }
-        let _timestamp = {
-            from: row.data.create_date + this.limitRange.message_from, // - 1sec
-            to: row.data.create_date + this.limitRange.message_to // + 1sec
-        };
-        if (!_timestamp.from || !_timestamp.to) {
-            _timestamp = this.config.timestamp;
-        }
-        const request = {
-            param: Functions.cloneObject(this.config.param || {} as any),
-            timestamp: _timestamp
-        };
+        } else {
+            const result: any = await this._scs.getMessage(request).toPromise();
 
-        request.param.limit = 1;
-        request.param.search[this.protocol_profile] = { id: row.data.id };
-        request.param.transaction = {
-            call: this.protocol_profile === '1_call',
-            registration: this.protocol_profile === '1_registration',
-            rest: this.protocol_profile === '1_default'
-        };
-
-        this.arrMessageDetail.push(mData);
-
-        const result: any = await this._scs.getMessage(request).toPromise();
-
-        mData.data = result.data[0];
-        mData.data.item = {
-            raw: mData.data.raw
-        };
-        mData.data.messageDetaiTableData = Object.keys(mData.data).map(i => {
-            let val;
-            if (i === 'create_date') {
-                val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS');
-            } else if (i === 'timeSeconds') {
-                val = mData.data[i];
-            } else {
-                val = mData.data[i];
-            }
-            return {name: i, value: val};
-        }).filter(i => typeof i.value !== 'object' && i.name !== 'raw');
-
-        result.decoded = null;
-        this._scs.getDecodedData(request).toPromise().then(res => {
-            if (res.data) {
-                result.decoded = res.data[0].decoded;
-            }
-            if (result.decoded) {
-                if(result.decoded[0]) {
-                    if (result.decoded[0]._source && result.decoded[0]._source.layers) {
-                        mData.data.decoded = result.decoded[0]._source.layers;
-                    } else {
-                        mData.data.decoded = result.decoded[0];
-                    }
+            mData.data = result.data[0];
+            mData.data.item = {
+                raw: mData.data.raw
+            };
+            mData.data.messageDetaiTableData = Object.keys(mData.data).map(i => {
+                let val;
+                if (i === 'create_date') {
+                    val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS');
+                } else if (i === 'timeSeconds') {
+                    val = mData.data[i];
                 } else {
-                    mData.data.decoded = result.decoded;
+                    val = mData.data[i];
                 }
-                /* for update Dialog window */
-                mData.data = Functions.cloneObject(mData.data);
-                this.changeDetectorRefs.detectChanges();
-            }
-        });
-        this.changeDetectorRefs.detectChanges();
-        mData.loaded = true;
+                return {name: i, value: val};
+            }).filter(i => typeof i.value !== 'object' && i.name !== 'raw');
+
+            this.changeDetectorRefs.detectChanges();
+            mData.loaded = true;
+        }
     }
 
     public closeWindowMessage(id: number) {
