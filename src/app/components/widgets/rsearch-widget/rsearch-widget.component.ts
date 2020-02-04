@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { IWidget } from '../IWidget';
 import { Router } from '@angular/router';
 import { SearchGridCallComponent } from '@app/components/search-grid-call/search-grid-call.component';
-import { Widget } from '@app/helpers/widget';
+import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 import { ConstValue } from '@app/models';
 import { SearchService } from '@app/services';
 
@@ -35,6 +35,7 @@ export class RsearchWidgetComponent implements IWidget {
     }
 
     ngOnInit() {
+        WidgetArrayInstance[this.id] = this as IWidget;
         const data = JSON.parse(localStorage.getItem(ConstValue.SEARCH_QUERY_LOKI));
         if (data) {
             this.queryText = data.text;

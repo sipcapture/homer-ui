@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
-import { Widget } from '@app/helpers/widget.ts';
+import { Widget, WidgetArrayInstance } from '@app/helpers/widget.ts';
 import { SettingClockWidgetComponent } from './setting-clock-widget.component';
 import { MatDialog } from '@angular/material/dialog';
 import { IWidget } from '../IWidget';
@@ -54,6 +54,7 @@ export class ClockWidgetComponent implements IWidget {
     constructor(public dialog: MatDialog) { }
 
     ngOnInit() {
+        WidgetArrayInstance[this.id] = this as IWidget;
         this._config = {
             id: this.id,
             datePattern: ConstTime.DATA_PATTERN,

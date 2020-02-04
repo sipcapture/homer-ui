@@ -8,7 +8,7 @@ import {
     Observable
 } from 'rxjs';
 import { Functions } from '@app/helpers/functions';
-import { Widget } from '@app/helpers/widget';
+import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 import {map, startWith} from 'rxjs/operators';
 
 import {
@@ -81,6 +81,7 @@ export class ProtosearchWidgetComponent implements IWidget {
         private preferenceMappingProtocolService: PreferenceMappingProtocolService) {}
 
     async ngOnInit() {
+        WidgetArrayInstance[this.id] = this as IWidget;
         if (!this.config) {
             this.isConfig = false;
             this.config = {
@@ -344,7 +345,7 @@ export class ProtosearchWidgetComponent implements IWidget {
         this._sss.removeProtoSearchConfig(this.widgetId);
     }
 
-    async openDialog() {
+    public async openDialog() {
         const mapping = await this.preferenceMappingProtocolService.getAll().toPromise();
         this.config.countFieldColumns = this.config.countFieldColumns || this.countFieldColumns;
         const dialogRef = this.dialog.open(SettingProtosearchWidgetComponent, {

@@ -166,7 +166,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
     itemChange(item: any) {
         if (item.name === 'iframe') {
-            const w = WidgetArrayInstance[item.id];
+            const w: IWidget = WidgetArrayInstance[item.id];
             if (w && w.refresh) {
                 w.refresh();
             }
@@ -197,7 +197,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     openSettings(item: any) {
-        WidgetArrayInstance[item.id].openDialog();
+        console.log('openSettings::id:', item.id);
+        const widget: IWidget = WidgetArrayInstance[item.id];
+        widget.openDialog();
     }
 
     removeItem($event: any, item: any) {

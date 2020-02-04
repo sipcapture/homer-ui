@@ -1,5 +1,5 @@
 import { Component,  Input, Output, EventEmitter } from '@angular/core';
-import { Widget } from '@app/helpers/widget';
+import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 import { IWidget } from '../IWidget';
 import { DashboardService } from '@app/services';
 import { SettingResultWidgetComponent } from './setting-result-widget.component';
@@ -56,15 +56,19 @@ export class ResultWidgetComponent implements IWidget {
         }, 0);
     }
 
-    ngOnInit() { }
+    ngOnInit() { 
+        WidgetArrayInstance[this.id] = this as IWidget;
+    }
 
     async openDialog() {
         const dialogRef = this.dialog.open(SettingResultWidgetComponent, {
             data: { title: this.title }
         });
         const result = await dialogRef.afterClosed().toPromise();
-        this.title = result.title;
-        this.saveConfig();
+        if (result) {
+            this.title = result.title;
+            this.saveConfig();
+        }
     }
     private saveConfig() {
         const _f = Functions.cloneObject;
