@@ -585,7 +585,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         if ((this.arrWindow.filter(i => i.id === row.data.callid)[0] != null)) {
             return;
         }
+        const payloadType = row && row.data && row.data.payloadType ? row.data.payloadType : 1;
+        const _protocol_profile = row && row.data && row.data.profile ? row.data.profile : this.protocol_profile;
 
+        console.log('openTransactionDialog ROW', {row});
         const selectedRows = this.gridApi.getSelectedRows();
 
         /* clear from clones */
@@ -605,17 +608,20 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 to: row.data.create_date + this.limitRange.to
             }
         };
-
-        request.param.search[this.protocol_profile] = {
+        if(_protocol_profile !== this.protocol_profile) {
+            delete request.param.search[this.protocol_profile];
+        }
+        
+        request.param.search[_protocol_profile] = {
             id: row.data.id,
             callid: selectedCallId.length > 0 ? selectedCallId : [row.data.callid],
             uuid: []
         };
 
         request.param.transaction = {
-            call: this.protocol_profile === '1_call',
-            registration: this.protocol_profile === '1_registration',
-            rest: this.protocol_profile === '1_default'
+            call: !!_protocol_profile.match('call'),
+            registration: !!_protocol_profile.match('registration'),
+            rest: !!_protocol_profile.match('default')
         };
 
         const windowData = {
@@ -659,6 +665,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         if ((this.arrMessageDetail.filter(i => i.id === row.data.id)[0] != null)) {
             return;
         }
+
+        const payloadType = row && row.data && row.data.payloadType ? row.data.payloadType : 1;
+        const _protocol_profile = row && row.data && row.data.profile ? row.data.profile : this.protocol_profile;
+
         const color = Functions.getColorByString(row.data.method || 'LOG');
         const mData = {
             loaded: false,
@@ -684,11 +694,14 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         };
 
         request.param.limit = 1;
-        request.param.search[this.protocol_profile] = { id: row.data.id };
+        if(_protocol_profile !== this.protocol_profile) {
+            delete request.param.search[this.protocol_profile];
+        }
+        request.param.search[_protocol_profile] = { id: row.data.id };
         request.param.transaction = {
-            call: this.protocol_profile === '1_call',
-            registration: this.protocol_profile === '1_registration',
-            rest: this.protocol_profile === '1_default'
+            call: !!_protocol_profile.match('call'),
+            registration: !!_protocol_profile.match('registration'),
+            rest: !!_protocol_profile.match('default')
         };
 
         this.arrMessageDetail.push(mData);
@@ -736,7 +749,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 .filter(i => typeof i.value !== 'object' && i.name !== 'raw');
             this.changeDetectorRefs.detectChanges();
             mData.loaded = true;
-            this.arrMessageDetail.push(mData);
             return;
         } else {
             const result: any = await this._scs.getMessage(request).toPromise();
@@ -757,26 +769,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 return {name: i, value: val};
             }).filter(i => typeof i.value !== 'object' && i.name !== 'raw');
 
-            // result.decoded = null;
-            // this._scs.getDecodedData(request).toPromise().then(res => {
-            //     if (res.data) {
-            //         result.decoded = res.data[0].decoded;
-            //     }
-            //     if (result.decoded) {
-            //         if(result.decoded[0]) {
-            //             if (result.decoded[0]._source && result.decoded[0]._source.layers) {
-            //                 mData.data.decoded = result.decoded[0]._source.layers;
-            //             } else {
-            //                 mData.data.decoded = result.decoded[0];
-            //             }
-            //         } else {
-            //             mData.data.decoded = result.decoded;
-            //         }
-            //         /* for update Dialog window */
-            //         mData.data = Functions.cloneObject(mData.data);
-            //         this.changeDetectorRefs.detectChanges();
-            //     }
-            // });
             this.changeDetectorRefs.detectChanges();
             mData.loaded = true;
         }
