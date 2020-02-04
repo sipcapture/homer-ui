@@ -22,7 +22,8 @@ export interface AceEditorConfig {
     title: 'Embed Markdown',
     description: 'Display Custom Markdown content',
     category: 'Visualize',
-    indexName: 'embed-markdown'
+    indexName: 'embed-markdown',
+    className: 'AceEditorWidgetComponent'
 })
 export class AceEditorWidgetComponent implements IWidget {
     @Input() config: AceEditorConfig;

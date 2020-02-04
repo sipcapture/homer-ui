@@ -43,7 +43,8 @@ interface SearchFieldItem {
     title: 'Proto Search',
     description: 'Display Protocol Search Form',
     category: 'Search',
-    indexName: 'display-results'
+    indexName: 'display-results',
+    className: 'ProtosearchWidgetComponent'
 })
 export class ProtosearchWidgetComponent implements IWidget {
     @Input() id: string;

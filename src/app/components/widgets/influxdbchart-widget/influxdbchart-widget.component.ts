@@ -20,7 +20,8 @@ import { Widget } from '@app/helpers/widget';
     title: 'InfluxDB',
     description: 'Display InfluxDB Metrics',
     category: 'Metrics',
-    indexName: 'influxdbchart'
+    indexName: 'influxdbchart',
+    className: 'InfluxdbchartWidgetComponent'
 })
 export class InfluxdbchartWidgetComponent implements IWidget {
     @Input() id: string;

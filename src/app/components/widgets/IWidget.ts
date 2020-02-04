@@ -19,4 +19,5 @@ export interface IWidgetMetaData {
     enable?: boolean;
     componentClass?: any;
     settingWindow?: boolean;
+    className?: string
 }

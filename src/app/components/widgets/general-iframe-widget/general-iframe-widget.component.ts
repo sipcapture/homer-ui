@@ -27,7 +27,8 @@ export interface GeneralIframeConfig {
     title: 'Embed Content',
     description: 'Display External Content in iFrame',
     category: 'Visualize',
-    indexName: 'embed-content'
+    indexName: 'embed-content',
+    className: 'GeneralIframeWidgetComponent'
 })
 export class GeneralIframeWidgetComponent implements IWidget {
     @Input() config: GeneralIframeConfig;
