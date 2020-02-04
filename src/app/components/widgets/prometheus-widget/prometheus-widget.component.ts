@@ -4,7 +4,7 @@ import { SettingPrometheusWidgetComponent } from './setting-prometheus-widget.co
 import { PrometheusService } from '@app/services/prometheus.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ChartType, ChartDataSets } from 'chart.js';
-import { Widget } from '@app/helpers/widget';
+import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 import { IWidget } from '../IWidget';
 import { Subscription } from 'rxjs';
 import { Label } from 'ng2-charts';
@@ -70,6 +70,7 @@ export class PrometheusWidgetComponent implements IWidget {
     ) { }
 
     ngOnInit() {
+        WidgetArrayInstance[this.id] = this as IWidget;
         if (!this.config) {
             this.isConfig = false;
             this.config = {

@@ -5,7 +5,7 @@ import { DateTimeRangeService, DateTimeTick} from '../../../services/data-time-r
 
 import { Subscription } from 'rxjs';
 import { IWidget } from '../IWidget';
-import { Widget } from '@app/helpers/widget';
+import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 
 
 export interface GeneralIframeConfig {
@@ -49,7 +49,7 @@ export class GeneralIframeWidgetComponent implements IWidget {
         ) { }
 
     ngOnInit() {
-
+        WidgetArrayInstance[this.id] = this as IWidget;
         this._config = {
             id: this.id,
             title: 'IFrame',

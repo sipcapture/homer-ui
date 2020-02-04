@@ -9,7 +9,7 @@ import { StatisticService } from '../../../services/statistic.service';
 import { DateTimeRangeService, DateTimeTick, Timestamp } from '../../../services/data-time-range.service';
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
-import { Widget } from '@app/helpers/widget';
+import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 
 @Component({
     selector: 'app-influxdbchart-widget',
@@ -71,6 +71,7 @@ export class InfluxdbchartWidgetComponent implements IWidget {
         private _ss: StatisticService) { }
 
     ngOnInit() {
+        WidgetArrayInstance[this.id] = this as IWidget;
         if (!this.config) {
             this.isConfig = false;
             this.config = {

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Widget } from '@app/helpers/widget';
+import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 import { IWidget } from '../IWidget';
 import { ChartDataSets, ChartType } from 'chart.js';
 import { Label } from 'ng2-charts';
@@ -136,6 +136,7 @@ export class ResultChartWidgetComponent implements IWidget {
     ) { }
 
     ngOnInit() {
+        WidgetArrayInstance[this.id] = this as IWidget;
         if (!this.configQuery) {
             this.configQuery = {
                 param: {

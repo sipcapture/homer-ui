@@ -9,7 +9,7 @@ Folder for all widgets is:
 example widget component `./my-widget/my-widget.conmponent.ts`:
 ```js
 import { Component, Input } from '@angular/core';
-import { Widget } from '@app/helpers/widget';
+import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 import { IWidget } from '../IWidget';
 
 import { SettingMyWidgetComponent } from './setting-my-widget.component';
@@ -28,7 +28,8 @@ import { SettingMyWidgetComponent } from './setting-my-widget.component';
     title: 'My Widget',
     description: 'Widget Description',
     category: 'My Category',
-    indexName: 'myWidget'
+    indexName: 'myWidget',
+    className: 'MyWidgetComponent' // <-- the same name as class name
 })
 /* ... implements IWidget - very IMPORTANT !!! */
 export class MyWidgetComponent implements IWidget {
@@ -39,6 +40,7 @@ export class MyWidgetComponent implements IWidget {
     constructor() { }
 
     ngOnInit() {
+        WidgetArrayInstance[this.id] = this as IWidget; // <--- IMPORTANT: SHOULD TO BE
         /* this.config - is JSON config for each widget instance, saves on dashboard  */
         if (!this.config) {
             this.config = {

@@ -5,7 +5,7 @@ import { DateTimeRangeService, DateTimeTick, Timestamp } from '../../../services
 
 import { Subscription } from 'rxjs';
 import { IWidget } from '../IWidget';
-import { Widget } from '@app/helpers/widget';
+import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 
 
 export interface IframeConfig {
@@ -64,6 +64,7 @@ export class IframeWidgetComponent implements IWidget {
         ) { }
 
     ngOnInit() {
+        WidgetArrayInstance[this.id] = this as IWidget;
         const time = this._dtrs.getDatesForQuery(true);
 
         this._config = {

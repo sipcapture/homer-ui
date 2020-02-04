@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, OnDestroy} from '@angul
 import { SettingsAceEditorWidgetComponent } from './settings-ace-editor-widget.component';
 import { MatDialog } from '@angular/material/dialog';
 import { IWidget } from '../IWidget';
-import { Widget } from '@app/helpers/widget';
+import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 // to use theme "eclipse"
 // with angular-cli add "../node_modules/ace-builds/src-min/ace.js"
 // and "../node_modules/ace-builds/src-min/theme-eclipse.js" to "scripts" var into the file angular-cli.json
@@ -36,6 +36,7 @@ export class AceEditorWidgetComponent implements IWidget {
     constructor(public dialog: MatDialog) { }
 
     ngOnInit() {
+        WidgetArrayInstance[this.id] = this as IWidget;
         this._config = {
             id: this.id,
             title: 'Markdown editor',
