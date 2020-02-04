@@ -672,7 +672,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         const color = Functions.getColorByString(row.data.method || 'LOG');
         const mData = {
             loaded: false,
-            data: {},
+            data: {} as any,
             id: row.data.id,
             headerColor: color || '',
             mouseEventData: mouseEventData || row.data.mouseEventData,
