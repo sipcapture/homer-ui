@@ -668,31 +668,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             mouseEventData: mouseEventData || row.data.mouseEventData,
             isBrowserWindow: row.isBrowserWindow
         };
+        console.log('row ==> ', row);
 
-        if (row.isLog) {
-            const data = row.data.item;
-            mData.data = data;
-            mData.data.item = {
-                raw: mData.data.raw
-            };
-            mData.data.messageDetaiTableData = Object.keys(mData.data)
-                .map(i => {
-                    let val;
-                    if (i === 'create_date') {
-                        val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS');
-                    } else if (i === 'timeSeconds') {
-                        val =  mData.data[i];
-                    } else {
-                        val = mData.data[i];
-                    }
-                    return {name: i, value: val};
-                })
-                .filter(i => typeof i.value !== 'object' && i.name !== 'raw');
-            this.changeDetectorRefs.detectChanges();
-            mData.loaded = true;
-            this.arrMessageDetail.push(mData);
-            return;
-        }
+        
         let _timestamp = {
             from: row.data.create_date + this.limitRange.message_from, // - 1sec
             to: row.data.create_date + this.limitRange.message_to // + 1sec
@@ -714,47 +692,94 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         };
 
         this.arrMessageDetail.push(mData);
-
-        const result: any = await this._scs.getMessage(request).toPromise();
-
-        mData.data = result.data[0];
-        mData.data.item = {
-            raw: mData.data.raw
-        };
-        mData.data.messageDetaiTableData = Object.keys(mData.data).map(i => {
-            let val;
-            if (i === 'create_date') {
-                val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS');
-            } else if (i === 'timeSeconds') {
-                val = mData.data[i];
-            } else {
-                val = mData.data[i];
-            }
-            return {name: i, value: val};
-        }).filter(i => typeof i.value !== 'object' && i.name !== 'raw');
-
-        result.decoded = null;
-        this._scs.getDecodedData(request).toPromise().then(res => {
-            if (res.data) {
-                result.decoded = res.data[0].decoded;
-            }
-            if (result.decoded) {
-                if(result.decoded[0]) {
-                    if (result.decoded[0]._source && result.decoded[0]._source.layers) {
-                        mData.data.decoded = result.decoded[0]._source.layers;
-                    } else {
-                        mData.data.decoded = result.decoded[0];
-                    }
-                } else {
-                    mData.data.decoded = result.decoded;
+        if(!row.isLog) {
+            this._scs.getDecodedData(request).toPromise().then(res => {
+                let _decoded;
+                if (res.data) {
+                    _decoded = res.data[0].decoded;
                 }
-                /* for update Dialog window */
-                mData.data = Functions.cloneObject(mData.data);
-                this.changeDetectorRefs.detectChanges();
-            }
-        });
-        this.changeDetectorRefs.detectChanges();
-        mData.loaded = true;
+                if (_decoded) {
+                    if(_decoded[0]) {
+                        if (_decoded[0]._source && _decoded[0]._source.layers) {
+                            mData.data.decoded = _decoded[0]._source.layers;
+                        } else {
+                            mData.data.decoded = _decoded[0];
+                        }
+                    } else {
+                        mData.data.decoded = _decoded;
+                    }
+                    /* for update Dialog window */
+                    mData.data = Functions.cloneObject(mData.data);
+                    this.changeDetectorRefs.detectChanges();
+                }
+            });
+        }
+        
+        if ( row.isLog || (row.data.payloadType === 1 && (row.data.raw || row.data.item && row.data.item.raw))) {
+            const data = row.data.item || row.data;
+            mData.data = data;
+            mData.data.item = {
+                raw: mData.data.raw
+            };
+            mData.data.messageDetaiTableData = Object.keys(mData.data)
+                .map(i => {
+                    let val;
+                    if (i === 'create_date') {
+                        val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS');
+                    } else if (i === 'timeSeconds') {
+                        val =  mData.data[i];
+                    } else {
+                        val = mData.data[i];
+                    }
+                    return {name: i, value: val};
+                })
+                .filter(i => typeof i.value !== 'object' && i.name !== 'raw');
+            this.changeDetectorRefs.detectChanges();
+            mData.loaded = true;
+            this.arrMessageDetail.push(mData);
+            return;
+        } else {
+            const result: any = await this._scs.getMessage(request).toPromise();
+
+            mData.data = result.data[0];
+            mData.data.item = {
+                raw: mData.data.raw
+            };
+            mData.data.messageDetaiTableData = Object.keys(mData.data).map(i => {
+                let val;
+                if (i === 'create_date') {
+                    val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS');
+                } else if (i === 'timeSeconds') {
+                    val = mData.data[i];
+                } else {
+                    val = mData.data[i];
+                }
+                return {name: i, value: val};
+            }).filter(i => typeof i.value !== 'object' && i.name !== 'raw');
+
+            // result.decoded = null;
+            // this._scs.getDecodedData(request).toPromise().then(res => {
+            //     if (res.data) {
+            //         result.decoded = res.data[0].decoded;
+            //     }
+            //     if (result.decoded) {
+            //         if(result.decoded[0]) {
+            //             if (result.decoded[0]._source && result.decoded[0]._source.layers) {
+            //                 mData.data.decoded = result.decoded[0]._source.layers;
+            //             } else {
+            //                 mData.data.decoded = result.decoded[0];
+            //             }
+            //         } else {
+            //             mData.data.decoded = result.decoded;
+            //         }
+            //         /* for update Dialog window */
+            //         mData.data = Functions.cloneObject(mData.data);
+            //         this.changeDetectorRefs.detectChanges();
+            //     }
+            // });
+            this.changeDetectorRefs.detectChanges();
+            mData.loaded = true;
+        }
     }
 
     public closeWindowMessage(id: number) {
