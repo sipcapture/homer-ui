@@ -6,7 +6,7 @@
     "start": "ng serve --port 80",
     "dev": "ng serve --configuration=development --port=80",
     "webapp": "ng serve --configuration=webapp --port=8099",
-    "build": "ng build --prod",
+    "build": "ng build --prod && gzip -9 -k ./dist/homer-ui/*.js",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
