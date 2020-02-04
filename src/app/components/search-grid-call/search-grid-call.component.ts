@@ -94,8 +94,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     private limitRange: any = {
         from: -300000, // - 5min
         to: 600000, // + 10min
-        message_from: -1000, // - 1sec
-        message_to: 1000, // + 1sec
+        message_from: -5000, // - 1sec
+        message_to: 5000, // + 1sec
     };
 
     private _interval: any;
