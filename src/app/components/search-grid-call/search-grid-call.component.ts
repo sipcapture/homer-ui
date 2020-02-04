@@ -672,7 +672,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         const color = Functions.getColorByString(row.data.method || 'LOG');
         const mData = {
             loaded: false,
-            data: null,
+            data: {} as any,
             id: row.data.id,
             headerColor: color || '',
             mouseEventData: mouseEventData || row.data.mouseEventData,
@@ -707,32 +707,30 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         this.arrMessageDetail.push(mData);
         if(!row.isLog) {
             this._scs.getDecodedData(request).toPromise().then(res => {
-                let _decoded;
-                if (res.data) {
+                let _decoded = null;
+                if (res.data && res.data[0] && res.data[0].decoded) {
                     _decoded = res.data[0].decoded;
                 }
-                if (_decoded) {
-                    if(_decoded[0]) {
-                        if (_decoded[0]._source && _decoded[0]._source.layers) {
-                            mData.data.decoded = _decoded[0]._source.layers;
-                        } else {
-                            mData.data.decoded = _decoded[0];
-                        }
+                if (_decoded && _decoded[0]) {
+                    if (_decoded[0]._source && _decoded[0]._source.layers) {
+                        mData.data.decoded = _decoded[0]._source.layers;
                     } else {
-                        mData.data.decoded = _decoded;
+                        mData.data.decoded = _decoded[0];
                     }
-                    /* for update Dialog window */
-                    mData.data = Functions.cloneObject(mData.data);
-                    this.changeDetectorRefs.detectChanges();
+                } else {
+                    mData.data.decoded = _decoded;
                 }
+                /* for update Dialog window */
+                mData.data = Functions.cloneObject(mData.data);
+                this.changeDetectorRefs.detectChanges();
             });
         }
         
         if ( row.isLog || (row.data.payloadType === 1 && (row.data.raw || row.data.item && row.data.item.raw))) {
             const data = row.data.item || row.data;
-            mData.data = data;
+            mData.data = data || {};
             mData.data.item = {
-                raw: mData.data.raw
+                raw: mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty'
             };
             mData.data.messageDetaiTableData = Object.keys(mData.data)
                 .map(i => {
@@ -753,9 +751,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         } else {
             const result: any = await this._scs.getMessage(request).toPromise();
 
-            mData.data = result.data[0];
+            mData.data = result && result.data && result.data[0] ? result.data[0] : {};
             mData.data.item = {
-                raw: mData.data.raw
+                raw: mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty'
             };
             mData.data.messageDetaiTableData = Object.keys(mData.data).map(i => {
                 let val;
