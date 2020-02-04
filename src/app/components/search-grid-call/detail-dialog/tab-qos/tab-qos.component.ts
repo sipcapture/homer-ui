@@ -368,7 +368,7 @@ export class TabQosComponent implements OnInit {
                 return;
             }
             
-            if ( 1 * item.raw.type !== 200 || !!item.raw.sender_information ) {
+            if ( 1 * item.raw.type !== 200 || !item.raw.sender_information ) {
                 return;
             }
 
