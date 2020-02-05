@@ -52,7 +52,7 @@ export class RsearchWidgetComponent implements IWidget {
         this.searchService.setLocalStorageQuery(this.searchQueryLoki);
         // localStorage.setItem(ConstValue.SEARCH_QUERY, JSON.stringify(this.searchQueryLoki));
 
-        this.router.navigate(['call/result']);
+        this.router.navigate(['search/result']);
     }
     onChangeField (event: any) {
 

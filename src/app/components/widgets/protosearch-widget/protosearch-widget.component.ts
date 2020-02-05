@@ -426,14 +426,14 @@ export class ProtosearchWidgetComponent implements IWidget {
         if (targetResult && isResultContainer) {
             _targetResult = Functions.cloneObject(targetResult);
             if ( _targetResult.type === 'page') {
-                this.router.navigate(['call/result']);
+                this.router.navigate(['search/result']);
             } else {
                 this._ds.setQueryToWidgetResult(_targetResult.id, this.searchQuery);
             }
             return;
         }
 
-        this.router.navigate(['call/result']);
+        this.router.navigate(['search/result']);
     }
 
     handleEnterKeyPress(event) {
