@@ -161,9 +161,11 @@ export class SearchService {
         };
     }
 
-    public queryBuilder_EXPORT (id, callid) {
+    public queryBuilder_EXPORT (id, callid, protocol_id = null) {
         console.log('searchServise:: public queryBuilder_EXPORT()');
         const localData = this.currentQuery;
+        
+        localData.protocol_id = protocol_id || localData.protocol_id;
 
         const search = {};
         search[localData.protocol_id] = {

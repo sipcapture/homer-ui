@@ -58,6 +58,14 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
             this.indexTabPosition = 0;
         }
     }
+    getProfile() {
+        return this.dataItem &&
+            this.dataItem.data &&
+            this.dataItem.data.messages &&
+            this.dataItem.data.messages[0] && 
+            this.dataItem.data.messages[0].profile ?
+                this.dataItem.data.messages[0].profile : null;
+    }
     private getCallIdArray() {
         const data = this.dataItem.data;
         const callidArray = data.calldata.map(i => i.sid).reduce((a, b) => {
@@ -69,7 +77,7 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
         return callidArray;
     }
     private getQuery(): any {
-        const query = this.searchService.queryBuilder_EXPORT(this.id, this.getCallIdArray());
+        const query = this.searchService.queryBuilder_EXPORT(this.id, this.getCallIdArray(), this.getProfile());
         query.timestamp = Functions.cloneObject(this.snapShotTimeRange);
         return query;
     }
