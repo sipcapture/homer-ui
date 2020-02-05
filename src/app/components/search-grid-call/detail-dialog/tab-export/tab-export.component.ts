@@ -51,7 +51,7 @@ export class TabExportComponent implements OnInit {
         // const param = Functions.getUriJson();
         const json = this.getQuery();
         const queryJson = encodeURIComponent(JSON.stringify(json)) + '=';
-        const url = window.location.origin + '/call/result?' + queryJson;
+        const url = window.location.origin + '/search/result?' + queryJson;
 
         window.open(url, '_blank');
     }
