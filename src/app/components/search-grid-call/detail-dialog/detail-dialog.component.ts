@@ -87,22 +87,21 @@ export class DetailDialogComponent implements OnInit {
     }
 
     setTabByAdvenced() {
-        const params = Functions.getUriJson();
-        if (params && params.param) {
-            this._pas.getAll().toPromise().then(advenced => {
-                if (advenced && advenced.data) {
-                    try {
-                        const setting = advenced.data.filter(i => i.category === 'export' && i.param === 'transaction');
-                        if (setting && setting[0] && setting[0].data) {
-                            const { tabpositon } = setting[0].data;
-                            if (tabpositon && typeof tabpositon === 'string' && tabpositon !== '') {
-                                this.tabIndexByDefault = Object.keys(this.tabs).indexOf(tabpositon);
-                            }
+        this._pas.getAll().toPromise().then(advenced => {
+            if (advenced && advenced.data) {
+                try {
+                    const params = Functions.getUriJson();
+                    const category = params && params.param ? 'export' : 'search';
+                    const setting = advenced.data.filter(i => i.category === category && i.param === 'transaction');
+                    if (setting && setting[0] && setting[0].data) {
+                        const { tabpositon } = setting[0].data;
+                        if (tabpositon && typeof tabpositon === 'string' && tabpositon !== '') {
+                            this.tabIndexByDefault = Object.keys(this.tabs).indexOf(tabpositon);
                         }
-                    } catch (err) { }
-                }
-            });
-        }
+                    }
+                } catch (err) { }
+            }
+        });
     }
 
     onExportFlowAsPNG() {
