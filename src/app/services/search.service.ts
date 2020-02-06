@@ -99,7 +99,7 @@ export class SearchService {
         };
     }
 
-    private getLocation() {
+    private getLocation(): any {
         const localData = this.currentQuery;
 
         const locationArray = {};
@@ -126,11 +126,15 @@ export class SearchService {
             uuid: []
         };
 
+        const dbnode = this.getLocation();
+        if (row && row.data && row.data.dbnode && dbnode.node) {
+            dbnode.node = [row.data.dbnode];
+        }
         return {
             timestamp: this._dtrs.getDatesForQuery(true),
             param: {
                 search: search,
-                location: this.getLocation(),
+                location: dbnode,
                 transaction: this.getTransactionFlags(),
                 id: {},
                 timezone: this.getTimeZoneLocal()
@@ -178,7 +182,7 @@ export class SearchService {
             timestamp: this._dtrs.getDatesForQuery(true),
             param: {
                 search: search,
-                location:  this.getLocation(),
+                location: this.getLocation() as any,
                 transaction: this.getTransactionFlags(),
                 id: {},
                 timezone: this.getTimeZoneLocal()

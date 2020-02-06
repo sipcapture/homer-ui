@@ -666,7 +666,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             return;
         }
 
-        const payloadType = row && row.data && row.data.payloadType ? row.data.payloadType : 1;
         const _protocol_profile = row && row.data && row.data.profile ? row.data.profile : this.protocol_profile;
 
         const color = Functions.getColorByString(row.data.method || 'LOG');
@@ -703,6 +702,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             registration: !!_protocol_profile.match('registration'),
             rest: !!_protocol_profile.match('default')
         };
+
+        if (row.data && row.data.dbnode && request.param.location && request.param.location.node) {
+            request.param.location.node = [row.data.dbnode];
+        }
 
         this.arrMessageDetail.push(mData);
         if(!row.isLog) {

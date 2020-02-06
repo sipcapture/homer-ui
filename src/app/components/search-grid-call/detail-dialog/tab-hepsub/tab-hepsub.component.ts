@@ -76,9 +76,22 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
         }, []);
         return callidArray;
     }
+    private getDBNode() {
+        const data = 
+            this.dataItem && 
+            this.dataItem.data && 
+            this.dataItem.data.messages && 
+            this.dataItem.data.messages[0] && 
+            this.dataItem.data.messages[0].dbnode ? 
+            this.dataItem.data.messages[0].dbnode : null;
+        return data;
+    }
     private getQuery(): any {
         const query = this.searchService.queryBuilder_EXPORT(this.id, this.getCallIdArray(), this.getProfile());
         query.timestamp = Functions.cloneObject(this.snapShotTimeRange);
+        if( this.getDBNode() && query.param && query.param.location && query.param.location.node ) {
+            query.param.location.node = [this.getDBNode()];
+        }
         return query;
     }
     ngOnDestroy () {
