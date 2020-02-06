@@ -31,6 +31,8 @@ import {
     SearchService,
     PreferenceAdvancedService
 } from '@app/services';
+import { DialogSettingsGridDialog } from './grid-settings-dialog/grid-settings-dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
@@ -104,6 +106,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     private _latestQuery: string;
 
     constructor(
+        public dialog: MatDialog,
         private _puss: PreferenceUserSettingsService,
         private _scs: SearchCallService,
         private _srs: SearchRemoteService,
@@ -778,7 +781,21 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     public closeWindowMessage(id: number) {
         this.arrMessageDetail.splice(id, 1);
     }
-
+    onSettingButtonClick() {
+        const params = {
+            api: this.gridApi,
+            columnApi: this.gridColumnApi,
+            context: this.context
+        } as any;
+        this.dialog.open(DialogSettingsGridDialog, {
+            width:  '500px', data: {
+                apicol: params.columnApi,
+                apipoint: params.api,
+                columns: params.context.componentParent.columnDefs,
+                idParent: params.context.componentParent.id
+            }
+        });
+    }
     ngOnDestroy () {
         if (this.subscriptionRangeUpdateTimeout) {
             this.subscriptionRangeUpdateTimeout.unsubscribe();

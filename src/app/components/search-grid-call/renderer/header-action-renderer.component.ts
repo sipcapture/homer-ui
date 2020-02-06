@@ -7,11 +7,11 @@ import { DialogSettingsGridDialog} from '../grid-settings-dialog/grid-settings-d
 @Component({
     template: `
         <div class="user-actions">
-            <a (click)="onSettingButtonClick()"
+            <a (click)="onChackAllClick()"
                 (mouseover)="hover=true"
                 (mouseleave)="hover=false"
                 class="material-icons md-18"
-            >settings_applications</a>
+            >done_outline</a>
         </div>`,
     styles: [
         `.btn { line-height: 0.5 }`
@@ -28,14 +28,18 @@ export class HeaderActionRenderer {
         this.params = headerParams;
     }
 
-    private onSettingButtonClick() {
-        this.dialog.open(DialogSettingsGridDialog, {
-            width:  '500px', data: {
-                apicol: this.params.columnApi,
-                apipoint: this.params.api,
-                columns: this.params.context.componentParent.columnDefs,
-                idParent: this.params.context.componentParent.id
-            }
-        });
+    private onChackAllClick() {
+        let i = 0;
+        let bool = true;
+        while (this.params.api.getRowNode(i) !== undefined && bool) {
+            bool = bool && this.params.api.getRowNode(i).selected;
+            i++;
+        }
+        if (!bool) {
+            this.params.api.selectAll();
+        } else {
+            this.params.api.deselectAll();
+        }
+        
     }
 }
