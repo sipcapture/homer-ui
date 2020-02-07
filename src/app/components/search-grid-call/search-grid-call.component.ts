@@ -124,13 +124,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             field: '',
             minWidth: 60,
             maxWidth: 60,
-            // cellRenderer: 'columnActionRenderer',
             checkboxSelection: true,
             lockPosition: true,
             cellRendererParams: { checkbox: true },
             pinned: 'left',
             cellClass: 'no-border',
-            headerComponentFramework: HeaderActionRenderer
+            headerCheckboxSelection: true
         }];
 
         this.context = { componentParent: this };
@@ -310,13 +309,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         const params = Functions.getUriJson();
 
         if (params && params.param) {
-            
+
             const callid: Array<string>  = params.param.search[this.protocol_profile].callid;
             if (callid.length > 1) {
                 this.gridApi.forEachLeafNode(node => {
                     if (callid.indexOf(node.data.callid) !== -1) {
                         node.setSelected(true, true);
-                        
                     }
                 });
 
