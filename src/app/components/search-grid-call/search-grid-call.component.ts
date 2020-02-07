@@ -458,8 +458,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     _apiColumn.push(f);
                 }
             });
+            return _apiColumn;
         }
-        return _apiColumn;
+        return apiColumn;
     }
 
     private isNewData(): boolean {
