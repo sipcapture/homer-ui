@@ -325,14 +325,14 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             }
         }
     }
-    private openTransactionByAdvencedSettings() {
+    private openTransactionByAdvancedSettings() {
         const params = Functions.getUriJson();
         if (params && params.param && !this.isOpenDialog) {
             this.isOpenDialog = true;
-            this._pas.getAll().toPromise().then(advenced => {
-                if (advenced && advenced.data) {
+            this._pas.getAll().toPromise().then(advanced => {
+                if (advanced && advanced.data) {
                     try {
-                        const setting = advenced.data.filter(i => i.category === 'export' && i.param === 'transaction');
+                        const setting = advanced.data.filter(i => i.category === 'export' && i.param === 'transaction');
                         if (setting && setting[0] && setting[0].data) {
                             const { openwindow } = setting[0].data;
                             if (openwindow === true) {
@@ -381,7 +381,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
             if (marData.length > 0) {
                 const myRemoteColumns = [];
-                /* dont add create date  */
+                /* don't add create date  */
                 if (hepVersion < 2000) {
                     myRemoteColumns.push({ headerName: 'ID', field: 'id', minWidth: 20, maxWidth: 40, hide: true});
                     myRemoteColumns.push({ headerName: 'Date', field: 'create_date', filter: true, suppressSizeToFit: true,
@@ -438,6 +438,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
     private localStateHeaders(apiColumn) {
         let lsIndex = 'result-state';
+        const _apiColumn = [];
         if ( this.id ) {
             lsIndex += `-${this.id}`;
         }
@@ -451,6 +452,13 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     col.hide = !f.selected;
                 }
             });
+            h.forEach(col => {
+                const f = apiColumn.filter(i => i.field === col.field)[0];
+                if (f) {
+                    _apiColumn.push(f);
+                }
+            });
+            return _apiColumn;
         }
         return apiColumn;
     }
@@ -496,7 +504,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.rowData = result.data;
                 this.sizeToFit();
                 this.selectCallIdFromGetParams();
-                this.openTransactionByAdvencedSettings();
+                this.openTransactionByAdvancedSettings();
             });
         }
     }
@@ -794,6 +802,18 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             }
         });
     }
+    onColumnMoved (event) {
+        const bufferData = Functions.cloneObject(event.api.columnController.gridColumns.map(i => i.colDef));
+        let lsIndex = 'result-state';
+        if ( this.id ) {
+            lsIndex += `-${this.id}`;
+        }
+        localStorage.setItem(lsIndex, JSON.stringify(bufferData.map(i => ({
+            name: i.headerName,
+            field: i.field,
+            selected: !i.hide
+        }))));
+    }
     ngOnDestroy () {
         if (this.subscriptionRangeUpdateTimeout) {
             this.subscriptionRangeUpdateTimeout.unsubscribe();
@@ -804,4 +824,5 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }
         clearInterval(this._interval);
     }
+
 }

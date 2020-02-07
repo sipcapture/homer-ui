@@ -16,9 +16,9 @@ export class AddDialogComponent {
         public dialogRef: MatDialogRef<AddDialogComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any
     ) {
-        this._pas.getAll().subscribe(advencedData => {
+        this._pas.getAll().subscribe(advancedData => {
             WidgetArray.filter(i => !!i.advancedName).forEach(i => {
-                i.enable = advencedData.data.filter(j => j.param === i.advancedName).length > 0;
+                i.enable = advancedData.data.filter(j => j.param === i.advancedName).length > 0;
             });
         });
 
