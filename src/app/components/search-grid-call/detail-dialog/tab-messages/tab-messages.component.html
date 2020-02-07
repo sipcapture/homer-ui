@@ -12,10 +12,17 @@
   </ng-container>
 
   <ng-container matColumnDef="Msg_Size"><th mat-header-cell *matHeaderCellDef> Msg Size </th><td mat-cell *matCellDef="let element"> {{element.Msg_Size}} </td></ng-container>
-  <ng-container matColumnDef="srcIp_srcPort"><th mat-header-cell *matHeaderCellDef> Src IP/Host </th><td mat-cell *matCellDef="let element"> {{element.srcIp_srcPort}} </td></ng-container>
+  
+  <ng-container matColumnDef="srcIp_srcPort"><th mat-header-cell *matHeaderCellDef> Src IP/Host </th><td mat-cell *matCellDef="let element">
+    {{getAliasByIP(element.srcIp_srcPort)}}
+  </td></ng-container>
+
   <ng-container matColumnDef="srcPort"><th mat-header-cell *matHeaderCellDef> Sport </th><td mat-cell *matCellDef="let element"> {{element.srcPort}} </td></ng-container>
   
-  <ng-container matColumnDef="dstIp_dstPort"><th mat-header-cell *matHeaderCellDef> Dst IP/Host </th><td mat-cell *matCellDef="let element"> {{element.dstIp_dstPort}} </td></ng-container>
+  <ng-container matColumnDef="dstIp_dstPort"><th mat-header-cell *matHeaderCellDef> Dst IP/Host </th><td mat-cell *matCellDef="let element">
+    {{getAliasByIP(element.dstIp_dstPort)}}
+  </td></ng-container>
+
   <ng-container matColumnDef="dstPort"><th mat-header-cell *matHeaderCellDef> Dport </th><td mat-cell *matCellDef="let element"> {{element.dstPort}} </td></ng-container>
   <ng-container matColumnDef="proto"><th mat-header-cell *matHeaderCellDef> Proto </th><td mat-cell *matCellDef="let element"> {{element.proto | uppercase }} </td></ng-container>
   <ng-container matColumnDef="type"><th mat-header-cell *matHeaderCellDef> Type </th><td mat-cell *matCellDef="let element"> {{element.type}} </td></ng-container>

@@ -31,6 +31,8 @@ import {
     SearchService,
     PreferenceAdvancedService
 } from '@app/services';
+import { DialogSettingsGridDialog } from './grid-settings-dialog/grid-settings-dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
@@ -104,6 +106,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     private _latestQuery: string;
 
     constructor(
+        public dialog: MatDialog,
         private _puss: PreferenceUserSettingsService,
         private _scs: SearchCallService,
         private _srs: SearchRemoteService,
@@ -121,13 +124,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             field: '',
             minWidth: 60,
             maxWidth: 60,
-            // cellRenderer: 'columnActionRenderer',
             checkboxSelection: true,
             lockPosition: true,
             cellRendererParams: { checkbox: true },
             pinned: 'left',
             cellClass: 'no-border',
-            headerComponentFramework: HeaderActionRenderer
+            headerCheckboxSelection: true
         }];
 
         this.context = { componentParent: this };
@@ -307,13 +309,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         const params = Functions.getUriJson();
 
         if (params && params.param) {
-            
+
             const callid: Array<string>  = params.param.search[this.protocol_profile].callid;
             if (callid.length > 1) {
                 this.gridApi.forEachLeafNode(node => {
                     if (callid.indexOf(node.data.callid) !== -1) {
                         node.setSelected(true, true);
-                        
                     }
                 });
 
@@ -666,7 +667,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             return;
         }
 
-        const payloadType = row && row.data && row.data.payloadType ? row.data.payloadType : 1;
         const _protocol_profile = row && row.data && row.data.profile ? row.data.profile : this.protocol_profile;
 
         const color = Functions.getColorByString(row.data.method || 'LOG');
@@ -703,6 +703,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             registration: !!_protocol_profile.match('registration'),
             rest: !!_protocol_profile.match('default')
         };
+
+        if (row.data && row.data.dbnode && request.param.location && request.param.location.node) {
+            request.param.location.node = [row.data.dbnode];
+        }
 
         this.arrMessageDetail.push(mData);
         if(!row.isLog) {
@@ -775,7 +779,21 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     public closeWindowMessage(id: number) {
         this.arrMessageDetail.splice(id, 1);
     }
-
+    onSettingButtonClick() {
+        const params = {
+            api: this.gridApi,
+            columnApi: this.gridColumnApi,
+            context: this.context
+        } as any;
+        this.dialog.open(DialogSettingsGridDialog, {
+            width:  '500px', data: {
+                apicol: params.columnApi,
+                apipoint: params.api,
+                columns: params.context.componentParent.columnDefs,
+                idParent: params.context.componentParent.id
+            }
+        });
+    }
     ngOnDestroy () {
         if (this.subscriptionRangeUpdateTimeout) {
             this.subscriptionRangeUpdateTimeout.unsubscribe();

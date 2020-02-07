@@ -33,12 +33,17 @@ export class TabMessagesComponent implements OnInit {
     dataSource: Array<MesagesData> = [];
     displayedColumns: string[] = [
         'id', 'create_date', 'timeSeconds', 'timeUseconds',
-        'method', 'Msg_Size', 'srcIp_srcPort', 'dstIp_dstPort',
-        'dstIp_dstPort', 'dstPort', 'proto', 'type',
+        'method', 'Msg_Size',
+        'srcIp_srcPort', 'dstIp_dstPort',
+        // 'aliasDst', 'aliasSrc',
+        'dstPort', 'proto', 'type',
     ];
 
     constructor() { }
-
+    getAliasByIP (ip) {
+        const alias = this.dataItem.data.alias
+        return alias[ip] || ip;
+    }
     ngOnInit() {
         this.dataSource = Functions.messageFormatter(this.dataItem.data.messages);
     }
