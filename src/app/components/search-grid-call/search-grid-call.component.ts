@@ -494,7 +494,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
         if ( this.isLokiQuery ) {
             this._srs.getData(this.queryBuilderForLoki()).toPromise().then(result => {
-                this.rowData = result.data;
+                console.log('LOKI result.data', result.data);
+                this.rowData = result.data.sort(( a, b ) => {
+                    a = new Date(a.micro_ts).getTime();
+                    b = new Date(b.micro_ts).getTime();
+                    return ( a < b ) ? -1 : (( a > b ) ? 1 : 0);
+                });
                 this.sizeToFit();
                 setTimeout(() => { /** for grid updated autoHeight and sizeToFit */
                     this.rowData = Functions.cloneObject(this.rowData);
