@@ -431,7 +431,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     myRemoteColumns.push(vaColumn);
                 }
                 const restoreColumns = this.localStateHeaders(myRemoteColumns);
-                this.columnDefs = hepVersion < 2000 ? this.myPredefColumns.concat(restoreColumns) : restoreColumns;
+                this.columnDefs = hepVersion < 2000 ? this.myPredefColumns.concat(restoreColumns) : myRemoteColumns;
                 this.sizeToFit();
             }
         });
