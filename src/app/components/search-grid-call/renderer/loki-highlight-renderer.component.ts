@@ -14,10 +14,7 @@ export class LokiHighlightRenderer implements ICellRendererAngularComp{
     agInit(params: any): void {
         this.params = params;
         const rxText = this.params.context.componentParent.searchQueryLoki.rxText;
-
-        console.log(rxText, !!rxText);
         if (!!rxText) {
-
             const regex = new RegExp('(' + rxText + ')', 'g');
             this.data = this.params.value
                 .replace(/\</g, '&lt;')

@@ -372,8 +372,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             const arrData: Array<any> = data.data;
             arrData.forEach((a: any) => {
                 const keyHep = a.hepid + '_' + a.profile;
-
-                if (marData.length === 0 && this.config.param.search && this.config.param.search.hasOwnProperty(keyHep)) {
+                if (
+                    (this.isLokiQuery && a.hepid === 2000 && a.hep_alias === 'LOKI') ||
+                    (marData.length === 0 && this.config.param.search && this.config.param.search.hasOwnProperty(keyHep))
+                ) {
                     marData = a.fields_mapping;
                     hepVersion = parseInt(a.hepid + '', 10);
                 }
