@@ -372,8 +372,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             const arrData: Array<any> = data.data;
             arrData.forEach((a: any) => {
                 const keyHep = a.hepid + '_' + a.profile;
-
-                if (marData.length === 0 && this.config.param.search && this.config.param.search.hasOwnProperty(keyHep)) {
+                if (
+                    (this.isLokiQuery && a.hepid === 2000 && a.hep_alias === 'LOKI') ||
+                    (marData.length === 0 && this.config.param.search && this.config.param.search.hasOwnProperty(keyHep))
+                ) {
                     marData = a.fields_mapping;
                     hepVersion = parseInt(a.hepid + '', 10);
                 }
@@ -429,7 +431,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     myRemoteColumns.push(vaColumn);
                 }
                 const restoreColumns = this.localStateHeaders(myRemoteColumns);
-                this.columnDefs = hepVersion < 2000 ? this.myPredefColumns.concat(restoreColumns) : restoreColumns;
+                this.columnDefs = hepVersion < 2000 ? this.myPredefColumns.concat(restoreColumns) : myRemoteColumns;
                 this.sizeToFit();
             }
         });
@@ -492,7 +494,11 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
         if ( this.isLokiQuery ) {
             this._srs.getData(this.queryBuilderForLoki()).toPromise().then(result => {
-                this.rowData = result.data;
+                this.rowData = result.data.sort(( a, b ) => {
+                    a = new Date(a.micro_ts).getTime();
+                    b = new Date(b.micro_ts).getTime();
+                    return ( a < b ) ? -1 : (( a > b ) ? 1 : 0);
+                });
                 this.sizeToFit();
                 setTimeout(() => { /** for grid updated autoHeight and sizeToFit */
                     this.rowData = Functions.cloneObject(this.rowData);
