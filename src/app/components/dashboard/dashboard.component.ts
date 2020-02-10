@@ -61,7 +61,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 dragHandleClass: 'drag-handler',
                 ignoreContentClass: 'no-drag',
             },
-            /* Pushig elements */
+            /* Pushing elements */
             pushItems: true,
             disablePushOnDrag: false,
             disablePushOnResize: false,
@@ -80,7 +80,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     ngAfterViewInit () {
         this.updateTrigger();
-        
     }
     scrollTop() {
         setTimeout(() => {
@@ -129,19 +128,32 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.dashboardCollection.data ?
                     this.dashboardCollection.data.name : '';
 
+            this.gridOptions.maxRows = this.gridOptions.minRows = 5;
+            this.gridOptions.maxCols = this.gridOptions.minCols = 5;
+
             if (this.dashboardCollection) {
                 if (this.dashboardCollection.data.config) {
                     ((g, c) => {
-                        g.maxRows = g.minRows = c.maxrows;
-                        g.maxCols = g.minCols = c.columns;
-                        g.pushItems = c.pushing;
-                        g.disablePushOnDrag = !c.pushing;
-                        g.disablePushOnResize = !c.pushing;
-                        g.pushResizeItems = c.pushing;
-                        g.gridType = c.gridType;
+                        g.maxRows = g.minRows = c.maxrows || 5;
+                        g.maxCols = g.minCols = c.columns || 5;
+                        g.pushItems = !!c.pushing;
+                        g.disablePushOnDrag = !c.pushing || g.disablePushOnDrag;
+                        g.disablePushOnResize = !c.pushing || g.disablePushOnResize;
+                        g.pushResizeItems = !!c.pushing;
+                        g.gridType = c.gridType || g.gridType;
                     })(this.gridOptions, this.dashboardCollection.data.config);
-                    this.changedOptions();
+                } else {
+                    (g => { /** by default */
+                        g.maxRows = g.minRows = 5;
+                        g.maxCols = g.minCols = 5;
+                        g.pushItems = true;
+                        g.disablePushOnDrag = false;
+                        g.disablePushOnResize = false;
+                        g.pushResizeItems = true;
+                        g.gridType = 'fit';
+                    })(this.gridOptions);
                 }
+                this.changedOptions();
                 this.dashboardArray = this.dashboardCollection.data.widgets;
             } else {
                 this.dashboardArray = [];
@@ -162,6 +174,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.changedOptions();
             this.scrollTop();
         });
+        // this.changedOptions();
     }
 
     itemChange(item: any) {
@@ -281,12 +294,12 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                     dd.config.gridType = data.gridType;
 
                     ((g, c) => {
-                        g.maxRows = g.minRows = c.maxrows;
-                        g.maxCols = g.minCols = c.columns;
-                        g.pushItems = c.pushing;
+                        g.maxRows = g.minRows = c.maxrows || 5;
+                        g.maxCols = g.minCols = c.columns || 5;
+                        g.pushItems = !!c.pushing;
                         g.disablePushOnDrag = !c.pushing;
                         g.disablePushOnResize = !c.pushing;
-                        g.pushResizeItems = c.pushing;
+                        g.pushResizeItems = !!c.pushing;
                         g.gridType = c.gridType;
 
                     })(this.gridOptions, dd.config);
