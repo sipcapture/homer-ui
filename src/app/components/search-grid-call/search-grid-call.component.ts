@@ -424,7 +424,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     if (h.hasOwnProperty('autoheight') && h.autoheight === true) {
                         vaColumn.cellStyle = {
                             'white-space': 'normal',
-                            'line-height': '1.5rem'
+                            'line-height': '1.2rem'
                         };
                         vaColumn.autoHeight = true;
                     }
