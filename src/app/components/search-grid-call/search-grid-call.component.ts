@@ -195,6 +195,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     } else {
                         this.isLokiQuery = false;
                     }
+                    this.config.param.search = {};
                     this.config.param.search[this.protocol_profile] = this.localData.fields;
 
                     if (this.localData.location && this.localData.location.value !== '' && this.localData.location.mapping !== '') {
@@ -312,6 +313,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     params.param.search[this.protocol_profile].callid
                 ) {
                     const callid: Array<string>  = params.param.search[this.protocol_profile].callid;
+                    this.config.param.search = {};
                     this.config.param.search[this.protocol_profile] = [{
                         name: 'sid',
                         value: callid.join(';'),
@@ -319,6 +321,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                         hepid: 1
                     }];
                 } else {
+                    this.config.param.search = {};
                     this.config.param.search[this.protocol_profile] = [];
                 }
                 this.config.param.transaction = {};
@@ -337,6 +340,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 } else {
                     this.isLokiQuery = false;
                 }
+                this.config.param.search = {};
                 this.config.param.search[this.protocol_profile] = this.localData.fields;
 
                 if (this.localData.location && this.localData.location.value !== '' && this.localData.location.mapping !== '') {
@@ -347,6 +351,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
         if (this.comingRequest) {
             this.protocol_profile = this.comingRequest.protocol_id;
+            this.config.param.search = {};
             this.config.param.search[this.comingRequest.protocol_id] = this.comingRequest.fields;
 
             if (this.comingRequest.location && this.comingRequest.location.value !== '' && this.comingRequest.location.mapping !== '') {
@@ -381,19 +386,13 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         const params = Functions.getUriJson();
 
         if (params && params.param) {
-
-            const callid: Array<string>  = params.param.search[this.protocol_profile].callid;
+            const callid: Array<string> = params.param.search[this.protocol_profile].callid;
             if (callid.length > 1) {
                 this.gridApi.forEachLeafNode(node => {
                     if (callid.indexOf(node.data.callid) !== -1) {
                         node.setSelected(true, true);
                     }
                 });
-
-            } else if (callid.length === 1) {
-                /** under construction */
-            } else {
-                /** under construction */
             }
         }
     }
@@ -702,10 +701,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 to: row.data.create_date + this.limitRange.to
             }
         };
-        if(_protocol_profile !== this.protocol_profile) {
-            delete request.param.search[this.protocol_profile];
-        }
-        
+        request.param.search = {};
         request.param.search[_protocol_profile] = {
             id: row.data.id,
             callid: selectedCallId.length > 0 ? selectedCallId : [row.data.callid],
@@ -787,9 +783,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         };
 
         request.param.limit = 1;
-        if(_protocol_profile !== this.protocol_profile) {
-            delete request.param.search[this.protocol_profile];
-        }
+        request.param.search = {};
         request.param.search[_protocol_profile] = { id: row.data.id };
         request.param.transaction = {
             call: !!_protocol_profile.match('call'),
