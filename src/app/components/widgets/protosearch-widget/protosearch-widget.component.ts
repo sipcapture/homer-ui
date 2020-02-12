@@ -359,6 +359,7 @@ export class ProtosearchWidgetComponent implements IWidget {
         const dialogRef = this.dialog.open(SettingProtosearchWidgetComponent, {
             width: '600px',
             data: {
+                isContainer: this.autoline,
                 config: this.config,
                 mapping: mapping,
                 isButton: this.buttonState
@@ -489,7 +490,7 @@ export class ProtosearchWidgetComponent implements IWidget {
                 i.value = event.text;
             }
         });
-        
+
         this.saveState();
     }
     private get isLoki(): boolean {

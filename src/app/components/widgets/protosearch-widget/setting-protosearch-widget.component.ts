@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
 import { DialogAlarmComponent } from '../dialog-alarm/dialog-alarm.component';
 import { ConstValue } from '@app/models';
+import { Functions } from '../../../helpers/functions';
 
 
 @Component({
@@ -16,6 +17,7 @@ export class SettingProtosearchWidgetComponent implements OnInit {
         hep_alias: '',
         fields_mapping: []
     };
+    mappingSortedData: Array<any>;
     resultConfig = {
         title: '',
         isButton: true,
@@ -69,7 +71,13 @@ export class SettingProtosearchWidgetComponent implements OnInit {
                 this.resultConfig.profile = data.config.config.protocol_profile.value;
                 this.resultConfig.protocol_id = data.config.protocol_id;
                 this.resultConfig.countFieldColumns = data.config.countFieldColumns || 1;
-                for (const item of data.mapping.data) {
+                this.mappingSortedData = Functions.cloneObject(data.mapping.data);
+                if (data.isContainer) {
+                    this.mappingSortedData = this.mappingSortedData.filter(item => {
+                        return !(item.profile === 'default' && item.hepid === 2000 && item.hep_alias === 'LOKI');
+                    });
+                }
+                for (const item of this.mappingSortedData) {
                     if (item.profile === 'default' && item.hepid === 2000 && item.hep_alias === 'LOKI') {
                         item.fields_mapping = this.lokiFields;
                     }
@@ -79,11 +87,10 @@ export class SettingProtosearchWidgetComponent implements OnInit {
                         item.fields_mapping = item.fields_mapping.concat(this.defaultFields);
                     }
                 }
-
                 if (data.config.protocol_id) {
                     this.proto.hep_alias = data.config.protocol_id.name;
                     this.proto.profile = this.resultConfig.profile;
-                    this.proto.fields_mapping = data.mapping.data
+                    this.proto.fields_mapping = this.mappingSortedData
                         .filter(i => i.hep_alias === data.config.protocol_id.name &&
                             i.profile === data.config.config.protocol_profile.value)[0]
                         .fields_mapping.map(i => {
