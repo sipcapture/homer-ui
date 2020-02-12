@@ -23,6 +23,7 @@ import { ConstValue } from '@app/models';
 import { FormControl } from '@angular/forms';
 
 
+
 interface SearchFieldItem {
     field_name: string;
     form_type: string;
@@ -49,7 +50,11 @@ interface SearchFieldItem {
 export class ProtosearchWidgetComponent implements IWidget {
     @Input() id: string;
     @Input() config: any;
+    @Input() fields = [];
+    @Input() autoline = false;
+    @Input() targetResultId = null;
     @Output() changeSettings = new EventEmitter<any> ();
+    @Output() dosearch = new EventEmitter<any> ();
 
     private subscriptionStorage: Subscription;
     private dashboardEventSubscriber: Subscription;
@@ -63,7 +68,7 @@ export class ProtosearchWidgetComponent implements IWidget {
     _cache: any;
     buttonState = true;
     searchQuery: any;
-    fields = [];
+
     widgetId: string;
     widgetResultList: Array<any>;
     widgetResultListLastSelect: string;
@@ -94,16 +99,16 @@ export class ProtosearchWidgetComponent implements IWidget {
                 sizeX: 2,
                 sizeY: 2,
                 config: {
-                   title: 'CALL SIP SEARCH',
-                   searchbutton: false,
-                   protocol_id: {
-                      name: 'SIP',
-                      value: 1
-                   },
-                   protocol_profile: {
-                      name: 'call',
-                      value: 'call'
-                   }
+                    title: 'CALL SIP SEARCH',
+                    searchbutton: false,
+                    protocol_id: {
+                        name: 'SIP',
+                        value: 1
+                    },
+                    protocol_profile: {
+                        name: 'call',
+                        value: 'call'
+                    }
                 },
                 uuid: 'ed426bd0-ff21-40f7-8852-58700abc3762',
                 fields: [],
@@ -131,7 +136,11 @@ export class ProtosearchWidgetComponent implements IWidget {
         this.initSubscribes();
     }
     getFieldColumns() {
-        this.countFieldColumns = this.config.countFieldColumns || this.countFieldColumns;
+        if (this.autoline) {
+            this.countFieldColumns = this.fields.length;
+        } else {
+            this.countFieldColumns = this.config.countFieldColumns || this.countFieldColumns;
+        }
         return Array.from({length: this.countFieldColumns}, i => '1fr').join(' ');
     }
     private initSubscribes() {
@@ -201,7 +210,7 @@ export class ProtosearchWidgetComponent implements IWidget {
 
         /* clone Object */
         this.fields = Functions.cloneObject(this.config.fields);
-
+        
         const m = this.mapping.data.filter(i => i.profile === this.config.config.protocol_profile.value &&
             i.hep_alias === this.config.config.protocol_id.name)[0];
 
@@ -248,7 +257,6 @@ export class ProtosearchWidgetComponent implements IWidget {
                 } else {
                     i.form_default = null;
                 }
-
                 if (i && i.form_default !== null && i.form_type === 'input') {
                     i.formControl = new FormControl();
                     i.formControl.setValue(i.value);
@@ -419,21 +427,29 @@ export class ProtosearchWidgetComponent implements IWidget {
         this.saveState();
     }
     doSearchResult () {
+        const targetResultSelf = {
+            id: this.targetResultId,
+            title: '',
+            type: this.targetResultId ? 'widget' : 'page'
+        };
+
         const isResultContainer = this.fields.filter(i => i.field_name === ConstValue.CONTAINER).length > 0;
-        const targetResult = this.targetResultsContainerValue.value;
+        const targetResult = this.targetResultId ? targetResultSelf : this.targetResultsContainerValue.value;
         let _targetResult: any;
         this.saveState();
-        if (targetResult && isResultContainer) {
+        if (this.targetResultId || (targetResult && isResultContainer)) {
             _targetResult = Functions.cloneObject(targetResult);
             if ( _targetResult.type === 'page') {
                 this.router.navigate(['search/result']);
             } else {
                 this._ds.setQueryToWidgetResult(_targetResult.id, this.searchQuery);
             }
+            this.dosearch.emit({});
             return;
         }
 
         this.router.navigate(['search/result']);
+        this.dosearch.emit({});
     }
 
     handleEnterKeyPress(event) {

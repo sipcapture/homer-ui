@@ -45,6 +45,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     private gridColumnApi;
     public context;
     public frameworkComponents;
+    isSearchPanel = false;
     @Input() inContainer = false;
     @Input() id: string = null;
     filterGridValue: string;
@@ -61,12 +62,32 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     arrWindow: Array<any> = [];
     arrMessageDetail: Array<any> = [];
     searchQueryLoki: any;
-
+    searchSliderFields = [];
     isLokiQuery = false;
     lastTimestamp: number;
     localData: any;
     queryTextLoki: string;
-
+    searchSliderConfig = {
+        countFieldColumns: 4,
+        config: {
+           protocol_id: {
+              name: 'SIP',
+              value: 1
+           },
+           protocol_profile: {
+              name: 'call',
+              value: 'call'
+           },
+           searchbutton: false,
+           title: 'CALL 2 SIP SEARCH'
+        },
+        fields: [],
+        protocol_id: {
+           name: 'SIP',
+           value: 100
+        },
+        refresh: false,
+    };
     gridOptions: GridOptions = <GridOptions> {
         defaultColDef: {
             sortable: true,
@@ -219,8 +240,39 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.limitRange.message_to = d.data.message_to || 1000;
             }
         });
+
+        this.initSearchSlider();
+    }
+    async initSearchSlider() {
+        try {
+            const mappings: Array<any> = (await this._pmps.getAll().toPromise() as any).data as Array<any>;
+            const query = this.searchService.getLocalStorageQuery();
+            const mapping = Functions.cloneObject(mappings.filter(i => i.profile === query.protocol_id.split('_')[1])[0].fields_mapping);
+            mapping.push({ id: ConstValue.LIMIT, name: 'Query Limit' });
+            console.log(
+                'this.searchService . getLocalStorageQuery()',
+                this.searchService.getLocalStorageQuery(),
+                mapping
+            );
+            setTimeout(() => {
+                this.searchSliderFields = this.searchSliderConfig.fields = query.fields.map(i => ({
+                    field_name: i.name,
+                    hepid: 1,
+                    name: i.name,
+                    selection: mapping.filter(j => j.id === i.name)[0].name, // test
+                    type: i.type,
+                    value: i.value
+                }));
+                this.searchSliderConfig.countFieldColumns = this.searchSliderConfig.fields.filter(i => i.value !== '').length;
+            }, 500);
+        } catch (err) {
+            console.error('this.initSearchSlider', err);
+        }
     }
 
+    getSearchSlider() {
+        return this.searchSliderConfig.fields.filter(i => i.value !== '').length;
+    }
     // get
 
     private getQueryData() {
@@ -424,7 +476,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     if (h.hasOwnProperty('autoheight') && h.autoheight === true) {
                         vaColumn.cellStyle = {
                             'white-space': 'normal',
-                            'line-height': '1.5rem'
+                            'line-height': '1.2rem'
                         };
                         vaColumn.autoHeight = true;
                     }
