@@ -10,7 +10,10 @@ import {
     AfterViewInit,
     ChangeDetectorRef,
     Input,
-    HostListener
+    HostListener,
+    Output,
+    EventEmitter,
+    ViewChild
 } from '@angular/core';
 import {
     ColumnActionRenderer,
@@ -48,6 +51,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     isSearchPanel = false;
     @Input() inContainer = false;
     @Input() id: string = null;
+    @Output() dataReady: EventEmitter<any> = new EventEmitter();
+
+    @ViewChild('searchSlider', {static: false}) searchSlider: any;
     filterGridValue: string;
     defaultColDef: Object;
     columnDefs: Array<Object>;
@@ -199,6 +205,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                         this.subscriptionRangeUpdateTimeout = this._dtrs.castRangeUpdateTimeout.subscribe(() => {
                             this.update();
                         });
+                    } else {
+                        this.update(true);
+                        this.initSearchSlider();
                     }
                 }
             });
@@ -255,14 +264,25 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 mapping
             );
             setTimeout(() => {
-                this.searchSliderFields = this.searchSliderConfig.fields = query.fields.map(i => ({
-                    field_name: i.name,
-                    hepid: 1,
-                    name: i.name,
-                    selection: mapping.filter(j => j.id === i.name)[0].name, // test
-                    type: i.type,
-                    value: i.value
-                }));
+                this.searchSliderFields = this.searchSlider.getFields();
+                query.fields.map(i => {
+                    const itemField = {
+                        field_name: i.name,
+                        hepid: 1,
+                        name: i.name,
+                        selection: mapping.filter(j => j.id === i.name)[0].name, // test
+                        type: i.type,
+                        value: i.value
+                    };
+                    if (!this.searchSliderFields.map(j => j.field_name).includes(i.name)) {
+                        this.searchSliderFields.push(itemField);
+                    } else {
+                        this.searchSliderFields.filter(j => j.field_name === i.name)[0].value = i.value;
+                    }
+                    return itemField;
+                });
+                this.searchSliderConfig.fields = Functions.cloneObject(this.searchSliderFields);
+                this.searchSliderFields = Functions.cloneObject(this.searchSliderFields);
                 this.searchSliderConfig.countFieldColumns = this.searchSliderConfig.fields.filter(i => i.value !== '').length;
             }, 500);
         } catch (err) {
@@ -554,7 +574,11 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.sizeToFit();
                 setTimeout(() => { /** for grid updated autoHeight and sizeToFit */
                     this.rowData = Functions.cloneObject(this.rowData);
+                    this.dataReady.emit({});
                 }, 600);
+            }, err => {
+                this.rowData = [];
+                this.dataReady.emit({});
             });
         } else {
             this._scs.getData(this.config).toPromise().then(result => {
@@ -562,6 +586,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.sizeToFit();
                 this.selectCallIdFromGetParams();
                 this.openTransactionByAdvancedSettings();
+                this.dataReady.emit({});
+            }, err => {
+                this.rowData = [];
+                this.dataReady.emit({});
             });
         }
     }

@@ -137,7 +137,7 @@ export class ProtosearchWidgetComponent implements IWidget {
     }
     getFieldColumns() {
         if (this.autoline) {
-            this.countFieldColumns = this.fields.length;
+            this.countFieldColumns = Math.min(4, this.fields.length);
         } else {
             this.countFieldColumns = this.config.countFieldColumns || this.countFieldColumns;
         }
@@ -395,8 +395,18 @@ export class ProtosearchWidgetComponent implements IWidget {
         this.config.countFieldColumns = result.countFieldColumns;
 
         this._sss.removeProtoSearchConfig(this.widgetId);
-
+        const _forRestoreFieldsValue = Functions.cloneObject(this.fields);
         this.updateButtonState();
+        this.fields.forEach(i => {
+            const restore = _forRestoreFieldsValue.filter(j => j.field_name === i.field_name)[0];
+            if (restore) {
+                i.value = restore.value;
+                if (i.formControl) {
+                    i.formControl.setValue(restore.value);
+                }
+            }
+        })
+        console.log(this.fields,_forRestoreFieldsValue )
         this.changeSettings.emit({
             config: this.config,
             id: this.id
@@ -484,6 +494,9 @@ export class ProtosearchWidgetComponent implements IWidget {
     }
     private get isLoki(): boolean {
         return this.fields.filter(i => i.field_name === 'loki').length !== 0;
+    }
+    public getFields() {
+        return Functions.cloneObject(this.fields);
     }
     ngOnDestroy () {
         if (this.subscriptionStorage) {

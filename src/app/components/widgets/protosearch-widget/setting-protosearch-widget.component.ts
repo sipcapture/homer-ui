@@ -70,7 +70,7 @@ export class SettingProtosearchWidgetComponent implements OnInit {
                 this.resultConfig.protocol_id = data.config.protocol_id;
                 this.resultConfig.countFieldColumns = data.config.countFieldColumns || 1;
                 for (const item of data.mapping.data) {
-                    if (item.profile === 'loki') {
+                    if (item.profile === 'default' && item.hepid === 2000 && item.hep_alias === 'LOKI') {
                         item.fields_mapping = this.lokiFields;
                     }
 

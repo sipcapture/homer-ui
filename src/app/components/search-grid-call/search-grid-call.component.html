@@ -41,14 +41,15 @@
 <!-- 
   search slider
 -->
-<div class="search-slider-footer" [ngStyle]="{'bottom': !isSearchPanel ? '-20rem': null}">
+<div *ngIf="!isLokiQuery" class="search-slider-footer" [ngStyle]="{'bottom': !isSearchPanel ? '-20rem': null}">
   <div style="float: right; opacity: 0.7">
-		<!-- <button style="color: #999" title="Add widget" mat-icon-button ><mat-icon>add</mat-icon></button> -->
-		<button title="Dashboard settings" (click)="searchSlider.openDialog()" mat-icon-button ><mat-icon>settings</mat-icon></button>
+		<button title="Clear fields" (click)="searchSlider.onClearFields()" mat-icon-button ><mat-icon>not_interested</mat-icon></button>
+		<button title="Search settings" (click)="searchSlider.openDialog()" mat-icon-button ><mat-icon>settings</mat-icon></button>
 		<button title="Close" (click)="isSearchPanel=false" mat-icon-button ><mat-icon>close</mat-icon></button>
   </div>
   <div class="content">
     <!-- search slider container -->
+    <div style="height: 1rem;"></div>
     <app-protosearch-widget 
       [targetResultId]="id"
       [fields]="searchSliderFields"
