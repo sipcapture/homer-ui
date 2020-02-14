@@ -165,13 +165,14 @@ export class ProtosearchWidgetComponent implements IWidget {
                     if (item.field_name === ConstValue.CONTAINER && item.value !== '') {
                         this.targetResultsContainerValue.setValue(item.value);
                     }
-
-                    if (cacheQuery.location &&
-                        cacheQuery.location.mapping &&
-                        item.field_name === cacheQuery.location.mapping &&
-                        item.form_default
-                    ) {
-                        item.value = cacheQuery.location.value.map(i => item.form_default.filter(j => j.value === i)[0].name);
+                    if (cacheQuery) {
+                        if (cacheQuery.location &&
+                            cacheQuery.location.mapping &&
+                            item.field_name === cacheQuery.location.mapping &&
+                            item.form_default
+                        ) {
+                            item.value = cacheQuery.location.value.map(i => item.form_default.filter(j => j.value === i)[0].name);
+                        }
                     }
                 });
             }
