@@ -255,8 +255,11 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
     async initSearchSlider() {
         try {
-            const mappings: Array<any> = (await this._pmps.getAll().toPromise() as any).data as Array<any>;
             const query = this.searchService.getLocalStorageQuery();
+            if (!query || !query.protocol_id) {
+                return;
+            }
+            const mappings: Array<any> = (await this._pmps.getAll().toPromise() as any).data as Array<any>;
             const mapping = Functions.cloneObject(mappings.filter(i => i.profile === query.protocol_id.split('_')[1])[0].fields_mapping);
             mapping.push({ id: ConstValue.LIMIT, name: 'Query Limit' });
             console.log(

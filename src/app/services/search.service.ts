@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '@environments/environment';
-import { PreferenceMapping, ConstValue } from '@app/models';
+import { ConstValue } from '@app/models';
 import { Functions } from '@app/helpers/functions';
-import { Observable } from 'rxjs';
+
 import { DateTimeRangeService } from './data-time-range.service';
+import { AlertService } from './alert.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class SearchService {
-    currentQuery: any;
+    currentQuery: any = {};
     isLoki = false;
     location: any;
     protocol: any;
@@ -18,18 +17,15 @@ export class SearchService {
     target: any;
 
     constructor (
-        private _dtrs: DateTimeRangeService
+        private _dtrs: DateTimeRangeService,
+        private alertService: AlertService
     ) {
         this.currentQuery = this.getLocalStorageQuery() || {
             protocol_id: null,
-            location: this.location || {}
+            location: this.location
         };
         this.protocol = this.currentQuery.protocol_id || this.protocol;
         this.location = this.currentQuery.location || this.location;
-
-        if (!this.protocol) {
-            console.error('this.protocol is undefined')
-        }
     }
 
     public setLocalStorageQuery(query: any) {
@@ -42,13 +38,20 @@ export class SearchService {
             this.protocol = query.protocol;
         } else {
             this.currentQuery.protocol = this.protocol;
+            if (this.currentQuery.protocol) {
+                this.alertService.error('./homer-app -populate-table-db-config -force-populate  -populate-table=mapping_schema')
+            }
         }
         this.currentQuery = Functions.cloneObject(query);
         localStorage.setItem(ConstValue.SEARCH_QUERY, JSON.stringify(query));
     }
 
     public getLocalStorageQuery() {
-        this.currentQuery = JSON.parse(localStorage.getItem(ConstValue.SEARCH_QUERY));
+        this.currentQuery = JSON.parse(localStorage.getItem(ConstValue.SEARCH_QUERY)) || {
+            protocol_id: null,
+            location: this.location
+        };
+
         const localData = Functions.cloneObject(this.currentQuery);
         if (localData && localData.fields && localData.fields instanceof Array) {
             localData.fields = localData.fields.filter(i => i.name !== ConstValue.CONTAINER);
