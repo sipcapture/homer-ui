@@ -41,7 +41,7 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
                 this.haveData.emit(true);
             } else {
                 this.haveData.emit(false);
-                console.log('error', res);
+                console.error('error', res);
             }
         })
         setTimeout(() => {

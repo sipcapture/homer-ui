@@ -228,7 +228,6 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 }
             };
         }
-        console.log('this.isAdmin', this.isAdmin);
         router.events.pipe(
             filter(e => e instanceof ActivationEnd)
         ).subscribe((evt: ActivationEnd) => {
