@@ -39,7 +39,7 @@ export class SearchService {
         } else {
             this.currentQuery.protocol = this.protocol;
             if (this.currentQuery.protocol) {
-                this.alertService.error('./homer-app -populate-table-db-config -force-populate  -populate-table=mapping_schema')
+                this.alertService.error(`couldn't retrieve the correct settings for this mapping`);
             }
         }
         this.currentQuery = Functions.cloneObject(query);
