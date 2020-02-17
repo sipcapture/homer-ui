@@ -21,12 +21,9 @@ export class SettingClockWidgetComponent {
         this.arrayTimeZones = moment.tz.names();
     }
     onSelectTimeZone(timeZone) {
-        this.data.value = moment.tz(timeZone)._offset;
         this.data.offset = moment.tz(timeZone)._offset;
         this.data.name = timeZone;
         this.data.desc = timeZone;
-
-        this.data.location.value = moment.tz(timeZone)._offset;
         this.data.location.offset = moment.tz(timeZone)._offset;
         this.data.location.name = timeZone;
         this.data.location.desc = timeZone;

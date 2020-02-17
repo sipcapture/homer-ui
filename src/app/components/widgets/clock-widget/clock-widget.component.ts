@@ -3,15 +3,15 @@ import { Widget, WidgetArrayInstance } from '@app/helpers/widget.ts';
 import { SettingClockWidgetComponent } from './setting-clock-widget.component';
 import { MatDialog } from '@angular/material/dialog';
 import { IWidget } from '../IWidget';
-import * as moment from 'moment';
+import * as _moment from 'moment';
 
+const moment: any = _moment;
 
 enum ConstTime {
     DATA_PATTERN = 'YYYY-MM-DD',
     TIME_PATTERN = 'HH:mm:ss'
 }
 export interface TimeZone {
-    value: number;
     offset: string;
     name: string;
     desc: string;
@@ -48,6 +48,7 @@ export class ClockWidgetComponent implements IWidget {
     desc: string;
     name: string;
     objDate: Date;
+    objTime: Date;
     _config: ClockConfig;
     location_value: number;
     private _interval;
@@ -61,8 +62,7 @@ export class ClockWidgetComponent implements IWidget {
             location: {
                 desc: 'Europe/Amsterdam',
                 name: 'GMT+1 AMS',
-                offset: '+3',
-                value: -180,
+                offset: '+3'
             },
             showseconds: false,
             timePattern: ConstTime.TIME_PATTERN,
@@ -78,30 +78,23 @@ export class ClockWidgetComponent implements IWidget {
             if (this.config.location) {
                 this._config.location.desc = this.config.location.desc || 'Greenwich Mean Time';
                 this._config.location.name = this.config.location.name || 'GMT+0 UTC';
-                this._config.location.offset = this.config.location.offset || '+0';
-                this._config.location.value = this.config.location.value || 0;
             }
         }
 
         this.desc = this._config.location.desc;
         this.name = this._config.location.name;
-        this.location_value = this._config.location.value;
         this.update();
     }
     update() {
         if (this._interval) {
             clearInterval(this._interval);
         }
-        this._interval = setInterval(() => {
-            const _localTimezoneOffset = new Date().getTimezoneOffset();
-            const _GMTTimezoneOffset =  this.location_value - _localTimezoneOffset;
+        moment.tz.setDefault(this.name);
 
-            if (this.location_value < 0) {
-                this.objDate = moment().add(Math.abs(_GMTTimezoneOffset), 'minutes').toDate();
-            } else {
-                this.objDate = moment().subtract(_GMTTimezoneOffset, 'minutes').toDate();
-            }
-        }, 100);
+        this._interval = setInterval(() => {
+            this.objDate =  moment().format("YYYY-MM-DD");
+            this.objTime =  moment().format("HH:mm:ss");
+        }, 1000);
     }
     async openDialog() {
         const dialogRef = this.dialog.open(SettingClockWidgetComponent, {
@@ -121,7 +114,6 @@ export class ClockWidgetComponent implements IWidget {
             this.desc = data.desc;
             this._config.title = data.title;
 
-            this.location_value = this._config.location.value;
             this.update();
 
             this.changeSettings.emit({
