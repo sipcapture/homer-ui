@@ -210,7 +210,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     openSettings(item: any) {
-        console.log('openSettings::id:', item.id);
         const widget: IWidget = WidgetArrayInstance[item.id];
         widget.openDialog();
     }

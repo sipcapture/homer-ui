@@ -155,7 +155,6 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
 
     }
     onKeyUpDiv(event) {
-        console.log('key UP event.keyCode=', event.keyCode);
         // 16 - Shift
         // 13 - Enter
         // 17 - Ctrl

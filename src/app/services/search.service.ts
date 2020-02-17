@@ -117,7 +117,7 @@ export class SearchService {
     }
 
     public queryBuilderQOS (row: any, selectedCallId: any) { /** search-grid-call */
-        console.log('searchServise:: public queryBuilderQOS()');
+
         const labels = selectedCallId;
 
         const localData = this.currentQuery;
@@ -169,9 +169,8 @@ export class SearchService {
     }
 
     public queryBuilder_EXPORT (id, callid, protocol_id = null) {
-        console.log('searchServise:: public queryBuilder_EXPORT()');
         const localData = this.currentQuery;
-        
+
         localData.protocol_id = protocol_id || localData.protocol_id;
 
         const search = {};

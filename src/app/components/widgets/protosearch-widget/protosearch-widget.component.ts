@@ -407,8 +407,8 @@ export class ProtosearchWidgetComponent implements IWidget {
                     i.formControl.setValue(restore.value);
                 }
             }
-        })
-        console.log(this.fields,_forRestoreFieldsValue )
+        });
+
         this.changeSettings.emit({
             config: this.config,
             id: this.id

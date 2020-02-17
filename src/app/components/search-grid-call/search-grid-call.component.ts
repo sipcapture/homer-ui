@@ -262,11 +262,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             const mappings: Array<any> = (await this._pmps.getAll().toPromise() as any).data as Array<any>;
             const mapping = Functions.cloneObject(mappings.filter(i => i.profile === query.protocol_id.split('_')[1])[0].fields_mapping);
             mapping.push({ id: ConstValue.LIMIT, name: 'Query Limit' });
-            console.log(
-                'this.searchService . getLocalStorageQuery()',
-                this.searchService.getLocalStorageQuery(),
-                mapping
-            );
+
             setTimeout(() => {
                 this.searchSliderFields = this.searchSlider.getFields();
                 query.fields.map(i => {
@@ -684,7 +680,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         const payloadType = row && row.data && row.data.payloadType ? row.data.payloadType : 1;
         const _protocol_profile = row && row.data && row.data.profile ? row.data.profile : this.protocol_profile;
 
-        console.log('openTransactionDialog ROW', {row});
         const selectedRows = this.gridApi.getSelectedRows();
 
         /* clear from clones */
@@ -770,9 +765,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             mouseEventData: mouseEventData || row.data.mouseEventData,
             isBrowserWindow: row.isBrowserWindow
         };
-        console.log('row ==> ', row);
 
-        
         let _timestamp = {
             from: row.data.create_date + this.limitRange.message_from, // - 1sec
             to: row.data.create_date + this.limitRange.message_to // + 1sec
