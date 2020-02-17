@@ -18,6 +18,7 @@ This project is still in Development. Please open well documented issues to repo
 ```
 npm install
 npm install -g @angular/cli
+npm run build
 ```
 
 ### Usage
