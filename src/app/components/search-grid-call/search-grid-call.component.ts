@@ -309,13 +309,13 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
                 if (params.param.search &&
                     params.param.search[this.protocol_profile] &&
-                    params.param.search[this.protocol_profile].callid
+                    params.param.search[this.protocol_profile].sid
                 ) {
-                    const callid: Array<string>  = params.param.search[this.protocol_profile].callid;
+                    const sids: Array<string>  = params.param.search[this.protocol_profile].sid;
                     this.config.param.search = {};
                     this.config.param.search[this.protocol_profile] = [{
                         name: 'sid',
-                        value: callid.join(';'),
+                        value: sids.join(';'),
                         type: 'string',
                         hepid: 1
                     }];
@@ -385,10 +385,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         const params = Functions.getUriJson();
 
         if (params && params.param) {
-            const callid: Array<string> = params.param.search[this.protocol_profile].callid;
-            if (callid.length > 1) {
+            const sids: Array<string> = params.param.search[this.protocol_profile].sid;
+            if (sids.length > 1) {
                 this.gridApi.forEachLeafNode(node => {
-                    if (callid.indexOf(node.data.callid) !== -1) {
+                    if (sids.indexOf(node.data.sid) !== -1) {
                         node.setSelected(true, true);
                     }
                 });
@@ -406,12 +406,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                         if (setting && setting[0] && setting[0].data) {
                             const { openwindow } = setting[0].data;
                             if (openwindow === true) {
-                                const callid = params.param.search[this.protocol_profile].callid;
+                                const sids = params.param.search[this.protocol_profile].sid;
                                 const rowData: Array<any>  = Functions.cloneObject(this.rowData) as Array<any>;
 
                                 this.openTransactionDialog({
-                                    data: callid.map(j => rowData.filter(i => i.callid === j)[0])[0]
-                                }, null, callid);
+                                    data: sids.map(j => rowData.filter(i => i.sid === j)[0])[0]
+                                }, null, sids);
                             }
                         }
                     } catch (err) { }
@@ -635,8 +635,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 'background-color': '#fff'
             }
         }
-        const callid = params.data.callid;
-        const his = this.hashCode(callid);
+        const sid = params.data.sid;
+        const his = this.hashCode(sid);
         const color = 'hsla(' + this.intToARGB(his) + ', 75%, 85%, 0.3)';
         return {
             'background-color': color
@@ -674,23 +674,27 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
     public openTransactionDialog (row, mouseEventData = null, callisArray = null) {
         // do not open duplicate window
-        if ((this.arrWindow.filter(i => i.id === row.data.callid)[0] != null)) {
+
+        const sid = row.data.callid ? row.data.callid : row.data.sid;
+
+        if ((this.arrWindow.filter(i => i.id === sid)[0] != null)) {
             return;
         }
+
         const payloadType = row && row.data && row.data.payloadType ? row.data.payloadType : 1;
         const _protocol_profile = row && row.data && row.data.profile ? row.data.profile : this.protocol_profile;
 
         const selectedRows = this.gridApi.getSelectedRows();
 
         /* clear from clones */
-        const selectedCallId = callisArray || selectedRows.map(i => i.callid).reduce((a, b) => {
+        const selectedCallId = callisArray || selectedRows.map(i => i.sid).reduce((a, b) => {
             if (a.indexOf(b) === -1) {
                 a.push(b);
             }
             return a;
         }, []);
 
-        const color = Functions.getColorByString(row.data.callid);
+        const color = Functions.getColorByString(sid);
 
         const request = {
             param: Functions.cloneObject(this.config.param || {} as any),
@@ -702,7 +706,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         request.param.search = {};
         request.param.search[_protocol_profile] = {
             id: row.data.id,
-            callid: selectedCallId.length > 0 ? selectedCallId : [row.data.callid],
+            callid: selectedCallId.length > 0 ? selectedCallId : [sid],
             uuid: []
         };
 

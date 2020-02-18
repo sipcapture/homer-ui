@@ -128,8 +128,8 @@ export class Functions {
             timeUseconds: (item.timeUseconds / 1000).toFixed(3) + 's',
 
             //method: item.method || 'LOG',
-            method: Functions.methodCheck(item.method, item.payloadType),
-            mcolor: Functions.colorByMethod(item.method, item.payloadType),
+            method: Functions.methodCheck(item.method ? item.method : item.event, item.payloadType),
+            mcolor: Functions.colorByMethod(item.method ? item.method : item.event, item.payloadType),
             Msg_Size: (item.raw + '').length,
             srcIp_srcPort: item.srcIp + ':' + item.srcPort,
             srcPort: item.srcPort,
