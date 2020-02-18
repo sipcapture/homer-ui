@@ -38,7 +38,7 @@ export class SearchService {
             this.protocol = query.protocol;
         } else {
             this.currentQuery.protocol = this.protocol;
-            if (this.currentQuery.protocol) {
+            if (!this.currentQuery.protocol) {
                 this.alertService.error(`couldn't retrieve the correct settings for this mapping`);
             }
         }
