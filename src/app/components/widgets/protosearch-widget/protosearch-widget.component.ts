@@ -211,7 +211,7 @@ export class ProtosearchWidgetComponent implements IWidget {
 
         /* clone Object */
         this.fields = Functions.cloneObject(this.config.fields);
-        
+
         const m = this.mapping.data.filter(i => i.profile === this.config.config.protocol_profile.value &&
             i.hep_alias === this.config.config.protocol_id.name)[0];
 
@@ -315,7 +315,8 @@ export class ProtosearchWidgetComponent implements IWidget {
                     type: item.type,
                     hepid: item.hepid
                 })),
-            protocol_id: '1_' + this.config.config.protocol_profile.value // 1_call | 1_ default | 1_registration
+            protocol_id: this.config.config.protocol_id.value + '_' +
+                this.config.config.protocol_profile.value // 1_call | 1_ default | 1_registration
         };
 
 
@@ -372,7 +373,7 @@ export class ProtosearchWidgetComponent implements IWidget {
             return;
         }
         if (result.fields && result.fields.length !== 0) {
-            this.config.protocol_id = result.protocol_id;
+            this.config.config.protocol_id = result.protocol_id;
             this.config.config.protocol_profile = {
                 name: result.profile,
                 value: result.profile,
@@ -381,8 +382,8 @@ export class ProtosearchWidgetComponent implements IWidget {
                 const res: SearchFieldItem = {
                     field_name: item.id,
                     form_type: item.proto.hep_alias,
-                    hepid: 1,
-                    name: `1:${result.profile}:${item.id}`,
+                    hepid: result.protocol_id.value,
+                    name: `${result.protocol_id.value}:${result.profile}:${item.id}`,
                     profile: item.proto.profile,
                     selection: item.name,
                     type: 'string',
