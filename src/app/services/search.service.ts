@@ -96,9 +96,9 @@ export class SearchService {
 
     private getTransactionFlags () {
         return {
-            call: this.currentQuery.protocol_id === '1_call',
-            registration: this.currentQuery.protocol_id === '1_registration',
-            rest: this.currentQuery.protocol_id === '1_default'
+            call: this.currentQuery.protocol_id.includes('call'),
+            registration: this.currentQuery.protocol_id.includes('registration'),
+            rest: this.currentQuery.protocol_id.includes('default')
         };
     }
 
