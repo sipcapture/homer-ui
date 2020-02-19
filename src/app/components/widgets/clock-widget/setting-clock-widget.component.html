@@ -20,7 +20,29 @@
     </mat-select>
   </mat-form-field>
 </div>
-
+<div mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Clock type</mat-label>
+    <mat-select [(value)]="data.showAnalog">
+      <mat-option *ngFor="let clockType of arrayClockType" [value]="clockType" (click)="onChange">
+        {{clockType}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<div mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Time font size</mat-label>
+    <input type="number" autocomplete="off" matInput [(ngModel)]="data.fontSizeClock">
+  </mat-form-field>
+</div>
+<div mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Date font size</mat-label>
+    <input type="number" autocomplete="off" matInput [(ngModel)]="data.fontSizeDate">
+  </mat-form-field>
+</div>
+<mat-checkbox [(ngModel)]="data.showDate" labelPosition="Before" (click)="onChange()">Show Date</mat-checkbox>
 <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
   <button mat-raised-button (click)="onNoClick()">Cancel</button>
   <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
