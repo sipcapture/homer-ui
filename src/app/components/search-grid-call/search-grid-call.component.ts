@@ -209,7 +209,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     } else {
                         this.update(true);
                         this.initSearchSlider(!this.isThisSelfQuery);
-                        console.log('this._ds.dashboardEvent.subscribe :: this.initSearchSlider', this.isThisSelfQuery);
                     }
                 }
             });
@@ -251,7 +250,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.limitRange.message_to = d.data.message_to || 1000;
             }
         });
-        console.log('ngOnInit() :: this.initSearchSlider');
         this.initSearchSlider();
     }
     async initSearchSlider(isImportantClear = false) {

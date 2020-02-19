@@ -12,7 +12,14 @@ import * as html2canvas from 'html2canvas';
 export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('flowtitle', {static: false}) flowtitle;
     @Input() callid: any;
-    @Input() dataItem: any;
+    _dataItem: any;
+    @Input() set dataItem(val) {
+        this._dataItem = val;
+        setTimeout(this.initData.bind(this));
+    }
+    get dataItem () {
+        return this._dataItem;
+    }
     @Input() set exportAsPNG(val) {
         if(val) {
             this.isExport = true;
@@ -53,6 +60,9 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         clearInterval(this._interval);
     }
     ngOnInit() {
+        this.initData();
+    }
+    initData() {
         this.color_sid = Functions.getColorByString(this.callid);
 
         /* sort it */

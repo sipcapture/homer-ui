@@ -25,7 +25,14 @@ export interface MesagesData {
 })
 
 export class TabMessagesComponent implements OnInit {
-    @Input() dataItem: any;
+    _dataItem: any;
+    @Input() set dataItem(val) {
+        this._dataItem = val;
+        this.dataSource = Functions.messageFormatter(this._dataItem.data.messages);
+    }
+    get dataItem () {
+        return this._dataItem;
+    }
     @Output() messageWindow: EventEmitter<any> = new EventEmitter();
 
     isWindow = false;
@@ -41,7 +48,7 @@ export class TabMessagesComponent implements OnInit {
 
     constructor() { }
     getAliasByIP (ip) {
-        const alias = this.dataItem.data.alias
+        const alias = this.dataItem.data.alias;
         return alias[ip] || ip;
     }
     ngOnInit() {
