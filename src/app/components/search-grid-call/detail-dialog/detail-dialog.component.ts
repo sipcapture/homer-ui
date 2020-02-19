@@ -17,7 +17,7 @@ export class DetailDialogComponent implements OnInit {
 
     IdFromCallID;
     activeTab = 0;
-    isfiltersOpened = false;
+    isFilterOpened = false;
     tabs = {
         messages: false,
         flow: false,
@@ -49,7 +49,7 @@ export class DetailDialogComponent implements OnInit {
             this._messagesBuffer = Functions.cloneObject(this.sipDataItem.data);
             this.checkStatusTabs();
             this.checkboxListFilter = Object.keys(this.sipDataItem.data.messages
-                .map(i => i.payloadType).reduce((a, b) => (a[b] = 1, a), {})).map(i => ({
+                .map(i => i.payloadType).reduce((a, b) => (a[b] = 1, a), {})).map((i: any) => ({
                     payloadType: i * 1,
                     selected: true,
                     title: Functions.methodCheck(null, i * 1)
@@ -139,6 +139,7 @@ export class DetailDialogComponent implements OnInit {
             this.sipDataItem.data.calldata = this._messagesBuffer.calldata.filter(i => selectedId.includes(i.id));
 
             this.sipDataItem = Functions.cloneObject(this.sipDataItem); // refresh data
+            this.isFilterOpened = false;
         }, 100);
     }
 }

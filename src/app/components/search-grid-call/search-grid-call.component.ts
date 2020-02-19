@@ -388,7 +388,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
         if (params && params.param) {
             const sids: Array<string> = params.param.search[this.protocol_profile].sid;
-            if (sids.length > 1) {
+            if (sids && sids.length > 1) {
                 this.gridApi.forEachLeafNode(node => {
                     if (sids.indexOf(node.data.sid) !== -1) {
                         node.setSelected(true, true);

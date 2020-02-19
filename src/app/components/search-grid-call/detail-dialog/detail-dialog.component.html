@@ -13,11 +13,11 @@
       <mat-spinner></mat-spinner>
   </div>
   <button mat-icon-button class="button-icon-right-top"
-    (click)="isfiltersOpened=!isfiltersOpened"
+    (click)="isFilterOpened=!isFilterOpened"
     [ngStyle]="{'display': (activeTab <= 1) ? 'block' : 'none'}"
   ><mat-icon>filter_list</mat-icon></button>
   <!-- filter -->
-  <div *ngIf="activeTab <= 1 && isfiltersOpened" class="button-icon-right-top filter-container">
+  <div *ngIf="activeTab <= 1 && isFilterOpened" class="button-icon-right-top filter-container">
     <mat-checkbox 
       *ngFor="let checkboxItem of checkboxListFilter"
       class="example-margin"

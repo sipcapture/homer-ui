@@ -64,11 +64,33 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     initData() {
         this.color_sid = Functions.getColorByString(this.callid);
+        console.log('this.dataItem.data.calldata', this.dataItem.data.calldata);
+
+        const IpList = ([].concat(...this.dataItem.data.calldata.map(i => [i.srcId, i.dstId]))).reduce((a, b) => {
+            if (!a.includes(b)) {
+                a.push(b);
+            }
+            return a;
+        }, []);
+        console.log({IpList})
+        let hosts = Functions.cloneObject(this.dataItem.data.hosts);
 
         /* sort it */
-        this.dataItem.data.hosts = this.sortProperties(this.dataItem.data.hosts, 'position', true, false);
+        hosts = this.sortProperties(hosts, 'position', true, false);
 
-        this.aliasTitle = Object.keys(this.dataItem.data.hosts).map( i => ({ ip: i, alias: this.dataItem.data.alias[i] }));
+        let increment = 0;
+        Object.keys(hosts).map(i => {
+            console.log(i, hosts[i], IpList.includes(i));
+            if (!IpList.includes(i)) {
+                delete hosts[i];
+            } else {
+                hosts[i].position = increment;
+                increment++;
+            }
+        });
+        console.log(hosts);
+
+        this.aliasTitle = Object.keys(hosts).map( i => ({ ip: i, alias: this.dataItem.data.alias[i] }));
         const colCount = this.aliasTitle.length;
         const data = this.dataItem.data;
         let diffTs = 0;
@@ -86,8 +108,8 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         this.arrayItems = data.calldata.map((item, key, arr) => {
             diffTs = key - 1 >= 0 && arr[key - 1] !== null ? (item.micro_ts - arr[key - 1].micro_ts) / 1000 : 0;
 
-            const srcPosition = data.hosts[item.srcId].position,
-                dstPosition = data.hosts[item.dstId].position,
+            const srcPosition = hosts[item.srcId].position,
+                dstPosition = hosts[item.dstId].position,
                 course = srcPosition < dstPosition ? 'right' : 'left',
                 position_from = Math.min(srcPosition, dstPosition),
                 position_width = Math.abs(srcPosition - dstPosition),
