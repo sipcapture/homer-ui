@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { Functions } from '../../../helpers/functions';
 import { PreferenceAdvancedService } from '@app/services';
 
@@ -18,6 +18,7 @@ export class DetailDialogComponent implements OnInit {
     IdFromCallID;
     activeTab = 0;
     isFilterOpened = false;
+    isFilterOpenedOutside = false;
     tabs = {
         messages: false,
         flow: false,
@@ -59,7 +60,7 @@ export class DetailDialogComponent implements OnInit {
 
     @Output() openMessage: EventEmitter<any> = new EventEmitter();
     @Output() close: EventEmitter<any> = new EventEmitter();
-
+    @ViewChild('filterContainer', {static: false}) filterContainer: ElementRef;
     dataLogs: Array<any>;
 
     constructor(
@@ -139,7 +140,25 @@ export class DetailDialogComponent implements OnInit {
             this.sipDataItem.data.calldata = this._messagesBuffer.calldata.filter(i => selectedId.includes(i.id));
 
             this.sipDataItem = Functions.cloneObject(this.sipDataItem); // refresh data
-            this.isFilterOpened = false;
+           // this.isFilterOpened = false;
         }, 100);
+    }
+
+    doOpenFilter() {
+        setTimeout(() => {
+            this.isFilterOpened = true;
+        }, 10);
+    }
+
+    @HostListener('document:click', ['$event.target'])
+    public onClick(targetElement) {
+        console.log('this.isFilterOpened', this.isFilterOpened);
+
+        if (this.filterContainer && this.filterContainer.nativeElement) {
+            const clickedInside = this.filterContainer.nativeElement.contains(targetElement);
+            if (!clickedInside && this.isFilterOpened) {
+                this.isFilterOpened = false;
+            }
+        }
     }
 }
