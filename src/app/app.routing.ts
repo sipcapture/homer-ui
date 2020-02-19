@@ -17,7 +17,7 @@ const appRoutes: Routes = [{
     component: PreferenceComponent,
     canActivate: [AuthGuard]
 }, {
-    path: 'call/result',
+    path: 'search/result',
     component: SearchGridCallComponent,
     canActivate: [AuthGuard]
 }, {

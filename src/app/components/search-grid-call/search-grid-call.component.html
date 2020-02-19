@@ -34,8 +34,38 @@
     (gridReady)="onGridReady($event)"
     [context]="context"
     [enableCellTextSelection]="true"
+    (columnMoved)="onColumnMoved($event)"
     [frameworkComponents]="frameworkComponents"
 ></ag-grid-angular>
+
+<!-- 
+  search slider
+-->
+<div *ngIf="!isLokiQuery" class="search-slider-footer" [ngStyle]="{'bottom': !isSearchPanel ? '-20rem': null}">
+  <div style="float: right; opacity: 0.7">
+		<button title="Clear fields" (click)="searchSlider.onClearFields()" mat-icon-button ><mat-icon>not_interested</mat-icon></button>
+		<button title="Search settings" (click)="searchSlider.openDialog()" mat-icon-button ><mat-icon>settings</mat-icon></button>
+		<button title="Close" (click)="isSearchPanel=false" mat-icon-button ><mat-icon>close</mat-icon></button>
+  </div>
+  <div class="content">
+    <!-- search slider container -->
+    <div style="height: 1rem;"></div>
+    <app-protosearch-widget 
+      [targetResultId]="id"
+      [fields]="searchSliderFields"
+      [config]="searchSliderConfig"
+      [autoline]="true"
+      (dosearch)="update(true)"
+      #searchSlider
+      ></app-protosearch-widget>
+      <!-- (changeSettings)="initSearchSlider()" -->
+    
+    <!-- <button mat-raised-button color="primary" (click)="update(true)">Refresh Search</button> -->
+    
+  </div>
+
+</div>
+
 
 <app-detail-dialog
     *ngFor="let item of arrWindow; let idx = index"
@@ -67,4 +97,14 @@
 
 <div *ngIf="isLoading" class="loading">
     <mat-spinner></mat-spinner>
+</div>
+<div *ngIf="!isLokiQuery" style="position:absolute; bottom:0.4rem; left:0.2rem; opacity: 0.7;">
+  <button title="column settings" mat-icon-button (click)="onSettingButtonClick()"><mat-icon>settings_applications</mat-icon></button>
+  <button title="search config" mat-icon-button    
+    (click)="isSearchPanel=true">
+    <mat-icon
+      [matBadge]="getSearchSlider()"
+      [matBadgeHidden]="getSearchSlider() === 0" matBadgeColor="warn"
+    >search</mat-icon>
+  </button>
 </div>

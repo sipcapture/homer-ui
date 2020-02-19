@@ -53,13 +53,15 @@ export class ResultWidgetComponent implements IWidget {
         this.isLoaded = false;
         setTimeout(() => {
             this.isLoaded = true;
-        }, 0);
+        }, 1000);
     }
 
-    ngOnInit() { 
+    ngOnInit() {
         WidgetArrayInstance[this.id] = this as IWidget;
     }
-
+    onDataReady() {
+        this.isLoaded = true;
+    }
     async openDialog() {
         const dialogRef = this.dialog.open(SettingResultWidgetComponent, {
             data: { title: this.title }

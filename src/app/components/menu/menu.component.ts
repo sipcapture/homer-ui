@@ -150,7 +150,7 @@ export class MenuComponent implements OnInit, OnDestroy {
     }
 
     doSearchResult() {
-        this.router.navigate(['call/result']);
+        this.router.navigate(['search/result']);
     }
     backLastToDashboard () {
         // this.panelName = this._ds.getCurrentDashBoardId();

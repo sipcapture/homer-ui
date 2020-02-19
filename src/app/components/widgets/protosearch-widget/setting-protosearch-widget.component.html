@@ -26,7 +26,7 @@
           (selectionChange)="validate()"
         name="hep_alias"
         ngDefaultControl>
-        <mat-option *ngFor="let protoItem of data.mapping.data" [value]="protoItem">
+        <mat-option *ngFor="let protoItem of mappingSortedData" [value]="protoItem">
           {{protoItem.hep_alias}} - {{protoItem.profile}}
         </mat-option>
       </mat-select>

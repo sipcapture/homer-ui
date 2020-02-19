@@ -10,7 +10,10 @@ import {
     AfterViewInit,
     ChangeDetectorRef,
     Input,
-    HostListener
+    HostListener,
+    Output,
+    EventEmitter,
+    ViewChild
 } from '@angular/core';
 import {
     ColumnActionRenderer,
@@ -31,6 +34,8 @@ import {
     SearchService,
     PreferenceAdvancedService
 } from '@app/services';
+import { DialogSettingsGridDialog } from './grid-settings-dialog/grid-settings-dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
@@ -43,8 +48,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     private gridColumnApi;
     public context;
     public frameworkComponents;
+    isSearchPanel = false;
     @Input() inContainer = false;
     @Input() id: string = null;
+    @Output() dataReady: EventEmitter<any> = new EventEmitter();
+
+    @ViewChild('searchSlider', {static: false}) searchSlider: any;
     filterGridValue: string;
     defaultColDef: Object;
     columnDefs: Array<Object>;
@@ -59,12 +68,32 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     arrWindow: Array<any> = [];
     arrMessageDetail: Array<any> = [];
     searchQueryLoki: any;
-
+    searchSliderFields = [];
     isLokiQuery = false;
     lastTimestamp: number;
     localData: any;
     queryTextLoki: string;
-
+    searchSliderConfig = {
+        countFieldColumns: 4,
+        config: {
+           protocol_id: {
+              name: 'SIP',
+              value: 1
+           },
+           protocol_profile: {
+              name: 'call',
+              value: 'call'
+           },
+           searchbutton: false,
+           title: 'CALL 2 SIP SEARCH'
+        },
+        fields: [],
+        protocol_id: {
+           name: 'SIP',
+           value: 100
+        },
+        refresh: false,
+    };
     gridOptions: GridOptions = <GridOptions> {
         defaultColDef: {
             sortable: true,
@@ -94,8 +123,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     private limitRange: any = {
         from: -300000, // - 5min
         to: 600000, // + 10min
-        message_from: -1000, // - 1sec
-        message_to: 1000, // + 1sec
+        message_from: -5000, // - 1sec
+        message_to: 5000, // + 1sec
     };
 
     private _interval: any;
@@ -104,6 +133,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     private _latestQuery: string;
 
     constructor(
+        public dialog: MatDialog,
         private _puss: PreferenceUserSettingsService,
         private _scs: SearchCallService,
         private _srs: SearchRemoteService,
@@ -121,13 +151,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             field: '',
             minWidth: 60,
             maxWidth: 60,
-            // cellRenderer: 'columnActionRenderer',
             checkboxSelection: true,
             lockPosition: true,
             cellRendererParams: { checkbox: true },
             pinned: 'left',
             cellClass: 'no-border',
-            headerComponentFramework: HeaderActionRenderer
+            headerCheckboxSelection: true
         }];
 
         this.context = { componentParent: this };
@@ -166,6 +195,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     } else {
                         this.isLokiQuery = false;
                     }
+                    this.config.param.search = {};
                     this.config.param.search[this.protocol_profile] = this.localData.fields;
 
                     if (this.localData.location && this.localData.location.value !== '' && this.localData.location.mapping !== '') {
@@ -176,6 +206,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                         this.subscriptionRangeUpdateTimeout = this._dtrs.castRangeUpdateTimeout.subscribe(() => {
                             this.update();
                         });
+                    } else {
+                        this.update(true);
+                        this.initSearchSlider();
                     }
                 }
             });
@@ -217,8 +250,49 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.limitRange.message_to = d.data.message_to || 1000;
             }
         });
+
+        this.initSearchSlider();
+    }
+    async initSearchSlider() {
+        try {
+            const query = this.searchService.getLocalStorageQuery();
+            if (!query || !query.protocol_id) {
+                return;
+            }
+            const mappings: Array<any> = (await this._pmps.getAll().toPromise() as any).data as Array<any>;
+            const mapping = Functions.cloneObject(mappings.filter(i => i.profile === query.protocol_id.split('_')[1])[0].fields_mapping);
+            mapping.push({ id: ConstValue.LIMIT, name: 'Query Limit' });
+
+            setTimeout(() => {
+                this.searchSliderFields = this.searchSlider.getFields();
+                query.fields.map(i => {
+                    const itemField = {
+                        field_name: i.name,
+                        hepid: 1,
+                        name: i.name,
+                        selection: mapping.filter(j => j.id === i.name)[0].name, // test
+                        type: i.type,
+                        value: i.value
+                    };
+                    if (!this.searchSliderFields.map(j => j.field_name).includes(i.name)) {
+                        this.searchSliderFields.push(itemField);
+                    } else {
+                        this.searchSliderFields.filter(j => j.field_name === i.name)[0].value = i.value;
+                    }
+                    return itemField;
+                });
+                this.searchSliderConfig.fields = Functions.cloneObject(this.searchSliderFields);
+                this.searchSliderFields = Functions.cloneObject(this.searchSliderFields);
+                this.searchSliderConfig.countFieldColumns = this.searchSliderConfig.fields.filter(i => i.value !== '').length;
+            }, 500);
+        } catch (err) {
+            console.error('this.initSearchSlider', err);
+        }
     }
 
+    getSearchSlider() {
+        return this.searchSliderConfig.fields.filter(i => i.value !== '').length;
+    }
     // get
 
     private getQueryData() {
@@ -238,6 +312,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     params.param.search[this.protocol_profile].callid
                 ) {
                     const callid: Array<string>  = params.param.search[this.protocol_profile].callid;
+                    this.config.param.search = {};
                     this.config.param.search[this.protocol_profile] = [{
                         name: 'sid',
                         value: callid.join(';'),
@@ -245,6 +320,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                         hepid: 1
                     }];
                 } else {
+                    this.config.param.search = {};
                     this.config.param.search[this.protocol_profile] = [];
                 }
                 this.config.param.transaction = {};
@@ -263,6 +339,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 } else {
                     this.isLokiQuery = false;
                 }
+                this.config.param.search = {};
                 this.config.param.search[this.protocol_profile] = this.localData.fields;
 
                 if (this.localData.location && this.localData.location.value !== '' && this.localData.location.mapping !== '') {
@@ -273,6 +350,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
         if (this.comingRequest) {
             this.protocol_profile = this.comingRequest.protocol_id;
+            this.config.param.search = {};
             this.config.param.search[this.comingRequest.protocol_id] = this.comingRequest.fields;
 
             if (this.comingRequest.location && this.comingRequest.location.value !== '' && this.comingRequest.location.mapping !== '') {
@@ -307,31 +385,24 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         const params = Functions.getUriJson();
 
         if (params && params.param) {
-            
-            const callid: Array<string>  = params.param.search[this.protocol_profile].callid;
+            const callid: Array<string> = params.param.search[this.protocol_profile].callid;
             if (callid.length > 1) {
                 this.gridApi.forEachLeafNode(node => {
                     if (callid.indexOf(node.data.callid) !== -1) {
                         node.setSelected(true, true);
-                        
                     }
                 });
-
-            } else if (callid.length === 1) {
-                /** under construction */
-            } else {
-                /** under construction */
             }
         }
     }
-    private openTransactionByAdvencedSettings() {
+    private openTransactionByAdvancedSettings() {
         const params = Functions.getUriJson();
         if (params && params.param && !this.isOpenDialog) {
             this.isOpenDialog = true;
-            this._pas.getAll().toPromise().then(advenced => {
-                if (advenced && advenced.data) {
+            this._pas.getAll().toPromise().then(advanced => {
+                if (advanced && advanced.data) {
                     try {
-                        const setting = advenced.data.filter(i => i.category === 'export' && i.param === 'transaction');
+                        const setting = advanced.data.filter(i => i.category === 'export' && i.param === 'transaction');
                         if (setting && setting[0] && setting[0].data) {
                             const { openwindow } = setting[0].data;
                             if (openwindow === true) {
@@ -371,8 +442,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             const arrData: Array<any> = data.data;
             arrData.forEach((a: any) => {
                 const keyHep = a.hepid + '_' + a.profile;
-
-                if (marData.length === 0 && this.config.param.search && this.config.param.search.hasOwnProperty(keyHep)) {
+                if (
+                    (this.isLokiQuery && a.hepid === 2000 && a.hep_alias === 'LOKI') ||
+                    (marData.length === 0 && this.config.param.search && this.config.param.search.hasOwnProperty(keyHep))
+                ) {
                     marData = a.fields_mapping;
                     hepVersion = parseInt(a.hepid + '', 10);
                 }
@@ -380,7 +453,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
             if (marData.length > 0) {
                 const myRemoteColumns = [];
-                /* dont add create date  */
+                /* don't add create date  */
                 if (hepVersion < 2000) {
                     myRemoteColumns.push({ headerName: 'ID', field: 'id', minWidth: 20, maxWidth: 40, hide: true});
                     myRemoteColumns.push({ headerName: 'Date', field: 'create_date', filter: true, suppressSizeToFit: true,
@@ -421,15 +494,14 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     if (h.hasOwnProperty('autoheight') && h.autoheight === true) {
                         vaColumn.cellStyle = {
                             'white-space': 'normal',
-                            'line-height': '1.5rem'
+                            'line-height': '1.2rem'
                         };
                         vaColumn.autoHeight = true;
                     }
                     myRemoteColumns.push(vaColumn);
                 }
-                // this.columnDefs = hepVersion < 2000 ? this.myPredefColumns.concat(myRemoteColumns) : myRemoteColumns;
-                this.columnDefs = this.localStateHeaders(hepVersion < 2000 ?
-                    this.myPredefColumns.concat(myRemoteColumns) : myRemoteColumns);
+                const restoreColumns = this.localStateHeaders(myRemoteColumns);
+                this.columnDefs = hepVersion < 2000 ? this.myPredefColumns.concat(restoreColumns) : myRemoteColumns;
                 this.sizeToFit();
             }
         });
@@ -437,6 +509,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
     private localStateHeaders(apiColumn) {
         let lsIndex = 'result-state';
+        const _apiColumn = [];
         if ( this.id ) {
             lsIndex += `-${this.id}`;
         }
@@ -450,6 +523,13 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     col.hide = !f.selected;
                 }
             });
+            h.forEach(col => {
+                const f = apiColumn.filter(i => i.field === col.field)[0];
+                if (f) {
+                    _apiColumn.push(f);
+                }
+            });
+            return _apiColumn;
         }
         return apiColumn;
     }
@@ -484,18 +564,30 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
         if ( this.isLokiQuery ) {
             this._srs.getData(this.queryBuilderForLoki()).toPromise().then(result => {
-                this.rowData = result.data;
+                this.rowData = result.data.sort(( a, b ) => {
+                    a = new Date(a.micro_ts).getTime();
+                    b = new Date(b.micro_ts).getTime();
+                    return ( a < b ) ? -1 : (( a > b ) ? 1 : 0);
+                });
                 this.sizeToFit();
                 setTimeout(() => { /** for grid updated autoHeight and sizeToFit */
                     this.rowData = Functions.cloneObject(this.rowData);
+                    this.dataReady.emit({});
                 }, 600);
+            }, err => {
+                this.rowData = [];
+                this.dataReady.emit({});
             });
         } else {
             this._scs.getData(this.config).toPromise().then(result => {
                 this.rowData = result.data;
                 this.sizeToFit();
                 this.selectCallIdFromGetParams();
-                this.openTransactionByAdvencedSettings();
+                this.openTransactionByAdvancedSettings();
+                this.dataReady.emit({});
+            }, err => {
+                this.rowData = [];
+                this.dataReady.emit({});
             });
         }
     }
@@ -585,6 +677,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         if ((this.arrWindow.filter(i => i.id === row.data.callid)[0] != null)) {
             return;
         }
+        const payloadType = row && row.data && row.data.payloadType ? row.data.payloadType : 1;
+        const _protocol_profile = row && row.data && row.data.profile ? row.data.profile : this.protocol_profile;
 
         const selectedRows = this.gridApi.getSelectedRows();
 
@@ -605,17 +699,17 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 to: row.data.create_date + this.limitRange.to
             }
         };
-
-        request.param.search[this.protocol_profile] = {
+        request.param.search = {};
+        request.param.search[_protocol_profile] = {
             id: row.data.id,
             callid: selectedCallId.length > 0 ? selectedCallId : [row.data.callid],
             uuid: []
         };
 
         request.param.transaction = {
-            call: this.protocol_profile === '1_call',
-            registration: this.protocol_profile === '1_registration',
-            rest: this.protocol_profile === '1_default'
+            call: !!_protocol_profile.match('call'),
+            registration: !!_protocol_profile.match('registration'),
+            rest: !!_protocol_profile.match('default')
         };
 
         const windowData = {
@@ -659,21 +753,71 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         if ((this.arrMessageDetail.filter(i => i.id === row.data.id)[0] != null)) {
             return;
         }
+
+        const _protocol_profile = row && row.data && row.data.profile ? row.data.profile : this.protocol_profile;
+
         const color = Functions.getColorByString(row.data.method || 'LOG');
         const mData = {
             loaded: false,
-            data: null,
+            data: {} as any,
             id: row.data.id,
             headerColor: color || '',
             mouseEventData: mouseEventData || row.data.mouseEventData,
             isBrowserWindow: row.isBrowserWindow
         };
 
-        if (row.isLog) {
-            const data = row.data.item;
-            mData.data = data;
+        let _timestamp = {
+            from: row.data.create_date + this.limitRange.message_from, // - 1sec
+            to: row.data.create_date + this.limitRange.message_to // + 1sec
+        };
+        if (!_timestamp.from || !_timestamp.to) {
+            _timestamp = this.config.timestamp;
+        }
+        const request = {
+            param: Functions.cloneObject(this.config.param || {} as any),
+            timestamp: _timestamp
+        };
+
+        request.param.limit = 1;
+        request.param.search = {};
+        request.param.search[_protocol_profile] = { id: row.data.id };
+        request.param.transaction = {
+            call: !!_protocol_profile.match('call'),
+            registration: !!_protocol_profile.match('registration'),
+            rest: !!_protocol_profile.match('default')
+        };
+
+        if (row.data && row.data.dbnode && request.param.location && request.param.location.node) {
+            request.param.location.node = [row.data.dbnode];
+        }
+
+        this.arrMessageDetail.push(mData);
+        if(!row.isLog) {
+            this._scs.getDecodedData(request).toPromise().then(res => {
+                let _decoded = null;
+                if (res.data && res.data[0] && res.data[0].decoded) {
+                    _decoded = res.data[0].decoded;
+                }
+                if (_decoded && _decoded[0]) {
+                    if (_decoded[0]._source && _decoded[0]._source.layers) {
+                        mData.data.decoded = _decoded[0]._source.layers;
+                    } else {
+                        mData.data.decoded = _decoded[0];
+                    }
+                } else {
+                    mData.data.decoded = _decoded;
+                }
+                /* for update Dialog window */
+                mData.data = Functions.cloneObject(mData.data);
+                this.changeDetectorRefs.detectChanges();
+            });
+        }
+        
+        if ( row.isLog || (row.data.payloadType === 1 && (row.data.raw || row.data.item && row.data.item.raw))) {
+            const data = row.data.item || row.data;
+            mData.data = data || {};
             mData.data.item = {
-                raw: mData.data.raw
+                raw: mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty'
             };
             mData.data.messageDetaiTableData = Object.keys(mData.data)
                 .map(i => {
@@ -690,77 +834,61 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 .filter(i => typeof i.value !== 'object' && i.name !== 'raw');
             this.changeDetectorRefs.detectChanges();
             mData.loaded = true;
-            this.arrMessageDetail.push(mData);
             return;
-        }
-        let _timestamp = {
-            from: row.data.create_date + this.limitRange.message_from, // - 1sec
-            to: row.data.create_date + this.limitRange.message_to // + 1sec
-        };
-        if (!_timestamp.from || !_timestamp.to) {
-            _timestamp = this.config.timestamp;
-        }
-        const request = {
-            param: Functions.cloneObject(this.config.param || {} as any),
-            timestamp: _timestamp
-        };
+        } else {
+            const result: any = await this._scs.getMessage(request).toPromise();
 
-        request.param.limit = 1;
-        request.param.search[this.protocol_profile] = { id: row.data.id };
-        request.param.transaction = {
-            call: this.protocol_profile === '1_call',
-            registration: this.protocol_profile === '1_registration',
-            rest: this.protocol_profile === '1_default'
-        };
-
-        this.arrMessageDetail.push(mData);
-
-        const result: any = await this._scs.getMessage(request).toPromise();
-
-        mData.data = result.data[0];
-        mData.data.item = {
-            raw: mData.data.raw
-        };
-        mData.data.messageDetaiTableData = Object.keys(mData.data).map(i => {
-            let val;
-            if (i === 'create_date') {
-                val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS');
-            } else if (i === 'timeSeconds') {
-                val = mData.data[i];
-            } else {
-                val = mData.data[i];
-            }
-            return {name: i, value: val};
-        }).filter(i => typeof i.value !== 'object' && i.name !== 'raw');
-
-        result.decoded = null;
-        this._scs.getDecodedData(request).toPromise().then(res => {
-            if (res.data) {
-                result.decoded = res.data[0].decoded;
-            }
-            if (result.decoded) {
-                if(result.decoded[0]) {
-                    if (result.decoded[0]._source && result.decoded[0]._source.layers) {
-                        mData.data.decoded = result.decoded[0]._source.layers;
-                    } else {
-                        mData.data.decoded = result.decoded[0];
-                    }
+            mData.data = result && result.data && result.data[0] ? result.data[0] : {};
+            mData.data.item = {
+                raw: mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty'
+            };
+            mData.data.messageDetaiTableData = Object.keys(mData.data).map(i => {
+                let val;
+                if (i === 'create_date') {
+                    val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS');
+                } else if (i === 'timeSeconds') {
+                    val = mData.data[i];
                 } else {
-                    mData.data.decoded = result.decoded;
+                    val = mData.data[i];
                 }
-                /* for update Dialog window */
-                mData.data = Functions.cloneObject(mData.data);
-                this.changeDetectorRefs.detectChanges();
-            }
-        });
-        this.changeDetectorRefs.detectChanges();
-        mData.loaded = true;
+                return {name: i, value: val};
+            }).filter(i => typeof i.value !== 'object' && i.name !== 'raw');
+
+            this.changeDetectorRefs.detectChanges();
+            mData.loaded = true;
+        }
     }
 
     public closeWindowMessage(id: number) {
         this.arrMessageDetail.splice(id, 1);
     }
-
+    onSettingButtonClick() {
+        const params = {
+            api: this.gridApi,
+            columnApi: this.gridColumnApi,
+            context: this.context
+        } as any;
+        this.dialog.open(DialogSettingsGridDialog, {
+            width:  '500px', data: {
+                apicol: params.columnApi,
+                apipoint: params.api,
+                columns: params.context.componentParent.columnDefs,
+                idParent: params.context.componentParent.id
+            }
+        });
+    }
+    onColumnMoved (event) {
+        const bufferData = Functions.cloneObject(event.api.columnController.gridColumns.map(i => i.colDef));
+        let lsIndex = 'result-state';
+        if ( this.id ) {
+            lsIndex += `-${this.id}`;
+        }
+        localStorage.setItem(lsIndex, JSON.stringify(bufferData.map(i => ({
+            name: i.headerName,
+            field: i.field,
+            selected: !i.hide
+        }))));
+    }
     ngOnDestroy () {
         if (this.subscriptionRangeUpdateTimeout) {
             this.subscriptionRangeUpdateTimeout.unsubscribe();
@@ -771,4 +899,5 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }
         clearInterval(this._interval);
     }
+
 }

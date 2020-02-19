@@ -37,3 +37,17 @@
     left: initial;
     right: 3rem;
 }
+
+.search-slider-footer {
+    position: absolute;
+    background: #fff;
+    bottom: 3rem;
+    left: 5rem;
+    right: 5rem;
+    margin: auto;
+    box-shadow: 0 -3px 12px -5px #000;
+    transition: all 0.6s;
+}
+.search-slider-footer > .content {
+    padding: 1rem;
+}

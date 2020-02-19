@@ -21,13 +21,17 @@ export class ErrorInterceptor implements HttpInterceptor {
                 // auto logout if 401 response returned from api
                 this.authenticationService.logout();
 
-                this.router.navigate([{
-                    outlets: { primary: null, system: 'login'}
-                }], {
-                    queryParams: {
-                        returnUrl: this.router.routerState.snapshot.url
-                    }
-                });
+                const snapshotUrl = this.router.routerState.snapshot.url;
+
+                if (!snapshotUrl.match('(system:login)')) {
+                    this.router.navigate([{
+                        outlets: { primary: null, system: 'login'}
+                    }], {
+                        queryParams: {
+                            returnUrl: snapshotUrl
+                        }
+                    });
+                }
             }
 
             const error = err.error.message || err.statusText;

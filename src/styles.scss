@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 
+
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500");
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
@@ -24,14 +25,15 @@ $ag-icons-path: "~ag-grid-community/src/styles/ag-theme-base/icons/";
 
 /* ag-grid */
 // changes the default icon color
-$icon-color: #0077f9;
+$ag-icon-color: #0077f9;
+$ag-icon-checkbox-checked-color:   #0077f9;
 // changes the selected checkbox check mark color
-$accent-color: #0077f9;
+$ag-accent-color: #0077f9;
 $header-height: 50px;
 $row-height: 40px;
 $row-border-width: 1px;
 $hover-color: cornsilk;
-//$border-color: #0077f9;
+$ag-suppress-legacy-var-import: true;
 
 /* 
 .ag-cell {
@@ -52,6 +54,7 @@ a:not([href]){
 .ag-row-selected {
     background-color: #eee !important;
 }
+
 
 @import "~ag-grid-community/dist/styles/ag-grid.css";
 
@@ -90,8 +93,6 @@ body {
 gridster {
   background: #f2f2f2 !important;
 }
-
-
 
 gridster-item {
   box-sizing: border-box;
@@ -302,9 +303,12 @@ h3 {
     background-color: #10c1cf !important;
     color: #000 !important;
 }
+.loki-highlight {
+    word-break: break-all;
+}
 .loki-highlight span {
-  color: black;
-  background-color: orange;
-  padding: 3px 0;
-  border-radius: 4px;
+    color: black;
+    background-color: orange;
+    padding: 3px 0;
+    border-radius: 4px;
 }
