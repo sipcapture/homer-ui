@@ -52,7 +52,7 @@ export class Functions {
         } else if (payload === 1000) {
             return 'JSON-DYN';
         } else {
-            return 'DYNAMIC';
+            return 'HEP-'+payload;
         }
     }
 
