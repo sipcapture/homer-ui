@@ -45,7 +45,7 @@ export class AuthenticationService {
 
     async getUserSettingTimeZone(user, username) {
         try {
-            const userSettingsData: any = await this.preferenceUserSettingsService.getAll().toPromise();
+            const userSettingsData: any = await this.preferenceUserSettingsService.getCategory("system").toPromise();
             const timezoneItem = userSettingsData.data.filter(i => 
                 i.category === 'system' &&
                 i.username === username &&
