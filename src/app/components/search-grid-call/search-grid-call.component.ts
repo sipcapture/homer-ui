@@ -126,7 +126,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         message_from: -5000, // - 1sec
         message_to: 5000, // + 1sec
     };
-
+    private isThisSelfQuery = false;
     private _interval: any;
     private subscriptionRangeUpdateTimeout: Subscription;
     public subscriptionDashboardEvent: Subscription;
@@ -208,7 +208,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                         });
                     } else {
                         this.update(true);
-                        this.initSearchSlider();
+                        this.initSearchSlider(!this.isThisSelfQuery);
+                        console.log('this._ds.dashboardEvent.subscribe :: this.initSearchSlider', this.isThisSelfQuery);
                     }
                 }
             });
@@ -250,10 +251,11 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.limitRange.message_to = d.data.message_to || 1000;
             }
         });
-
+        console.log('ngOnInit() :: this.initSearchSlider');
         this.initSearchSlider();
     }
-    async initSearchSlider() {
+    async initSearchSlider(isImportantClear = false) {
+        this.isThisSelfQuery = false;
         try {
             const query = this.searchService.getLocalStorageQuery();
             if (!query || !query.protocol_id) {
@@ -264,8 +266,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             mapping.push({ id: ConstValue.LIMIT, name: 'Query Limit' });
 
             setTimeout(() => {
-                this.searchSliderFields = this.searchSlider.getFields();
-                query.fields.map(i => {
+                this.searchSliderFields = isImportantClear ? [] : this.searchSlider.getFields();
+                console.log('this.searchSliderFields', this.searchSliderFields, this.searchSlider.getFields());
+                query.fields.forEach(i => {
                     const itemField = {
                         field_name: i.name,
                         hepid: 1,
@@ -284,7 +287,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.searchSliderConfig.fields = Functions.cloneObject(this.searchSliderFields);
                 this.searchSliderFields = Functions.cloneObject(this.searchSliderFields);
                 this.searchSliderConfig.countFieldColumns = this.searchSliderConfig.fields.filter(i => i.value !== '').length;
-            }, 500);
+            }, 100);
+
         } catch (err) {
             console.error('this.initSearchSlider', err);
         }

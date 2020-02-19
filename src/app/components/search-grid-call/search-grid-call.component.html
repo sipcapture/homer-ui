@@ -55,7 +55,7 @@
       [fields]="searchSliderFields"
       [config]="searchSliderConfig"
       [autoline]="true"
-      (dosearch)="update(true)"
+      (dosearch)="isThisSelfQuery=true;update(true);"
       #searchSlider
       ></app-protosearch-widget>
       <!-- (changeSettings)="initSearchSlider()" -->
