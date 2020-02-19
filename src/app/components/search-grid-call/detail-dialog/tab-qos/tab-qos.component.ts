@@ -367,8 +367,8 @@ export class TabQosComponent implements OnInit {
                 this.onErrorMessage(err);
                 return;
             }
-            
-            if ( 1 * item.raw.type !== 200 || !item.raw.sender_information ) {
+
+            if ( (1 * item.raw.type !== 200 && 1 * item.raw.type !== 202) || !item.raw.sender_information ) {
                 return;
             }
 
