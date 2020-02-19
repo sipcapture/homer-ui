@@ -36,8 +36,6 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     _interval: any;
     labels: Array<any> = [];
 
-
-
     constructor() { }
 
     ngAfterViewInit() {
@@ -92,8 +90,8 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 id: item.id,
                 color_method: color_method,
                 color: Functions.getColorByString(item.sid),
-                micro_ts: moment( item.micro_ts ).format('YYYY-MM-DD HH:mm:ss.sss Z'),
-                diffTs: diffTs.toFixed(2),
+                micro_ts: moment( item.micro_ts).format('YYYY-MM-DD HH:mm:ss.SSS Z'),
+                diffTs: diffTs.toFixed(3),
                 proto: Functions.protoCheck(item.protocol),
                 style: {
                     left: position_from / colCount * 100,

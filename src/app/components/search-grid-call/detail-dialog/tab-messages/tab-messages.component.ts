@@ -32,7 +32,7 @@ export class TabMessagesComponent implements OnInit {
 
     dataSource: Array<MesagesData> = [];
     displayedColumns: string[] = [
-        'id', 'create_date', 'timeSeconds', 'timeUseconds',
+        'id', 'create_date', 'timeSeconds', 'diff',
         'method', 'Msg_Size',
         'srcIp_srcPort', 'dstIp_dstPort',
         // 'aliasDst', 'aliasSrc',

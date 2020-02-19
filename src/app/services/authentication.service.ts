@@ -6,6 +6,9 @@ import { map } from 'rxjs/operators';
 import { environment } from '@environments/environment';
 import { User } from '@app/models';
 import { PreferenceUserSettingsService } from './preferences/user-settings.service';
+import * as _moment from 'moment';
+
+const moment: any = _moment;
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
@@ -39,6 +42,7 @@ export class AuthenticationService {
                 return user;
             }));
     }
+
     async getUserSettingTimeZone(user, username) {
         try {
             const userSettingsData: any = await this.preferenceUserSettingsService.getAll().toPromise();
@@ -47,8 +51,9 @@ export class AuthenticationService {
                 i.username === username &&
                 i.param === 'timezone');
 
-            if (timezoneItem && timezoneItem[0] && timezoneItem[0].data) {
+            if (timezoneItem && timezoneItem[0] && timezoneItem[0].data && timezoneItem[0].data.name) {
                 user.timezone = timezoneItem[0].data;
+                moment.tz.setDefault(user.timezone.name);
                 localStorage.setItem('currentUser', JSON.stringify(user));
             }
         } catch (err) { }
