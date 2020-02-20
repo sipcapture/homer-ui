@@ -266,22 +266,24 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             setTimeout(() => {
                 this.searchSliderFields = isImportantClear ? [] : this.searchSlider.getFields();
                 console.log('this.searchSliderFields', this.searchSliderFields, this.searchSlider.getFields());
-                query.fields.forEach(i => {
-                    const itemField = {
-                        field_name: i.name,
-                        hepid: 1,
-                        name: i.name,
-                        selection: mapping.filter(j => j.id === i.name)[0].name, // test
-                        type: i.type,
-                        value: i.value
-                    };
-                    if (!this.searchSliderFields.map(j => j.field_name).includes(i.name)) {
-                        this.searchSliderFields.push(itemField);
-                    } else {
-                        this.searchSliderFields.filter(j => j.field_name === i.name)[0].value = i.value;
-                    }
-                    return itemField;
-                });
+                if (query && query.fields) {
+                    query.fields.forEach(i => {
+                        const itemField = {
+                            field_name: i.name,
+                            hepid: 1,
+                            name: i.name,
+                            selection: mapping.filter(j => j.id === i.name)[0].name, // test
+                            type: i.type,
+                            value: i.value
+                        };
+                        if (!this.searchSliderFields.map(j => j.field_name).includes(i.name)) {
+                            this.searchSliderFields.push(itemField);
+                        } else {
+                            this.searchSliderFields.filter(j => j.field_name === i.name)[0].value = i.value;
+                        }
+                        return itemField;
+                    });
+                }
                 this.searchSliderConfig.fields = Functions.cloneObject(this.searchSliderFields);
                 this.searchSliderFields = Functions.cloneObject(this.searchSliderFields);
                 this.searchSliderConfig.countFieldColumns = this.searchSliderConfig.fields.filter(i => i.value !== '').length;
@@ -311,9 +313,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
                 if (params.param.search &&
                     params.param.search[this.protocol_profile] &&
-                    params.param.search[this.protocol_profile].sid
+                    params.param.search[this.protocol_profile].callid
                 ) {
-                    const sids: Array<string>  = params.param.search[this.protocol_profile].sid;
+                    const sids: Array<string>  = params.param.search[this.protocol_profile].callid;
                     this.config.param.search = {};
                     this.config.param.search[this.protocol_profile] = [{
                         name: 'sid',
@@ -387,7 +389,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         const params = Functions.getUriJson();
 
         if (params && params.param) {
-            const sids: Array<string> = params.param.search[this.protocol_profile].sid;
+            const sids: Array<string> = params.param.search[this.protocol_profile].callid;
             if (sids && sids.length > 1) {
                 this.gridApi.forEachLeafNode(node => {
                     if (sids.indexOf(node.data.sid) !== -1) {
@@ -408,7 +410,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                         if (setting && setting[0] && setting[0].data) {
                             const { openwindow } = setting[0].data;
                             if (openwindow === true) {
-                                const sids = params.param.search[this.protocol_profile].sid;
+                                const sids = params.param.search[this.protocol_profile].callid;
                                 const rowData: Array<any>  = Functions.cloneObject(this.rowData) as Array<any>;
 
                                 this.openTransactionDialog({
@@ -737,7 +739,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             windowData.loaded = true;
             windowData.data = data;
             windowData.dataQOS = dataQOS;
-        }
+        };
         let localDataQOS: any = null, localData: any = null;
 
         this._ers.postQOS(this.searchService.queryBuilderQOS(row, selectedCallId)).toPromise().then(dataQOS => {

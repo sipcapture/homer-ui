@@ -9,7 +9,7 @@ import { AlertService } from './alert.service';
     providedIn: 'root'
 })
 export class SearchService {
-    currentQuery: any = {};
+    static currentQuery: any = {};
     isLoki = false;
     location: any;
     protocol: any;
@@ -17,42 +17,64 @@ export class SearchService {
     target: any;
 
     constructor (
-        private _dtrs: DateTimeRangeService,
-        private alertService: AlertService
+        private dateTimeRangeService: DateTimeRangeService,
+        private alertService: AlertService,
     ) {
-        this.currentQuery = this.getLocalStorageQuery() || {
+        const params = Functions.getUriJson();
+
+        SearchService.currentQuery = this.getLocalStorageQuery() || {
             protocol_id: null,
             location: this.location
         };
-        this.protocol = this.currentQuery.protocol_id || this.protocol;
-        this.location = this.currentQuery.location || this.location;
+        if (params && params.param && params.param.search) {
+            this.protocol = SearchService.currentQuery.protocol_id = Object.keys(params.param.search)[0];
+            this.location = SearchService.currentQuery.location = params.param.location;
+            if (params && params.timestamp) {
+                const { from, to } = params.timestamp;
+                const format = d => new Date(d).toLocaleString().split(',').map(i => i.replace(/\./g, '/')).join('');
+                this.dateTimeRangeService.updateDataRange({
+                    title: [
+                        format(from),
+                        format(to)
+                    ].join(' - '),
+                    dates: [
+                        new Date(from).toISOString(),
+                        new Date(to).toISOString()
+                    ]
+                });
+            }
+        } else {
+            this.protocol = SearchService.currentQuery.protocol_id || this.protocol;
+            this.location = SearchService.currentQuery.location || this.location;
+        }
+        console.log('constructor::SearchService.currentQuery', SearchService.currentQuery);
     }
 
     public setLocalStorageQuery(query: any) {
         if (query.location) {
             this.location = query.location;
         } else {
-            this.currentQuery.location = this.location;
+            SearchService.currentQuery.location = this.location;
         }
         if (query.protocol) {
             this.protocol = query.protocol;
         } else {
-            this.currentQuery.protocol = this.protocol;
-            if (!this.currentQuery.protocol) {
+            SearchService.currentQuery.protocol = this.protocol;
+            if (!SearchService.currentQuery.protocol) {
                 this.alertService.error(`couldn't retrieve the correct settings for this mapping`);
             }
         }
-        this.currentQuery = Functions.cloneObject(query);
+        SearchService.currentQuery = Functions.cloneObject(query);
         localStorage.setItem(ConstValue.SEARCH_QUERY, JSON.stringify(query));
     }
 
     public getLocalStorageQuery() {
-        this.currentQuery = JSON.parse(localStorage.getItem(ConstValue.SEARCH_QUERY)) || {
-            protocol_id: null,
+        SearchService.currentQuery = JSON.parse(localStorage.getItem(ConstValue.SEARCH_QUERY)) || {
+            protocol_id: SearchService.currentQuery.protocol_id,
             location: this.location
         };
 
-        const localData = Functions.cloneObject(this.currentQuery);
+        const localData = Functions.cloneObject(SearchService.currentQuery);
         if (localData && localData.fields && localData.fields instanceof Array) {
             localData.fields = localData.fields.filter(i => i.name !== ConstValue.CONTAINER);
         }
@@ -64,19 +86,19 @@ export class SearchService {
     }
 
     public setQueryLocation(location: any) {
-        this.location = location;
+        SearchService.currentQuery.location = location;
     }
 
     public getQueryLocation() {
-        return this.location;
+        return SearchService.currentQuery.location;
     }
 
-    public setQueryProtocolId(protocol: any) {
-        this.protocol = protocol;
+    public setQueryProtocolId(protocol_id: any) {
+        SearchService.currentQuery.protocol_id = protocol_id;
     }
 
     public getQueryProtocolId() {
-        return this.protocol;
+        return SearchService.currentQuery.protocol_id;
     }
 
     public setQuerySearch(search: any) {
@@ -95,15 +117,16 @@ export class SearchService {
     }
 
     private getTransactionFlags () {
+        console.log('getTransactionFlags()::this.currentQuery', SearchService.currentQuery);
         return {
-            call: this.currentQuery.protocol_id.includes('call'),
-            registration: this.currentQuery.protocol_id.includes('registration'),
-            rest: this.currentQuery.protocol_id.includes('default')
+            call: SearchService.currentQuery.protocol_id.includes('call'),
+            registration: SearchService.currentQuery.protocol_id.includes('registration'),
+            rest: SearchService.currentQuery.protocol_id.includes('default')
         };
     }
 
     private getLocation(): any {
-        const localData = this.currentQuery;
+        const localData = SearchService.currentQuery;
 
         const locationArray = {};
         if (this.location) {
@@ -120,7 +143,7 @@ export class SearchService {
 
         const labels = selectedCallId;
 
-        const localData = this.currentQuery;
+        const localData = SearchService.currentQuery;
 
         const search = {};
         search[localData.protocol_id] = {
@@ -134,7 +157,7 @@ export class SearchService {
             dbnode.node = [row.data.dbnode];
         }
         return {
-            timestamp: this._dtrs.getDatesForQuery(true),
+            timestamp: this.dateTimeRangeService.getDatesForQuery(true),
             param: {
                 search: search,
                 location: dbnode,
@@ -147,7 +170,7 @@ export class SearchService {
     getQueryFull(id, callid, selectedCallId) {
         const labels = selectedCallId;
 
-        const localData = this.currentQuery;
+        const localData = SearchService.currentQuery;
 
         const search = {};
         search[localData.protocol_id] = {
@@ -157,7 +180,7 @@ export class SearchService {
         };
 
         return {
-            timestamp: this._dtrs.getDatesForQuery(true),
+            timestamp: this.dateTimeRangeService.getDatesForQuery(true),
             param: {
                 search: search,
                 location: this.getLocation(),
@@ -169,7 +192,7 @@ export class SearchService {
     }
 
     public queryBuilder_EXPORT (id, callid, protocol_id = null) {
-        const localData = this.currentQuery;
+        const localData = SearchService.currentQuery;
 
         localData.protocol_id = protocol_id || localData.protocol_id;
 
@@ -181,7 +204,7 @@ export class SearchService {
         };
 
         return {
-            timestamp: this._dtrs.getDatesForQuery(true),
+            timestamp: this.dateTimeRangeService.getDatesForQuery(true),
             param: {
                 search: search,
                 location: this.getLocation() as any,
