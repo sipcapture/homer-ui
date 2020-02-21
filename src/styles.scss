@@ -13,8 +13,9 @@
 // using deeppurple-amber color combo: https://github.com/angular/material2/blob/master/src/lib/core/theming/prebuilt/deeppurple-amber.scss
 $primary: mat-palette($homerprimary);
 $accent:  mat-palette($homeraccent);
+$checkboxprimary:  mat-palette($checkbox-color);
 
-$theme: mat-light-theme($primary, $accent);
+$theme: mat-light-theme($primary, $accent, $checkboxprimary);
 
 // Include all theme styles for the components.
 @include angular-material-theme($theme);
@@ -63,6 +64,8 @@ $ag-mat-accent: mat-color($homeraccent);
 
 //@import "~ag-grid-community/dist/styles/ag-theme-balham.css";
 @import '~ag-grid-community/src/styles/ag-theme-material/sass/ag-theme-material';
+
+$flow-checkbox-color: mat-color($checkbox-color);
 
 .material-icons.md-18 { font-size: 18px; }
 
@@ -312,3 +315,4 @@ h3 {
     padding: 3px 0;
     border-radius: 4px;
 }
+

@@ -36,7 +36,7 @@
             <th mat-header-cell style="text-align: right" *matHeaderCellDef> Action </th>
             <td mat-cell *matCellDef="let element" style="text-align: right"> 
               <button *ngIf="isAccess[pageId]['edit']" mat-icon-button color="primary" (click)="settingDialog(element.item)"><mat-icon>edit</mat-icon></button>
-              <button *ngIf="isAccess[pageId]['delete']" mat-icon-button color="warn" style="margin-left: 1rem;" (click)="onDelete( element.item )"><mat-icon>delete</mat-icon></button>
+              <button *ngIf="isAccess[pageId]['delete']" mat-icon-button color="accent" style="margin-left: 1rem;" (click)="onDelete( element.item )"><mat-icon>delete</mat-icon></button>
             </td>
           </ng-container>
 
