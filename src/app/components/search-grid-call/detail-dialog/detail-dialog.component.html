@@ -20,6 +20,9 @@
   <div *ngIf="activeTab <= 1 && isFilterOpened"
     class="button-icon-right-top filter-container"
     #filterContainer>
+    <mat-checkbox [(ngModel)]="isSimplify">simplify</mat-checkbox>
+    <hr/>
+    
     <mat-checkbox 
       *ngFor="let checkboxItem of checkboxListFilter"
       class="example-margin"
@@ -39,6 +42,7 @@
     </mat-tab>
     <mat-tab *ngIf="_isLoaded && tabs.flow" label="Flow">
       <app-tab-flow
+        [isSimplify]="isSimplify"
         [callid]="titleId"
         [dataItem]="sipDataItem"
         (messageWindow)="addWindow($event)"

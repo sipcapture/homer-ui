@@ -11,6 +11,16 @@ import * as html2canvas from 'html2canvas';
 })
 export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('flowtitle', {static: false}) flowtitle;
+    _isSimplify = false;
+
+    @Input()
+    set isSimplify(val: boolean) {
+        this._isSimplify = val;
+    }
+    get isSimplify() {
+        return this._isSimplify;
+    }
+
     @Input() callid: any;
     _dataItem: any;
     @Input() set dataItem(val) {
