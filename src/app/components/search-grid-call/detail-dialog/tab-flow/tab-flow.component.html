@@ -38,8 +38,8 @@
         
         <!-- arrow --><div [className]="'arrow ' + item.course + (item.method_text === 'RTCP' ? ' rtcp' : '')"></div>
 
-        <div style="color: grey;">[{{ idx + 1 }}][{{ item.proto | uppercase }}] {{ item.micro_ts }}</div>
-        <div style="color: grey;">{{ item.diffTs }} s</div>
+        <div *ngIf="!_isSimplify" style="color: grey;">[{{ idx + 1 }}][{{ item.proto | uppercase }}] {{ item.micro_ts }}</div>
+        <div style="color: grey;">+ {{ item.diffTs }} s</div>
     </div>
   </div>
   <div class="label-callid-container" [ngStyle]="{

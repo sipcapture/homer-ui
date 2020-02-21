@@ -20,7 +20,9 @@
   <div *ngIf="activeTab <= 1 && isFilterOpened"
     class="button-icon-right-top filter-container"
     #filterContainer>
-    <mat-checkbox [(ngModel)]="isSimplify">simplify</mat-checkbox>
+    <mat-slide-toggle [(ngModel)]="isSimplify">
+      {{ isSimplify ?  'Extended Format' : 'Simple view'}}
+    </mat-slide-toggle>
     <hr/>
     
     <mat-checkbox 
@@ -42,7 +44,7 @@
     </mat-tab>
     <mat-tab *ngIf="_isLoaded && tabs.flow" label="Flow">
       <app-tab-flow
-        [isSimplify]="isSimplify"
+        [isSimplify]="!isSimplify"
         [callid]="titleId"
         [dataItem]="sipDataItem"
         (messageWindow)="addWindow($event)"

@@ -14,7 +14,7 @@ export class DetailDialogComponent implements OnInit {
     @Input() headerColor: any;
     @Input() mouseEventData: any;
     @Input() snapShotTimeRange: any;
-    isSimplify = false;
+    isSimplify = true;
     IdFromCallID;
     activeTab = 0;
     isFilterOpened = false;
