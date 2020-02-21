@@ -20,12 +20,12 @@
   <div *ngIf="activeTab <= 1 && isFilterOpened"
     class="button-icon-right-top filter-container"
     #filterContainer>
-    <mat-slide-toggle style="width: 200px;" color="warn" [(ngModel)]="isSimplify">
+    <mat-slide-toggle style="width: 200px;font-size: .8em;" color="warn" [(ngModel)]="isSimplify">
       {{ isSimplify ?  'Extended Format' : 'Simple view'}}
     </mat-slide-toggle>
     <hr/>
     
-    <mat-checkbox color="warn" 
+    <mat-checkbox color="warn" style="font-size: .8em;"
       *ngFor="let checkboxItem of checkboxListFilter"
       class="example-margin"
       (click)="doFilterMessages()"
