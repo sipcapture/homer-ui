@@ -70,7 +70,7 @@ export class ClockWidgetComponent implements IWidget {
             datePattern: ConstTime.DATA_PATTERN,
             location: {
                 desc: 'Europe/Amsterdam',
-                name: 'GMT+1 AMS',
+                name: 'Europe/Amsterdam',
                 offset: '+2'
             },
             showseconds: false,
