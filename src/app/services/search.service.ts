@@ -50,24 +50,24 @@ export class SearchService {
         console.log('constructor::SearchService.currentQuery', SearchService.currentQuery);
     }
 
+
     public setLocalStorageQuery(query: any) {
+        SearchService.currentQuery = Functions.cloneObject(query);
         if (query.location) {
             this.location = query.location;
         } else {
-            SearchService.currentQuery.location = this.location;
+            SearchService.currentQuery.location = this.location || SearchService.currentQuery.location;
         }
         if (query.protocol) {
             this.protocol = query.protocol;
         } else {
-            SearchService.currentQuery.protocol = this.protocol;
-            if (!SearchService.currentQuery.protocol) {
+            SearchService.currentQuery.protocol_id = this.protocol || SearchService.currentQuery.protocol_id;
+            if (!SearchService.currentQuery.protocol_id) {
                 this.alertService.error(`couldn't retrieve the correct settings for this mapping`);
             }
         }
-        SearchService.currentQuery = Functions.cloneObject(query);
-        localStorage.setItem(ConstValue.SEARCH_QUERY, JSON.stringify(query));
+        localStorage.setItem(ConstValue.SEARCH_QUERY, JSON.stringify(SearchService.currentQuery));
     }
-
     public getLocalStorageQuery() {
         SearchService.currentQuery = JSON.parse(localStorage.getItem(ConstValue.SEARCH_QUERY)) || {
             protocol_id: SearchService.currentQuery.protocol_id,
