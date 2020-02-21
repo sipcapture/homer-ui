@@ -33,7 +33,9 @@ export class Functions {
     static methodCheck (method: string, payload: number ) {
         if(method) return method;
 
-        if (payload === 5) {
+        if (payload === 1) {
+            return 'SIP';
+        } else if (payload === 5) {
             return 'RTCP';
         } else if (payload === 8) {
             return 'ISUP';
@@ -47,8 +49,10 @@ export class Functions {
             return 'RTP-FULL-R';
         } else if (payload === 100) {
             return 'LOG';
+        } else if (payload === 1000) {
+            return 'JSON-DYN';
         } else {
-            return 'LOG';
+            return 'HEP-'+payload;
         }
     }
 
@@ -121,25 +125,30 @@ export class Functions {
     }
     static messageFormatter(dist: Array<any>) {
         const dataSource: Array<any> = [];
-        dist.forEach(item => dataSource.push({
-            id: item.id,
-            create_date: moment( item.create_date ).format('YYYY-MM-DD'),
-            timeSeconds: moment( item.timeSeconds * 1000 ).format('HH:mm:ss.SSS'),
-            timeUseconds: (item.timeUseconds / 1000).toFixed(3) + 's',
+        let prevTimestamp = 0;
+        dist.forEach(function(item) {
+            let newTs = Math.round((item.timeSeconds * 1000) + (item.timeUseconds / 1000));
+            dataSource.push({
+                id: item.id,
+                create_date: moment( item.create_date ).format('YYYY-MM-DD'),
+                timeSeconds: moment(newTs).format('HH:mm:ss.SSS'),
+                timeUseconds: (item.timeUseconds / 1000).toFixed(3) + 's',
+                diff:  (prevTimestamp == 0 ? 0 : (newTs - prevTimestamp)/1000).toFixed(3) + ' s',
+                //method: item.method || 'LOG',
+                method: Functions.methodCheck(item.method ? item.method : item.event, item.payloadType),
+                mcolor: Functions.colorByMethod(item.method ? item.method : item.event, item.payloadType),
+                Msg_Size: (item.raw + '').length,
+                srcIp_srcPort: item.srcIp + ':' + item.srcPort,
+                srcPort: item.srcPort,
 
-            //method: item.method || 'LOG',
-            method: Functions.methodCheck(item.method, item.payloadType),
-            mcolor: Functions.colorByMethod(item.method, item.payloadType),
-            Msg_Size: (item.raw + '').length,
-            srcIp_srcPort: item.srcIp + ':' + item.srcPort,
-            srcPort: item.srcPort,
-
-            dstIp_dstPort: item.dstIp + ':' + item.dstPort,
-            dstPort: item.dstPort,
-            proto: Functions.protoCheck(item.protocol),
-            type: item.raw.match(/^[A-Z]*/g).join(''),
-            item: item
-        }));
+                dstIp_dstPort: item.dstIp + ':' + item.dstPort,
+                dstPort: item.dstPort,
+                proto: Functions.protoCheck(item.protocol),
+                type: item.raw.match(/^[A-Z]*/g).join(''),
+                item: item
+            });
+            prevTimestamp = newTs;
+        });
         return dataSource;
     }
     static cloneObject(src: any): any {

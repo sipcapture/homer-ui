@@ -13,7 +13,7 @@ const moment: any = _moment;
 
 export class SettingClockWidgetComponent {
     arrayTimeZones: Array<string> = [];
-
+    arrayClockType: Array<string> = ['Digital', 'Analog', 'Both'];
     constructor(
         public dialogRef: MatDialogRef<SettingClockWidgetComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any
@@ -27,6 +27,13 @@ export class SettingClockWidgetComponent {
         this.data.location.offset = moment.tz(timeZone)._offset;
         this.data.location.name = timeZone;
         this.data.location.desc = timeZone;
+    }
+    onChange(){
+        this.data.showDate;
+        this.data.showAnalog;
+        this.data.fontSizeClock;
+        this.data.fontSizeDate;
+        console.log(this.arrayTimeZones);
     }
     onNoClick(): void {
         this.dialogRef.close();

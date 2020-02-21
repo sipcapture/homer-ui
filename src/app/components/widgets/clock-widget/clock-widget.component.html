@@ -1,5 +1,11 @@
-<div class="box clock-widget">
-    <h5>{{ desc }}</h5>
-    <h3>{{ objDate}}</h3>
-    <h3>{{ objTime}}</h3>
+<div class="box clock-widget" #clockWidget>
+	<h5>{{ desc }}</h5>
+	<h2 *ngIf="this._config.showDate" [style.fontSize.px]="this._config.fontSizeDate">{{ objDate }}</h2>
+	<h2  [style.fontSize.px]="this._config.fontSizeClock" *ngIf="this._config.showAnalog != 'Analog'">{{ objTime }}</h2>
+	<div class="analog-clock" *ngIf="this._config.showAnalog != 'Digital'" [style.width.px]="this._config.radius" [style.height.px]="this._config.radius">
+		<div class="hour hand" [ngStyle]="hourHandStyle"></div>
+		<div class="minute hand" [ngStyle]="minuteHandStyle"></div>
+		<div class="second hand" [ngStyle]="secondHandStyle"></div>
+		<div class="center-circle"></div>
+	</div>
 </div> <!-- END box -->

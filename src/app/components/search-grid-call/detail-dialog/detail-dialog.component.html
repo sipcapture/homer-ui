@@ -12,10 +12,30 @@
   <div *ngIf="!_isLoaded" class="loading">
       <mat-spinner></mat-spinner>
   </div>
-
+  <button mat-icon-button class="button-icon-right-top"
+    (click)="doOpenFilter()"
+    [ngStyle]="{'display': (activeTab <= 1) ? 'block' : 'none'}"
+  ><mat-icon>filter_list</mat-icon></button>
+  <!-- filter -->
+  <div *ngIf="activeTab <= 1 && isFilterOpened"
+    class="button-icon-right-top filter-container"
+    #filterContainer>
+    <mat-slide-toggle style="width: 200px;font-size: .8em;" color="warn" [(ngModel)]="isSimplify">
+      {{ isSimplify ?  'Extended Format' : 'Simple Format'}}
+    </mat-slide-toggle>
+    <hr/>
+    
+    <mat-checkbox color="warn" style="font-size: .8em;"
+      *ngFor="let checkboxItem of checkboxListFilter"
+      class="example-margin"
+      (click)="doFilterMessages()"
+      [(ngModel)]="checkboxItem.selected"
+    >{{ checkboxItem.title }}</mat-checkbox>
+  </div>
   <mat-tab-group
-  [selectedIndex]="this.tabIndexByDefault"
-  *ngIf="_isLoaded" style="height: 100%;">
+    (selectedIndexChange)="activeTab=$event"
+    [selectedIndex]="this.tabIndexByDefault"
+    *ngIf="_isLoaded" style="height: 100%;">
     <mat-tab *ngIf="_isLoaded && tabs.messages" label="Messages">
       <app-tab-messages
         [dataItem]="sipDataItem"
@@ -24,6 +44,7 @@
     </mat-tab>
     <mat-tab *ngIf="_isLoaded && tabs.flow" label="Flow">
       <app-tab-flow
+        [isSimplify]="!isSimplify"
         [callid]="titleId"
         [dataItem]="sipDataItem"
         (messageWindow)="addWindow($event)"
@@ -34,7 +55,7 @@
         [callid]="titleId"
         [dataItem]="sipDataItem"
         [qosData]="qosData"
-        [id]="sipDataItem.data.messages[0].id"
+        [id]="IdFromCallID"
         (haveData)="onTabQos($event)"
       ></app-tab-qos>
     </mat-tab>
@@ -44,7 +65,7 @@
         [dataItem]="sipDataItem"
         [callid]="titleId"
         [dataLogs]="dataLogs"
-        [id]="sipDataItem.data.messages[0].id"
+        [id]="IdFromCallID"
       ></app-tab-hepsub>
     </mat-tab>
     <mat-tab *ngIf="_isLoaded && tabs.export" label="Export">
@@ -53,7 +74,7 @@
         [snapShotTimeRange]="snapShotTimeRange"
         [dataItem]="sipDataItem"
         [callid]="titleId"
-        [id]="sipDataItem.data.messages[0].id"
+        [id]="IdFromCallID"
       ></app-tab-export>
       <!--  -->
       <div style="position: relative; overflow: hidden; height: 1px; width: 1px;">
@@ -67,5 +88,6 @@
         </div>
       </div>
     </mat-tab>
+    
   </mat-tab-group>
 </app-modal-resizable>
