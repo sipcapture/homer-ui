@@ -136,6 +136,13 @@ export class TabQosComponent implements OnInit {
             hoverBackgroundColor: [],
             fill: false,
             borderWidth: 0
+        }, {
+            data: [],
+            label: 'packets_lost',
+            backgroundColor: [],
+            hoverBackgroundColor: [],
+            fill: false,
+            borderWidth: 0
         },
     ];
 
@@ -189,6 +196,10 @@ export class TabQosComponent implements OnInit {
         { name: 'min mos', value: Number.MAX_VALUE, color: 'color6' },
         { name: 'avg mos', value: 0, color: 'color6' },
         { name: 'max mos', value: 0, color: 'color6' },
+
+        { name: 'min packets_lost', value: Number.MAX_VALUE, color: 'color7' },
+        { name: 'avg packets_lost', value: 0, color: 'color7' },
+        { name: 'max packets_lost', value: 0, color: 'color7' },
     ];
 
     hideLabelsFlag = true;
@@ -391,6 +402,8 @@ export class TabQosComponent implements OnInit {
                     highest_seq_no: true,
                     ia_jitterData: [],
                     ia_jitter: true,
+                    packets_lostData: [],
+                    packets_lost: true,
                     lsrData: [],
                     lsr: true,
                     mosData: [],
@@ -423,6 +436,9 @@ export class TabQosComponent implements OnInit {
 
                         // ia_jitter
                         k.ia_jitterData.push(block.ia_jitter);
+
+                        // packets_lost
+                        k.packets_lostData.push(block.packets_lost);
 
                         // lsr
                         k.lsrData.push(block.lsr * 1);
@@ -473,6 +489,13 @@ export class TabQosComponent implements OnInit {
                             this.list[17].value = Math.max(this.list[17].value, tmpMos * 1);
                         }
 
+                        if (!isNaN(block.packets_lost)) {
+                            // min packets_lost
+                            this.list[18].value = Math.min(this.list[18].value, block.packets_lost * 1);
+                            // max packets_lost
+                            this.list[20].value = Math.max(this.list[20].value, block.packets_lost * 1);
+                        }
+
 
                     } else {
                         // highest_seq_no
@@ -480,6 +503,9 @@ export class TabQosComponent implements OnInit {
 
                         // ia_jitter
                         k.ia_jitterData.push(0);
+
+                        // packets_lost
+                        k.packets_lostData.push(0);
 
                         // lsr
                         k.lsrData.push(0);
@@ -509,10 +535,13 @@ export class TabQosComponent implements OnInit {
 
         // avg lsr
         this.list[13].value = this.avarage(this.streams, 'lsrData');
-        
+
         // avg mos
         this.list[16].value = this.avarage(this.streams, 'mosData');
-        
+
+         // avg packets_lost
+         this.list[19].value = this.avarage(this.streams, 'packets_lostData');
+
         this.renderChartData(this.streams, this.chartData);
         this.isRTCP = true;
     }
@@ -585,12 +614,12 @@ export class TabQosComponent implements OnInit {
 
     onChangeChackBox(item: any, base = false) {
         if (base) {
-            item.packets = item.octets = item.highest_seq_no = item.ia_jitter = item.lsr = item.mos = item._chacked;
+            item.packets = item.octets = item.highest_seq_no = item.ia_jitter = item.lsr = item.mos = item.packets_lost = item._chacked;
             item._indeterminate = false;
         } else {
-            item._chacked = item.packets && item.octets && item.highest_seq_no && item.ia_jitter && item.lsr && item.mos;
+            item._chacked = item.packets && item.octets && item.highest_seq_no && item.ia_jitter && item.lsr && item.mos && item.packets_lost;
             item._indeterminate = !item._chacked &&
-                !(!item.packets && !item.octets && !item.highest_seq_no && !item.ia_jitter && !item.lsr && !item.mos);
+                !(!item.packets && !item.octets && !item.highest_seq_no && !item.ia_jitter && !item.lsr && !item.mos && !item.packets_lost);
         }
         this.renderChartData(this.streams, this.chartData);
     }
