@@ -61,7 +61,7 @@ export class DetailDialogComponent implements OnInit {
                 ).map((i: any) => {
                     const obj = {
                         selected: true,
-                        title: (param === 'payloadType' ? Functions.methodCheck(null, i) : i)
+                        title: (param === 'payloadType' ? Functions.methodCheck(null, 1 * i) : i)
                     };
                     obj[param] = i;
                     return obj;
