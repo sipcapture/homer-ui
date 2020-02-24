@@ -74,7 +74,6 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     initData() {
         this.color_sid = Functions.getColorByString(this.callid);
-        console.log('this.dataItem.data.calldata', this.dataItem.data.calldata);
 
         const IpList = ([].concat(...this.dataItem.data.calldata.map(i => [i.srcId, i.dstId]))).reduce((a, b) => {
             if (!a.includes(b)) {
@@ -82,7 +81,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             }
             return a;
         }, []);
-        console.log({IpList})
+
         let hosts = Functions.cloneObject(this.dataItem.data.hosts);
 
         /* sort it */
@@ -90,7 +89,6 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
 
         let increment = 0;
         Object.keys(hosts).map(i => {
-            console.log(i, hosts[i], IpList.includes(i));
             if (!IpList.includes(i)) {
                 delete hosts[i];
             } else {
@@ -98,7 +96,6 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 increment++;
             }
         });
-        console.log(hosts);
 
         this.aliasTitle = Object.keys(hosts).map( i => ({ ip: i, alias: this.dataItem.data.alias[i] }));
         const colCount = this.aliasTitle.length;

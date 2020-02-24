@@ -265,7 +265,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
             setTimeout(() => {
                 this.searchSliderFields = isImportantClear ? [] : this.searchSlider.getFields();
-                console.log('this.searchSliderFields', this.searchSliderFields, this.searchSlider.getFields());
                 if (query && query.fields) {
                     query.fields.forEach(i => {
                         const itemField = {

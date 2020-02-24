@@ -47,7 +47,6 @@ export class SearchService {
             this.protocol = SearchService.currentQuery.protocol_id || this.protocol;
             this.location = SearchService.currentQuery.location || this.location;
         }
-        console.log('constructor::SearchService.currentQuery', SearchService.currentQuery);
     }
 
 
@@ -117,7 +116,6 @@ export class SearchService {
     }
 
     private getTransactionFlags () {
-        console.log('getTransactionFlags()::this.currentQuery', SearchService.currentQuery);
         return {
             call: SearchService.currentQuery.protocol_id.includes('call'),
             registration: SearchService.currentQuery.protocol_id.includes('registration'),

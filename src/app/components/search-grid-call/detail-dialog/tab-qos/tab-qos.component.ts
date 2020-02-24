@@ -546,20 +546,10 @@ export class TabQosComponent implements OnInit {
         this.isRTCP = true;
     }
     private avarage(streems, labelData) {
-        try {   
-            const t = streems.map(i => {
-                var k = i[labelData].reduce((a, b) => {
-                    a += b;
-                    return a;
-                }, 0) / i[labelData].filter(e=> e > 0).length;
-                return k;
-            });
-
-            const out = t.reduce((a, b) => {
-                a += b;
-                return a;
-            }, 0) / t.filter(e=> e > 0).length;
-            return isNaN(out) ? 0 : Math.round(out * 100) / 100; 
+        try {
+            const t = streems.map(i => i[labelData].reduce((a, b) => (a += b, a), 0) / i[labelData].filter(e => e > 0).length);
+            const out = t.reduce((a, b) => (a += b, a), 0) / t.filter(e => e > 0).length;
+            return isNaN(out) ? 0 : Math.round(out * 100) / 100;
         } catch (err) {
             console.error(err);
         }
@@ -582,9 +572,9 @@ export class TabQosComponent implements OnInit {
                 item[val.label + '_color'] = rColor.backgroundColor;
 
                 val.backgroundColor = arrBackgroundColor
-                    .concat(Array.from({ length: _data.length }, i  => rColor.backgroundColor) );
+                    .concat(Array.from({ length: _data.length }, i => rColor.backgroundColor) );
                 val.hoverBackgroundColor = arrHoverBackgroundColor
-                    .concat(Array.from({ length: _data.length }, i  => rColor.borderColor));
+                    .concat(Array.from({ length: _data.length }, i => rColor.borderColor));
             });
         });
     }
@@ -617,7 +607,8 @@ export class TabQosComponent implements OnInit {
             item.packets = item.octets = item.highest_seq_no = item.ia_jitter = item.lsr = item.mos = item.packets_lost = item._chacked;
             item._indeterminate = false;
         } else {
-            item._chacked = item.packets && item.octets && item.highest_seq_no && item.ia_jitter && item.lsr && item.mos && item.packets_lost;
+            item._chacked = item.packets && item.octets && item.highest_seq_no &&
+                item.ia_jitter && item.lsr && item.mos && item.packets_lost;
             item._indeterminate = !item._chacked &&
                 !(!item.packets && !item.octets && !item.highest_seq_no && !item.ia_jitter && !item.lsr && !item.mos && !item.packets_lost);
         }
@@ -647,33 +638,32 @@ export class TabQosComponent implements OnInit {
 
 
     private calculateJitterMos({jitter, numpacketlost, rtt = 0}) {
-		if(rtt == 0) {
+        if (rtt === 0) {
             rtt = 10;
         }
-        
+
         const effective_latency = rtt + (jitter * 2) + 10;
-        
+
         let mos_val = 0;
-		let r_factor = 0;
-        
+        let r_factor = 0;
+
         if (effective_latency < 160) {
-			r_factor = 93.2 - (effective_latency / 40);
-		} else {
-			r_factor = 93.2 - (effective_latency - 120) / 10;
-		}
-		
-		r_factor = r_factor - (numpacketlost * 2.5);
-		if (r_factor > 100) {
-            r_factor = 100;
+            r_factor = 93.2 - (effective_latency / 40);
+        } else {
+            r_factor = 93.2 - (effective_latency - 120) / 10;
         }
-		else if (r_factor < 0) {
+
+        r_factor = r_factor - (numpacketlost * 2.5);
+        if (r_factor > 100) {
+            r_factor = 100;
+        } else if (r_factor < 0) {
             r_factor = 0;
         }
-		mos_val = 1 + (0.035) * (r_factor) + (0.000007) * (r_factor) * ((r_factor) - 60) * (100 - (r_factor));
-		
-		if (mos_val > 4.7) {
-            mos_val = 4.7
-        };
-		return (mos_val);
-	}
+        mos_val = 1 + (0.035) * (r_factor) + (0.000007) * (r_factor) * ((r_factor) - 60) * (100 - (r_factor));
+
+        if (mos_val > 4.7) {
+            mos_val = 4.7;
+        }
+        return (mos_val);
+    }
 }

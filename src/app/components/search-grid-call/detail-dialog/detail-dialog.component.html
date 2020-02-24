@@ -20,17 +20,40 @@
   <div *ngIf="activeTab <= 1 && isFilterOpened"
     class="button-icon-right-top filter-container"
     #filterContainer>
-    <mat-slide-toggle style="width: 200px;font-size: .8em;" color="warn" [(ngModel)]="isSimplify">
+    <!-- <mat-slide-toggle style="width: 200px;font-size: .8em;" color="warn" [(ngModel)]="isSimplify">
       {{ isSimplify ?  'Extended Format' : 'Simple Format'}}
     </mat-slide-toggle>
-    <hr/>
-    
+
+    <hr/> -->
+    <div class="filter-label">PayloadType:</div>
     <mat-checkbox color="warn" style="font-size: .8em;"
-      *ngFor="let checkboxItem of checkboxListFilter"
+      *ngFor="let checkboxItem of checkboxListFilterPayloadType"
       class="example-margin"
       (click)="doFilterMessages()"
       [(ngModel)]="checkboxItem.selected"
     >{{ checkboxItem.title }}</mat-checkbox>
+
+    <hr/>
+    <div class="filter-label">Ports:</div>
+    <div style="display: flex; flex-flow: row wrap; width: 250px;">
+      <mat-checkbox color="warn" style="font-size: .8em;"
+        *ngFor="let checkboxItem of checkboxListFilterPort"
+        class="example-margin"
+        (click)="doFilterMessages()"
+        [(ngModel)]="checkboxItem.selected"
+      >{{ checkboxItem.title }}</mat-checkbox>
+    </div>
+
+    <hr/>
+    <div class="filter-label">CallId:</div>
+    <div style="display: flex; flex-direction: column;">
+      <mat-checkbox color="warn" style="font-size: .8em;"
+        *ngFor="let checkboxItem of checkboxListFilterCallId"
+        class="example-margin"
+        (click)="doFilterMessages()"
+        [(ngModel)]="checkboxItem.selected"
+      >{{ checkboxItem.title }}</mat-checkbox>
+    </div>
   </div>
   <mat-tab-group
     (selectedIndexChange)="activeTab=$event"
