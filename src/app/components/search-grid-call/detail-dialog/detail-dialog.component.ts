@@ -15,6 +15,7 @@ export class DetailDialogComponent implements OnInit {
     @Input() mouseEventData: any;
     @Input() snapShotTimeRange: any;
     isSimplify = true;
+    isSimplifyPort = true;
     IdFromCallID;
     activeTab = 0;
     isFilterOpened = false;

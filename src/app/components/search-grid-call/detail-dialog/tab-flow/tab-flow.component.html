@@ -8,10 +8,10 @@
         <span *ngIf="title.alias + '' !== title.ip + ''" class="title">
           <strong>{{ title.alias }}</strong>
           <br>
-          {{ title.IP  + (!_isSimplify ? title.PORT : '')}}
+          {{ title.IP  + (!_isSimplifyPort ? title.PORT : '')}}
         </span>
         <span *ngIf="title.alias + '' === title.ip + ''" class="title">
-          {{ title.IP  + (!_isSimplify ? title.PORT : '') }}
+          {{ title.IP  + (!_isSimplifyPort ? title.PORT : '') }}
         </span>
     </div>
   </div>

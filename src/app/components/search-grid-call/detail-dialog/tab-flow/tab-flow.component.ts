@@ -21,6 +21,16 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         return this._isSimplify;
     }
 
+    _isSimplifyPort = false;
+
+    @Input()
+    set isSimplifyPort(val: boolean) {
+        this._isSimplifyPort = val;
+    }
+    get isSimplifyPort() {
+        return this._isSimplifyPort;
+    }
+
     @Input() callid: any;
     _dataItem: any;
     @Input() set dataItem(val) {
