@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, AfterViewInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, HostListener, AfterViewInit, Input, OnDestroy } from '@angular/core';
 
 @Component({
     selector: 'app-modal-resizable',
@@ -35,6 +35,13 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
     onFullPage () {
         this.isFullPage = !this.isFullPage;
     }
+   
+    @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.onClose();
+    }
+   
 
     ngAfterViewInit() {
         /* attache window to native document.body */
