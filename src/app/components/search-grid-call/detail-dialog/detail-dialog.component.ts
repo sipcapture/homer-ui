@@ -86,7 +86,7 @@ export class DetailDialogComponent implements OnInit {
     @Output() close: EventEmitter<any> = new EventEmitter();
     @ViewChild('filterContainer', {static: false}) filterContainer: ElementRef;
     dataLogs: Array<any>;
-
+    
     constructor(
         private _pas: PreferenceAdvancedService
     ) { }
