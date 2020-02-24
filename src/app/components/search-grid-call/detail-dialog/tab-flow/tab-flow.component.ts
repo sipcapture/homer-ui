@@ -97,7 +97,14 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             }
         });
 
-        this.aliasTitle = Object.keys(hosts).map( i => ({ ip: i, alias: this.dataItem.data.alias[i] }));
+        this.aliasTitle = Object.keys(hosts).map( i => {
+            const alias = this.dataItem.data.alias[i];
+            const al = i.split(':');
+            const IP = al[0];
+            const PORT = al[1] ? ':' + al[1] : '';
+
+            return { ip: i, alias, IP, PORT };
+        });
         const colCount = this.aliasTitle.length;
         const data = this.dataItem.data;
         let diffTs = 0;
