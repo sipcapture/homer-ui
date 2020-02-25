@@ -1,0 +1,10 @@
+.alertTrue{
+	background-color: green;
+}
+.alertFalse{
+	background-color: red;
+}
+.alert{
+	height: 100%;
+	width: 100%;
+}
