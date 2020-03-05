@@ -13,6 +13,10 @@ export interface AlertConfig {
     alertUrl: string;
     audioUrl: string;
     requestType: string;
+    keyList: Array<string>;
+    valueList: Array<string>;
+    expectedList: Array<string>;
+    comparsionType: string;
 }
 
 
@@ -48,53 +52,84 @@ export class AlertWidgetComponent implements IWidget {
         	alertUrl:"",
         	audioUrl:"",
         	requestType:"GET",
+        	keyList: ["Test1",],
+        	valueList: ["Test2",],
+        	expectedList: ["Test3",],
+        	comparsionType: "<",
         };
 	    if (this.config) {
-	        this._config.title 		= this.config.title || 'Clock Widget';
-	        this._config.alertUrl 	= this.config.alertUrl || "";
-	        this._config.audioUrl 	= this.config.audioUrl || "";
-	        this._config.requestType 	= this.config.requestType || "GET";
+	        this._config.title 		= this.config.title 		|| 'Alert Widget';
+	        this._config.alertUrl 	= this.config.alertUrl 		|| "";
+	        this._config.audioUrl 	= this.config.audioUrl 		|| "";
+	        this._config.requestType= this.config.requestType 	|| "GET";
+	        this._config.keyList	= this.config.keyList		|| ["Test1",];
+	        this._config.valueList	= this.config.valueList		|| ["Test2",];
+	        this._config.expectedList = this.config.expectedList|| ["Test3",];
+	        this._config.comparsionType = this.config.comparsionType|| "<";
 
 	    }
 	    this.update();
 	};
 	playAudio(){
-    	let audio = new Audio();
-    	audio.src = this._config.audioUrl;
-    	audio.load();
-    	audio.play();
+		if (this._config.audioUrl){
+	    	let audio = new Audio();
+	    	audio.src = this._config.audioUrl;
+	    	audio.load();
+	    	audio.play();
+	    }
     }
 	makeRequest() {
-		this.http.get<any>(this._config.alertUrl).subscribe(data => {
-            this.testvariable = data;
-            if(this.testvariable == true){
-            	this._config.alertState = true;
-            }else{
-            	this._config.alertState = false;
-            }
-        })
+		if(this._config.requestType === "GET"){
+			this.http.get<any>(this._config.alertUrl).subscribe(data => {
+				if(this._config.expectedList[0] === JSON.stringify(data)){
+					this._config.alertState = true;
+				}
+				this.compare()
+			})
+		}else if(this._config.requestType === "POST"){
+			let body = {};
+			for(let i=0; i < this._config.keyList.length; i++){
+				body[this._config.keyList[i]] = this._config.valueList[i]; 
+				console.log(body);
+			}
+			this.http.post<any>(this._config.alertUrl, body).subscribe(data => {
+			})
+		}
 	}	
+	
 	update() {
         if (this._interval) {
             clearInterval(this._interval);
         }
-
-        this._interval = setInterval(() => {
-        	this.makeRequest();
-        	if(this._config.alertState==true){
-        		this.playAudio();
-        		clearInterval(this._interval);
-        	}
-        }, 1000);
+        if (this._config.alertUrl){
+	        this._interval = setInterval(() => {
+	        	this.makeRequest();
+	        	if(this._config.alertState==true){
+	        		this.playAudio();
+	        		clearInterval(this._interval);
+	        	}
+	        }, 1000);
+    	}
 	};
+	compare() {
+		for(let i;this._config.keyList.length>i;i++){
+			if(eval(this._config.keyList[i] + this._config.comparsionType + this._config.expectedList[i])){
+				this._config.alertState = true;
+			}
+		}
+	}
     async openDialog(){
     	const dialogRef = this.dialog.open(SettingAlertWidgetComponent, {
-            width: '500px',
+            width: '700px',
             data: {
                 title: this._config.title,
                 alertUrl: this._config.alertUrl,
                 audioUrl: this._config.audioUrl,
                 requestType: this._config.requestType,
+                keyList: this._config.keyList,
+                valueList: this._config.valueList,
+                expectedList: this._config.expectedList,
+                comparsionType: this._config.comparsionType,
     		}
     	});
     	const data = await dialogRef.afterClosed().toPromise();
@@ -103,10 +138,14 @@ export class AlertWidgetComponent implements IWidget {
     		this._config.alertUrl 	= data.alertUrl;
     		this._config.audioUrl 	= data.audioUrl;
     		this._config.requestType= data.requestType;
+    		this._config.keyList	= data.keyList;
+    		this._config.valueList	= data.valueList;
+    		this._config.expectedList = data.expectedList;
+    		this._config.comparsionType = data.comparsionType;
     		this.changeSettings.emit({
     			config:this._config,
     			id: this.id,
-    		})
+    		});
     		this.update();
     	};
     }

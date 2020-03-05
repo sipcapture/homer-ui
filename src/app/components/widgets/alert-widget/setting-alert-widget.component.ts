@@ -9,7 +9,14 @@ import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 export class SettingAlertWidgetComponent {
 	arrayRequestType: Array<string> = ['GET', 'POST'];
-
+    comparsionTypeList: { [key: string]: string } = {
+        '<': '<',
+        '>': '>',
+        '=': '==',
+        '<=': '<=',
+        '>=': '>=',
+        '!=': '!=',
+    };
 	constructor(
         public dialogRef: MatDialogRef<SettingAlertWidgetComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any
@@ -19,11 +26,35 @@ export class SettingAlertWidgetComponent {
         this.data.alertUrl;
         this.data.audioUrl;
         this.data.requestType;
+        this.data.keyList;
+        this.data.valueList;
+        this.data.expectedList;
+        this.data.comparsionType;
+    }
+    addParams(){
+        console.log(this.data.keyList);
+        if (this.data.keyList[this.data.keyList.length - 1] != "" && this.data.valueList[this.data.valueList.length - 1] != "") {  
+            this.data.keyList.push("");
+            this.data.valueList.push("");
+            this.data.expectedList.push("");
+        }
+    }
+    deleteParams(i){
+        if (this.data.keyList.length > 1 && this.data.valueList.length > 1) {  
+            this.data.keyList.splice(i,1);
+            this.data.valueList.splice(i,1);
+        }
+
     }
     testAudio(){
-    	let audio = new Audio();
-    	audio.src = this.data.audioUrl;
-    	audio.load();
-    	audio.play();
+        if (this.data.audioUrl){
+        	let audio = new Audio();
+        	audio.src = this.data.audioUrl;
+        	audio.load();
+        	audio.play();
+        }
+    }
+    onNoClick(): void {
+        this.dialogRef.close();
     }
 }

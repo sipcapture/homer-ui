@@ -1,3 +1,9 @@
+<mat-toolbar class="title" color="primary">
+  <div>Settings</div>
+  <button mat-icon-button (click)="onNoClick()">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-toolbar>
 <div mat-dialog-content>
   <mat-form-field>
     <mat-label>Title</mat-label>
@@ -19,7 +25,33 @@
     <mat-label>Alert URL</mat-label>
     <input matInput [(ngModel)]="data.alertUrl">
   </mat-form-field>
+  <button title="Add param" mat-icon-button (click)="addParams()"><mat-icon>add</mat-icon></button>
 </div>
+<span>
+  <div mat-dialog-content  *ngFor="let key of data.keyList; let i = index">
+    <mat-form-field *ngIf="data.requestType==='POST'">
+      <mat-label>Key</mat-label>
+      <input matInput [(ngModel)]="data.keyList[i]">
+    </mat-form-field>
+    <mat-form-field style="margin-left: 10px; margin-right: 10px;" *ngIf="data.requestType==='POST'" >
+      <mat-label>Value</mat-label>
+      <input matInput [(ngModel)]="data.valueList[i]">
+    </mat-form-field>
+    <mat-form-field style="width: 30px; margin-right: 10px;">
+      <mat-select  [(value)]="data.comparsionType" >
+        <mat-option  *ngFor="let type of comparsionTypeList | keyvalue" [value]="type.value">
+          {{type.key}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Expected</mat-label>
+      <input matInput [(ngModel)]="data.expectedList[i]">
+    </mat-form-field>
+    
+    <button title="Delete param" mat-icon-button (click)="deleteParams(i)"><mat-icon>close</mat-icon></button>
+  </div>
+</span>
 <div mat-dialog-content>
   <mat-form-field>
     <mat-label>Audio URL</mat-label>
