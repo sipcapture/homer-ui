@@ -28,8 +28,8 @@
   <button title="Add param" mat-icon-button (click)="addParams()"><mat-icon>add</mat-icon></button>
 </div>
 <span>
-  <div mat-dialog-content  *ngFor="let key of data.keyList; let i = index">
-    <mat-form-field *ngIf="data.requestType==='POST'">
+  <div mat-dialog-content  *ngFor="let key of data.keyList; let i = index; trackBy: trackByFn">
+    <mat-form-field  *ngIf="data.requestType==='POST'" >
       <mat-label>Key</mat-label>
       <input matInput [(ngModel)]="data.keyList[i]">
     </mat-form-field>
@@ -37,8 +37,8 @@
       <mat-label>Value</mat-label>
       <input matInput [(ngModel)]="data.valueList[i]">
     </mat-form-field>
-    <mat-form-field style="width: 30px; margin-right: 10px;">
-      <mat-select  [(value)]="data.comparsionType" >
+    <mat-form-field style="width: 40px; margin-right: 10px;">
+      <mat-select  [(ngModel)]="data.comparsionTypeList[i]" >
         <mat-option  *ngFor="let type of comparsionTypeList | keyvalue" [value]="type.value">
           {{type.key}}
         </mat-option>

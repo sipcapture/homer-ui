@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChil
 import { Widget, WidgetArrayInstance } from '@app/helpers/widget.ts';
 import { SettingAlertWidgetComponent } from './setting-alert-widget.component';
 import { MatDialog } from '@angular/material/dialog';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from "rxjs";
 import { IWidget } from '../IWidget';
 
@@ -16,7 +16,7 @@ export interface AlertConfig {
     keyList: Array<string>;
     valueList: Array<string>;
     expectedList: Array<string>;
-    comparsionType: string;
+    comparsionTypeList: Array<string>;
 }
 
 
@@ -55,7 +55,7 @@ export class AlertWidgetComponent implements IWidget {
         	keyList: ["Test1",],
         	valueList: ["Test2",],
         	expectedList: ["Test3",],
-        	comparsionType: "<",
+        	comparsionTypeList: ["==",]
         };
 	    if (this.config) {
 	        this._config.title 		= this.config.title 		|| 'Alert Widget';
@@ -65,7 +65,7 @@ export class AlertWidgetComponent implements IWidget {
 	        this._config.keyList	= this.config.keyList		|| ["Test1",];
 	        this._config.valueList	= this.config.valueList		|| ["Test2",];
 	        this._config.expectedList = this.config.expectedList|| ["Test3",];
-	        this._config.comparsionType = this.config.comparsionType|| "<";
+	        this._config.comparsionTypeList = this.config.comparsionTypeList|| ["==",];
 
 	    }
 	    this.update();
@@ -81,19 +81,32 @@ export class AlertWidgetComponent implements IWidget {
 	makeRequest() {
 		if(this._config.requestType === "GET"){
 			this.http.get<any>(this._config.alertUrl).subscribe(data => {
-				if(this._config.expectedList[0] === JSON.stringify(data)){
+
+				if(this._config.expectedList[0] == data){
 					this._config.alertState = true;
 				}
-				this.compare()
 			})
 		}else if(this._config.requestType === "POST"){
 			let body = {};
+			var comparsionResult = [];
+			const httpOptions = {
+			headers: new HttpHeaders({
+			'Content-Type':  'application/json'
+			})
+			};
 			for(let i=0; i < this._config.keyList.length; i++){
 				body[this._config.keyList[i]] = this._config.valueList[i]; 
-				console.log(body);
 			}
-			this.http.post<any>(this._config.alertUrl, body).subscribe(data => {
-			})
+			this.http.post<any>(this._config.alertUrl, body, httpOptions).subscribe(data => {
+				for(let i = 0; i < this._config.keyList.length; i++){
+					comparsionResult.push(this.compare(i,data));
+					console.log(comparsionResult);
+				}
+				})
+				if(comparsionResult.every(x => x == true)){
+					this._config.alertState = true;
+					console.log(this._config.alertState + "AlertState");
+				}
 		}
 	}	
 	
@@ -104,19 +117,23 @@ export class AlertWidgetComponent implements IWidget {
         if (this._config.alertUrl){
 	        this._interval = setInterval(() => {
 	        	this.makeRequest();
-	        	if(this._config.alertState==true){
+	        	if(this._config.alertState){
 	        		this.playAudio();
 	        		clearInterval(this._interval);
 	        	}
 	        }, 1000);
     	}
 	};
-	compare() {
-		for(let i;this._config.keyList.length>i;i++){
-			if(eval(this._config.keyList[i] + this._config.comparsionType + this._config.expectedList[i])){
-				this._config.alertState = true;
-			}
-		}
+	compare(i,data) {
+		
+		switch (this._config.comparsionTypeList[i]) {
+			    case '>':   return data[this._config.keyList[i]] > this._config.expectedList[i];
+			    case '<':   return data[this._config.keyList[i]] < this._config.expectedList[i];
+			    case '>=':  return data[this._config.keyList[i]] >= this._config.expectedList[i];
+			    case '<=':  return data[this._config.keyList[i]] <= this._config.expectedList[i];
+			    case '==':  return data[this._config.keyList[i]] == this._config.expectedList[i];
+			    case '!=':  return data[this._config.keyList[i]] != this._config.expectedList[i];
+  		}
 	}
     async openDialog(){
     	const dialogRef = this.dialog.open(SettingAlertWidgetComponent, {
@@ -129,7 +146,7 @@ export class AlertWidgetComponent implements IWidget {
                 keyList: this._config.keyList,
                 valueList: this._config.valueList,
                 expectedList: this._config.expectedList,
-                comparsionType: this._config.comparsionType,
+                comparsionTypeList: this._config.comparsionTypeList,
     		}
     	});
     	const data = await dialogRef.afterClosed().toPromise();
@@ -140,8 +157,9 @@ export class AlertWidgetComponent implements IWidget {
     		this._config.requestType= data.requestType;
     		this._config.keyList	= data.keyList;
     		this._config.valueList	= data.valueList;
+    		this._config.alertState	= data.alertState;
     		this._config.expectedList = data.expectedList;
-    		this._config.comparsionType = data.comparsionType;
+    		this._config.comparsionTypeList = data.comparsionTypeList;
     		this.changeSettings.emit({
     			config:this._config,
     			id: this.id,
