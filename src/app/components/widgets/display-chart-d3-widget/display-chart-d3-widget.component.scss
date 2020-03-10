@@ -1,0 +1,175 @@
+:host {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    background:#e0e0e0;
+}
+
+.container {
+    min-width: 350px;
+    width: 60vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    background-color: transparent;
+    .title {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 2rem;
+        font-family: 'Roboto';
+        height: 2rem;
+        width: 100%;
+        margin: 0 auto 1rem auto;
+
+        .left {
+            height: 3rem;
+            font-size: 3rem;
+            cursor: pointer;
+        }
+        .span {
+            height: 3rem;
+            line-height: 3rem;
+        }
+        .right {
+            height: 3rem;
+            font-size: 3rem;
+            cursor: pointer;
+            margin-right: 20px;
+        }
+    }
+
+    #ordersByStatus {
+        height: 70vh;
+        min-height: 400px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        position: relative;
+
+        mat-select {
+            position: absolute;
+            top: 0;
+            right: 0px;
+            width: 20%;
+            padding: 5px;
+            font-size: 1rem;
+            font-family: 'Roboto';
+            z-index: 100;
+        }
+
+        #chartAndDataContainer {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            align-content: flex-start;
+            background-color: transparent;
+            height: 1000%;
+            width: 100%;
+            overflow-y:scroll;
+            #chartContainer {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex: 1;
+                height: 50%;
+                width: 100%;
+                app-d3-pie-chart {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100%;
+                    width: 100%;
+                }
+            }
+            .half {
+                height: 25%;
+            }
+            #ordersByStatusTable {
+                display: flex;
+                height: 50%;
+                width: 100%;
+                max-width: 400px;
+                table {
+                  width: 100%;
+                  .m_100 {
+                    color: #99cc33;
+                    font-size: 2rem;
+                  }
+                  .m_101 {
+                    color: #66cccc;
+                    font-size: 2rem;
+                  }
+                  .m_200 {
+                    color: #009999;
+                    font-size: 2rem;
+                  }
+                  .m_407 {
+                    color: #cc3366;
+                    font-size: 2rem;
+                  }
+                  .m_ACK {
+                    color: #ff9933;
+                    font-size: 2rem;
+                  }
+                  .m_INVITE {
+                    color: #ff3333;
+                    font-size: 2rem;
+                  }
+                  .m_BYE {
+                    color: #660033;
+                    font-size: 2rem;
+                  }
+                  .mat-column-legend {
+                    width: 20%;
+                  }
+                  tr.mat-header-row {
+                    height: 48px !important;
+                  }
+                  .table-row {
+                    height: 20px !important;
+                  }
+                }
+            }
+        }
+    }
+}
+
+.show-data {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+mat-option ::ng-deep .city {
+    font-size: 1rem;
+    font-family: 'Roboto';
+}
+
+@media screen and (max-width: 767px) {
+    .container {
+        .title {
+            font-size: 1.5rem;
+        }
+    }
+}
+
+@media screen and (max-width: 414px) {
+    .container {
+        .title {
+            font-size: 1rem;
+        }
+    }
+}
+.widget-title { 
+  width:100%;
+  color:red;
+}
+.widget-title p::before{
+  content:'⬙ ';
+  font-size:1.5em;
+}
