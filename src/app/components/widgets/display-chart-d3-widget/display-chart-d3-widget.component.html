@@ -1,0 +1,36 @@
+<mat-card class="container">
+    <div class="widget-title">
+        <p>SIP By Method</p>
+        </div>
+    <mat-card-content id="ordersByStatus" #ordersByStatus>
+        <div id="chartAndDataContainer">
+
+            <div id="chartContainer" [ngClass]="{'half': chartControlsService.showData}">
+                <app-d3-pie-chart #ordersByStatusChart [data]="chartData"></app-d3-pie-chart>
+            </div>
+            <div id="ordersByStatusTable" *ngIf="chartControlsService.showData">
+                <table mat-table [dataSource]="sipMethods" *ngIf="sipMethods" class="mat-elevation-z8">
+                    <ng-container matColumnDef="legend">
+                        <th mat-header-cell *matHeaderCellDef></th>
+                        <td mat-cell *matCellDef="let element" [ngClass]="element.method">&#9632;</td>
+                    </ng-container>
+                    <ng-container matColumnDef="SIPMethod">
+                        <th mat-header-cell *matHeaderCellDef>SIP Method</th>
+                        <td mat-cell *matCellDef="let element">{{element.methodDisplayValue}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="count">
+                        <th mat-header-cell *matHeaderCellDef>Total</th>
+                        <td mat-cell *matCellDef="let element">{{element.count}}</td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
+                </table>
+            </div>
+        </div>
+        <mat-slide-toggle class="show-data" color="primary" 
+            [checked]="chartControlsService.showData"
+            (change)="toggleData($event)">
+            Show data
+        </mat-slide-toggle>
+    </mat-card-content>
+</mat-card>

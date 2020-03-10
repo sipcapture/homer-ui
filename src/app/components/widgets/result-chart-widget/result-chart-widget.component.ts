@@ -173,7 +173,7 @@ export class ResultChartWidgetComponent implements IWidget {
 
     private async onDashboardEvent(data: any) {
         const dataId = data.resultWidget[this.id];
-
+               
         if (dataId && dataId.query) {
             if (this.lastTimestamp * 1 === dataId.timestamp * 1) {
                 return;
@@ -214,7 +214,7 @@ export class ResultChartWidgetComponent implements IWidget {
 
         const dataMapping: any = await this._pmps.getAll().toPromise();
         const result = await this._scs.getData(this.configQuery).toPromise();
-
+     
         const dataMappingItem = dataMapping.data.filter(i =>
             i.profile === this.protocol_profile.split('_')[1]
         )[0];
@@ -225,8 +225,10 @@ export class ResultChartWidgetComponent implements IWidget {
             this.columnKeysGroupColumn = result.keys;
             this.columnKeys = fields_mapping.filter(i => i.type !== 'string').map(i => i.id.split('.')[1]);
             this.dataForChart = result.data;
-
+            
             this.buildChart();
+        
+           
         }
     }
     private groupByData() {
@@ -275,6 +277,7 @@ export class ResultChartWidgetComponent implements IWidget {
             return;
         }
         const dataForChart = this.groupByData();
+       
         if (dataForChart.length === 1) {
             dataForChart[1] = dataForChart[0];
         }
@@ -300,6 +303,7 @@ export class ResultChartWidgetComponent implements IWidget {
                 const data = d.map(i => i[label]);
                 if (data) {
                     this.objChart.chartData.push({ label, data });
+                
                 }
             });
         }
