@@ -60,6 +60,7 @@ export class D3PieChartComponent implements OnInit, OnChanges {
       this.setChartDimensions();
 
       this.setColorScale();
+    
 
       this.addGraphicsElement();
 
