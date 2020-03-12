@@ -56,9 +56,8 @@ import {
     SettingProtosearchWidgetComponent,
     SettingResultChartWidgetComponent,
     SettingResultWidgetComponent,
-    SettingsAceEditorWidgetComponent,
-    DisplayChartD3WidgetComponent,
-    SettingDisplayChartD3WidgetComponent
+    SettingsAceEditorWidgetComponent
+
 
 } from '@app/components/widgets';
 
@@ -110,7 +109,7 @@ import { DynamicModule } from 'ng-dynamic-component';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { ChartsModule } from 'ng2-charts';
 import { MarkdownModule } from 'ngx-markdown';
-import { D3PieChartComponent } from './components/widgets/display-chart-d3-widget/d3-pie-chart/d3-pie-chart.component';
+
 
 
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {
@@ -171,7 +170,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         PrometheusWidgetComponent,
         ProtosearchWidgetComponent,
         ResultChartWidgetComponent,
-        DisplayChartD3WidgetComponent,
+     
         ResultWidgetComponent,
         RsearchWidgetComponent,
         SettingClockWidgetComponent,
@@ -183,7 +182,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingResultChartWidgetComponent,
         SettingResultWidgetComponent,
         SettingsAceEditorWidgetComponent,
-        SettingDisplayChartD3WidgetComponent,
+       
     
         /** dialogs */
         DialogAdvancedComponent,
@@ -196,7 +195,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         DialogMappingComponent,
         DialogUserSettingsComponent,
         DialogUsersComponent,
-        D3PieChartComponent,
+   
  
     ],
     // .concat(
