@@ -57,7 +57,7 @@ import {
     SettingResultChartWidgetComponent,
     SettingResultWidgetComponent,
     SettingsAceEditorWidgetComponent
-
+   
 
 } from '@app/components/widgets';
 
@@ -109,7 +109,6 @@ import { DynamicModule } from 'ng-dynamic-component';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { ChartsModule } from 'ng2-charts';
 import { MarkdownModule } from 'ngx-markdown';
-
 
 
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {
@@ -170,7 +169,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         PrometheusWidgetComponent,
         ProtosearchWidgetComponent,
         ResultChartWidgetComponent,
-     
+    
         ResultWidgetComponent,
         RsearchWidgetComponent,
         SettingClockWidgetComponent,
@@ -182,7 +181,6 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingResultChartWidgetComponent,
         SettingResultWidgetComponent,
         SettingsAceEditorWidgetComponent,
-       
     
         /** dialogs */
         DialogAdvancedComponent,
@@ -195,7 +193,6 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         DialogMappingComponent,
         DialogUserSettingsComponent,
         DialogUsersComponent,
-   
  
     ],
     // .concat(
