@@ -47,6 +47,25 @@ export class DashboardService {
         };
         this.update();
     }
+    setSliderQueryDataToWidgetResult(id: string, query: any) {
+        this.dbSetting.resultWidget = this.dbSetting.resultWidget || {};
+        this.dbSetting.resultWidget[id] = this.dbSetting.resultWidget[id] || {};
+        this.dbSetting.resultWidget[id].slider = query;
+        this.update();
+        return query;
+    }
+    getSliderQueryDataToWidgetResult(id: string) {
+        this.dbSetting = JSON.parse(localStorage.getItem(ConstValue.SQWR)) || this.dbSetting;
+        if (
+            this.dbSetting.resultWidget &&
+            this.dbSetting.resultWidget[id] &&
+            this.dbSetting.resultWidget[id].slider
+        ) {
+            return this.dbSetting.resultWidget[id].slider;
+        }
+        return null;
+    }
+
     getWidgetListCurrentDashboard() {
         return this.dbSetting.currentWidgetList;
     }

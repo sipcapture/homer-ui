@@ -318,7 +318,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
 
-    onDashboarDelete() {
+    onDashboardDelete() {
         const dialogRef = this.dialog.open(DeleteDialogComponent, {
             width: '350px',
             data: {}

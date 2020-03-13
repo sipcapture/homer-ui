@@ -255,7 +255,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     async initSearchSlider(isImportantClear = false) {
         this.isThisSelfQuery = false;
         try {
-            const query = this.searchService.getLocalStorageQuery();
+            const query = this._ds.getSliderQueryDataToWidgetResult(this.id) ||
+                this._ds.setSliderQueryDataToWidgetResult(this.id, this.searchService.getLocalStorageQuery());
+
             if (!query || !query.protocol_id) {
                 return;
             }
@@ -819,14 +821,14 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.changeDetectorRefs.detectChanges();
             });
         }
-        
+
         if ( row.isLog || (row.data.payloadType === 1 && (row.data.raw || row.data.item && row.data.item.raw))) {
             const data = row.data.item || row.data;
             mData.data = data || {};
             mData.data.item = {
                 raw: mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty'
             };
-            mData.data.messageDetaiTableData = Object.keys(mData.data)
+            mData.data.messageDetailTableData = Object.keys(mData.data)
                 .map(i => {
                     let val;
                     if (i === 'create_date') {
@@ -849,7 +851,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             mData.data.item = {
                 raw: mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty'
             };
-            mData.data.messageDetaiTableData = Object.keys(mData.data).map(i => {
+            mData.data.messageDetailTableData = Object.keys(mData.data).map(i => {
                 let val;
                 if (i === 'create_date') {
                     val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS');
