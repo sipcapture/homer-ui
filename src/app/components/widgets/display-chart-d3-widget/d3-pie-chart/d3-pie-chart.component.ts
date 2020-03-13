@@ -61,7 +61,6 @@ export class D3PieChartComponent implements OnInit, OnChanges {
 
       this.setColorScale();
     
-
       this.addGraphicsElement();
 
       this.setupArcGenerator();
@@ -90,8 +89,7 @@ export class D3PieChartComponent implements OnInit, OnChanges {
 
   private setColorScale() {
       this.colorScale = d3.scaleOrdinal(d3.schemeCategory10);
-      // Below is an example of using custom colors
-     // this.colorScale = d3.scaleOrdinal().domain([])
+
      this.colorScale = d3.scaleOrdinal().domain(['0','1','2','3','4','5','6']).range(['#99cc33', '#66cccc', '#009999', '#cc3366','#ff9933','#ff3333',' ']);
   }
 
