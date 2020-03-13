@@ -65,6 +65,11 @@ chartDataObj = {
       "count": 0
     },
     {
+      "method": "m_403",
+      "methodDisplayValue": "403",
+      "count": 0
+    },
+    {
       "method": "m_407",
       "methodDisplayValue": "407",
       "count": 0
@@ -226,22 +231,6 @@ subsCastRangeUpdateTimeOut: Subscription;
     this.getData();
   }
 
-  isTimeStamp(n = null) {
-    if (!n) {
-      try {
-        //
-        n = this.dataForChart[0][this.groupColumnAxis1];
-      } catch (err) {
-        console.log(err);
-        return false;
-      }
-    }
-    const m = (n + '').match(/\d{2}/g);
-    if (m) {
-      return +m[0] >= 15 && (n + '').length === 10;
-    }
-    return false;
-  }
 
 private async getData() {
   if (!this.localData) {

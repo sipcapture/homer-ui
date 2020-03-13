@@ -34,8 +34,8 @@ export class D3PieChartComponent implements OnInit, OnChanges {
 
   // Pie function - transforms raw data to arc segment parameters
   pie = d3.pie()
-      .startAngle(-0.5 * Math.PI)
-      .endAngle(0.5 * Math.PI)
+      .startAngle(-0.6 * Math.PI)
+      .endAngle(0.6 * Math.PI)
       .sort(null)
       .value((d: number) => d);
 
@@ -84,13 +84,13 @@ export class D3PieChartComponent implements OnInit, OnChanges {
 
   private addGraphicsElement() {
       this.g = this.svg.append("g")
-          .attr("transform", "translate(100,90)");
+          .attr("transform", "translate(100,70)");
   }
 
   private setColorScale() {
       this.colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
-     this.colorScale = d3.scaleOrdinal().domain(['0','1','2','3','4','5','6']).range(['#99cc33', '#66cccc', '#009999', '#cc3366','#ff9933','#ff3333',' ']);
+     this.colorScale = d3.scaleOrdinal().domain(['0','1','2','3','4','5','6','7']).range(['#99cc33', '#66cccc', '#009999','#b3b3b3', '#e61049','#ff9933','#ff3333',' ']);
   }
 
   private processPieData(data, initial = true) {
@@ -105,11 +105,12 @@ export class D3PieChartComponent implements OnInit, OnChanges {
 
 
   private setupArcGenerator() {
-      this.innerRadius = 50;
-      this.radius = 80;
+      this.innerRadius = 40;
+      this.radius = 65;
       this.arc = d3.arc()
           .innerRadius(this.innerRadius)
-          .outerRadius(this.radius);
+          .outerRadius(this.radius)
+          .padAngle(this.radius*0.00005)
   }
 
   private addSlicesToTheDonut() {
@@ -121,7 +122,13 @@ export class D3PieChartComponent implements OnInit, OnChanges {
           .attr('fill', (datum, index) => {
               return this.colorScale(`${index}`);
           })
-          .style('opacity', 1);
+          .attr('fill-opacity','0.45')
+          .attr('stroke',(datum,index)=>{
+              return this.colorScale(`${index}`);
+          })
+          .attr('stroke-width','.35')
+
+          
   }
 
   private addDonutTotalLabel() {
@@ -180,13 +187,13 @@ export class D3PieChartComponent implements OnInit, OnChanges {
       this.totalLabel.text(this.total);
       this.labels.data(this.pieData);
       this.labels.each((datum, index, n) => {
-          d3.select(n[index]).text(this.labelValueFn(this.rawData[index]));
+      d3.select(n[index]).text(this.labelValueFn(this.rawData[index]));
       });
       this.labels.transition().duration(750).attrTween("transform", this.labelTween);
   }
 
   private updateTotal() {
-      this.totalLabel.text(this.total);
+      this.totalLabel.text(`Total: ${this.total}`);
   }
 
   private removeExistingChartFromParent() {
@@ -207,8 +214,9 @@ export class D3PieChartComponent implements OnInit, OnChanges {
           .attr('transform', (datum, index) => {
               return 'translate(' + this.arc.centroid(datum) + ')';
           })
-          .style('font-size', '8px')
-          .style('text-anchor', 'middle');
+          .style('font-size', '4px')
+          .style('text-anchor', 'middle')
+          .style('fill','#52545c')
 
   }
 
