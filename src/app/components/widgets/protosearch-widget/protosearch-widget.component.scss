@@ -1,7 +1,6 @@
 :host{
     min-height:500px;
 }
-
 .chack-list {
     margin-right: 1.3rem;
 }
@@ -14,13 +13,11 @@
 .example-container {
     display: grid;
     grid-template-columns: 1fr;
-    grid-gap:5px;
+    column-gap:10px;
     padding:20px;
 }
-
 .example-container > * {
   font-size:.7em;
-  width:95%;
   text-transform:uppercase;
   letter-spacing:1px;
 }
@@ -33,7 +30,6 @@
     bottom:10px;
     right:10px;
 }
-
 .proto-buttons > button{
     margin:7px;
     font-size:.65em;
@@ -45,5 +41,3 @@
 .proto-buttons > button:hover{
     opacity:1;
 }
-
-
