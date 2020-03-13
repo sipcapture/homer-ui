@@ -1,0 +1,43 @@
+:host{
+    min-height:500px;
+}
+.chack-list {
+    margin-right: 1.3rem;
+}
+.title {
+    margin: -1.5rem -1.5rem 2rem -1.5rem;
+    width: initial !important;
+    display: flex;
+    justify-content: space-between;
+}
+.example-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    column-gap:10px;
+    padding:20px;
+}
+.example-container > * {
+  font-size:.7em;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+.hide {
+    display: none !important;
+}
+.proto-buttons{
+    padding:5px;
+    position:absolute;
+    bottom:10px;
+    right:10px;
+}
+.proto-buttons > button{
+    margin:7px;
+    font-size:.65em;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:#3f3f3f;
+    opacity: .85;
+}
+.proto-buttons > button:hover{
+    opacity:1;
+}
