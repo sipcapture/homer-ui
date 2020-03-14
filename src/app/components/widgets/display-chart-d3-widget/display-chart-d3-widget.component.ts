@@ -24,6 +24,11 @@ export class SIPMethod {
   count: number;
 }
 
+export class Tag {
+  name: string;
+  color: string;
+  count: number;
+}
 type SortType = 'SUM';
 
 @Component({
@@ -160,6 +165,11 @@ isShowPanelSettings = true;
 
 columnKeys = [];
 
+keySelected = '';   //--- >  Key selected on the select of the chart
+
+keysSet = [];
+randomColorScale = [];
+
 subsDashboardEvent: Subscription;
 subsCastRangeUpdateTimeOut: Subscription;
 
@@ -251,6 +261,19 @@ private async getData() {
     this.columnKeysGroupColumn = result.keys;
     this.columnKeys = fields_mapping.filter(i => i.type !== 'string').map(i => i.id.split('.')[1]);
     this.dataForChart = result.data;
+    /**
+     * 
+     * const names = ["Mike","Matt","Nancy","Adam","Jenny","Nancy","Carl"]; let unique = [...new Set(names)]; console.log(unique); // 'Mike', 'Matt', 'Nancy', 'Adam', 'Jenny', 'Carl'
+     */
+  // make an array of the values inside the keySelected array of the array keySelectedValues
+  // let keySelectedValues = this.dataForChart.map(m => m.this.keySelected)
+  // let columns = [...new Set(keySelectedValues)]
+  // this will be the "methodList"   // dataArray will be the data for chart and
+  // the objEntry will be the object model for the count ?
+  // copy the object-s?
+  // generate new array of tags  tag tags = [{color:'',name:'',count:''}]
+
+    console.log(this.columnKeysGroupColumn); // campos a seleccionar 
     this.getMethodCounts(this.dataForChart, this.chartDataObj.sipMethods, this.methodDisplayValues);
     this.saveConfig();
     this.buildD3Chart();
@@ -284,8 +307,39 @@ buildD3Chart() {
 
 toggleData(event: MatSlideToggleChange) {
   this.chartControlsService.showData = event.checked;
-}
+  console.log(this.keySelected);
 
+// returns an array with the values of the selected key! 
+  const selectKey = (data,selected) => {
+    let keyArr = []
+    let keySelectedValues = data.forEach(value => keyArr.push(value[selected]))
+    return keyArr;
+  }  
+
+  if(this.keySelected !== ''){
+    console.log(selectKey(this.dataForChart,this.keySelected));
+    let selectedKeyArr = selectKey(this.dataForChart,this.keySelected)
+    let keySet = new Set(selectedKeyArr)
+   /*  the variables to count !! */
+    this.keysSet = Array.from(keySet)
+    console.log(this.keysSet);
+    this.randomColorScale = this.getRandomColors(this.keysSet)
+  } 
+
+}
+getRandomColors(n){
+  let colorsArray = [];
+  for(let i = 0 ; i < n.length; i ++){
+  let letters = '0123456789ABCDEF';
+  let color = '#';
+  for(let j = 0 ; j < 6; j++){
+    color +=letters[Math.floor(Math.random()*16)];
+   
+  }
+  colorsArray.push(color);
+}
+return colorsArray;
+}
 private saveConfig() {
   const _f = Functions.cloneObject;
   this.config = {

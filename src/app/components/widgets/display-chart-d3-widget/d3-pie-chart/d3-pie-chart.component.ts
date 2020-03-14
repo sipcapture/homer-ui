@@ -88,9 +88,9 @@ export class D3PieChartComponent implements OnInit, OnChanges {
   }
 
   private setColorScale() {
-      this.colorScale = d3.scaleOrdinal(d3.schemeCategory10);
+      this.colorScale = d3.scaleOrdinal(d3.schemePaired);
 
-     this.colorScale = d3.scaleOrdinal().domain(['0','1','2','3','4','5','6','7']).range(['#99cc33', '#66cccc', '#009999','#b3b3b3', '#e61049','#ff9933','#ff3333',' ']);
+     //this.colorScale = d3.scaleOrdinal().domain(['0','1','2','3','4','5','6','7']).range(['#99cc33', '#66cccc', '#009999','#b3b3b3', '#e61049','#ff9933','#ff3333',' ']);
   }
 
   private processPieData(data, initial = true) {
