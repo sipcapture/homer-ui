@@ -208,7 +208,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                         });
                     } else {
                         this.update(true);
-                        this.initSearchSlider(!this.isThisSelfQuery);
+                        setTimeout(() => {
+                            this.initSearchSlider(!this.isThisSelfQuery);
+                        }, 10);
                     }
                 }
             });
@@ -255,8 +257,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     async initSearchSlider(isImportantClear = false) {
         this.isThisSelfQuery = false;
         try {
-            const query = this._ds.getSliderQueryDataToWidgetResult(this.id) ||
-                this._ds.setSliderQueryDataToWidgetResult(this.id, this.searchService.getLocalStorageQuery());
+            const query = this._ds.getSliderQueryDataToWidgetResult(this.id)
+                || this._ds.setSliderQueryDataToWidgetResult(this.id, this.searchService.getLocalStorageQuery());
 
             if (!query || !query.protocol_id) {
                 return;
@@ -590,6 +592,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.selectCallIdFromGetParams();
                 this.openTransactionByAdvancedSettings();
                 this.dataReady.emit({});
+                this.initSearchSlider();
             }, err => {
                 this.rowData = [];
                 this.dataReady.emit({});
