@@ -39,6 +39,8 @@ import {
     PreferenceAgentsub
 } from '@app/models';
 import { AuthenticationService } from '@app/services';
+import { DashboardService } from '../../services/dashboard.service';
+import { SessionStorageService } from '../../services/session-storage.service';
 
 
 @Component({
@@ -50,6 +52,8 @@ export class PreferenceComponent implements OnInit, OnDestroy {
     isLoading = false;
 
     isAdmin = false;
+
+    isHasLocalStorage = false;
 
     public pageId: string;
     public links: Array<string> = [];
@@ -71,7 +75,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
 
     dataSource = new MatTableDataSource([{}]);
     isAccess = {};
-    
+
     constructor(
         private authenticationService: AuthenticationService,
         private router: Router,
@@ -85,55 +89,58 @@ export class PreferenceComponent implements OnInit, OnDestroy {
         private _aks: PreferenceAuthKeyService,
         private _pags: PreferenceAgentsubService,
         public dialog: MatDialog,
+
+        private dashboardService: DashboardService,
+        private sessionStorageService: SessionStorageService
     ) {
-        
+
         const userData = this.authenticationService.currentUserValue;
-        this.isAdmin = userData && userData.user && userData.user.admin && userData.user.admin == true;
-        
+        this.isAdmin = userData && userData.user && userData.user.admin && userData.user.admin === true;
+
         if (this.isAdmin) {
             this.isAccess = {
                 users: {
-                    "add": true,
-                    "edit": true,
-                    "delete": true
+                    add: true,
+                    edit: true,
+                    delete: true
                 },
                 'user settings':  {
-                    "add": true,
-                    "edit": true,
-                    "delete": true
+                    add: true,
+                    edit: true,
+                    delete: true
                 },
                 alias:  {
-                    "add": true,
-                    "edit": true,
-                    "delete": true
+                    add: true,
+                    edit: true,
+                    delete: true
                 },
                 advanced:  {
-                    "add": true,
-                    "edit": true,
-                    "delete": true
+                    add: true,
+                    edit: true,
+                    delete: true
                 },
                 mapping:  {
-                    "add": true,
-                    "edit": true,
-                    "delete": true
+                    add: true,
+                    edit: true,
+                    delete: true
                 },
                 hepsub:  {
-                    "add": true,
-                    "edit": true,
-                    "delete": true
+                    add: true,
+                    edit: true,
+                    delete: true
                 },
                 'auth token':  {
-                    "add": true,
-                    "edit": true,
-                    "delete": true
+                    add: true,
+                    edit: true,
+                    delete: true
                 },
                 agentsub:  {
-                    "add": false,
-                    "edit": false,
-                    "delete": true
+                    add: false,
+                    edit: false,
+                    delete: true
                 },
             };
-            
+
             this.pagesStructure = {
                 users: ['Firstname', 'Lastname', 'Username', 'Email', 'tools'],
                 'user settings': ['Username', 'Partid', 'Category', 'Param', 'Data', 'tools'],
@@ -164,7 +171,8 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 'mapping',
                 'hepsub',
                 'auth token',
-                'agentsub'
+                'agentsub',
+                'reset'
             ]
         } else {
             this.pagesStructure = {
@@ -185,46 +193,46 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 'advanced',
             ]
 
-            this.isAccess= {
+            this.isAccess = {
                 users:  {
-                    "add": false,
-                    "edit": true,
-                    "delete": false,
+                    add: false,
+                    edit: true,
+                    delete: false,
                 },
                 'user settings':  {
-                    "add": true,
-                    "edit": true,
-                    "delete": true
+                    add: true,
+                    edit: true,
+                    delete: true
                 },
                 alias:  {
-                    "add": false,
-                    "edit": false,
-                    "delete": false
+                    add: false,
+                    edit: false,
+                    delete: false
                 },
                 advanced:  {
-                    "add": false,
-                    "edit": false,
-                    "delete": false
+                    add: false,
+                    edit: false,
+                    delete: false
                 },
                 mapping: {
-                    "add": false,
-                    "edit": false,
-                    "delete": false
+                    add: false,
+                    edit: false,
+                    delete: false
                 },
                 hepsub: {
-                    "add": false,
-                    "edit": false,
-                    "delete": false
+                    add: false,
+                    edit: false,
+                    delete: false
                 },
                 'auth token': {
-                    "add": false,
-                    "edit": false,
-                    "delete": false
+                    add: false,
+                    edit: false,
+                    delete: false
                 },
                 agentsub: {
-                    "add": false,
-                    "edit": false,
-                    "delete": true
+                    add: false,
+                    edit: false,
+                    delete: true
                 }
             };
         }
@@ -413,20 +421,19 @@ export class PreferenceComponent implements OnInit, OnDestroy {
     }
 
     settingDialog (item: any = null) {
-
         this.openDialog(this.dialogs[this.pageId], item, result => {
-            if (result) {                
-                this.service[this.pageId][result.isnew ? 'add' : 'update'](result.data).toPromise().then((response) => {                               
-                    if(this.pageId == "auth token" && result.isnew && response.data) {
-                        this.openDialog(DialogAuthTokenDisplayComponent, response.data, result => {
-                            if (result) {
+            if (result) {
+                this.service[this.pageId][result.isnew ? 'add' : 'update'](result.data).toPromise().then((response) => {
+                    if (this.pageId === 'auth token' && result.isnew && response.data) {
+                        this.openDialog(DialogAuthTokenDisplayComponent, response.data, result2 => {
+                            if (result2) {
                                 this.service[this.pageId].delete(item.guid).toPromise().then(() => {
                                     this.updateData();
                                 });
                             }
-                        });                        
-                    }         
-                    this.updateData();           
+                        });
+                    }
+                    this.updateData();
                 });
             }
         });
@@ -440,6 +447,18 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 });
             }
         });
+    }
+    onClearLocalData() {
+        ['searchQuery', 'user-settings', 'searchQueryWidgetsResult'].forEach(i => {
+            localStorage.removeItem(i);
+        });
+
+        this.dashboardService.clearLocalStorage();
+        this.sessionStorageService.clearLocalStorage();
+    }
+    getLocalStorageStatus () {
+        return ['searchQuery', 'user-settings', 'searchQueryWidgetsResult']
+            .reduce((a, b) => a || localStorage.getItem(b) !== null, false);
     }
 
     ngOnDestroy () {

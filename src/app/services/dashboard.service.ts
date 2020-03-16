@@ -15,67 +15,76 @@ export interface DashboardEventData {
 })
 
 export class DashboardService {
-    private _behavior: BehaviorSubject<any>;
-    public dashboardEvent: Observable<any>;
-    private dbSetting: DashboardEventData = {
+    static dbSetting: DashboardEventData = {
         current: '',
         currentWidgetList: [],
         resultWidget: {}
     };
+
+    private _behavior: BehaviorSubject<any>;
+    public dashboardEvent: Observable<any>;
     private widgetList: any;
     private url = `${environment.apiUrl}/dashboard`;
 
     constructor(private _http: HttpClient) {
-        this.dbSetting = JSON.parse(localStorage.getItem(ConstValue.SQWR)) || this.dbSetting;
-        this._behavior = new BehaviorSubject<any>(this.dbSetting);
+        DashboardService.dbSetting = JSON.parse(localStorage.getItem(ConstValue.SQWR)) || DashboardService.dbSetting;
+        this._behavior = new BehaviorSubject<any>(DashboardService.dbSetting);
         this.dashboardEvent = this._behavior.asObservable();
     }
-
+    clearLocalStorage() {
+        DashboardService.dbSetting = {
+            current: '',
+            currentWidgetList: [],
+            resultWidget: {}
+        };
+    }
     setCurrentDashBoardId(val: any) {
-        this.dbSetting.current = val;
+        DashboardService.dbSetting.current = val;
         this.update();
     }
 
     setWidgetListCurrentDashboard(widgetList: any) {
-        this.dbSetting.currentWidgetList = widgetList;
+        DashboardService.dbSetting.currentWidgetList = widgetList;
         this.update();
     }
     setQueryToWidgetResult(id: string, query: string) {
-        this.dbSetting.resultWidget[id] = {
+        DashboardService.dbSetting.resultWidget[id] = {
             timestamp: Date.now(),
             query: query
         };
         this.update();
     }
     setSliderQueryDataToWidgetResult(id: string, query: any) {
-        this.dbSetting.resultWidget = this.dbSetting.resultWidget || {};
-        this.dbSetting.resultWidget[id] = this.dbSetting.resultWidget[id] || {};
-        this.dbSetting.resultWidget[id].slider = query;
+        DashboardService.dbSetting.resultWidget = DashboardService.dbSetting.resultWidget || {};
+        DashboardService.dbSetting.resultWidget[id] = DashboardService.dbSetting.resultWidget[id] || {};
+        DashboardService.dbSetting.resultWidget[id].slider = query;
         this.update();
         return query;
     }
     getSliderQueryDataToWidgetResult(id: string) {
-        this.dbSetting = JSON.parse(localStorage.getItem(ConstValue.SQWR)) || this.dbSetting;
+        DashboardService.dbSetting = JSON.parse(localStorage.getItem(ConstValue.SQWR)) || DashboardService.dbSetting;
         if (
-            this.dbSetting.resultWidget &&
-            this.dbSetting.resultWidget[id] &&
-            this.dbSetting.resultWidget[id].slider
+            DashboardService.dbSetting.resultWidget &&
+            DashboardService.dbSetting.resultWidget[id] &&
+            DashboardService.dbSetting.resultWidget[id].slider
         ) {
-            return this.dbSetting.resultWidget[id].slider;
+            return DashboardService.dbSetting.resultWidget[id].slider;
         }
         return null;
     }
-
+    getDbSetting() {
+        return DashboardService.dbSetting;
+    }
     getWidgetListCurrentDashboard() {
-        return this.dbSetting.currentWidgetList;
+        return DashboardService.dbSetting;
     }
     update() {
-        localStorage.setItem(ConstValue.SQWR, JSON.stringify(this.dbSetting));
-        this._behavior.next(this.dbSetting);
+        localStorage.setItem(ConstValue.SQWR, JSON.stringify(DashboardService.dbSetting));
+        this._behavior.next(DashboardService.dbSetting);
     }
 
     getCurrentDashBoardId() {
-        return this.dbSetting.current || 'home';
+        return DashboardService.dbSetting.current || 'home';
     }
 
     // Update json

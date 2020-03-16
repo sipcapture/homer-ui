@@ -183,7 +183,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         if (this.inContainer) {
             this.subscriptionDashboardEvent = this._ds.dashboardEvent.subscribe(data => {
                 const dataId = data.resultWidget[this.id];
-                if (dataId && this.lastTimestamp !== dataId.timestamp) {
+                if (dataId && dataId.query && this.lastTimestamp !== dataId.timestamp) {
                     this.localData = dataId.query;
                     this.protocol_profile = this.localData.protocol_id;
 
