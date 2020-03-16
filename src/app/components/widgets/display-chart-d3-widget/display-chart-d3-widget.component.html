@@ -3,21 +3,15 @@
         <div id="chartAndDataContainer">
             <div id="ordersByStatusTable" *ngIf="chartControlsService.showData">
                 <div class="data-container">
-                    <div *ngFor="let col of randomColorScale" class="stat-count" [style.background]="col">
-                  
+                    <div *ngFor="let tag of Tags" class="stat-count" [style.background]="tag.color">
+                        name: {{tag.name}} count: {{tag.count}}
                     </div>
                 </div>
-                <div class="data-container">
-                    <div *ngFor="let idx of keysSet" class="stat-count">
-                        {{idx}}
-                    </div>
-               <!-- <div *ngFor="let mth of sipMethods" class="stat-count">
-                    <span [ngClass]="mth.method">{{mth.methodDisplayValue}}</span> {{mth.count}}
-                </div> --> 
-            </div>
+ 
         </div>
             <div id="chartContainer" [ngClass]="{'half': chartControlsService.showData}">
-                <app-d3-pie-chart #ordersByStatusChart [data]="chartData"></app-d3-pie-chart>
+                
+                <app-d3-pie-chart #ordersByStatusChart [data]="chartData" [keysSet]="keysSet" [colorScales]="colorScale"></app-d3-pie-chart>
             </div>
         </div>
             <mat-slide-toggle class="show-data" color="primary" 

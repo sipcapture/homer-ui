@@ -29,6 +29,7 @@ export class Tag {
   color: string;
   count: number;
 }
+
 type SortType = 'SUM';
 
 @Component({
@@ -49,12 +50,16 @@ export class DisplayChartD3WidgetComponent implements IWidget {
 
 @ViewChild('ordersByStatusChart', { static: true }) chart: D3PieChartComponent;
 sipMethods: SIPMethod[];
+chartKeys: Tag[];
 chartData: number[] = [];
+Tags = [];
 labels = ['100', '101', '200', '407', 'ACK', 'INVITE', 'BYE'];
 
-
 chartDataObj = {
-  "sipMethods": [{
+
+    "sipMethods":[
+
+    {
       "method": "m_100",
       "methodDisplayValue": "100",
       "count": 0
@@ -96,7 +101,6 @@ chartDataObj = {
     }
 
   ]
-
 }
 
 methodDisplayValues = this.chartDataObj.sipMethods.map(m => m.methodDisplayValue);
@@ -127,7 +131,6 @@ configQuery = {
   }
 };
 
-
 _lastTimeStamp = 0;
 set lastTimestamp(val: number) {
   this._lastTimeStamp = val;
@@ -135,7 +138,6 @@ set lastTimestamp(val: number) {
 get lastTimestamp() {
   return this._lastTimeStamp;
 }
-
 
 columnKeysGroupColumn;
 
@@ -168,9 +170,13 @@ columnKeys = [];
 keySelected = '';   //--- >  Key selected on the select of the chart
 
 keysSet = [];
-randomColorScale = [];
+
+colorScale = [];
+
+selectedKeyArr = [];
 
 subsDashboardEvent: Subscription;
+
 subsCastRangeUpdateTimeOut: Subscription;
 
   constructor(
@@ -181,12 +187,11 @@ subsCastRangeUpdateTimeOut: Subscription;
     private _dateTimeRageService : DateTimeRangeService,
     public chartControlsService: ChartControlsService) { 
     this.chartControlsService.fullScreen = false;
- 
   }
 
   ngOnInit() {
     WidgetArrayInstance[this.id] = this as IWidget; 
-
+    this.keySelected = 'method';
     this.config = {
       name: 'display-chart-d3',
       configQuery: this.configQuery
@@ -199,8 +204,8 @@ subsCastRangeUpdateTimeOut: Subscription;
           search: {},
           location: {},
           timezone: {
-            value: -180,
-            name: 'Local'
+          value: -180,
+          name: 'Local'
           }
         },
         timestamp: {
@@ -209,6 +214,7 @@ subsCastRangeUpdateTimeOut: Subscription;
         }
       };
     }
+
     this.dataColumns = [{
       value: '',
       id: 0,
@@ -235,21 +241,25 @@ subsCastRangeUpdateTimeOut: Subscription;
       if (this.lastTimestamp * 1 === dataId.timestamp * 1) {
         return;
       }
+
       this.lastTimestamp = dataId.timestamp * 1;
+
       this.localData = dataId.query;
     }
-    this.getData();
-  }
+    //this.getData();
 
+  }
 
 private async getData() {
   if (!this.localData) {
     return;
   }
+
   this.protocol_profile = this.localData.protocol_id;
   if (this.localData.location && this.localData.location.value !== '' && this.localData.location.mapping !== '') {
     this.configQuery.param.location[this.localData.location.mapping] = this.localData.location.value;
   }
+
   this.configQuery.param.search[this.protocol_profile] = this.localData.fields;
   this.configQuery.timestamp = this._dateTimeRageService.getDatesForQuery(true);
   const dataMapping: any = await this._prefMapProtoService.getAll().toPromise();
@@ -261,85 +271,121 @@ private async getData() {
     this.columnKeysGroupColumn = result.keys;
     this.columnKeys = fields_mapping.filter(i => i.type !== 'string').map(i => i.id.split('.')[1]);
     this.dataForChart = result.data;
-    /**
-     * 
-     * const names = ["Mike","Matt","Nancy","Adam","Jenny","Nancy","Carl"]; let unique = [...new Set(names)]; console.log(unique); // 'Mike', 'Matt', 'Nancy', 'Adam', 'Jenny', 'Carl'
-     */
-  // make an array of the values inside the keySelected array of the array keySelectedValues
-  // let keySelectedValues = this.dataForChart.map(m => m.this.keySelected)
-  // let columns = [...new Set(keySelectedValues)]
-  // this will be the "methodList"   // dataArray will be the data for chart and
-  // the objEntry will be the object model for the count ?
-  // copy the object-s?
-  // generate new array of tags  tag tags = [{color:'',name:'',count:''}]
-
-    console.log(this.columnKeysGroupColumn); // campos a seleccionar 
-    this.getMethodCounts(this.dataForChart, this.chartDataObj.sipMethods, this.methodDisplayValues);
-    this.saveConfig();
-    this.buildD3Chart();
-  }
-
-}
-
-getMethodCounts = (dataArray, objEntry, methodList) => {
-  let methodsArray = dataArray.map(m => m.method)
-  for (let i = 0; i < methodList.length; i++) {
-    let methodCount = methodsArray.filter(el => el.indexOf(methodList[i]) > -1).length;
-    objEntry[i].count = methodCount;
+    if(this.dataForChart){
+      this.saveConfig();
+      this.buildD3Chart();
+    }
+  
+   
   }
 }
 
-buildD3Chart() {
-  this.sipMethods = [];
-  this.chart.data = [...this.chartData];
-  this.chartDataObj.sipMethods.forEach((method) => {
-    const target = new SIPMethod();
-    target.method = method.method;
-    target.methodDisplayValue = method.methodDisplayValue;
-    target.count = method.count;
-    this.sipMethods.push(target);
+// array of numbers for the chart
+getChartData = (arr) => {
+  let arrCount = [];
+  arr.forEach( key=> {
+    arrCount.push(key.count)
   })
-  this.chartData = [];
-  this.sipMethods.forEach((method) => {
-    this.chartData.push(method.count);
-  });
+  console.log(arrCount)
+  return arrCount;
 }
 
-toggleData(event: MatSlideToggleChange) {
-  this.chartControlsService.showData = event.checked;
-  console.log(this.keySelected);
-
-// returns an array with the values of the selected key! 
-  const selectKey = (data,selected) => {
-    let keyArr = []
-    let keySelectedValues = data.forEach(value => keyArr.push(value[selected]))
-    return keyArr;
-  }  
-
-  if(this.keySelected !== ''){
-    console.log(selectKey(this.dataForChart,this.keySelected));
-    let selectedKeyArr = selectKey(this.dataForChart,this.keySelected)
-    let keySet = new Set(selectedKeyArr)
-   /*  the variables to count !! */
-    this.keysSet = Array.from(keySet)
-    console.log(this.keysSet);
-    this.randomColorScale = this.getRandomColors(this.keysSet)
-  } 
-
+// array of colors for the chart
+getChartColors = (arr) => {
+  let arrColors = [];
+  arr.forEach( c => {
+    arrColors.push(c.color)
+  })
+  return arrColors;
 }
+
+// raw array of entries of selected key
+selectedKeys = (data, selected) =>{
+
+  let keyArr = [];
+  data.forEach(value => {
+    if(value[selected].toString()===''){
+      value[selected] = 'not set'
+    }else{
+      value[selected] = value[selected].toString()
+    }
+    keyArr.push(value[selected])
+  })
+  return keyArr;
+}
+
+// build and array of (n) number colors
 getRandomColors(n){
   let colorsArray = [];
   for(let i = 0 ; i < n.length; i ++){
-  let letters = '0123456789ABCDEF';
+  let letters = '0123456789abcdef';
   let color = '#';
   for(let j = 0 ; j < 6; j++){
     color +=letters[Math.floor(Math.random()*16)];
-   
   }
   colorsArray.push(color);
 }
 return colorsArray;
 }
+
+// kS = keysSet   kA = keysArray : selectedKeyArray inside build D3Chart ... make new var!
+// kA stands for keysArray = selectedKeyArray // kS = keysSet
+tagger = (kS, kA) => {
+let tagArr = [];
+for(let i = 0 ; i < kS.length; i++){
+  let keysCount = kA.filter(el => el.indexOf(kS[i])> -1).length;
+  let tag = new Tag();
+  tag.count = keysCount;
+  tag.color = this.colorScale[i];
+  if(this.keysSet[i]===''){
+    tag.name ='not set'
+  }else{
+    tag.name = this.keysSet[i];
+  }
+  
+  tagArr.push(tag);
+  }
+ 
+  return tagArr;
+  
+}
+
+/* method for building the D3 Chart */
+
+async buildD3Chart() {
+
+
+this.keySelected
+
+  this.selectedKeyArr = this.selectedKeys(this.dataForChart,this.keySelected) 
+
+  this.keysSet = Array.from(new Set(this.selectedKeyArr))
+ 
+  this.colorScale = this.getRandomColors(this.keysSet)
+  this.Tags = this.tagger(this.keysSet, this.selectedKeyArr);
+  console.log(this.Tags[0].count);
+  
+  this.chartKeys = [];
+   
+  //this.chart.data = [...this.chartData];
+
+  this.chartData = [];
+
+  this.chartData = this.getChartData(this.Tags);
+
+  console.log(this.chartData);
+  
+}
+
+/* switch for showing the data */
+
+toggleData(event: MatSlideToggleChange) {
+  this.chartControlsService.showData = event.checked;
+}
+
+
+/* save the actual config */
+
 private saveConfig() {
   const _f = Functions.cloneObject;
   this.config = {
@@ -358,6 +404,8 @@ private saveConfig() {
   });
 }
 
+/* open the settings dialog */
+
 async openDialog() {
   const dialogRef = this.dialog.open(SettingDisplayChartD3WidgetComponent, {
     data: {
@@ -373,13 +421,18 @@ async openDialog() {
   this.sortType = result.sortType;
   this.title = result.title;
 
-  this.buildD3Chart();
-  this.saveConfig();
+  //this.getData()
+  //this.buildD3Chart();
+  //this.saveConfig();
 }
 
+/* generate the chart after all the data is set */
+
 ngAfterContentInit() {
-  this.buildD3Chart();
+  this.getData()
 }
+
+/* unsubscribe from services after dropping widget */
 
 ngOnDestroy() {
   this.subsDashboardEvent.unsubscribe()

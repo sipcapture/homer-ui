@@ -15,7 +15,10 @@ import * as d3 from 'd3';
 })
 export class D3PieChartComponent implements OnInit, OnChanges {
 
-  @Input() data: number[];
+  @Input() data:number[];
+  @Input() colorScales:string[];
+  @Input() keysSet:string[];
+  //@Input() chartColorScale: string[];
   hostElement; // Native element hosting the SVG container
   svg; // Top level SVG element
   g; // SVG Group element
@@ -41,14 +44,19 @@ export class D3PieChartComponent implements OnInit, OnChanges {
 
   constructor(private elRef: ElementRef) {
       this.hostElement = this.elRef.nativeElement;
+     
+     
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+   }
 
   ngOnChanges(changes: SimpleChanges) {
       if (changes.data) {
           this.updateChart(changes.data.currentValue);
+         console.log(changes.data.currentValue)
       }
+
   }
 
   private createChart(data: number[]) {
@@ -87,17 +95,28 @@ export class D3PieChartComponent implements OnInit, OnChanges {
           .attr("transform", "translate(100,70)");
   }
 
+setDomainArr(arr){
+    let domainArr = []
+    for(let i = 0 ; i < arr.length; i ++){
+        domainArr.push(i.toString());
+    }
+    return domainArr;
+}
   private setColorScale() {
-      this.colorScale = d3.scaleOrdinal(d3.schemePaired);
-
+     // this.colorScale = d3.scaleOrdinal(d3.schemePaired);
+    console.log(this.setDomainArr(this.data), 'domarr');
+   
+        this.colorScale = d3.scaleOrdinal().domain(this.keysSet).range(this.colorScales);
      //this.colorScale = d3.scaleOrdinal().domain(['0','1','2','3','4','5','6','7']).range(['#99cc33', '#66cccc', '#009999','#b3b3b3', '#e61049','#ff9933','#ff3333',' ']);
+     
   }
 
   private processPieData(data, initial = true) {
       this.rawData = data;
       this.total = this.rawData.reduce((sum, next) => sum + next, 0);
-
+            console.log(this.data)
       this.pieData = this.pie(data);
+      console.log(this.pieData, 'pieData')
       if (initial) {
           this.pieDataPrevious = this.pieData;
       }
@@ -114,6 +133,7 @@ export class D3PieChartComponent implements OnInit, OnChanges {
   }
 
   private addSlicesToTheDonut() {
+      console.log(this.pieData)
       this.slices = this.g.selectAll('allSlices')
           .data(this.pieData)
           .enter()
@@ -124,10 +144,10 @@ export class D3PieChartComponent implements OnInit, OnChanges {
           })
           .attr('fill-opacity','0.45')
           .attr('stroke',(datum,index)=>{
+              console.log(this.colorScale())
               return this.colorScale(`${index}`);
           })
           .attr('stroke-width','.35')
-
           
   }
 
