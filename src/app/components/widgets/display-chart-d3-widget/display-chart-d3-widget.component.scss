@@ -38,6 +38,7 @@
                 justify-content: center;
                 align-items: center;
                 flex: 1;
+                height:100%;
                 width: 100%;
                 app-d3-pie-chart {
                     display: flex;
@@ -86,7 +87,8 @@ width:100%;
 .stat-count{
   font-size:.5em;
   letter-spacing: 1px;;
-  color:rgb(33, 33, 33);
+  color:white;
+  text-shadow: 1px 1px 2px black;
  padding:3px;
   margin:1px;
   border-radius:3px;

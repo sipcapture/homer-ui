@@ -28,7 +28,7 @@ import { SettingMyWidgetComponent } from './setting-my-widget.component';
     title: 'My Widget',
     description: 'Widget Description',
     category: 'My Category',
-    indexName: 'myWidget',
+    indexName: 'my-widget',
     className: 'MyWidgetComponent' // <-- the same name as class name
 })
 /* ... implements IWidget - very IMPORTANT !!! */
@@ -114,6 +114,42 @@ export class SettingMyWidgetComponent {
 
 ```
 
+be sure to have your widget and settings widget in the correct order in file `./src/app/app.module.ts`
+
+```js
+...
+        /** widgets */
+        AceEditorWidgetComponent,
+        ClockWidgetComponent,
+        CodeStyleFieldComponent,
+        CodeStylePrometheusFieldComponent,
+        CodeStyleSmartInputFieldComponent,
+        DialogAlarmComponent,
+        DragDropListComponent,
+        GeneralIframeWidgetComponent,
+        IframeWidgetComponent,
+        InfluxdbchartWidgetComponent,
+        PrometheusWidgetComponent,
+        ProtosearchWidgetComponent,
+        ResultChartWidgetComponent,
+        ResultWidgetComponent,
+        RsearchWidgetComponent,
+        /* my widget component */
+        MyWidgetComponent,
+        SettingClockWidgetComponent,
+        SettingGeneralIframeWidgetComponent,
+        SettingIframeWidgetComponent,
+        SettingInfluxdbchartWidgetComponent,
+        SettingPrometheusWidgetComponent,
+        SettingProtosearchWidgetComponent,
+        SettingResultChartWidgetComponent,
+        SettingResultWidgetComponent,
+        SettingsAceEditorWidgetComponent,
+        /* my widget settings */
+        SettingMyWidgetComponent,
+...
+```
+
 last step, write paths in file `./src/app/components/widgets/index.ts` :
 ```js
 ...
@@ -129,5 +165,90 @@ export * from './my-widget/setting-my-widget.component';
 
 finally, run project from console:
 ```bach
-$ sudo npm run start
+$ sudo ng serve --configuration=<your configuration env> --port=<the UI port> --host=<localhost or the host you will use>
+```
+
+USEFUL SERVICES
+==========================
+
+Use the services 
+
+``SearchCallService`` - for getting the data from the search
+``DashboardService`` - for listening on the events of the dashboard
+``PreferenceMappingProtocolService`` - for getting the Protocol Mapping preferences
+``DateTimeRangeService`` - for getting the Time Range selected
+
+## Examples of use 
+
+Some examples of use for the Services
+
+```js
+...
+/* first define a config query */
+
+ this.configQuery = {
+        param: {
+          transaction: {},
+          limit: 200,
+          search: {},
+          location: {},
+          timezone: {
+          value: -180,
+          name: 'Local'
+          }
+        },
+        timestamp: {
+          from: 0,
+          to: 0
+        }
+      };
+    }
+
+/* define the params of the configQuery getting them from the services and the local storage */
+
+  this.protocol_profile = this.localData.protocol_id;
+  if (this.localData.location && this.localData.location.value !== '' && this.localData.location.mapping !== '') {
+    this.configQuery.param.location[this.localData.location.mapping] = this.localData.location.value;
+  }
+
+  this.configQuery.param.search[this.protocol_profile] = this.localData.fields;
+  /* use the DateTimeRangeService for getting the timestamp */
+  this.configQuery.timestamp = this._dateTimeRageService.getDatesForQuery(true);
+  /* use the PreferenceMappingProtocolService */
+  const dataMapping: any = await this._preferenceMappingProtocolService.getAll().toPromise();
+  /* use the SearchCallService for getting the data form the Proto Search widget */
+
+  const result = await this._searchCallService.getData(this.configQuery).toPromise();
+
+  const dataMappingItem = dataMapping.data.filter(i => i.profile === this.protocol_profile.split('_')[1])[0];
+
+  if (dataMappingItem && dataMappingItem.fields_mapping) {
+    const fields_mapping = dataMappingItem.fields_mapping;
+    this.columnKeysGroupColumn = result.keys;
+    this.columnKeys = fields_mapping.filter(i => i.type !== 'string').map(i => i.id.split('.')[1]);
+    this.searchData = result.data; // get the search result for getting the data
+  }
+...
+```
+
+##Important
+For sending the search results from the Proto Search Widget, in file ``src/app/components/widgets/protosearch-widget/protosearch-widget.component.ts`` you must edit the Types in the Proto Search component as below: 
+
+```js
+...
+
+        this.dashboardEventSubscriber = this._ds.dashboardEvent.subscribe( (data: DashboardEventData) => {
+            this.widgetResultList = data.currentWidgetList
+                .filter(i => i.name === 'result' || i.name === 'display-results-chart' || i.name  === 'my-widget' ) /* the indexName of your widget */
+                .map( i => ({
+                    id : i.id,
+                    title: i.config ? i.config.title : i.id,
+                    type: 'widget'
+                }));
+            this.widgetResultList.push({
+                id: 'Default',
+                title: 'Default',
+                type: 'page'
+            });
+...
 ```

@@ -52,9 +52,9 @@ export class DisplayChartD3WidgetComponent implements IWidget {
 sipMethods: SIPMethod[];
 chartKeys: Tag[];
 chartData: number[] = [];
-Tags = [];
-labels = ['100', '101', '200', '407', 'ACK', 'INVITE', 'BYE'];
 
+labels = ['100', '101', '200', '407', 'ACK', 'INVITE', 'BYE'];
+/*
 chartDataObj = {
 
     "sipMethods":[
@@ -102,7 +102,58 @@ chartDataObj = {
 
   ]
 }
+*/
 
+Tags = {
+  tagObj:[]
+}
+
+chartDataObj2 = {
+  sipMethods:[
+    {
+      method: "m_100",
+      methodDisplayValue: "100",
+      count: 0
+    },
+    {
+      method: "m_101",
+      methodDisplayValue: "101",
+      count: 0
+    },
+    {
+      method: "m_200",
+      methodDisplayValue: "200",
+      count: 0
+    },
+    {
+      method: "m_403",
+      methodDisplayValue: "403",
+      count: 0
+    },
+    {
+      method: "m_407",
+      methodDisplayValue: "407",
+      count: 0
+    },
+    {
+      method: "m_ACK",
+      methodDisplayValue: "ACK",
+      count: 0
+    },
+    {
+      method: "m_INVITE",
+      methodDisplayValue: "INVITE",
+      count: 0
+    },
+    {
+      method: "m_BYE",
+      methodDisplayValue: "BYE",
+      count: 0
+    }
+  ]
+}
+
+chartDataObj = JSON.parse(JSON.stringify(this.chartDataObj2));
 methodDisplayValues = this.chartDataObj.sipMethods.map(m => m.methodDisplayValue);
 displayedColumns = ['legend', 'SIPMethod', 'count'];
 
@@ -167,7 +218,7 @@ isShowPanelSettings = true;
 
 columnKeys = [];
 
-keySelected = '';   //--- >  Key selected on the select of the chart
+keySelected = 'method';   //--- >  Key selected on the select of the chart
 
 keysSet = [];
 
@@ -191,11 +242,11 @@ subsCastRangeUpdateTimeOut: Subscription;
 
   ngOnInit() {
     WidgetArrayInstance[this.id] = this as IWidget; 
-    this.keySelected = 'method';
     this.config = {
       name: 'display-chart-d3',
       configQuery: this.configQuery
     }
+
     if (!this.configQuery) {
       this.configQuery = {
         param: {
@@ -246,8 +297,26 @@ subsCastRangeUpdateTimeOut: Subscription;
 
       this.localData = dataId.query;
     }
-    //this.getData();
+   this.getData();
 
+  }
+
+
+  isTimeStamp(n = null) {
+    if (!n) {
+      try {
+        //
+        n = this.dataForChart[0][this.groupColumnAxis1];
+      } catch (err) {
+        console.log(err);
+        return false;
+      }
+    }
+    const m = (n + '').match(/\d{2}/g);
+    if (m) {
+      return +m[0] >= 15 && (n + '').length === 10;
+    }
+    return false;
   }
 
 private async getData() {
@@ -271,12 +340,44 @@ private async getData() {
     this.columnKeysGroupColumn = result.keys;
     this.columnKeys = fields_mapping.filter(i => i.type !== 'string').map(i => i.id.split('.')[1]);
     this.dataForChart = result.data;
-    if(this.dataForChart){
+    this.getMethodCounts(this.dataForChart, this.chartDataObj.sipMethods, this.methodDisplayValues);
+
+      // method that sets the count of the chartDataObj.tagObj
+      this.selectedKeyArr = this.selectedKeys(this.dataForChart,this.keySelected) 
+      // set the keys names to count
+      this.keysSet = Array.from(new Set(this.selectedKeyArr))
+      //set the colorScale
+      this.colorScale = this.getRandomColors(this.keysSet)
+      // sets the tags Onject
+      this.Tags.tagObj = this.tagger(this.keysSet, this.selectedKeyArr);
+    //this.Tags = JSON.stringify(this.Tags);
+      //let tagsObj = JSON.stringify(this.Tags);
+      //console.log(tagsObj);
+      this.getTagCounts(this.selectedKeyArr, this.Tags.tagObj,this.keysSet);
       this.saveConfig();
       this.buildD3Chart();
-    }
-  
-   
+  }
+}
+
+getTagCounts = (selectedKeyArr, tagsObj, keysSet) => {
+for(let i = 0 ; i < keysSet.length; i ++) {
+  let tagsCount = selectedKeyArr.filter(el => el.indexOf(keysSet[i]) > -1).length;
+  tagsObj[i].count = tagsCount;
+  }
+}
+
+getMethodCounts = (dataArray, objEntry, methodList) => {
+
+  // the methodsList is the keysSet 
+
+  // the objEntry is the Tags.tagObj object
+
+  let methodsArray = dataArray.map(m => m.method)
+  console.log(methodsArray);
+  // the methodsArray is the selectedKeyArr
+  for (let i = 0; i < methodList.length; i++) {
+    let methodCount = methodsArray.filter(el => el.indexOf(methodList[i]) > -1).length;
+    objEntry[i].count = methodCount;
   }
 }
 
@@ -301,16 +402,17 @@ getChartColors = (arr) => {
 
 // raw array of entries of selected key
 selectedKeys = (data, selected) =>{
-
   let keyArr = [];
-  data.forEach(value => {
-    if(value[selected].toString()===''){
-      value[selected] = 'not set'
-    }else{
-      value[selected] = value[selected].toString()
-    }
-    keyArr.push(value[selected])
-  })
+  if(data){
+    data.forEach(value => {
+      if(value[selected].toString()===''){
+        value[selected] = 'not set'
+      }else{
+        value[selected] = value[selected].toString()
+      }
+      keyArr.push(value[selected])
+    })
+  }
   return keyArr;
 }
 
@@ -328,8 +430,10 @@ getRandomColors(n){
 return colorsArray;
 }
 
+// objEntry ?
 // kS = keysSet   kA = keysArray : selectedKeyArray inside build D3Chart ... make new var!
 // kA stands for keysArray = selectedKeyArray // kS = keysSet
+
 tagger = (kS, kA) => {
 let tagArr = [];
 for(let i = 0 ; i < kS.length; i++){
@@ -352,28 +456,57 @@ for(let i = 0 ; i < kS.length; i++){
 
 /* method for building the D3 Chart */
 
-async buildD3Chart() {
+buildD3Chart() {
+this.sipMethods = [];
+this.chartKeys = [];
+this.chart.data = [...this.chartData];
 
+/* previous method */
 
-this.keySelected
-
-  this.selectedKeyArr = this.selectedKeys(this.dataForChart,this.keySelected) 
-
-  this.keysSet = Array.from(new Set(this.selectedKeyArr))
- 
-  this.colorScale = this.getRandomColors(this.keysSet)
-  this.Tags = this.tagger(this.keysSet, this.selectedKeyArr);
-  console.log(this.Tags[0].count);
-  
-  this.chartKeys = [];
-   
-  //this.chart.data = [...this.chartData];
-
+this.chartDataObj.sipMethods.forEach((method) => {
+    const target = new SIPMethod();
+    target.method = method.method;
+    target.methodDisplayValue = method.methodDisplayValue;
+    target.count = method.count;
+    this.sipMethods.push(target);
+  })
   this.chartData = [];
+  console.log(this.sipMethods);
+  this.sipMethods.forEach((method) => {
+    this.chartData.push(method.count);
+  });
 
-  this.chartData = this.getChartData(this.Tags);
 
-  console.log(this.chartData);
+//let tagsObj = JSON.parse(JSON.stringify(this.Tags));
+/* end previous method */
+//console.log(tagsObj); 
+/*
+this.Tags.tagObj.forEach((info) => {
+  const target = new Tag();
+  target.name = info.name;
+  target.color = info.color;
+  target.count = info.count;
+  this.chartKeys.push(target);
+});
+//console.log(this.Tags, 'tags')
+//console.log
+this.chartData = [];
+this.chartKeys.forEach((info) => {
+  this.chartData.push(info.count);
+})
+
+*/
+ // this.chart.data = [...this.chartData];
+ /* console.log(this.Tags);
+  this.chartData = [];
+  this.Tags.forEach((key)=>{
+  this.chartData.push(key.count);
+  
+
+})
+
+console.log(this.chartData);
+*/
   
 }
 
@@ -421,15 +554,15 @@ async openDialog() {
   this.sortType = result.sortType;
   this.title = result.title;
 
-  //this.getData()
-  //this.buildD3Chart();
-  //this.saveConfig();
+ 
+  this.buildD3Chart();
+  this.saveConfig();
 }
 
 /* generate the chart after all the data is set */
 
 ngAfterContentInit() {
-  this.getData()
+  this.buildD3Chart()
 }
 
 /* unsubscribe from services after dropping widget */

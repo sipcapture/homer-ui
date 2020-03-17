@@ -7,6 +7,7 @@ export class DonutChartDatum {
 /** @todo modify the color range array with the settings of the widget */
 import * as d3 from 'd3';
 
+
 @Component({
   selector: 'app-d3-pie-chart',
   templateUrl: './d3-pie-chart.component.html',
@@ -15,9 +16,9 @@ import * as d3 from 'd3';
 })
 export class D3PieChartComponent implements OnInit, OnChanges {
 
-  @Input() data:number[];
-  @Input() colorScales:string[];
-  @Input() keysSet:string[];
+@Input() data:number[];
+//@Input() colorScales:string[];
+//@Input() keysSet:string[];
   //@Input() chartColorScale: string[];
   hostElement; // Native element hosting the SVG container
   svg; // Top level SVG element
@@ -34,13 +35,28 @@ export class D3PieChartComponent implements OnInit, OnChanges {
   pieData: any; // Arc segment parameters for current data set
   pieDataPrevious: any; // Arc segment parameters for previous data set - used for transitions
   colors = d3.scaleOrdinal(d3.schemeCategory10);
-
+  /* data = [
+    {name: "USA", value: 40,color:"#bafa05"},
+    {name: "UK", value: 20},
+    {name: "Canada", value: 30},
+    {name: "Maxico", value: 10},
+    {name: "Peru", value: 10},
+    {name: "Brazil", value: 10},
+    {name: "Guatemala", value: 10},
+    {name: "Argentina", value: 10},
+    {name: "Argentina", value: 10},
+    {name: "Argentina", value: 10},
+    {name: "Argentina", value: 10},
+    {name: "Argentina", value: 10},
+    
+  ]; */
   // Pie function - transforms raw data to arc segment parameters
+  dataArray = [];
   pie = d3.pie()
       .startAngle(-0.6 * Math.PI)
       .endAngle(0.6 * Math.PI)
       .sort(null)
-      .value((d: number) => d);
+      .value((d: number) => d)
 
   constructor(private elRef: ElementRef) {
       this.hostElement = this.elRef.nativeElement;
@@ -59,7 +75,7 @@ export class D3PieChartComponent implements OnInit, OnChanges {
 
   }
 
-  private createChart(data: number[]) {
+  private createChart(data:number[]) {
 
       this.processPieData(data);
 
@@ -95,29 +111,30 @@ export class D3PieChartComponent implements OnInit, OnChanges {
           .attr("transform", "translate(100,70)");
   }
 
-setDomainArr(arr){
+/* setDomainArr(arr){
     let domainArr = []
     for(let i = 0 ; i < arr.length; i ++){
         domainArr.push(i.toString());
     }
     return domainArr;
-}
+} */
   private setColorScale() {
-     // this.colorScale = d3.scaleOrdinal(d3.schemePaired);
-    console.log(this.setDomainArr(this.data), 'domarr');
+this.colorScale = d3.scaleOrdinal(d3.schemePaired);
+    //console.log(this.setDomainArr(this.data), 'domarr');
    
-        this.colorScale = d3.scaleOrdinal().domain(this.keysSet).range(this.colorScales);
-     //this.colorScale = d3.scaleOrdinal().domain(['0','1','2','3','4','5','6','7']).range(['#99cc33', '#66cccc', '#009999','#b3b3b3', '#e61049','#ff9933','#ff3333',' ']);
+       // this.colorScale = d3.scaleOrdinal().domain(this.keysSet).range(this.colorScales);
+this.colorScale = d3.scaleOrdinal().domain(['0','1','2','3','4']).range(['#99cc33', '#66cccc', '#009999','#b3b3b3', '#e61049']);
      
   }
 
   private processPieData(data, initial = true) {
       this.rawData = data;
       this.total = this.rawData.reduce((sum, next) => sum + next, 0);
-            console.log(this.data)
+    console.log(this.data)
       this.pieData = this.pie(data);
       console.log(this.pieData, 'pieData')
       if (initial) {
+          console.log(initial);
           this.pieDataPrevious = this.pieData;
       }
   }
@@ -129,7 +146,7 @@ setDomainArr(arr){
       this.arc = d3.arc()
           .innerRadius(this.innerRadius)
           .outerRadius(this.radius)
-          .padAngle(this.radius*0.00005)
+       
   }
 
   private addSlicesToTheDonut() {
@@ -148,7 +165,6 @@ setDomainArr(arr){
               return this.colorScale(`${index}`);
           })
           .attr('stroke-width','.35')
-          
   }
 
   private addDonutTotalLabel() {
@@ -184,7 +200,7 @@ setDomainArr(arr){
       }
   }
 
-  public updateChart(data: number[]) {
+  public updateChart(data:number[]) {
       if (!this.svg) {
           this.createChart(data);
           return;
