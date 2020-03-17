@@ -208,9 +208,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                         });
                     } else {
                         this.update(true);
-                        setTimeout(() => {
-                            this.initSearchSlider(!this.isThisSelfQuery);
-                        }, 10);
                     }
                 }
             });
@@ -252,7 +249,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.limitRange.message_to = d.data.message_to || 1000;
             }
         });
-        this.initSearchSlider();
     }
     async initSearchSlider(isImportantClear = false) {
         this.isThisSelfQuery = false;
@@ -662,9 +658,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }, 300);
     }
 
-    private setQuickFilter() {
-        this.gridApi.setQuickFilter(this.filterGridValue);
-    }
+    // private setQuickFilter() {
+    //     this.gridApi.setQuickFilter(this.filterGridValue);
+    // }
     public onGridReady(params) {
         this.gridApi = params.api;
         this.gridColumnApi = params.columnApi;
