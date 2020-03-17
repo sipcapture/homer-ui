@@ -20,82 +20,75 @@ export class DashboardService {
         currentWidgetList: [],
         resultWidget: {}
     };
-
+    set dbs (val) {
+        DashboardService.dbSetting = val;
+    }
+    get dbs() {
+        return DashboardService.dbSetting;
+    }
     private _behavior: BehaviorSubject<any>;
     public dashboardEvent: Observable<any>;
-    private widgetList: any;
     private url = `${environment.apiUrl}/dashboard`;
 
     constructor(private _http: HttpClient) {
-        DashboardService.dbSetting = JSON.parse(localStorage.getItem(ConstValue.SQWR)) || DashboardService.dbSetting;
-        this._behavior = new BehaviorSubject<any>(DashboardService.dbSetting);
+        this.dbs = JSON.parse(localStorage.getItem(ConstValue.SQWR)) || this.dbs;
+        this._behavior = new BehaviorSubject<any>(this.dbs);
         this.dashboardEvent = this._behavior.asObservable();
     }
     clearLocalStorage() {
-        DashboardService.dbSetting = {
+        this.dbs = {
             current: '',
             currentWidgetList: [],
             resultWidget: {}
         };
     }
     setCurrentDashBoardId(val: any) {
-        DashboardService.dbSetting.current = val;
+        this.dbs.current = val;
         this.update();
     }
 
     setWidgetListCurrentDashboard(widgetList: any) {
-        DashboardService.dbSetting.currentWidgetList = widgetList;
+        this.dbs.currentWidgetList = widgetList;
         this.update();
     }
     setQueryToWidgetResult(id: string, query: string) {
-        DashboardService.dbSetting.resultWidget[id] = {
+        this.dbs.resultWidget[id] = {
             timestamp: Date.now(),
             query: query
         };
         this.update();
     }
     setSliderQueryDataToWidgetResult(id: string, query: any) {
-        DashboardService.dbSetting.resultWidget = DashboardService.dbSetting.resultWidget || {};
-        DashboardService.dbSetting.resultWidget[id] = DashboardService.dbSetting.resultWidget[id] || {};
-        DashboardService.dbSetting.resultWidget[id].slider = query;
+        this.dbs.resultWidget = this.dbs.resultWidget || {};
+        this.dbs.resultWidget[id] = this.dbs.resultWidget[id] || {};
+        this.dbs.resultWidget[id].slider = query;
         this.update();
         return query;
     }
     getSliderQueryDataToWidgetResult(id: string) {
-        DashboardService.dbSetting = JSON.parse(localStorage.getItem(ConstValue.SQWR)) || DashboardService.dbSetting;
+        this.dbs = JSON.parse(localStorage.getItem(ConstValue.SQWR)) || this.dbs;
         if (
-            DashboardService.dbSetting.resultWidget &&
-            DashboardService.dbSetting.resultWidget[id] &&
-            DashboardService.dbSetting.resultWidget[id].slider
+            this.dbs.resultWidget &&
+            this.dbs.resultWidget[id] &&
+            this.dbs.resultWidget[id].slider
         ) {
-            return DashboardService.dbSetting.resultWidget[id].slider;
+            return this.dbs.resultWidget[id].slider;
         }
         return null;
     }
-    getDbSetting() {
-        return DashboardService.dbSetting;
-    }
-    getWidgetListCurrentDashboard() {
-        return DashboardService.dbSetting;
-    }
     update() {
-        localStorage.setItem(ConstValue.SQWR, JSON.stringify(DashboardService.dbSetting));
-        this._behavior.next(DashboardService.dbSetting);
+        localStorage.setItem(ConstValue.SQWR, JSON.stringify(this.dbs));
+        this._behavior.next(this.dbs);
     }
 
     getCurrentDashBoardId() {
-        return DashboardService.dbSetting.current || 'home';
+        return this.dbs.current || 'home';
     }
 
     // Update json
     updateDashboard(id: string, params): Observable<DashboardModel> {
         const httpOptions = { headers: new HttpHeaders({ 'Content-Type':  'application/json' })};
         return this._http.put<DashboardModel>(`${this.url}/store/${id}`, params, httpOptions);
-    }
-
-    // Dashboard node
-    getDashboardNode(id: string): Observable<DashboardModel> {
-        return this._http.get<DashboardModel>(`${this.url}/node/${id}`);
     }
 
     // get Dashboard store
@@ -111,16 +104,6 @@ export class DashboardService {
     // delete Dashboard store
     deleteDashboardStore(id: string): Observable<any> {
         return this._http.delete<any>(`${this.url}/store/${id}`);
-    }
-
-    // set Dashboard store
-    setDashboardStore(id: string, config: object): Observable<DashboardModel> {
-        return this._http.post<DashboardModel>(`${this.url}/store/`, config);
-    }
-
-    // Dashboard menu
-    getDashboardMenu(): Observable<DashboardModel> {
-        return this._http.get<DashboardModel>(`${this.url}/menu/`);
     }
 
     // Dashboard info
