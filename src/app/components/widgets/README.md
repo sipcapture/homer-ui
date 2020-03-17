@@ -165,7 +165,8 @@ export * from './my-widget/setting-my-widget.component';
 
 finally, run project from console:
 ```bach
-$ sudo ng serve --configuration=<your configuration env> --port=<the UI port> --host=<localhost or the host you will use>
+$ ng serve 
+
 ```
 
 USEFUL SERVICES
@@ -173,10 +174,10 @@ USEFUL SERVICES
 
 Use the services 
 
-``SearchCallService`` - for getting the data from the search
-``DashboardService`` - for listening on the events of the dashboard
-``PreferenceMappingProtocolService`` - for getting the Protocol Mapping preferences
-``DateTimeRangeService`` - for getting the Time Range selected
+- for getting the data from the search : ``SearchCallService`` 
+- for listening on the events of the dashboard: ``DashboardService`` 
+- for getting the Protocol Mapping preferences: ``PreferenceMappingProtocolService`` 
+- for getting the Time Range selected: ``DateTimeRangeService`` 
 
 ## Examples of use 
 
@@ -231,8 +232,10 @@ Some examples of use for the Services
 ...
 ```
 
-##Important
-For sending the search results from the Proto Search Widget, in file ``src/app/components/widgets/protosearch-widget/protosearch-widget.component.ts`` you must edit the Types in the Proto Search component as below: 
+## Important
+For sending the search results from the Proto Search Widget, in file: 
+``src/app/components/widgets/protosearch-widget/protosearch-widget.component.ts`` 
+you must edit the Types in the Proto Search component as below: 
 
 ```js
 ...
