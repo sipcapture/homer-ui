@@ -1,7 +1,7 @@
 <div #flowscreen>
   <!-- title hosts / alias -->
   <div class="title-container" [ngStyle]="{
-    'top': '0px',
+    'top': (isExport ? '1rem' : '0px'),
     'position': (isExport ? 'inherit' : 'absolute')
   }" #flowtitle>
     <div *ngFor="let title of aliasTitle">
