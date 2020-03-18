@@ -22,7 +22,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     _isSimplifyPort = false;
-
+    _flagAfterViewInit = false;
     @Input()
     set isSimplifyPort(val: boolean) {
         this._isSimplifyPort = val;
@@ -75,6 +75,8 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 } catch (e) { }
             } , 20); // 60 fps
         }
+
+        this._flagAfterViewInit = true;
     }
     ngOnDestroy () {
         clearInterval(this._interval);
@@ -200,6 +202,11 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     onSavePng() {
+        if (!this._flagAfterViewInit) {
+            console.log('waiting FLOW before save a PNG');
+            setTimeout(this.onSavePng.bind(this), 1000);
+            return;
+        }
         if (html2canvas && typeof html2canvas === 'function') {
             const f: Function = html2canvas as Function;
             f(this.flowscreen.nativeElement).then(canvas => {
