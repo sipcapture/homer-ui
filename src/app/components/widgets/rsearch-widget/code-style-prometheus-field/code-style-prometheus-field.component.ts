@@ -353,14 +353,15 @@ export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit 
             }
             currentIndex += text.length;
         });
-
-        sel.setBaseAndExtent(anchorNode, anchorIndex, focusNode, focusIndex);
+        try {
+            sel.setBaseAndExtent(anchorNode, anchorIndex, focusNode, focusIndex);
+        } catch (err) { }
     }
     private typeInTextarea(str) {
         const sel = window.getSelection() as Selection;
         const el = sel.anchorNode.parentNode as HTMLElement;
-        const start = sel['baseOffset'];
-        const end = sel['extentOffset'];
+        const start = sel['baseOffset'] || 0;
+        const end = sel['extentOffset'] || 0;
         const text = el.innerText;
         const before = text.substring(0, start);
         const after  = text.substring(end, text.length);
