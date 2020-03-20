@@ -17,3 +17,9 @@
 .example-container > * {
     width: 100%;
 }
+
+.font-size {
+    background: #dfdfdf;
+    padding:5px;
+    margin:5px;
+}

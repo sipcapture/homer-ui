@@ -18,10 +18,12 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
         hep_alias: '',
         fields_mapping: []
     };
+    fontSize = ''
     mappingSortedData: Array<any>;
     resultConfig = {
         title: '',
         isButton: true,
+        fontSize: '1em',
         fields: [],
         profile: '',
         countFieldColumns: 1,
@@ -129,6 +131,9 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
     onChange() {
         if (this._interval) {
             clearInterval(this._interval);
+        }
+        if(this.fontSize){
+            this.resultConfig.fontSize = this.fontSize;
         }
         this._interval = setTimeout(() => {
             if (this.proto) {

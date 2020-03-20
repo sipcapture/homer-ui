@@ -112,6 +112,30 @@
                   "maximumError": "5mb"
                 }
               ]
+            },
+            "server": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.server.ts"
+                }
+              ],
+              "optimization": false,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": false,
+              "namedChunks": false,
+              "aot": false,
+              "extractLicenses": false,
+              "vendorChunk": false,
+              "buildOptimizer": false,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
             }
           }
         },
@@ -129,6 +153,9 @@
             },
             "webapp": {
               "browserTarget": "homer-ui:build:webapp"
+            },
+            "server" : {
+              "browserTarget" : "homer-ui:build:server"
             }
           }
         },

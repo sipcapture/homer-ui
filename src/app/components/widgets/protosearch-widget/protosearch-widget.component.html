@@ -1,6 +1,6 @@
 <form *ngIf="isConfig" class="form-container">
     <div class="inputs-container">
-    <div class="example-container" [ngStyle]="{'grid-template-columns': getFieldColumns()}">
+    <div class="example-container" [ngStyle]="{'grid-template-columns': getFieldColumns(), 'font-size':getFontSize()}">
         <div *ngFor="let item of fields" style="display: block" >
             <!--
                 if item is targetResultsContainer
