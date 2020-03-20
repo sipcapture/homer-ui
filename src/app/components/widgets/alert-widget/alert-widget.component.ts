@@ -101,12 +101,13 @@ export class AlertWidgetComponent implements IWidget {
 				for(let i = 0; i < this._config.keyList.length; i++){
 					comparsionResult.push(this.compare(i,data));
 					console.log(comparsionResult);
+					if(comparsionResult.every(x => x == true) && comparsionResult.length == this._config.expectedList.length){
+						this._config.alertState = true;
+						console.log(this._config.alertState + "AlertState");
+					}
 				}
 				})
-				if(comparsionResult.every(x => x == true)){
-					this._config.alertState = true;
-					console.log(this._config.alertState + "AlertState");
-				}
+				
 		}
 	}	
 	
