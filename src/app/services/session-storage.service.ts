@@ -19,15 +19,8 @@ export interface UserSettings {
 })
 
 export class SessionStorageService {
-
-    DATA_TIME_RANGE = 'data-time-range';
-    FULL = 'full';
-    PROTO_SEARCH = 'proto-search';
-    USER_SETTINGS = 'user-settings';
-
-    private localUserSettings: BehaviorSubject<any>;
-    private userSettings: UserSettings = {
-        updateType: this.FULL,
+    static userSettings: UserSettings = {
+        updateType: 'full',
         dateTimeRange: {
             title: '',
             dates: [moment(), moment()]
@@ -35,53 +28,74 @@ export class SessionStorageService {
         protosearchSettings: {}
     };
 
+    DATA_TIME_RANGE = 'data-time-range';
+    FULL = 'full';
+    PROTO_SEARCH = 'proto-search';
+    USER_SETTINGS = 'user-settings';
+
+    private localUserSettings: BehaviorSubject<any>;
+
     public sessionStorage: Observable<any>;
 
     constructor(private authenticationService: AuthenticationService) {
+        this.updateDataFromLocalStorage();
+    }
+    updateDataFromLocalStorage () {
         this.authenticationService.currentUser.subscribe(currentUser => {
             if (currentUser) {
-                this.userSettings = JSON.parse(localStorage.getItem(this.USER_SETTINGS)) || this.userSettings;
-                if (this.userSettings.protosearchSettings instanceof Array) {
-                    this.userSettings.protosearchSettings = {};
+                SessionStorageService.userSettings = JSON.parse(localStorage.getItem(this.USER_SETTINGS)) ||
+                    SessionStorageService.userSettings;
+
+                if (SessionStorageService.userSettings.protosearchSettings instanceof Array) {
+                    SessionStorageService.userSettings.protosearchSettings = {};
                 }
-                if (!this.userSettings.updateType || this.userSettings.updateType === this.PROTO_SEARCH) {
-                    this.userSettings.updateType = this.FULL;
+                if (!SessionStorageService.userSettings.updateType || SessionStorageService.userSettings.updateType === this.PROTO_SEARCH) {
+                    SessionStorageService.userSettings.updateType = this.FULL;
                 }
-                this.localUserSettings = new BehaviorSubject<any>(this.userSettings);
+                this.localUserSettings = new BehaviorSubject<any>(SessionStorageService.userSettings);
                 this.sessionStorage = this.localUserSettings.asObservable();
             }
         });
     }
-
+    public clearLocalStorage () {
+        SessionStorageService.userSettings = {
+            updateType: this.FULL,
+            dateTimeRange: {
+                title: '',
+                dates: [moment(), moment()]
+            },
+            protosearchSettings: {}
+        };
+    }
     saveDateTimeRange(dtr: any) {
-        this.userSettings.dateTimeRange = dtr;
+        SessionStorageService.userSettings.dateTimeRange = dtr;
         this.saveUserData(this.DATA_TIME_RANGE);
     }
     public getDateTimeRange() {
-        return this.userSettings.dateTimeRange;
+        return SessionStorageService.userSettings.dateTimeRange;
     }
     private saveUserData(updateType = this.FULL) {
-        Object.keys(this.userSettings.protosearchSettings).forEach(widgetId => {
-            if (!this.userSettings.protosearchSettings[widgetId] ||
-                this.userSettings.protosearchSettings[widgetId].hasOwnProperty(ConstValue.serverLoki)) {
+        Object.keys(SessionStorageService.userSettings.protosearchSettings).forEach(widgetId => {
+            if (!SessionStorageService.userSettings.protosearchSettings[widgetId] ||
+                SessionStorageService.userSettings.protosearchSettings[widgetId].hasOwnProperty(ConstValue.serverLoki)) {
                 return;
             }
-            const fields = this.userSettings.protosearchSettings[widgetId].fields;
+            const fields = SessionStorageService.userSettings.protosearchSettings[widgetId].fields;
             if (fields && fields.length === 0) {
-                delete this.userSettings.protosearchSettings[widgetId];
+                delete SessionStorageService.userSettings.protosearchSettings[widgetId];
             }
         });
-        this.userSettings.updateType = updateType;
-        this.localUserSettings.next(this.userSettings);
-        this.userSettings.updateType = this.FULL;
-        localStorage.setItem(this.USER_SETTINGS, JSON.stringify(this.userSettings));
+        SessionStorageService.userSettings.updateType = updateType;
+        this.localUserSettings.next(SessionStorageService.userSettings);
+        SessionStorageService.userSettings.updateType = this.FULL;
+        localStorage.setItem(this.USER_SETTINGS, JSON.stringify(SessionStorageService.userSettings));
     }
     removeProtoSearchConfig(widgetId: string) {
-        delete this.userSettings.protosearchSettings[widgetId];
+        delete SessionStorageService.userSettings.protosearchSettings[widgetId];
         this.saveUserData(this.PROTO_SEARCH);
     }
     saveProtoSearchConfig(widgetId: string, fieldsValue: any) {
-        this.userSettings.protosearchSettings[widgetId] = fieldsValue;
+        SessionStorageService.userSettings.protosearchSettings[widgetId] = fieldsValue;
         this.saveUserData(this.PROTO_SEARCH);
     }
 
