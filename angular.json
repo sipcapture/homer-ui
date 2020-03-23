@@ -112,9 +112,34 @@
                   "maximumError": "5mb"
                 }
               ]
+            },
+            "server": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.server.ts"
+                }
+              ],
+              "optimization": false,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": false,
+              "namedChunks": false,
+              "aot": false,
+              "extractLicenses": false,
+              "vendorChunk": false,
+              "buildOptimizer": false,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
             }
           }
         },
+        
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {

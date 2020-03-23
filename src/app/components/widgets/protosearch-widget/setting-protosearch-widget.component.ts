@@ -71,7 +71,7 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
                 this.resultConfig.isButton = data.isButton;
                 this.resultConfig.profile = data.config.config.protocol_profile.value;
                 this.resultConfig.protocol_id = data.config.config.protocol_id;
-                this.resultConfig.countFieldColumns = data.config.countFieldColumns || 1;
+                this.resultConfig.countFieldColumns = data.config.countFieldColumns *1 || 1;
                 this.mappingSortedData = Functions.cloneObject(data.mapping.data);
                 if (data.isContainer) {
                     this.mappingSortedData = this.mappingSortedData.filter(item => {

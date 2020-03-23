@@ -17,8 +17,8 @@ import * as d3 from 'd3';
 export class D3PieChartComponent implements OnInit, OnChanges {
 
 @Input() data:number[];
-//@Input() colorScales:string[];
-//@Input() keysSet:string[];
+@Input() colorScales:string[];
+@Input() keysSet:string[];
   //@Input() chartColorScale: string[];
   hostElement; // Native element hosting the SVG container
   svg; // Top level SVG element
@@ -35,21 +35,7 @@ export class D3PieChartComponent implements OnInit, OnChanges {
   pieData: any; // Arc segment parameters for current data set
   pieDataPrevious: any; // Arc segment parameters for previous data set - used for transitions
   colors = d3.scaleOrdinal(d3.schemeCategory10);
-  /* data = [
-    {name: "USA", value: 40,color:"#bafa05"},
-    {name: "UK", value: 20},
-    {name: "Canada", value: 30},
-    {name: "Maxico", value: 10},
-    {name: "Peru", value: 10},
-    {name: "Brazil", value: 10},
-    {name: "Guatemala", value: 10},
-    {name: "Argentina", value: 10},
-    {name: "Argentina", value: 10},
-    {name: "Argentina", value: 10},
-    {name: "Argentina", value: 10},
-    {name: "Argentina", value: 10},
-    
-  ]; */
+
   // Pie function - transforms raw data to arc segment parameters
   dataArray = [];
   pie = d3.pie()
@@ -60,8 +46,6 @@ export class D3PieChartComponent implements OnInit, OnChanges {
 
   constructor(private elRef: ElementRef) {
       this.hostElement = this.elRef.nativeElement;
-     
-     
   }
 
   ngOnInit() {
@@ -69,15 +53,14 @@ export class D3PieChartComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
       if (changes.data) {
-          this.updateChart(changes.data.currentValue);
+        this.updateChart(changes.data.currentValue);
          console.log(changes.data.currentValue)
       }
-
   }
 
   private createChart(data:number[]) {
 
-      this.processPieData(data);
+    this.processPieData(data);
 
       this.removeExistingChartFromParent();
 
@@ -94,8 +77,10 @@ export class D3PieChartComponent implements OnInit, OnChanges {
       this.addLabelsToTheDonut();
 
       this.addDonutTotalLabel();
-  }
 
+      
+
+  }
 
   private setChartDimensions() {
       let viewBoxHeight = 100;
@@ -111,34 +96,31 @@ export class D3PieChartComponent implements OnInit, OnChanges {
           .attr("transform", "translate(100,70)");
   }
 
-/* setDomainArr(arr){
+setDomainArr(arr){
     let domainArr = []
     for(let i = 0 ; i < arr.length; i ++){
         domainArr.push(i.toString());
     }
     return domainArr;
-} */
+} 
   private setColorScale() {
-this.colorScale = d3.scaleOrdinal(d3.schemePaired);
-    //console.log(this.setDomainArr(this.data), 'domarr');
-   
-       // this.colorScale = d3.scaleOrdinal().domain(this.keysSet).range(this.colorScales);
-this.colorScale = d3.scaleOrdinal().domain(['0','1','2','3','4']).range(['#99cc33', '#66cccc', '#009999','#b3b3b3', '#e61049']);
+
+
+    /* the domain defines the (n) number of slices */
+    /* the range defines the range of colors */
+    console.log(this.keysSet);
+this.colorScale = d3.scaleOrdinal().domain([...this.keysSet]).range([...this.colorScales]);
      
   }
 
   private processPieData(data, initial = true) {
       this.rawData = data;
       this.total = this.rawData.reduce((sum, next) => sum + next, 0);
-    console.log(this.data)
       this.pieData = this.pie(data);
-      console.log(this.pieData, 'pieData')
       if (initial) {
-          console.log(initial);
           this.pieDataPrevious = this.pieData;
       }
   }
-
 
   private setupArcGenerator() {
       this.innerRadius = 40;
@@ -146,7 +128,6 @@ this.colorScale = d3.scaleOrdinal().domain(['0','1','2','3','4']).range(['#99cc3
       this.arc = d3.arc()
           .innerRadius(this.innerRadius)
           .outerRadius(this.radius)
-       
   }
 
   private addSlicesToTheDonut() {
@@ -157,6 +138,7 @@ this.colorScale = d3.scaleOrdinal().domain(['0','1','2','3','4']).range(['#99cc3
           .append('path')
           .attr('d', this.arc)
           .attr('fill', (datum, index) => {
+              console.log(this.colorScales[index])
               return this.colorScale(`${index}`);
           })
           .attr('fill-opacity','0.45')
@@ -212,6 +194,8 @@ this.colorScale = d3.scaleOrdinal().domain(['0','1','2','3','4']).range(['#99cc3
 
       this.updateLabels();
 
+      this.createChart(data);
+
   }
 
   private updateSlices() {
@@ -250,7 +234,7 @@ this.colorScale = d3.scaleOrdinal().domain(['0','1','2','3','4']).range(['#99cc3
           .attr('transform', (datum, index) => {
               return 'translate(' + this.arc.centroid(datum) + ')';
           })
-          .style('font-size', '4px')
+          .style('font-size', '6px')
           .style('text-anchor', 'middle')
           .style('fill','#52545c')
 

@@ -5,6 +5,7 @@
 }
 
 .container {
+  
   height:100%;
     #ordersByStatus {
         display: flex;
@@ -14,7 +15,6 @@
         width: 100%;
         position: relative;
         height:100%;
-
         mat-select {
             position: absolute;
             top: 0;
@@ -68,64 +68,50 @@ mat-option ::ng-deep .city {
   color:red;
 }
 
-.widget-title p::before{
+.widget-title::before{
   content:'⬙ ';
   font-size:1.5em;
 }
 
 .data-container{
-  display: flex;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-column-gap: 5px;
+  grid-row-gap: 5px;
   justify-content: space-around;
   flex-wrap:wrap;
   position:absolute;
-width:100%;
+  width:100%;
   bottom:0px;
   left:0px;
   padding:10px;
+  max-height:400px;
+  overflow-y: scroll;
 }
 
 .stat-count{
-  font-size:.5em;
+  font-size: 10px;
   letter-spacing: 1px;;
-  color:white;
-  text-shadow: 1px 1px 2px black;
+  color:rgb(56, 56, 56);
  padding:3px;
   margin:1px;
   border-radius:3px;
+  background:#fafafa;
   box-shadow:1px 1px 3px lightgrey;
 }
 
-.stat-count > * {
+
+.stat-name{
   padding:3px;
   padding-top:5px;
   padding-bottom:5px;
   border-radius:1px;
   color:white;
+  text-shadow: 1px 1px 2px black;
+}
+.stat-count-label{
+  margin:4px;
 }
 .half{
   display:block;
-}
-.m_100 {
-  background: #99cc33;
-}
-.m_101 {
-  background: #66cccc;
-}
-.m_200 {
-  background: #009999;
-}
-.m_403{
-  background:#b3b3b3;
-}
-.m_407 {
-  background: #e61049;
-}
-.m_ACK {
-  background: #ff9933;
-}
-.m_INVITE {
-  background: #ff3333;
-}
-.m_BYE {
-  background: #660033;
 }

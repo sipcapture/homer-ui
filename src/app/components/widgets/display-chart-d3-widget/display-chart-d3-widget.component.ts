@@ -12,25 +12,12 @@ import * as moment  from 'moment';
 import { D3PieChartComponent } from './d3-pie-chart/d3-pie-chart.component';
 import { ChartControlsService } from './chart-controls.service';
 
-interface DataColumn {
-  value: string;
-  id: number;
-  name: string;
-}
-
-export class SIPMethod {
-  method: string;
-  methodDisplayValue: string;
-  count: number;
-}
-
 export class Tag {
   name: string;
   color: string;
   count: number;
 }
 
-type SortType = 'SUM';
 
 @Component({
   selector: 'app-display-chart-d3',
@@ -48,122 +35,10 @@ type SortType = 'SUM';
 
 export class DisplayChartD3WidgetComponent implements IWidget {
 
-@ViewChild('ordersByStatusChart', { static: true }) chart: D3PieChartComponent;
-sipMethods: SIPMethod[];
+@ViewChild('d3Chart', { static: true }) chart: D3PieChartComponent;
 chartKeys: Tag[];
+
 chartData: number[] = [];
-
-labels = ['100', '101', '200', '407', 'ACK', 'INVITE', 'BYE'];
-/*
-chartDataObj = {
-
-    "sipMethods":[
-
-    {
-      "method": "m_100",
-      "methodDisplayValue": "100",
-      "count": 0
-    },
-    {
-      "method": "m_101",
-      "methodDisplayValue": "101",
-      "count": 0
-    },
-    {
-      "method": "m_200",
-      "methodDisplayValue": "200",
-      "count": 0
-    },
-    {
-      "method": "m_403",
-      "methodDisplayValue": "403",
-      "count": 0
-    },
-    {
-      "method": "m_407",
-      "methodDisplayValue": "407",
-      "count": 0
-    },
-    {
-      "method": "m_ACK",
-      "methodDisplayValue": "ACK",
-      "count": 0
-    },
-    {
-      "method": "m_INVITE",
-      "methodDisplayValue": "INVITE",
-      "count": 0
-    },
-    {
-      "method": "m_BYE",
-      "methodDisplayValue": "BYE",
-      "count": 0
-    }
-
-  ]
-}
-*/
-
-Tags = {
-  tagObj:[]
-}
-
-chartDataObj2 = {
-  sipMethods:[
-    {
-      method: "m_100",
-      methodDisplayValue: "100",
-      count: 0
-    },
-    {
-      method: "m_101",
-      methodDisplayValue: "101",
-      count: 0
-    },
-    {
-      method: "m_200",
-      methodDisplayValue: "200",
-      count: 0
-    },
-    {
-      method: "m_403",
-      methodDisplayValue: "403",
-      count: 0
-    },
-    {
-      method: "m_407",
-      methodDisplayValue: "407",
-      count: 0
-    },
-    {
-      method: "m_ACK",
-      methodDisplayValue: "ACK",
-      count: 0
-    },
-    {
-      method: "m_INVITE",
-      methodDisplayValue: "INVITE",
-      count: 0
-    },
-    {
-      method: "m_BYE",
-      methodDisplayValue: "BYE",
-      count: 0
-    }
-  ]
-}
-
-chartDataObj = JSON.parse(JSON.stringify(this.chartDataObj2));
-methodDisplayValues = this.chartDataObj.sipMethods.map(m => m.methodDisplayValue);
-displayedColumns = ['legend', 'SIPMethod', 'count'];
-
-refreshInterval;
-
-@Input() id: string;
-@Input() config: any;
-@Output() changeSettings = new EventEmitter < any > ();
-
-title: string;
 
 configQuery = {
   param: {
@@ -182,6 +57,22 @@ configQuery = {
   }
 };
 
+Tags = {
+  tagObj:[
+    {
+    count:0,
+    color:'',
+    name:'',
+  }
+]
+}
+
+@Input() id: string;
+@Input() config: any;
+@Output() changeSettings = new EventEmitter < any > ();
+
+title: string;
+
 _lastTimeStamp = 0;
 set lastTimestamp(val: number) {
   this._lastTimeStamp = val;
@@ -194,25 +85,13 @@ columnKeysGroupColumn;
 
 localData: any;
 
-comingRequest
-
 protocol_profile
 
 dataForChart
 
-sortType: SortType = 'SUM';
-
-_isLoaded = true;
-
-isFormattedDateTime = true;
-
-dataColumns: Array < DataColumn > = [];
-
 groupColumnAxis1: string;
 
 noChartData: false;
-
-numberTypes: 'short';
 
 isShowPanelSettings = true;
 
@@ -230,7 +109,7 @@ subsDashboardEvent: Subscription;
 
 subsCastRangeUpdateTimeOut: Subscription;
 
-  constructor(
+constructor(
     public dialog: MatDialog,
     private _dashboardService : DashboardService,
     private _prefMapProtoService : PreferenceMappingProtocolService,
@@ -240,7 +119,7 @@ subsCastRangeUpdateTimeOut: Subscription;
     this.chartControlsService.fullScreen = false;
   }
 
-  ngOnInit() {
+ngOnInit() {
     WidgetArrayInstance[this.id] = this as IWidget; 
     this.config = {
       name: 'display-chart-d3',
@@ -266,26 +145,26 @@ subsCastRangeUpdateTimeOut: Subscription;
       };
     }
 
-    this.dataColumns = [{
-      value: '',
-      id: 0,
-      name: 'A'
-    }];
 
-    const _f = Functions.cloneObject;
+  const _f = Functions.cloneObject;
     if (this.config) {
       this.title = this.config.title || 'DISPLAY-CHART-D3';
       this.configQuery = _f(this.config.configQuery);
       this.groupColumnAxis1 = this.config.groupColumnAxis1;
-      this.dataColumns = _f(this.config.dataColumns);
       this.localData = _f(this.config.localData);
-      this.sortType = this.config.sortType || this.sortType;
       this.isShowPanelSettings = this.config.isShowPanelSettings !== null ? this.config.isShowPanelSettings : true;
     }
     this.subsDashboardEvent = this._dashboardService.dashboardEvent.subscribe(this.onDashboardEvent.bind(this));
     this.subsCastRangeUpdateTimeOut = this._dateTimeRageService.castRangeUpdateTimeout.subscribe(this.getData.bind(this));
+    this.getData();
   }
+  ngAfterContentInit() {
 
+    // here is where the chart is build first time
+    
+    this.buildD3Chart()
+    
+    }
   private async onDashboardEvent(data: any) {
     const dataId = data.resultWidget[this.id];
     if (dataId && dataId.query) {
@@ -298,17 +177,13 @@ subsCastRangeUpdateTimeOut: Subscription;
       this.localData = dataId.query;
     }
    this.getData();
-
   }
-
 
   isTimeStamp(n = null) {
     if (!n) {
       try {
-        //
         n = this.dataForChart[0][this.groupColumnAxis1];
       } catch (err) {
-        console.log(err);
         return false;
       }
     }
@@ -319,79 +194,14 @@ subsCastRangeUpdateTimeOut: Subscription;
     return false;
   }
 
-private async getData() {
-  if (!this.localData) {
-    return;
-  }
-
-  this.protocol_profile = this.localData.protocol_id;
-  if (this.localData.location && this.localData.location.value !== '' && this.localData.location.mapping !== '') {
-    this.configQuery.param.location[this.localData.location.mapping] = this.localData.location.value;
-  }
-
-  this.configQuery.param.search[this.protocol_profile] = this.localData.fields;
-  this.configQuery.timestamp = this._dateTimeRageService.getDatesForQuery(true);
-  const dataMapping: any = await this._prefMapProtoService.getAll().toPromise();
-  const result = await this._srcCallService.getData(this.configQuery).toPromise();
-  const dataMappingItem = dataMapping.data.filter(i => i.profile === this.protocol_profile.split('_')[1])[0];
-
-  if (dataMappingItem && dataMappingItem.fields_mapping) {
-    const fields_mapping = dataMappingItem.fields_mapping;
-    this.columnKeysGroupColumn = result.keys;
-    this.columnKeys = fields_mapping.filter(i => i.type !== 'string').map(i => i.id.split('.')[1]);
-    this.dataForChart = result.data;
-    this.getMethodCounts(this.dataForChart, this.chartDataObj.sipMethods, this.methodDisplayValues);
-
-      // method that sets the count of the chartDataObj.tagObj
-      this.selectedKeyArr = this.selectedKeys(this.dataForChart,this.keySelected) 
-      // set the keys names to count
-      this.keysSet = Array.from(new Set(this.selectedKeyArr))
-      //set the colorScale
-      this.colorScale = this.getRandomColors(this.keysSet)
-      // sets the tags Onject
-      this.Tags.tagObj = this.tagger(this.keysSet, this.selectedKeyArr);
-    //this.Tags = JSON.stringify(this.Tags);
-      //let tagsObj = JSON.stringify(this.Tags);
-      //console.log(tagsObj);
-      this.getTagCounts(this.selectedKeyArr, this.Tags.tagObj,this.keysSet);
-      this.saveConfig();
-      this.buildD3Chart();
-  }
-}
-
-getTagCounts = (selectedKeyArr, tagsObj, keysSet) => {
-for(let i = 0 ; i < keysSet.length; i ++) {
-  let tagsCount = selectedKeyArr.filter(el => el.indexOf(keysSet[i]) > -1).length;
-  tagsObj[i].count = tagsCount;
-  }
-}
-
-getMethodCounts = (dataArray, objEntry, methodList) => {
-
-  // the methodsList is the keysSet 
-
-  // the objEntry is the Tags.tagObj object
-
-  let methodsArray = dataArray.map(m => m.method)
-  console.log(methodsArray);
-  // the methodsArray is the selectedKeyArr
-  for (let i = 0; i < methodList.length; i++) {
-    let methodCount = methodsArray.filter(el => el.indexOf(methodList[i]) > -1).length;
-    objEntry[i].count = methodCount;
-  }
-}
-
-// array of numbers for the chart
 getChartData = (arr) => {
   let arrCount = [];
   arr.forEach( key=> {
-    arrCount.push(key.count)
+    arrCount.push(key.count * 1 || 0)
   })
-  console.log(arrCount)
-  return arrCount;
+  return arrCount ;
 }
 
-// array of colors for the chart
 getChartColors = (arr) => {
   let arrColors = [];
   arr.forEach( c => {
@@ -400,7 +210,6 @@ getChartColors = (arr) => {
   return arrColors;
 }
 
-// raw array of entries of selected key
 selectedKeys = (data, selected) =>{
   let keyArr = [];
   if(data){
@@ -416,7 +225,6 @@ selectedKeys = (data, selected) =>{
   return keyArr;
 }
 
-// build and array of (n) number colors
 getRandomColors(n){
   let colorsArray = [];
   for(let i = 0 ; i < n.length; i ++){
@@ -430,10 +238,6 @@ getRandomColors(n){
 return colorsArray;
 }
 
-// objEntry ?
-// kS = keysSet   kA = keysArray : selectedKeyArray inside build D3Chart ... make new var!
-// kA stands for keysArray = selectedKeyArray // kS = keysSet
-
 tagger = (kS, kA) => {
 let tagArr = [];
 for(let i = 0 ; i < kS.length; i++){
@@ -446,78 +250,93 @@ for(let i = 0 ; i < kS.length; i++){
   }else{
     tag.name = this.keysSet[i];
   }
-  
   tagArr.push(tag);
   }
- 
   return tagArr;
-  
 }
 
-/* method for building the D3 Chart */
+getTagCounts = (selectedKeyArr, tagsObj, keysSet) => {
+  for(let i = 0 ; i < keysSet.length; i ++) {
+    let tagsCount = selectedKeyArr.filter(el => el.indexOf(keysSet[i]) > -1).length;
+    tagsObj[i].count = tagsCount *1 || 0;
+    }
+  }
+
+private async getData() {
+   if (!this.localData) {
+    return;
+  } 
+
+  this.protocol_profile = this.localData.protocol_id;
+  if (this.localData.location && this.localData.location.value !== '' && this.localData.location.mapping !== '') {
+    this.configQuery.param.location[this.localData.location.mapping] = this.localData.location.value;
+  }
+
+  this.configQuery.param.search[this.protocol_profile] = this.localData.fields;
+
+  this.configQuery.timestamp = this._dateTimeRageService.getDatesForQuery(true);
+
+  const dataMapping: any = await this._prefMapProtoService.getAll().toPromise();
+
+  const result = await this._srcCallService.getData(this.configQuery).toPromise();
+
+  const dataMappingItem = dataMapping.data.filter(i => i.profile === this.protocol_profile.split('_')[1])[0];
+
+  if (dataMappingItem && dataMappingItem.fields_mapping) {
+
+    const fields_mapping = dataMappingItem.fields_mapping;
+
+    this.columnKeysGroupColumn = result.keys;
+
+    this.columnKeys = fields_mapping.filter(i => i.type !== 'string').map(i => i.id.split('.')[1]);
+
+    this.dataForChart = result.data;
+  console.log(this.dataForChart);
+    this.selectedKeyArr = this.selectedKeys(this.dataForChart,this.keySelected)
+
+    this.keysSet = Array.from(new Set(this.selectedKeyArr))
+
+    this.colorScale =  this.getRandomColors(this.keysSet)
+    
+    this.Tags.tagObj = this.tagger(this.keysSet, this.selectedKeyArr);
+
+    this.getTagCounts(this.selectedKeyArr, this.Tags.tagObj,this.keysSet);
+
+    this.saveConfig();
+
+    this.buildD3Chart();
+  }
+}
 
 buildD3Chart() {
-this.sipMethods = [];
-this.chartKeys = [];
-this.chart.data = [...this.chartData];
 
-/* previous method */
+this.chartKeys = []; // use this reponse to test
 
-this.chartDataObj.sipMethods.forEach((method) => {
-    const target = new SIPMethod();
-    target.method = method.method;
-    target.methodDisplayValue = method.methodDisplayValue;
-    target.count = method.count;
-    this.sipMethods.push(target);
-  })
-  this.chartData = [];
-  console.log(this.sipMethods);
-  this.sipMethods.forEach((method) => {
-    this.chartData.push(method.count);
-  });
+let tagobject = this.Tags.tagObj;
 
-
-//let tagsObj = JSON.parse(JSON.stringify(this.Tags));
-/* end previous method */
-//console.log(tagsObj); 
-/*
-this.Tags.tagObj.forEach((info) => {
+tagobject.forEach((info) => {
   const target = new Tag();
   target.name = info.name;
   target.color = info.color;
   target.count = info.count;
   this.chartKeys.push(target);
 });
-//console.log(this.Tags, 'tags')
-//console.log
+
 this.chartData = [];
+
 this.chartKeys.forEach((info) => {
   this.chartData.push(info.count);
+  this.chart.data = [...this.chartData];
 })
 
-*/
- // this.chart.data = [...this.chartData];
- /* console.log(this.Tags);
-  this.chartData = [];
-  this.Tags.forEach((key)=>{
-  this.chartData.push(key.count);
-  
-
-})
-
-console.log(this.chartData);
-*/
   
 }
 
-/* switch for showing the data */
 
 toggleData(event: MatSlideToggleChange) {
   this.chartControlsService.showData = event.checked;
 }
 
-
-/* save the actual config */
 
 private saveConfig() {
   const _f = Functions.cloneObject;
@@ -525,9 +344,7 @@ private saveConfig() {
     title: this.title || this.id,
     configQuery: _f(this.configQuery),
     groupColumnAxis1: this.groupColumnAxis1,
-    dataColumns: _f(this.dataColumns),
     localData: this.localData,
-    sortType: this.sortType,
     isShowPanelSettings: this.isShowPanelSettings
   };
 
@@ -537,13 +354,10 @@ private saveConfig() {
   });
 }
 
-/* open the settings dialog */
-
 async openDialog() {
   const dialogRef = this.dialog.open(SettingDisplayChartD3WidgetComponent, {
     data: {
       title: this.title || this.id,
-      sortType: this.sortType
     }
   });
 
@@ -551,21 +365,11 @@ async openDialog() {
   if (!result) {
     return;
   }
-  this.sortType = result.sortType;
+
   this.title = result.title;
 
- 
-  this.buildD3Chart();
   this.saveConfig();
 }
-
-/* generate the chart after all the data is set */
-
-ngAfterContentInit() {
-  this.buildD3Chart()
-}
-
-/* unsubscribe from services after dropping widget */
 
 ngOnDestroy() {
   this.subsDashboardEvent.unsubscribe()
