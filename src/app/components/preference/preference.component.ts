@@ -39,6 +39,8 @@ import {
     PreferenceAgentsub
 } from '@app/models';
 import { AuthenticationService } from '@app/services';
+import { DashboardService } from '../../services/dashboard.service';
+import { SessionStorageService } from '../../services/session-storage.service';
 
 
 @Component({
@@ -48,8 +50,8 @@ import { AuthenticationService } from '@app/services';
 })
 export class PreferenceComponent implements OnInit, OnDestroy {
     isLoading = false;
-
     isAdmin = false;
+    isHasLocalStorage = false;
 
     public pageId: string;
     public links: Array<string> = [];
@@ -71,7 +73,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
 
     dataSource = new MatTableDataSource([{}]);
     isAccess = {};
-    
+
     constructor(
         private authenticationService: AuthenticationService,
         private router: Router,
@@ -85,55 +87,57 @@ export class PreferenceComponent implements OnInit, OnDestroy {
         private _aks: PreferenceAuthKeyService,
         private _pags: PreferenceAgentsubService,
         public dialog: MatDialog,
+
+        private dashboardService: DashboardService,
+        private sessionStorageService: SessionStorageService
     ) {
-        
         const userData = this.authenticationService.currentUserValue;
-        this.isAdmin = userData && userData.user && userData.user.admin && userData.user.admin == true;
-        
+        this.isAdmin = userData && userData.user && userData.user.admin && userData.user.admin === true;
+
         if (this.isAdmin) {
             this.isAccess = {
                 users: {
-                    "add": true,
-                    "edit": true,
-                    "delete": true
+                    add: true,
+                    edit: true,
+                    delete: true
                 },
                 'user settings':  {
-                    "add": true,
-                    "edit": true,
-                    "delete": true
+                    add: true,
+                    edit: true,
+                    delete: true
                 },
                 alias:  {
-                    "add": true,
-                    "edit": true,
-                    "delete": true
+                    add: true,
+                    edit: true,
+                    delete: true
                 },
                 advanced:  {
-                    "add": true,
-                    "edit": true,
-                    "delete": true
+                    add: true,
+                    edit: true,
+                    delete: true
                 },
                 mapping:  {
-                    "add": true,
-                    "edit": true,
-                    "delete": true
+                    add: true,
+                    edit: true,
+                    delete: true
                 },
                 hepsub:  {
-                    "add": true,
-                    "edit": true,
-                    "delete": true
+                    add: true,
+                    edit: true,
+                    delete: true
                 },
                 'auth token':  {
-                    "add": true,
-                    "edit": true,
-                    "delete": true
+                    add: true,
+                    edit: true,
+                    delete: true
                 },
                 agentsub:  {
-                    "add": false,
-                    "edit": false,
-                    "delete": true
+                    add: false,
+                    edit: false,
+                    delete: true
                 },
             };
-            
+
             this.pagesStructure = {
                 users: ['Firstname', 'Lastname', 'Username', 'Email', 'tools'],
                 'user settings': ['Username', 'Partid', 'Category', 'Param', 'Data', 'tools'],
@@ -164,7 +168,8 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 'mapping',
                 'hepsub',
                 'auth token',
-                'agentsub'
+                'agentsub',
+                'reset'
             ]
         } else {
             this.pagesStructure = {
@@ -185,46 +190,46 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 'advanced',
             ]
 
-            this.isAccess= {
+            this.isAccess = {
                 users:  {
-                    "add": false,
-                    "edit": true,
-                    "delete": false,
+                    add: false,
+                    edit: true,
+                    delete: false,
                 },
                 'user settings':  {
-                    "add": true,
-                    "edit": true,
-                    "delete": true
+                    add: true,
+                    edit: true,
+                    delete: true
                 },
                 alias:  {
-                    "add": false,
-                    "edit": false,
-                    "delete": false
+                    add: false,
+                    edit: false,
+                    delete: false
                 },
                 advanced:  {
-                    "add": false,
-                    "edit": false,
-                    "delete": false
+                    add: false,
+                    edit: false,
+                    delete: false
                 },
                 mapping: {
-                    "add": false,
-                    "edit": false,
-                    "delete": false
+                    add: false,
+                    edit: false,
+                    delete: false
                 },
                 hepsub: {
-                    "add": false,
-                    "edit": false,
-                    "delete": false
+                    add: false,
+                    edit: false,
+                    delete: false
                 },
                 'auth token': {
-                    "add": false,
-                    "edit": false,
-                    "delete": false
+                    add: false,
+                    edit: false,
+                    delete: false
                 },
                 agentsub: {
-                    "add": false,
-                    "edit": false,
-                    "delete": true
+                    add: false,
+                    edit: false,
+                    delete: true
                 }
             };
         }
@@ -324,18 +329,18 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 }
                 break;
             case 'auth token':
-                    responce = await this._aks.getAll().toPromise();                    
+                    responce = await this._aks.getAll().toPromise();
                     this.dataSource = new MatTableDataSource(responce.data.map(
                         (item: PreferenceAuthKey) => ({
                             GUID: item.guid,
                             Name: item.name,
                             'Create Date': item.create_date,
-                            'Expire Date': item.expire_date,                            
+                            'Expire Date': item.expire_date,
                             Active: item.active,
                             item: item
                     })));
                     this.isLoading = false;
-    
+
                     break;
             case 'hepsub':
                 try {
@@ -366,7 +371,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                                 Port: item.port,
                                 Node: item.node,
                                 Type: item.type,
-                                Expire: item.expire_date,                                
+                                Expire: item.expire_date,
                                 item: item
                         })));
                     } catch (err) {
@@ -378,15 +383,10 @@ export class PreferenceComponent implements OnInit, OnDestroy {
     }
 
     async openDialog(type: any, data: any = null, cb: Function = null) {
-        const dialogRef = this.dialog.open(type, {
-            width: '800px',
-            data: {
-                data: data,
-                isnew: data === null
-            }
-        });
+        const result = await this.dialog.open(type, {
+            width: '800px', data: { data, isnew: data === null }
+        }).afterClosed().toPromise();
 
-        const result = await dialogRef.afterClosed().toPromise();
         if (cb && result) {
             if (result.data) {
                 result.data = this.jsonValidateAndForrmatted(result.data);
@@ -413,33 +413,40 @@ export class PreferenceComponent implements OnInit, OnDestroy {
     }
 
     settingDialog (item: any = null) {
+        let _result;
 
-        this.openDialog(this.dialogs[this.pageId], item, result => {
-            if (result) {                
-                this.service[this.pageId][result.isnew ? 'add' : 'update'](result.data).toPromise().then((response) => {                               
-                    if(this.pageId == "auth token" && result.isnew && response.data) {
-                        this.openDialog(DialogAuthTokenDisplayComponent, response.data, result => {
-                            if (result) {
-                                this.service[this.pageId].delete(item.guid).toPromise().then(() => {
-                                    this.updateData();
-                                });
-                            }
-                        });                        
-                    }         
-                    this.updateData();           
-                });
+        const onOpenDialogAuth =  result2 => result2 && this.service[this.pageId]
+            .delete(item.guid).toPromise().then(this.updateData.bind(this));
+
+        const onServiceRes = response => {
+            if (this.pageId === 'auth token' && _result.isnew && response.data) {
+                this.openDialog(DialogAuthTokenDisplayComponent, response.data, onOpenDialogAuth);
             }
-        });
+            this.updateData();
+        };
+
+        const onOpenDialog = result => {
+            if (!result) {
+                return;
+            }
+            _result = result;
+            this.service[this.pageId][result.isnew ? 'add' : 'update'](result.data).toPromise().then( onServiceRes );
+        };
+
+        this.openDialog(this.dialogs[this.pageId], item, onOpenDialog);
     }
 
     onDelete (item: any = null) {
-        this.openDialog(DialogDeleteAlertComponent, null, result => {
-            if (result) {
-                this.service[this.pageId].delete(item.guid).toPromise().then(() => {
-                    this.updateData();
-                });
-            }
-        });
+        this.openDialog(DialogDeleteAlertComponent, null, result =>
+            result && this.service[this.pageId].delete(item.guid).toPromise().then(this.updateData.bind(this)));
+    }
+    onClearLocalData() {
+        Object.keys(localStorage.valueOf()).filter(i => i !== 'currentUser').forEach(i => localStorage.removeItem(i));
+        this.dashboardService.clearLocalStorage();
+        this.sessionStorageService.clearLocalStorage();
+    }
+    getLocalStorageStatus () {
+        return Object.keys(localStorage.valueOf()).filter(i => i !== 'currentUser').length > 0;
     }
 
     ngOnDestroy () {

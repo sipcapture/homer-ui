@@ -183,7 +183,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         if (this.inContainer) {
             this.subscriptionDashboardEvent = this._ds.dashboardEvent.subscribe(data => {
                 const dataId = data.resultWidget[this.id];
-                if (dataId && this.lastTimestamp !== dataId.timestamp) {
+                if (dataId && dataId.query && this.lastTimestamp !== dataId.timestamp) {
                     this.localData = dataId.query;
                     this.protocol_profile = this.localData.protocol_id;
 
@@ -208,7 +208,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                         });
                     } else {
                         this.update(true);
-                        this.initSearchSlider(!this.isThisSelfQuery);
                     }
                 }
             });
@@ -250,12 +249,13 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.limitRange.message_to = d.data.message_to || 1000;
             }
         });
-        this.initSearchSlider();
     }
     async initSearchSlider(isImportantClear = false) {
         this.isThisSelfQuery = false;
         try {
-            const query = this.searchService.getLocalStorageQuery();
+            const query = this._ds.getSliderQueryDataToWidgetResult(this.id)
+                || this._ds.setSliderQueryDataToWidgetResult(this.id, this.searchService.getLocalStorageQuery());
+
             if (!query || !query.protocol_id) {
                 return;
             }
@@ -333,7 +333,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             } else {
                 this.localData = this.searchService.getLocalStorageQuery();
 
-
                 this.protocol_profile = this.localData.protocol_id;
 
                 if (this.protocol_profile === ConstValue.LOKI_PREFIX) {
@@ -398,31 +397,31 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             }
         }
     }
-    private openTransactionByAdvancedSettings() {
+    private async openTransactionByAdvancedSettings() {
         const params = Functions.getUriJson();
         if (params && params.param && !this.isOpenDialog) {
             this.isOpenDialog = true;
-            this._pas.getAll().toPromise().then(advanced => {
-                if (advanced && advanced.data) {
-                    try {
-                        const setting = advanced.data.filter(i => i.category === 'export' && i.param === 'transaction');
-                        if (setting && setting[0] && setting[0].data) {
-                            const { openwindow } = setting[0].data;
-                            if (openwindow === true) {
-                                const sids = params.param.search[this.protocol_profile].callid;
-                                const rowData: Array<any>  = Functions.cloneObject(this.rowData) as Array<any>;
+            const advanced = await this._pas.getAll().toPromise();
+            if (!advanced || !advanced.data) {
+                return;
+            }
+            try {
+                const setting = advanced.data.filter(i => i.category === 'export' && i.param === 'transaction');
+                if (setting && setting[0] && setting[0].data) {
+                    const { openwindow } = setting[0].data;
+                    if (openwindow === true) {
+                        const sids = params.param.search[this.protocol_profile].callid;
+                        const rowData: Array<any>  = Functions.cloneObject(this.rowData) as Array<any>;
 
-                                this.openTransactionDialog({
-                                    data: sids.map(j => rowData.filter(i => i.sid === j)[0])[0]
-                                }, null, sids);
-                            }
-                        }
-                    } catch (err) { }
+                        this.openTransactionDialog({
+                            data: sids.map(j => rowData.filter(i => i.sid === j)[0])[0]
+                        }, null, sids);
+                    }
                 }
-            });
+            } catch (err) { }
         }
     }
-    private getHeaders() {
+    private async getHeaders() {
         this.columnDefs = [];
         this.config.timestamp = this._dtrs.getDatesForQuery(true);
 
@@ -440,74 +439,73 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
         let marData = [];
         let hepVersion = 0;
-        this._pmps.getAll().toPromise().then((data: any) => {
-
-            const arrData: Array<any> = data.data;
-            arrData.forEach((a: any) => {
-                const keyHep = a.hepid + '_' + a.profile;
-                if (
-                    (this.isLokiQuery && a.hepid === 2000 && a.hep_alias === 'LOKI') ||
-                    (marData.length === 0 && this.config.param.search && this.config.param.search.hasOwnProperty(keyHep))
-                ) {
-                    marData = a.fields_mapping;
-                    hepVersion = parseInt(a.hepid + '', 10);
-                }
-            });
-
-            if (marData.length > 0) {
-                const myRemoteColumns = [];
-                /* don't add create date  */
-                if (hepVersion < 2000) {
-                    myRemoteColumns.push({ headerName: 'ID', field: 'id', minWidth: 20, maxWidth: 40, hide: true});
-                    myRemoteColumns.push({ headerName: 'Date', field: 'create_date', filter: true, suppressSizeToFit: true,
-                        valueFormatter: (item: any) => item.value ? moment(item.value).format('YYYY-MM-DD HH:mm:ss.SSS') : null});
-                }
-                for (const h of marData) {
-                    const idArray = h.id.split('.');
-                    const idColumn: any = idArray[idArray.length - 1];
-
-                    /* skip if skip == true */
-                    if (idColumn === 'raw' || idColumn === ConstValue.LIMIT || (h.hasOwnProperty('skip') && h.skip === true)) {
-                        continue;
-                    }
-
-                    /* default column values */
-                    const vaColumn: any =  { headerName: h.name, field: idColumn, filter: true, resizable: true};
-                    if (idColumn === 'sid' || idColumn === 'callid' || (h.hasOwnProperty('sid_type') && h.sid_type === true)) {
-                        vaColumn.cellStyle = this.getCallIDColor.bind(this);
-                        vaColumn.cellRenderer = 'columnCallidRenderer';
-                    }
-                    if (idColumn === 'custom_1') { /** Loki column 'Message' */
-                        vaColumn.cellRenderer = 'LokiHighlightRenderer';
-                    }
-                    if (idColumn === 'method' || (h.hasOwnProperty('method_type') && h.method_type === true)) {
-                        vaColumn.cellRenderer = 'columnMethodRenderer';
-                        vaColumn.cellStyle = this.getMethodColor.bind(this);
-                    }
-                    if ((h.hasOwnProperty('date_field') && h.date_field === true)) {
-                        vaColumn.valueFormatter =
-                            (item: any) => item.value ? moment(item.value).format('YYYY-MM-DD HH:mm:ss.SSS') : null;
-                    }
-                    if (h.hasOwnProperty('hide') && h.hide === true) {
-                        vaColumn.hide = true;
-                    }
-                    if (h.hasOwnProperty('suppressSizeToFit') && h.suppressSizeToFit === true) {
-                        vaColumn.suppressSizeToFit = true;
-                    }
-                    if (h.hasOwnProperty('autoheight') && h.autoheight === true) {
-                        vaColumn.cellStyle = {
-                            'white-space': 'normal',
-                            'line-height': '1.2rem'
-                        };
-                        vaColumn.autoHeight = true;
-                    }
-                    myRemoteColumns.push(vaColumn);
-                }
-                const restoreColumns = this.localStateHeaders(myRemoteColumns);
-                this.columnDefs = hepVersion < 2000 ? this.myPredefColumns.concat(restoreColumns) : myRemoteColumns;
-                this.sizeToFit();
+        const data: any = await this._pmps.getAll().toPromise();
+        const arrData: Array<any> = data && data.data;
+        arrData.forEach((a: any) => {
+            const keyHep = a.hepid + '_' + a.profile;
+            if (
+                (this.isLokiQuery && a.hepid === 2000 && a.hep_alias === 'LOKI') ||
+                (marData.length === 0 && this.config.param.search && this.config.param.search.hasOwnProperty(keyHep))
+            ) {
+                marData = a.fields_mapping;
+                hepVersion = parseInt(a.hepid + '', 10);
             }
         });
+
+        if (marData.length > 0) {
+            const myRemoteColumns = [];
+
+            /* don't add create date  */
+            if (hepVersion < 2000) {
+                myRemoteColumns.push({ headerName: 'ID', field: 'id', minWidth: 20, maxWidth: 40, hide: true});
+                myRemoteColumns.push({ headerName: 'Date', field: 'create_date', filter: true, suppressSizeToFit: true,
+                    valueFormatter: (item: any) => item.value ? moment(item.value).format('YYYY-MM-DD HH:mm:ss.SSS') : null});
+            }
+            for (const h of marData) {
+                const idArray = h.id.split('.');
+                const idColumn: any = idArray[idArray.length - 1];
+
+                /* skip if skip == true */
+                if (idColumn === 'raw' || idColumn === ConstValue.LIMIT || (h.hasOwnProperty('skip') && h.skip === true)) {
+                    continue;
+                }
+
+                /* default column values */
+                const vaColumn: any =  { headerName: h.name, field: idColumn, filter: true, resizable: true};
+                if (idColumn === 'sid' || idColumn === 'callid' || (h.hasOwnProperty('sid_type') && h.sid_type === true)) {
+                    vaColumn.cellStyle = this.getCallIDColor.bind(this);
+                    vaColumn.cellRenderer = 'columnCallidRenderer';
+                }
+                if (idColumn === 'custom_1') { /** Loki column 'Message' */
+                    vaColumn.cellRenderer = 'LokiHighlightRenderer';
+                }
+                if (idColumn === 'method' || (h.hasOwnProperty('method_type') && h.method_type === true)) {
+                    vaColumn.cellRenderer = 'columnMethodRenderer';
+                    vaColumn.cellStyle = this.getMethodColor.bind(this);
+                }
+                if ((h.hasOwnProperty('date_field') && h.date_field === true)) {
+                    vaColumn.valueFormatter =
+                        (item: any) => item.value ? moment(item.value).format('YYYY-MM-DD HH:mm:ss.SSS') : null;
+                }
+                if (h.hasOwnProperty('hide') && h.hide === true) {
+                    vaColumn.hide = true;
+                }
+                if (h.hasOwnProperty('suppressSizeToFit') && h.suppressSizeToFit === true) {
+                    vaColumn.suppressSizeToFit = true;
+                }
+                if (h.hasOwnProperty('autoheight') && h.autoheight === true) {
+                    vaColumn.cellStyle = {
+                        'white-space': 'normal',
+                        'line-height': '1.2rem'
+                    };
+                    vaColumn.autoHeight = true;
+                }
+                myRemoteColumns.push(vaColumn);
+            }
+            const restoreColumns = this.localStateHeaders(myRemoteColumns);
+            this.columnDefs = hepVersion < 2000 ? this.myPredefColumns.concat(restoreColumns) : myRemoteColumns;
+            this.sizeToFit();
+        }
     }
 
     private localStateHeaders(apiColumn) {
@@ -517,24 +515,34 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             lsIndex += `-${this.id}`;
         }
         let h: any = localStorage.getItem(lsIndex);
-        if (h) {
-            h = JSON.parse(h);
 
-            apiColumn.forEach(col => {
-                const f = h.filter(i => i.field === col.field)[0];
-                if (f) {
-                    col.hide = !f.selected;
-                }
-            });
-            h.forEach(col => {
-                const f = apiColumn.filter(i => i.field === col.field)[0];
-                if (f) {
-                    _apiColumn.push(f);
-                }
-            });
-            return _apiColumn;
+        if (!h) {
+            return apiColumn;
         }
-        return apiColumn;
+        h = JSON.parse(h);
+        const repeatBuffer = {};
+        h = h.filter(i => {
+            if (!repeatBuffer[i.name + i.field]) {
+                repeatBuffer[i.name + i.field] = 0;
+            }
+            repeatBuffer[i.name + i.field]++;
+            return repeatBuffer[i.name + i.field] === 1;
+        });
+
+        apiColumn.forEach(col => {
+            const f = h.filter(i => i.field === col.field && i.name === col.headerName)[0];
+            if (f) {
+                col.hide = !f.selected;
+            }
+        });
+        h.forEach(col => {
+            const f = apiColumn.filter(i => i.field === col.field && i.headerName === col.name)[0];
+            if (f) {
+                _apiColumn.push(f);
+            }
+        });
+
+        return _apiColumn;
     }
 
     private isNewData(): boolean {
@@ -588,6 +596,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.selectCallIdFromGetParams();
                 this.openTransactionByAdvancedSettings();
                 this.dataReady.emit({});
+                this.initSearchSlider();
             }, err => {
                 this.rowData = [];
                 this.dataReady.emit({});
@@ -616,7 +625,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         return hash;
     }
 
-    private intToARGB(i) {
+    private intToARGB(i: any) {
         return ((i >> 24) & 0xFF);
     }
 
@@ -657,9 +666,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }, 300);
     }
 
-    private setQuickFilter() {
-        this.gridApi.setQuickFilter(this.filterGridValue);
-    }
+    // private setQuickFilter() {
+    //     this.gridApi.setQuickFilter(this.filterGridValue);
+    // }
     public onGridReady(params) {
         this.gridApi = params.api;
         this.gridColumnApi = params.columnApi;
@@ -684,7 +693,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             return;
         }
 
-        const payloadType = row && row.data && row.data.payloadType ? row.data.payloadType : 1;
         const _protocol_profile = row && row.data && row.data.profile ? row.data.profile : this.protocol_profile;
 
         const selectedRows = this.gridApi.getSelectedRows();
@@ -799,7 +807,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }
 
         this.arrMessageDetail.push(mData);
-        if(!row.isLog) {
+        if (!row.isLog) {
             this._scs.getDecodedData(request).toPromise().then(res => {
                 let _decoded = null;
                 if (res.data && res.data[0] && res.data[0].decoded) {
@@ -819,14 +827,14 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.changeDetectorRefs.detectChanges();
             });
         }
-        
+
         if ( row.isLog || (row.data.payloadType === 1 && (row.data.raw || row.data.item && row.data.item.raw))) {
             const data = row.data.item || row.data;
             mData.data = data || {};
             mData.data.item = {
                 raw: mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty'
             };
-            mData.data.messageDetaiTableData = Object.keys(mData.data)
+            mData.data.messageDetailTableData = Object.keys(mData.data)
                 .map(i => {
                     let val;
                     if (i === 'create_date') {
@@ -849,7 +857,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             mData.data.item = {
                 raw: mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty'
             };
-            mData.data.messageDetaiTableData = Object.keys(mData.data).map(i => {
+            mData.data.messageDetailTableData = Object.keys(mData.data).map(i => {
                 let val;
                 if (i === 'create_date') {
                     val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS');
@@ -875,6 +883,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             columnApi: this.gridColumnApi,
             context: this.context
         } as any;
+
         this.dialog.open(DialogSettingsGridDialog, {
             width:  '500px', data: {
                 apicol: params.columnApi,
