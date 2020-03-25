@@ -19,6 +19,7 @@ export class D3PieChartComponent implements OnInit, OnChanges {
 @Input() data:number[];
 @Input() colorScales:string[];
 @Input() keysSet:string[];
+
   //@Input() chartColorScale: string[];
   hostElement; // Native element hosting the SVG container
   svg; // Top level SVG element
@@ -39,8 +40,8 @@ export class D3PieChartComponent implements OnInit, OnChanges {
   // Pie function - transforms raw data to arc segment parameters
   dataArray = [];
   pie = d3.pie()
-      .startAngle(-0.6 * Math.PI)
-      .endAngle(0.6 * Math.PI)
+      .startAngle(-1 * Math.PI)
+      .endAngle(1 * Math.PI)
       .sort(null)
       .value((d: number) => d)
 
@@ -54,7 +55,6 @@ export class D3PieChartComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
       if (changes.data) {
         this.updateChart(changes.data.currentValue);
-         console.log(changes.data.currentValue)
       }
   }
 
@@ -83,34 +83,26 @@ export class D3PieChartComponent implements OnInit, OnChanges {
   }
 
   private setChartDimensions() {
-      let viewBoxHeight = 100;
-      let viewBoxWidth = 200;
+      let viewBoxHeight = 125;
+      let viewBoxWidth = 125;
       this.svg = d3.select(this.hostElement).append('svg')
           .attr('width', '100%')
           .attr('height', '100%')
-          .attr('viewBox', '0 0 ' + viewBoxWidth + ' ' + viewBoxHeight);
+          .attr('viewBox', '40 0 ' + viewBoxWidth + ' ' + viewBoxHeight);
   }
 
   private addGraphicsElement() {
       this.g = this.svg.append("g")
-          .attr("transform", "translate(100,70)");
+          .attr("transform", "translate(100,50)");
   }
 
-setDomainArr(arr){
-    let domainArr = []
-    for(let i = 0 ; i < arr.length; i ++){
-        domainArr.push(i.toString());
-    }
-    return domainArr;
-} 
+
   private setColorScale() {
 
-
-    /* the domain defines the (n) number of slices */
-    /* the range defines the range of colors */
-    console.log(this.keysSet);
-this.colorScale = d3.scaleOrdinal().domain([...this.keysSet]).range([...this.colorScales]);
-     
+    this.colorScale = d3.scaleOrdinal()
+    .domain([...this.keysSet])
+    .range([...this.colorScales]);
+    
   }
 
   private processPieData(data, initial = true) {
@@ -123,41 +115,50 @@ this.colorScale = d3.scaleOrdinal().domain([...this.keysSet]).range([...this.col
   }
 
   private setupArcGenerator() {
-      this.innerRadius = 40;
-      this.radius = 65;
+      this.innerRadius = 30;
+      this.radius = 45;
       this.arc = d3.arc()
           .innerRadius(this.innerRadius)
           .outerRadius(this.radius)
   }
 
   private addSlicesToTheDonut() {
-      console.log(this.pieData)
       this.slices = this.g.selectAll('allSlices')
           .data(this.pieData)
           .enter()
           .append('path')
           .attr('d', this.arc)
           .attr('fill', (datum, index) => {
-              console.log(this.colorScales[index])
               return this.colorScale(`${index}`);
           })
           .attr('fill-opacity','0.45')
           .attr('stroke',(datum,index)=>{
-              console.log(this.colorScale())
               return this.colorScale(`${index}`);
           })
           .attr('stroke-width','.35')
+          .on('mouseover', async function (d, i) {
+              let keys = await this.keysSet;
+            d3.select(this)
+                 .attr('fill-opacity', '.75')
+          })
+       .on('mouseout', function (d, i) {
+            d3.select(this)
+                 .attr('fill-opacity', '.45');
+       })
   }
 
   private addDonutTotalLabel() {
       this.totalLabel = this.svg
           .append('text')
-          .text('Total: ' + this.total)
+          .text('Query limit: ' + this.total)
           .attr('id', 'total')
           .attr('x', 100)
-          .attr('y', 80)
-          .style('font-size', '10px')
-          .style('text-anchor', 'middle');
+          .attr('y', 50)
+          .style('font-size', '4px')
+          .style('text-anchor', 'middle')
+          .style('text-transform','uppercase')
+          .style('fill','#52545c')
+        
   }
 
   // Creates an "interpolator" for animated transition for arc slices
@@ -213,7 +214,7 @@ this.colorScale = d3.scaleOrdinal().domain([...this.keysSet]).range([...this.col
   }
 
   private updateTotal() {
-      this.totalLabel.text(`Total: ${this.total}`);
+      this.totalLabel.text(`Query limit: ${this.total}`);
   }
 
   private removeExistingChartFromParent() {
@@ -234,7 +235,7 @@ this.colorScale = d3.scaleOrdinal().domain([...this.keysSet]).range([...this.col
           .attr('transform', (datum, index) => {
               return 'translate(' + this.arc.centroid(datum) + ')';
           })
-          .style('font-size', '6px')
+          .style('font-size', '4px')
           .style('text-anchor', 'middle')
           .style('fill','#52545c')
 

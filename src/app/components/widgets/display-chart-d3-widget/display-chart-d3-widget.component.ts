@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, ViewChild, EventEmitter, OnDestroy, AfterContentInit } from '@angular/core';
+import { Component, OnInit, Input, Output, ViewChild, EventEmitter, OnDestroy, AfterContentInit, OnChanges } from '@angular/core';
 import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 import { IWidget } from '../IWidget';
 import { SettingDisplayChartD3WidgetComponent } from './setting-display-chart-d3-widget.component';
@@ -161,7 +161,6 @@ ngOnInit() {
   ngAfterContentInit() {
 
     // here is where the chart is build first time
-    
     this.buildD3Chart()
     
     }
@@ -291,7 +290,7 @@ private async getData() {
     this.columnKeys = fields_mapping.filter(i => i.type !== 'string').map(i => i.id.split('.')[1]);
 
     this.dataForChart = result.data;
-  console.log(this.dataForChart);
+ 
     this.selectedKeyArr = this.selectedKeys(this.dataForChart,this.keySelected)
 
     this.keysSet = Array.from(new Set(this.selectedKeyArr))
@@ -371,6 +370,10 @@ async openDialog() {
   this.saveConfig();
 }
 
+changeKey(e:any){
+  this.keySelected = e.value;
+  this.getData()
+}
 ngOnDestroy() {
   this.subsDashboardEvent.unsubscribe()
   this.subsCastRangeUpdateTimeOut.unsubscribe()

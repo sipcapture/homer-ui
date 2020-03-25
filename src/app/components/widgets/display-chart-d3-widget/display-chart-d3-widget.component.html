@@ -1,38 +1,36 @@
+
 <div class="container">
-    <div class="title" *ngIf="keySelected">
-        {{keySelected | uppercase}}
-    </div>
-    <div id="ordersByStatus" #ordersByStatus>
-        <div id="chartAndDataContainer">
-            <div id="ordersByStatusTable" *ngIf="chartControlsService.showData">
-                <div class="data-container">
-                    <div *ngFor="let tag of Tags.tagObj" class="stat-count">
-                       <span [style.background]="tag.color" class="stat-name">{{tag.name}}</span><span class="stat-count-label">count: {{tag.count}}</span>
-                    </div>
-                </div>
- 
-        </div>
             <div id="chartContainer" [ngClass]="{'half': chartControlsService.showData}">
-                
                 <app-d3-pie-chart 
                 #d3Chart 
                 [data]="chartData" 
                 [colorScales]="colorScale" 
                 [keysSet]="keysSet">
             </app-d3-pie-chart>
-            
             </div>
         </div>
-            <mat-slide-toggle class="show-data" color="primary" 
-                [checked]="chartControlsService.showData"
-                (change)="toggleData($event)">
-                Show data
-            </mat-slide-toggle>
-         
-                <select [(ngModel)]="keySelected">
-                    <option *ngFor="let key of columnKeysGroupColumn" [value]="key">
-                        {{key}}
-                    </option>
-                </select> ➤
-    </div>
+        
+                <div *ngIf="chartControlsService.showData">
+                    <div class="data-container">
+                        <div *ngFor="let tag of Tags.tagObj" class="stat-count">
+                           <span [style.background]="tag.color" class="stat-name">{{tag.name}}</span><span class="stat-count-label">count: {{tag.count}}</span>
+                        </div>
+                    </div>
+            </div>
+    
+<div class="user-settings">
+<mat-form-field style="place-self: center;">
+    <mat-label>Display key stats</mat-label>
+    <mat-select [(ngModel)]="keySelected" (selectionChange)="changeKey($event)">
+      <mat-option *ngFor="let key of columnKeysGroupColumn" [value]="key">
+        {{key}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-slide-toggle class="show-data" color="primary" 
+  style="place-self: center;"
+  [checked]="chartControlsService.showData"
+  (change)="toggleData($event)">
+  Show tags
+</mat-slide-toggle>
 </div>

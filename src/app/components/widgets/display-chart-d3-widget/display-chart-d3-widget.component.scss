@@ -1,117 +1,79 @@
 :host {
     display: flex;
-    align-items: center;
-    height:100%;
+    //align-items: center;
+ height:100%;
+    width:100%;
 }
 
 .container {
-  
-  height:100%;
-    #ordersByStatus {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-        position: relative;
-        height:100%;
-        mat-select {
-            position: absolute;
-            top: 0;
-            right: 0px;
-            width: 20%;
-            padding: 5px;
-            font-size: 1rem;
-            font-family: 'Roboto';
-            z-index: 100;
-        }
-
-        #chartAndDataContainer {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100%;
-            width: 100%;
-            #chartContainer {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex: 1;
-                height:100%;
-                width: 100%;
-                app-d3-pie-chart {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    height: 100%;
-                    width: 100%;
-                }
-            }
-        }
-    }
-}
-
-.show-data {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-}
-
-mat-option ::ng-deep .city {
-    font-size: 1rem;
-    font-family: 'Roboto';
-}
-
-.widget-title { 
   width:100%;
-  color:red;
+  height:calc(100% -80px);
+padding:0;
+    
 }
 
-.widget-title::before{
-  content:'⬙ ';
-  font-size:1.5em;
+#chartContainer {
+  height:100%;
+  width: 100%;
+
+}
+
+app-d3-pie-chart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
 }
 
 .data-container{
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-column-gap: 5px;
-  grid-row-gap: 5px;
-  justify-content: space-around;
-  flex-wrap:wrap;
-  position:absolute;
+  display:flex;
+  flex-direction:column;
   width:100%;
-  bottom:0px;
-  left:0px;
-  padding:10px;
-  max-height:400px;
-  overflow-y: scroll;
+  height:100%;
+  padding:0px;
+  height:80%;
+  line-height:1.1;
+  overflow-y:auto;
 }
 
 .stat-count{
   font-size: 10px;
   letter-spacing: 1px;;
   color:rgb(56, 56, 56);
- padding:3px;
   margin:1px;
+  margin-bottom:3px;
   border-radius:3px;
   background:#fafafa;
   box-shadow:1px 1px 3px lightgrey;
+  display:flex;
+  flex-wrap:wrap;
 }
-
 
 .stat-name{
-  padding:3px;
-  padding-top:5px;
-  padding-bottom:5px;
-  border-radius:1px;
+  padding:2px;
   color:white;
   text-shadow: 1px 1px 2px black;
+  width:100%;
 }
+
 .stat-count-label{
-  margin:4px;
+  margin:2px;
 }
+
 .half{
   display:block;
+  width:50%;
+}
+
+.user-settings{
+  font-size:12px;
+position:absolute;
+width:100%;
+bottom:0px;
+padding:10px;
+left:0px;
+display:grid;
+grid-template-columns: 1fr 1fr;
+background:#fafafa;
 }
