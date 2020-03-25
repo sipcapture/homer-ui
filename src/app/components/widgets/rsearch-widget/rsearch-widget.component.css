@@ -1,3 +1,4 @@
+
 .example-container {
     display: flex;
     flex-direction: column;
@@ -6,37 +7,5 @@
 .example-container > * {
     width: 100%;
 }
-
-.example-container {
-    display: grid;
-    grid-template-columns: 1fr;
-    column-gap:10px;
-    padding:20px;
-}
-.example-container > * {
-  font-size:.7em;
-  text-transform:uppercase;
-  letter-spacing:1px;
-}
-
-.loki-buttons{
-    padding:5px;
-    position:absolute;
-    bottom:10px;
-    right:10px;
-}
-.loki-buttons > button{
-    margin:7px;
-
-    font-size:.65em;
-    text-transform:uppercase;
-    letter-spacing:1px;
-    color:#3f3f3f;
-    opacity: .85;
-}
-.loki-buttons > button:hover{
-    opacity:1;
-}
-
 
 

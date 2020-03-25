@@ -68,7 +68,6 @@ export class ProtosearchWidgetComponent implements IWidget {
     _cache: any;
     buttonState = true;
     searchQuery: any;
-    fontSize: '14px';
 
     widgetId: string;
     widgetResultList: Array<any>;
@@ -395,7 +394,6 @@ export class ProtosearchWidgetComponent implements IWidget {
         this.config.title = result.title;
         this.config.config.title = result.title;
         this.config.config.searchbutton = !!result.isButton;
-        this.config.config.fontSize = result.fontSize;
 
         this.config.countFieldColumns = result.countFieldColumns;
 
@@ -411,16 +409,14 @@ export class ProtosearchWidgetComponent implements IWidget {
                 }
             }
         });
-    
+
         this.changeSettings.emit({
             config: this.config,
             id: this.id
         });
         this.isConfig = true;
     }
-getFontSize(){
-    return this.config.config.fontSize || this.fontSize;
-}
+
     onChangeField (event = null, item = null) {
         if (event && item && item.form_type === 'multiselect') {
             item.value = event.value;
@@ -514,4 +510,3 @@ getFontSize(){
         }
     }
 }
-

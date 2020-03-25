@@ -11,11 +11,8 @@
       <mat-label>Panel Title</mat-label>
       <input matInput [(ngModel)]="resultConfig.title" (keydown)="onChange()">
     </mat-form-field>
-    <mat-form-field>
-<mat-label>Font size:</mat-label>
-<input matInput [(ngModel)]="fontSize" type="text" (keydown)="onChange()" placeholder="Default font size: {{resultConfig.fontSize}}">
-  </mat-form-field>
-  <mat-checkbox [(ngModel)]="resultConfig.isButton" labelPosition="Before" (click)="onChange()">Search Button</mat-checkbox>
+
+    <mat-checkbox [(ngModel)]="resultConfig.isButton" labelPosition="Before" (click)="onChange()">Search Button</mat-checkbox>
     <mat-form-field>
       <mat-label>Columns</mat-label>
       <input matInput [(ngModel)]="resultConfig.countFieldColumns" type="number" (keydown)="onChange()">

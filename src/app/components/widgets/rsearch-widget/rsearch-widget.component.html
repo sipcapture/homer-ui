@@ -1,25 +1,23 @@
 
 <form>
-
-    <div class="example-container">
-      <app-code-style-field
-        [queryText]="queryText"
-        (updateData)="onCodeData($event)"
-      ></app-code-style-field>
-      
-      <mat-form-field>
-        <mat-label>Limit</mat-label>
-        <input matInput
-          [(ngModel)]="limit"
-          [ngModelOptions]="{standalone: true}"
-          (change)="onChangeField($event)"
-          (keydown.enter)="handleEnterKeyPress($event)"
-        >
-      </mat-form-field>
-    </div>
-   
-    <div class="loki-buttons">
-        <button mat-raised-button (click)="onClearFields()">Clear</button>
-        <button mat-raised-button color="primary" (click)="doSearchResult()">Search</button>
-    </div>
+  <div class="example-container">
+    <app-code-style-field
+      [queryText]="queryText"
+      (updateData)="onCodeData($event)"
+    ></app-code-style-field>
+    
+    <mat-form-field>
+      <mat-label>Limit</mat-label>
+      <input matInput
+        [(ngModel)]="limit"
+        [ngModelOptions]="{standalone: true}"
+        (change)="onChangeField($event)"
+        (keydown.enter)="handleEnterKeyPress($event)"
+      >
+    </mat-form-field>
+  </div>
+  <div style="float: right;">
+      <button mat-raised-button (click)="onClearFields()">Clear</button>
+      <button mat-raised-button color="primary" (click)="doSearchResult()">Search</button>
+  </div>
 </form>

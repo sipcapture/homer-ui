@@ -1,3 +1,4 @@
+
 .chack-list {
     margin-right: 1.3rem;
 }
@@ -16,10 +17,4 @@
 
 .example-container > * {
     width: 100%;
-}
-
-.font-size {
-    background: #dfdfdf;
-    padding:5px;
-    margin:5px;
 }
