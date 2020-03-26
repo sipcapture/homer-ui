@@ -1,17 +1,17 @@
 <div #flowscreen>
   <!-- title hosts / alias -->
   <div class="title-container" [ngStyle]="{
-    'top': '0px',
+    'top': (isExport ? '1rem' : '0px'),
     'position': (isExport ? 'inherit' : 'absolute')
   }" #flowtitle>
     <div *ngFor="let title of aliasTitle">
         <span *ngIf="title.alias + '' !== title.ip + ''" class="title">
           <strong>{{ title.alias }}</strong>
           <br>
-          {{ title.ip }}
+          {{ title.IP  + (!_isSimplifyPort ? title.PORT : '')}}
         </span>
         <span *ngIf="title.alias + '' === title.ip + ''" class="title">
-          {{ title.ip }}
+          {{ title.IP  + (!_isSimplifyPort ? title.PORT : '') }}
         </span>
     </div>
   </div>

@@ -21,6 +21,16 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         return this._isSimplify;
     }
 
+    _isSimplifyPort = false;
+    _flagAfterViewInit = false;
+    @Input()
+    set isSimplifyPort(val: boolean) {
+        this._isSimplifyPort = val;
+    }
+    get isSimplifyPort() {
+        return this._isSimplifyPort;
+    }
+
     @Input() callid: any;
     _dataItem: any;
     @Input() set dataItem(val) {
@@ -31,11 +41,11 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         return this._dataItem;
     }
     @Input() set exportAsPNG(val) {
-        if(val) {
+        if (val) {
             this.isExport = true;
             setTimeout(() => {
                 this.onSavePng();
-            });
+            }, 500);
         }
     }
     @Output() messageWindow: EventEmitter<any> = new EventEmitter();
@@ -65,6 +75,8 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 } catch (e) { }
             } , 20); // 60 fps
         }
+
+        this._flagAfterViewInit = true;
     }
     ngOnDestroy () {
         clearInterval(this._interval);
@@ -74,7 +86,6 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     initData() {
         this.color_sid = Functions.getColorByString(this.callid);
-        console.log('this.dataItem.data.calldata', this.dataItem.data.calldata);
 
         const IpList = ([].concat(...this.dataItem.data.calldata.map(i => [i.srcId, i.dstId]))).reduce((a, b) => {
             if (!a.includes(b)) {
@@ -82,7 +93,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             }
             return a;
         }, []);
-        console.log({IpList})
+
         let hosts = Functions.cloneObject(this.dataItem.data.hosts);
 
         /* sort it */
@@ -90,7 +101,6 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
 
         let increment = 0;
         Object.keys(hosts).map(i => {
-            console.log(i, hosts[i], IpList.includes(i));
             if (!IpList.includes(i)) {
                 delete hosts[i];
             } else {
@@ -98,9 +108,15 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 increment++;
             }
         });
-        console.log(hosts);
 
-        this.aliasTitle = Object.keys(hosts).map( i => ({ ip: i, alias: this.dataItem.data.alias[i] }));
+        this.aliasTitle = Object.keys(hosts).map( i => {
+            const alias = this.dataItem.data.alias[i];
+            const al = i.split(':');
+            const IP = al[0];
+            const PORT = al[1] ? ':' + al[1] : '';
+
+            return { ip: i, alias, IP, PORT };
+        });
         const colCount = this.aliasTitle.length;
         const data = this.dataItem.data;
         let diffTs = 0;
@@ -158,36 +174,39 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     * @param {bool} reverse false - reverse sorting.
     * @returns {Array} array of items in [[key,value],[key,value],...] format.
     */
-    sortProperties(obj, sortedBy, isNumericSort, reverse) {
-            sortedBy = sortedBy || 1; // by default first key
-            isNumericSort = isNumericSort || false; // by default text sort
-            reverse = reverse || false; // by default no reverse
+    sortProperties(obj: any, sortedBy: any = 1, isNumericSort = false, reverse = false) {
+        const reversed = (reverse) ? -1 : 1;
+        const sortable = [];
 
-            var reversed = (reverse) ? -1 : 1;
-
-            var sortable = [];
-            for (var key in obj) {
-                if (obj.hasOwnProperty(key)) {
-                    sortable.push([key, obj[key]]);
-                }
+        for (const key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                sortable.push([key, obj[key]]);
             }
-            if (isNumericSort)
-                sortable.sort(function (a, b) {
-                    return reversed * (a[1][sortedBy] - b[1][sortedBy]);
-                });
-            else
-                sortable.sort(function (a, b) {
-                    var x = a[1][sortedBy].toLowerCase(),
-                        y = b[1][sortedBy].toLowerCase();
-                    return x < y ? reversed * -1 : x > y ? reversed : 0;
-                });
-            return sortable.reduce((obj, item) => {
-              obj[item[0]] = item[1]
-              return obj
-            }, {})
+        }
+        if (isNumericSort) {
+            sortable.sort(function (a, b) {
+                return reversed * (a[1][sortedBy] - b[1][sortedBy]);
+            });
+        } else {
+            sortable.sort(function (a, b) {
+                const x = a[1][sortedBy].toLowerCase();
+                const y = b[1][sortedBy].toLowerCase();
+                return x < y ? reversed * -1 : x > y ? reversed : 0;
+            });
+        }
+
+        return sortable.reduce((target, item) => {
+            target[item[0]] = item[1];
+            return target;
+        }, {});
     }
 
     onSavePng() {
+        if (!this._flagAfterViewInit) {
+            console.log('waiting FLOW before save a PNG');
+            setTimeout(this.onSavePng.bind(this), 1000);
+            return;
+        }
         if (html2canvas && typeof html2canvas === 'function') {
             const f: Function = html2canvas as Function;
             f(this.flowscreen.nativeElement).then(canvas => {

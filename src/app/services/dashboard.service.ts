@@ -15,59 +15,80 @@ export interface DashboardEventData {
 })
 
 export class DashboardService {
-    private _behavior: BehaviorSubject<any>;
-    public dashboardEvent: Observable<any>;
-    private dbSetting: DashboardEventData = {
+    static dbSetting: DashboardEventData = {
         current: '',
         currentWidgetList: [],
         resultWidget: {}
     };
-    private widgetList: any;
+    set dbs (val) {
+        DashboardService.dbSetting = val;
+    }
+    get dbs() {
+        return DashboardService.dbSetting;
+    }
+    private _behavior: BehaviorSubject<any>;
+    public dashboardEvent: Observable<any>;
     private url = `${environment.apiUrl}/dashboard`;
 
     constructor(private _http: HttpClient) {
-        this.dbSetting = JSON.parse(localStorage.getItem(ConstValue.SQWR)) || this.dbSetting;
-        this._behavior = new BehaviorSubject<any>(this.dbSetting);
+        this.dbs = JSON.parse(localStorage.getItem(ConstValue.SQWR)) || this.dbs;
+        this._behavior = new BehaviorSubject<any>(this.dbs);
         this.dashboardEvent = this._behavior.asObservable();
     }
-
+    clearLocalStorage() {
+        this.dbs = {
+            current: '',
+            currentWidgetList: [],
+            resultWidget: {}
+        };
+    }
     setCurrentDashBoardId(val: any) {
-        this.dbSetting.current = val;
+        this.dbs.current = val;
         this.update();
     }
 
     setWidgetListCurrentDashboard(widgetList: any) {
-        this.dbSetting.currentWidgetList = widgetList;
+        this.dbs.currentWidgetList = widgetList;
         this.update();
     }
     setQueryToWidgetResult(id: string, query: string) {
-        this.dbSetting.resultWidget[id] = {
+        this.dbs.resultWidget[id] = {
             timestamp: Date.now(),
             query: query
         };
         this.update();
     }
-    getWidgetListCurrentDashboard() {
-        return this.dbSetting.currentWidgetList;
+    setSliderQueryDataToWidgetResult(id: string, query: any) {
+        this.dbs.resultWidget = this.dbs.resultWidget || {};
+        this.dbs.resultWidget[id] = this.dbs.resultWidget[id] || {};
+        this.dbs.resultWidget[id].slider = query;
+        this.update();
+        return query;
+    }
+    getSliderQueryDataToWidgetResult(id: string) {
+        this.dbs = JSON.parse(localStorage.getItem(ConstValue.SQWR)) || this.dbs;
+        if (
+            this.dbs.resultWidget &&
+            this.dbs.resultWidget[id] &&
+            this.dbs.resultWidget[id].slider
+        ) {
+            return this.dbs.resultWidget[id].slider;
+        }
+        return null;
     }
     update() {
-        localStorage.setItem(ConstValue.SQWR, JSON.stringify(this.dbSetting));
-        this._behavior.next(this.dbSetting);
+        localStorage.setItem(ConstValue.SQWR, JSON.stringify(this.dbs));
+        this._behavior.next(this.dbs);
     }
 
     getCurrentDashBoardId() {
-        return this.dbSetting.current || 'home';
+        return this.dbs.current || 'home';
     }
 
     // Update json
     updateDashboard(id: string, params): Observable<DashboardModel> {
         const httpOptions = { headers: new HttpHeaders({ 'Content-Type':  'application/json' })};
         return this._http.put<DashboardModel>(`${this.url}/store/${id}`, params, httpOptions);
-    }
-
-    // Dashboard node
-    getDashboardNode(id: string): Observable<DashboardModel> {
-        return this._http.get<DashboardModel>(`${this.url}/node/${id}`);
     }
 
     // get Dashboard store
@@ -83,16 +104,6 @@ export class DashboardService {
     // delete Dashboard store
     deleteDashboardStore(id: string): Observable<any> {
         return this._http.delete<any>(`${this.url}/store/${id}`);
-    }
-
-    // set Dashboard store
-    setDashboardStore(id: string, config: object): Observable<DashboardModel> {
-        return this._http.post<DashboardModel>(`${this.url}/store/`, config);
-    }
-
-    // Dashboard menu
-    getDashboardMenu(): Observable<DashboardModel> {
-        return this._http.get<DashboardModel>(`${this.url}/menu/`);
     }
 
     // Dashboard info

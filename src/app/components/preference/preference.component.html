@@ -8,7 +8,27 @@
     </mat-nav-list>
   </div>
   <!-- body -->
-  <div style="background-color: #fff; flex: 1; padding: 2rem; overflow-y: auto;">
+
+  <div *ngIf="pageId === 'reset'" style="background-color: #fff; flex: 1; padding: 2rem; overflow-y: auto;">
+    <div style="display: flex">
+      <h2 style="padding-left: 2rem;">{{ pageId | titlecase }}</h2>
+    </div>
+    <hr>
+    <div>
+      <!-- content page -->
+      <mat-card class="example-card">
+        <mat-card-header>
+          <mat-card-title>Local storage</mat-card-title>
+          <mat-card-subtitle>Local storage setting</mat-card-subtitle>
+          <div style="flex: 1;">
+            <button mat-flat-button style="float: right;" color="primary" (click)="onClearLocalData()" [disabled]="!getLocalStorageStatus()">Clear local data</button>
+          </div>
+        </mat-card-header>
+      </mat-card>
+    </div>
+  </div>
+
+  <div *ngIf="pageId !== 'reset'" style="background-color: #fff; flex: 1; padding: 2rem; overflow-y: auto;">
     <div style="display: flex">
       <button *ngIf="isAccess[pageId]['add']" mat-flat-button color="primary" (click)="settingDialog()">
         <mat-icon>add_circle_outline</mat-icon>

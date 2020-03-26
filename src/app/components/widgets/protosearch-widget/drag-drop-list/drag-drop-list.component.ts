@@ -43,7 +43,7 @@ export class DragDropListComponent implements OnInit {
     drop(event: CdkDragDrop<string[]>) {
         if (event.previousContainer === event.container) {
             moveItemInArray(
-                event.container.data, 
+                event.container.data,
                 event.previousIndex,
                 event.currentIndex
             );

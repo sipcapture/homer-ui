@@ -1,5 +1,5 @@
-import {Component, Inject} from '@angular/core';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Functions } from '@app/helpers/functions';
 
 export interface DialogData {
@@ -26,26 +26,23 @@ export class DialogSettingsGridDialog {
         public dialogRef: MatDialogRef<DialogSettingsGridDialog>,
         @Inject(MAT_DIALOG_DATA) public data: DialogData
     ) {
-
         this.apiColumn = data.apicol;
         this.apiPoint = data.apipoint;
         this.id = data.idParent;
-        const columns: Object = this.apiColumn.getAllColumns() as Object;
 
-        let column: any, i: string;
-        for (i in columns) {
-            if (columns.hasOwnProperty(i)) {
-                column = columns[i];
-                if (column.colDef.field === '' || column.colDef.field === 'id') {
-                    continue;
-                }
-                this.allColumnIds.push({
-                    name: column.colDef.headerName,
-                    field: column.colDef.field,
-                    selected: column.visible
-                });
-            } 
-        }
+        Object.values(this.apiColumn.getAllColumns() as Object)
+        .filter(column => !['', 'id'].includes(column.colDef.field))
+        .forEach(column => this.allColumnIds.push({
+            name: column.colDef.headerName,
+            field: column.colDef.field,
+            selected: column.visible
+        }));
+        this.allColumnIds = this.allColumnIds
+            .map(i => JSON.stringify(i))
+            .sort()
+            .filter((i, k, arr) => i !== arr[k - 1])
+            .map(i => JSON.parse(i));
+
         this._bufferData = Functions.cloneObject(this.allColumnIds);
     }
     onUpdateProto(event) {
