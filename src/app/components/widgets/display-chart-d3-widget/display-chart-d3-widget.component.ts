@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, ViewChild, EventEmitter, OnDestroy, AfterContentInit, OnChanges } from '@angular/core';
+import { Component, Input, Output, ViewChild, EventEmitter } from '@angular/core';
 import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 import { IWidget } from '../IWidget';
 import { SettingDisplayChartD3WidgetComponent } from './setting-display-chart-d3-widget.component';
@@ -34,11 +34,11 @@ export class Tag {
 
 export class DisplayChartD3WidgetComponent implements IWidget {
 
-  @ViewChild('d3Chart', { static: true }) chart: D3PieChartComponent;
+ 
   @Input() id: string;
   @Input() config: any;
   @Output() changeSettings = new EventEmitter < any > ();
-
+  @ViewChild('d3Chart', { static: true }) chart: D3PieChartComponent;
   title: string;
   chartKeys: Tag[];
   chartData: number[] = [];
