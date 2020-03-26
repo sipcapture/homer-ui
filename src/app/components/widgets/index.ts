@@ -12,7 +12,7 @@ export * from './rsearch-widget/code-style-prometheus-field/code-style-prometheu
 export * from './rsearch-widget/code-style-smart-input-field/code-style-smart-input-field.component';
 export * from './protosearch-widget/drag-drop-list/drag-drop-list.component';
 export * from './result-chart-widget/result-chart-widget.component';
-
+export * from  './display-chart-d3-widget/display-chart-d3-widget.component';
 
 /** setting window */
 export * from './clock-widget/setting-clock-widget.component';
@@ -24,6 +24,6 @@ export * from './ace-editor-widget/settings-ace-editor-widget.component';
 export * from './general-iframe-widget/setting-general-iframe-widget.component';
 export * from './dialog-alarm/dialog-alarm.component';
 export * from './result-chart-widget/setting-result-chart-widget.component';
-
+export * from './display-chart-d3-widget/setting-display-chart-d3-widget.component';
 export * from './result-widget/setting-result-widget.component';
 
