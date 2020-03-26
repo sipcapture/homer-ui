@@ -23,7 +23,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
 
     @Input() set queryText(val) {
         this._queryText = val;
-        this.updateEditor(null);
+        this.updateEditor();
     }
     get queryText() {
         return this._queryText;
@@ -43,7 +43,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
             this.serverLoki = data.data
                 .filter(i => i.category === 'search' && i.param === 'lokiserver')
                 .map(i => i.data.host)[0];
-            this.updateEditor(null);
+            this.updateEditor();
             subscription.unsubscribe();
         });
     }
@@ -55,7 +55,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
         this.editor.addEventListener('input', this.updateEditor.bind(this));
         if (this.queryText) {
             this.editor.innerText = this.queryText;
-            this.updateEditor(null);
+            this.updateEditor();
         }
     }
     async getLabels() {
@@ -171,7 +171,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
             return;
         }
 
-        if ([8, 221].indexOf(event.keyCode) !== -1) {
+        if ([221].indexOf(event.keyCode) !== -1) {
             if (')}]'.indexOf(this.editor.innerText[0]) !== -1) {
                 this.editor.innerText = this.editor.innerText.slice(1);
             }
@@ -183,23 +183,27 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
             return false;
         }
         if ([219, 222, 188, 187, 192].indexOf(event.keyCode) !== -1) {
+        // if (['[', '"', ',', '=', '`'].includes(event.key)) {
+
             const getLastLetter = window.getSelection().anchorNode.textContent.split('')[0];
 
             if ('(' === getLastLetter) { // ()
                 this.editor.innerText = '()';
-                this.updateEditor(null);
                 this.restoreSelection(1, 1);
+                this.updateEditor();
             }
             if ('[' === getLastLetter) { // []
                 this.editor.innerText = '[]';
-                this.updateEditor(null);
                 this.restoreSelection(1, 1);
+                this.updateEditor();
             }
             if ('{' === getLastLetter) { // {}
                 this.editor.innerText = '{}';
-                this.updateEditor(null);
                 this.restoreSelection(1, 1);
+                this.updateEditor();
             }
+
+
             if ('="'.indexOf(getLastLetter) !== -1) { // '=' | '"'
                 this.getVariabls();
             } else {
@@ -268,7 +272,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
                 this.getVariabls();
             } else {
                 this.typeInTextarea(`"${item}"`);
-                this.updateEditor(null);
+                this.updateEditor();
                 const c = this.editor.innerText.length - 1;
                 this.restoreSelection(c, c);
             }
@@ -323,7 +327,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
         return textSegments;
     }
 
-    private updateEditor(event, setEnd = false) {
+    private updateEditor(event = null, setEnd = false) {
         const sel = window.getSelection();
         const textSegments = this.getTextSegments(this.editor);
         const textContent = textSegments.map(({text}) => text).join('');
@@ -360,6 +364,10 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
     }
 
     private restoreSelection(absoluteAnchorIndex, absoluteFocusIndex) {
+        
+        // if (!absoluteAnchorIndex || absoluteFocusIndex) {
+        //     return;
+        // }
         const sel = window.getSelection();
         const textSegments = this.getTextSegments(this.editor);
         let anchorNode = this.editor;
@@ -381,14 +389,15 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
             }
             currentIndex += text.length;
         });
-
-        sel.setBaseAndExtent(anchorNode, anchorIndex, focusNode, focusIndex);
+        try {
+            sel.setBaseAndExtent(anchorNode, anchorIndex, focusNode, focusIndex);
+        } catch (err) { }
     }
     private typeInTextarea(str) {
         const sel = window.getSelection() as Selection;
         const el = sel.anchorNode.parentNode as HTMLElement;
-        const start = sel['baseOffset'];
-        const end = sel['extentOffset'];
+        const start = sel['baseOffset'] || 0;
+        const end = sel['extentOffset'] || 0;
         const text = el.innerText;
         const before = text.substring(0, start);
         const after  = text.substring(end, text.length);

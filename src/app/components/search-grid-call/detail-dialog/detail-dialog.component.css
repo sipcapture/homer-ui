@@ -29,3 +29,12 @@
     border-radius: 4px;
     box-shadow: 0px 3px 7px rgba(0,0,0,0.4);
 }
+
+.filter-label {
+    font-size: 0.8em;
+    color: rgba(0,0,0,0.8);
+    background-color: rgba(0,0,0,0.2);
+    margin: -1rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+}

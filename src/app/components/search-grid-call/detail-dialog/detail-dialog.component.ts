@@ -15,6 +15,7 @@ export class DetailDialogComponent implements OnInit {
     @Input() mouseEventData: any;
     @Input() snapShotTimeRange: any;
     isSimplify = true;
+    isSimplifyPort = true;
     IdFromCallID;
     activeTab = 0;
     isFilterOpened = false;
@@ -29,7 +30,10 @@ export class DetailDialogComponent implements OnInit {
     exportAsPNG = false;
     isBrowserWindow = false;
     _isLoaded = false;
-    checkboxListFilter = [];
+    checkboxListFilterPayloadType = [];
+    checkboxListFilterPort = [];
+    checkboxListFilterCallId = [];
+
     tabIndexByDefault = 0;
     _messagesBuffer: any;
     get isLoaded(): boolean {
@@ -49,12 +53,32 @@ export class DetailDialogComponent implements OnInit {
             }
             this._messagesBuffer = Functions.cloneObject(this.sipDataItem.data);
             this.checkStatusTabs();
-            this.checkboxListFilter = Object.keys(this.sipDataItem.data.messages
-                .map(i => i.payloadType).reduce((a, b) => (a[b] = 1, a), {})).map((i: any) => ({
-                    payloadType: i * 1,
+
+            const filterByParam = param => Object.keys(
+                    this.sipDataItem.data.messages
+                        .map(i => i[param])
+                        .reduce((a, b) => (a[b] = 1, a), {})
+                ).map((i: any) => {
+                    const obj = {
+                        selected: true,
+                        title: (param === 'payloadType' ? Functions.methodCheck(null, 1 * i) : i)
+                    };
+                    obj[param] = i;
+                    return obj;
+                });
+
+            this.checkboxListFilterPayloadType = filterByParam('payloadType');
+            const ports = [].concat(filterByParam('dstPort'), filterByParam('srcPort'));
+            this.checkboxListFilterPort = Object.keys(ports
+                    .map(i => i.title )
+                    .reduce((a, b) => (a[b] = a[b] ? a[b] + 1 : 1, a), {})
+                ).map(i => ({
                     selected: true,
-                    title: Functions.methodCheck(null, i * 1)
+                    title: i,
+                    port: i
                 }));
+
+            this.checkboxListFilterCallId = filterByParam('sid');
         }
     }
 
@@ -62,7 +86,7 @@ export class DetailDialogComponent implements OnInit {
     @Output() close: EventEmitter<any> = new EventEmitter();
     @ViewChild('filterContainer', {static: false}) filterContainer: ElementRef;
     dataLogs: Array<any>;
-
+    
     constructor(
         private _pas: PreferenceAdvancedService
     ) { }
@@ -133,14 +157,24 @@ export class DetailDialogComponent implements OnInit {
     }
     doFilterMessages() {
         setTimeout(() => {
-            this.sipDataItem.data.messages = this._messagesBuffer.messages.filter(i => {
-                return this.checkboxListFilter.filter(j => j.payloadType === i.payloadType && j.selected).length > 0;
+            const fc = Functions.cloneObject;
+            this.sipDataItem.data.messages = fc(this._messagesBuffer).messages.filter(i => {
+                const boolPayloadType =
+                    this.checkboxListFilterPayloadType.filter(j => j.payloadType * 1 === i.payloadType * 1 && j.selected).length > 0;
+
+                const boolPort =
+                    this.checkboxListFilterPort.filter(j => i.srcPort * 1 === j.port * 1 && j.selected).length > 0 &&
+                    this.checkboxListFilterPort.filter(j => i.dstPort * 1 === j.port * 1 && j.selected).length > 0;
+
+                const boolCallId =
+                    this.checkboxListFilterCallId.filter(j => j.sid === i.sid && j.selected).length > 0;
+
+                return boolPayloadType && boolPort && boolCallId;
             });
             const selectedId = this.sipDataItem.data.messages.map(i => i.id);
-            this.sipDataItem.data.calldata = this._messagesBuffer.calldata.filter(i => selectedId.includes(i.id));
 
+            this.sipDataItem.data.calldata = fc(this._messagesBuffer).calldata.filter(i => selectedId.includes(i.id));
             this.sipDataItem = Functions.cloneObject(this.sipDataItem); // refresh data
-           // this.isFilterOpened = false;
         }, 100);
     }
 
@@ -152,8 +186,6 @@ export class DetailDialogComponent implements OnInit {
 
     @HostListener('document:click', ['$event.target'])
     public onClick(targetElement) {
-        console.log('this.isFilterOpened', this.isFilterOpened);
-
         if (this.filterContainer && this.filterContainer.nativeElement) {
             const clickedInside = this.filterContainer.nativeElement.contains(targetElement);
             if (!clickedInside && this.isFilterOpened) {

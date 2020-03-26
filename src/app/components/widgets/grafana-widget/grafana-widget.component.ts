@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, AfterViewInit } from '@angular/core';
-import { SettingIframeWidgetComponent } from './setting-iframe-widget.component';
+import { SettingIframeWidgetComponent } from './setting-grafana-widget.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DateTimeRangeService, DateTimeTick, Timestamp } from '../../../services/data-time-range.service';
 
@@ -30,8 +30,8 @@ export interface IframeConfig {
 
 @Component({
     selector: 'app-iframe-widget',
-    templateUrl: './iframe-widget.component.html',
-    styleUrls: ['./iframe-widget.component.css']
+    templateUrl: './grafana-widget.component.html',
+    styleUrls: ['./grafana-widget.component.css']
 })
 @Widget({
     title: 'Grafana',
@@ -91,7 +91,7 @@ export class IframeWidgetComponent implements IWidget {
             this.dashboardSource = this.config.dashboardSource;
             this.panelListValue = this.config.panelListValue;
             this._config.typeDataRange = this.config.typeDataRange || this._config.typeDataRange;
-            this._config.title = this.config.title || 'IFrame';
+            this._config.title = this.config.title || 'Grafana';
         }
 
         this.buildUrl();

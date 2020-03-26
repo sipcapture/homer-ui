@@ -122,6 +122,10 @@
           <span class="color-bable" [ngStyle]="{'background-color': item.lsr_color}"></span>
           lsr
         </mat-checkbox>
+        <mat-checkbox (change)="onChangeChackBox(item)" [(ngModel)]="item.packets_lost">
+          <span class="color-bable" [ngStyle]="{'background-color': item.packets_lost_color}"></span>
+          packets_lost
+        </mat-checkbox>
       </div>
     </mat-card>
   </div>

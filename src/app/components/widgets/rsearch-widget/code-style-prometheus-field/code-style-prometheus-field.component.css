@@ -3,8 +3,11 @@
     border-bottom: 1px solid rgba(0,0,0,0.54);
     outline: none;
     font-family: monospace;
+    font-size: 14px;
     background-color: rgb(253, 255, 226);
     margin-bottom: 1.25em;
+    min-height: 28px;
+    max-height: 28px;
 }
 .menu-title {
     background: rgba(0,0,0,0.1);

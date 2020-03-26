@@ -4,9 +4,9 @@ import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { SelectList } from '../influxdbchart-widget/setting-influxdbchart-widget.component';
 
 @Component({
-    selector: 'app-iframe-rsearch-widget-component',
-    templateUrl: 'setting-iframe-widget.component.html',
-    styleUrls: ['./setting-iframe-widget.component.css']
+    selector: 'app-grafana-rsearch-widget-component',
+    templateUrl: 'setting-grafana-widget.component.html',
+    styleUrls: ['./setting-grafana-widget.component.css']
 })
 
 export class SettingIframeWidgetComponent {
