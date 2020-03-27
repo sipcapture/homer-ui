@@ -2,7 +2,7 @@
 
 _(WIP)_ - **Homer-UI Stats donut chart widget developed with D3 Library**
 
-![](D3%20chart%20widget/Screenshot%202020-03-27%20at%2009.28.26.png)
+![D3 chart for Homer](https://raw.githubusercontent.com/jacovinus/homer-ui/display-d3-charts/src/app/components/widgets/display-chart-d3-widget/assets/homer-ui-chart.png)
 
 _This widget works with the Proto Search Widget for displaying results_
 
