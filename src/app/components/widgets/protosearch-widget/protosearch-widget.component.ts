@@ -180,7 +180,7 @@ export class ProtosearchWidgetComponent implements IWidget {
 
         this.dashboardEventSubscriber = this._ds.dashboardEvent.subscribe( (data: DashboardEventData) => {
             this.widgetResultList = data.currentWidgetList
-                .filter(i => i.name === 'result' || i.name === 'display-results-chart' || i.name === 'display-chart-d3')
+                .filter(i => i.name === 'result' || i.name === 'display-results-chart')
                 .map( i => ({
                     id : i.id,
                     title: i.config ? i.config.title : i.id,
