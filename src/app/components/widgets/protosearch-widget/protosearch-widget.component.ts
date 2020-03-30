@@ -510,4 +510,3 @@ export class ProtosearchWidgetComponent implements IWidget {
         }
     }
 }
-

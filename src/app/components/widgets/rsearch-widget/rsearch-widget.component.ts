@@ -39,20 +39,20 @@ export class RsearchWidgetComponent implements IWidget {
         const data = JSON.parse(localStorage.getItem(ConstValue.SEARCH_QUERY_LOKI));
         if (data) {
             this.queryText = data.text;
-            this.limit = data.limit || 100;
+            this.limit = data.limit *1 || 100;
         }
     }
     onCodeData(event) {
         this.searchQueryLoki = event;
-        this.searchQueryLoki.limit = this.limit || 100;
+        this.searchQueryLoki.limit = this.limit *1 || 100;
         this.searchQueryLoki.protocol_id = ConstValue.LOKI_PREFIX;
         this.searchQueryLoki.fields = [];
     }
     doSearchResult() {
         this.searchService.setLocalStorageQuery(this.searchQueryLoki);
         // localStorage.setItem(ConstValue.SEARCH_QUERY, JSON.stringify(this.searchQueryLoki));
-
         this.router.navigate(['search/result']);
+      
     }
     onChangeField (event: any) {
 
