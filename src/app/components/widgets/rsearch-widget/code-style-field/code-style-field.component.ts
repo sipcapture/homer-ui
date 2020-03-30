@@ -1,3 +1,4 @@
+
 import { Component, OnInit, ViewChild, AfterViewInit, Output, EventEmitter, Input } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { SearchRemoteService, PreferenceAdvancedService } from '@app/services';
