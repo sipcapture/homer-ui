@@ -12,6 +12,7 @@ export const environment = {
   production: false,
   environment: VERSION,
   apiUrl: window.location.protocol + '//' + (window.location.host) + '/api/v3'
+
 };
 
 /*

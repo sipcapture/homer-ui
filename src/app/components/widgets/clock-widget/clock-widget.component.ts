@@ -58,9 +58,9 @@ export class ClockWidgetComponent implements IWidget {
     _config: ClockConfig;
     location_value: number;
     private _interval;
-    hourHandStyle; 
-    minuteHandStyle; 
-    secondHandStyle; 
+    hourHandStyle: any;
+    minuteHandStyle: any;
+    secondHandStyle: any;
     constructor(public dialog: MatDialog) { }
 
     ngOnInit() {
@@ -70,8 +70,8 @@ export class ClockWidgetComponent implements IWidget {
             datePattern: ConstTime.DATA_PATTERN,
             location: {
                 desc: 'Europe/Amsterdam',
-                name: 'GMT+1 AMS',
-                offset: '+3'
+                name: 'Europe/Amsterdam',
+                offset: '+2'
             },
             showseconds: false,
             timePattern: ConstTime.TIME_PATTERN,
@@ -115,22 +115,23 @@ export class ClockWidgetComponent implements IWidget {
         if (this._interval) {
             clearInterval(this._interval);
         }
-        moment.tz.setDefault(this.name);
+        //moment.tz.setDefault(this.name);
 
         this._interval = setInterval(() => {
-            this.objDate =  moment().format("YYYY-MM-DD");
-            this.objTime =  moment().format("HH:mm:ss");
+            this.objDate =  moment().tz(this.name).format("YYYY-MM-DD");
+            this.objTime =  moment().tz(this.name).format("HH:mm:ss");
             this.animateAnalogClock();
             this.resizeClock();
         }, 1000);
     }
+
     animateAnalogClock() {
+
         this.hourHandStyle = { transform: `translate3d(-50%, 0, 0) rotate(${(moment().format("HH") * 30) + (moment().format("mm") * 0.5) + (moment().format("ss") * (0.5 / 60))}deg)` };
-
         this.minuteHandStyle = { transform: `translate3d(-50%, 0, 0) rotate(${(moment().format("mm") * 6) + (moment().format("ss") * 0.1)}deg)` };
-
         this.secondHandStyle = { transform: `translate3d(-50%, 0, 0) rotate(${moment().format("ss") * 6}deg)` };
     }
+
     async openDialog() {
         const dialogRef = this.dialog.open(SettingClockWidgetComponent, {
             width: '250px',

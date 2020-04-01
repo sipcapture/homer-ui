@@ -20,7 +20,7 @@ export class MessageContentComponent implements OnInit, OnDestroy {
 
     @Input('data') set data(val) {
         this._data = val;
-        this.messageDetaiTableData = this._data.messageDetaiTableData;
+        this.messageDetailTableData = this._data.messageDetailTableData;
         this.decoded = null;
 
         if (this._data.decoded ) {
@@ -48,7 +48,7 @@ export class MessageContentComponent implements OnInit, OnDestroy {
         }
     }
 
-    messageDetaiTableData: any;
+    messageDetailTableData: any;
     constructor() {
 
     }

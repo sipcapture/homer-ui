@@ -16,6 +16,10 @@ export class PreferenceUserSettingsService {
         return this.http.get<UserSettings[]>(`${this.url}`);
     }
 
+    getCategory(category: string) {
+        return this.http.get<UserSettings[]>(`${this.url}/${category}`);
+    }
+
     add(userSetting: UserSettings) {
         userSetting.guid = Functions.newGuid();
         return this.http.post(`${this.url}`, userSetting);

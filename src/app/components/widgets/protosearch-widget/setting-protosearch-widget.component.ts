@@ -1,3 +1,4 @@
+
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
 import { DialogAlarmComponent } from '../dialog-alarm/dialog-alarm.component';
@@ -62,54 +63,58 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
     constructor(
         public dialogRef: MatDialogRef<SettingProtosearchWidgetComponent>,
         public dialogAlarm: MatDialog,
-        @Inject(MAT_DIALOG_DATA) public data: any) {
-            if (!data) {
-                return;
-            }
-            try {
-                this.resultConfig.title =  data.config.config.title || '';
-                this.resultConfig.isButton = data.isButton;
-                this.resultConfig.profile = data.config.config.protocol_profile.value;
-                this.resultConfig.protocol_id = data.config.config.protocol_id;
-                this.resultConfig.countFieldColumns = data.config.countFieldColumns || 1;
-                this.mappingSortedData = Functions.cloneObject(data.mapping.data);
-                if (data.isContainer) {
-                    this.mappingSortedData = this.mappingSortedData.filter(item => {
-                        return !(item.profile === 'default' && item.hepid === 2000 && item.hep_alias === 'LOKI');
-                    });
-                }
-                for (const item of this.mappingSortedData) {
-                    if (item.profile === 'default' && item.hepid === 2000 && item.hep_alias === 'LOKI') {
-                        item.fields_mapping = this.lokiFields;
-                    }
-
-                    /* check if we have default fields inside */
-                    if (item.fields_mapping.filter(it => it.id === 'limit').length === 0) {
-                        item.fields_mapping = item.fields_mapping.concat(this.defaultFields);
-                    }
-                }
-                if (data.config.config.protocol_id) {
-                    this.proto.hep_alias = data.config.config.protocol_id.name;
-                    this.proto.profile = this.resultConfig.profile;
-                    const mapping = this.mappingSortedData
-                        .filter(i => i.hep_alias === data.config.config.protocol_id.name &&
-                            i.profile === data.config.config.protocol_profile.value)[0];
-
-                    this.proto.fields_mapping = mapping.fields_mapping.map(i => {
-                        i.selected = data.config.fields.map(j => j.field_name).indexOf(i.id) !== -1;
-                        return i;
-                    });
-                }
-
-                this.validate();
-            } catch (err) {
-                this.onNoClick();
-
-                this.dialogAlarm.open(DialogAlarmComponent);
-
-                console.warn('ERROR config broken');
-            }
+        @Inject(MAT_DIALOG_DATA) public data: any
+    ) {
+        if (!data) {
+            return;
         }
+        try {
+            this.resultConfig.title =  data.config.config.title || '';
+            this.resultConfig.isButton = data.isButton;
+            this.resultConfig.profile = data.config.config.protocol_profile.value;
+            this.resultConfig.protocol_id = data.config.config.protocol_id;
+            this.resultConfig.countFieldColumns = data.config.countFieldColumns || 1;
+            this.mappingSortedData = Functions.cloneObject(data.mapping.data);
+            if (data.isContainer) {
+                this.mappingSortedData = this.mappingSortedData.filter(item => {
+                    return !(item.profile === 'default' && item.hepid === 2000 && item.hep_alias === 'LOKI');
+                });
+            }
+            for (const item of this.mappingSortedData) {
+                if (item.profile === 'default' && item.hepid === 2000 && item.hep_alias === 'LOKI') {
+                    item.fields_mapping = this.lokiFields;
+                }
+
+                /* check if we have default fields inside */
+                if (item.fields_mapping.filter(it => it.id === 'limit').length === 0) {
+                    item.fields_mapping = item.fields_mapping.concat(this.defaultFields);
+                }
+            }
+            if (data.config.config.protocol_id) {
+                this.proto.hep_alias = data.config.config.protocol_id.name;
+                this.proto.profile = this.resultConfig.profile;
+                const mapping = this.mappingSortedData
+                    .filter(i => i.hep_alias === data.config.config.protocol_id.name &&
+                        i.profile === data.config.config.protocol_profile.value)[0];
+
+                this.proto.fields_mapping = mapping.fields_mapping.map(i => {
+                    i.selected = data.config.fields.map(j => j.field_name).includes(i.id);
+                    return i;
+                });
+            }
+            /* sorting this.proto.fields_mapping by data.config.fields */
+            const pm = Functions.cloneObject(this.proto.fields_mapping);
+            const pmActive = [];
+            data.config.fields.forEach(j => pmActive.unshift(pm.splice(pm.findIndex(i => i.id === j.field_name), 1)[0]));
+            this.proto.fields_mapping = [].concat(pmActive.reverse(), pm);
+        } catch (err) {
+            this.onNoClick();
+
+            this.dialogAlarm.open(DialogAlarmComponent);
+
+            console.warn('ERROR config broken');
+        }
+    }
 
     ngOnInit () {
         this.validate();
