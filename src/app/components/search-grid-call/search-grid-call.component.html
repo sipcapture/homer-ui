@@ -55,7 +55,7 @@
       [fields]="searchSliderFields"
       [config]="searchSliderConfig"
       [autoline]="true"
-      (dosearch)="update(true)"
+      (dosearch)="isThisSelfQuery=true;update(true);"
       #searchSlider
       ></app-protosearch-widget>
       <!-- (changeSettings)="initSearchSlider()" -->
@@ -104,7 +104,7 @@
     (click)="isSearchPanel=true">
     <mat-icon
       [matBadge]="getSearchSlider()"
-      [matBadgeHidden]="getSearchSlider() === 0" matBadgeColor="warn"
+      [matBadgeHidden]="getSearchSlider() === 0" matBadgeColor="accent"
     >search</mat-icon>
   </button>
 </div>

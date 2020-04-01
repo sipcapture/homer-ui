@@ -33,7 +33,6 @@ export class SettingClockWidgetComponent {
         this.data.showAnalog;
         this.data.fontSizeClock;
         this.data.fontSizeDate;
-        console.log(this.arrayTimeZones);
     }
     onNoClick(): void {
         this.dialogRef.close();

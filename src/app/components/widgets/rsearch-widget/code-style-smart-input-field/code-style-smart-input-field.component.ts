@@ -52,13 +52,11 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
             this.setMenuXPosition();
             this.editor.focus();
 
-            
             const labelsData: any = await this.smartService.getLabelByUrl(this.apiLink, this.editor.innerText).toPromise();
             let labels: Array<string> = [];
             if (labelsData && labelsData.data && labelsData.data.length > 0) {
                 labels = labelsData.data.map(i => i.value);
             }
-            
 
             const readyAdded = this.getObject(this.editor.innerText);
 
@@ -115,7 +113,7 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
 
     }
     onKeyUpDiv(event) {
-        if (!!{Shift:1, Control: 1, Alt: 1}[event.key]) {
+        if (!!{Shift: 1, Control: 1, Alt: 1}[event.key]) {
             return;
         }
 
@@ -124,7 +122,7 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
             event.preventDefault();
             return;
         }
-        
+
         if (event.key === '.') {
             this.updateEditor(null);
             this.getLabels();
@@ -177,12 +175,10 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
     }
     onMenuMessage (item, event: any = null) {
         if (!event || (event.keyCode === 13 || event.keyCode === 32 )) {
-            
             item = item.split('.')[1];
             this.typeInTextarea(item + '=');
             this.updateEditor(null, true);
             const c = this.editor.innerText.length - 1;
-        
         }
         if (event && event.keyCode === 27) {
             this.trigger.closeMenu();
@@ -297,13 +293,15 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
             currentIndex += text.length;
         });
 
-        sel.setBaseAndExtent(anchorNode, anchorIndex, focusNode, focusIndex);
+        try {
+            sel.setBaseAndExtent(anchorNode, anchorIndex, focusNode, focusIndex);
+        } catch (err) { }
     }
     private typeInTextarea(str) {
         const sel = window.getSelection() as Selection;
         const el = sel.anchorNode.parentNode as HTMLElement;
-        const start = sel['baseOffset'];
-        const end = sel['extentOffset'];
+        const start = sel['baseOffset'] || 1;
+        const end = sel['extentOffset'] || 1;
         const text = el.innerText;
         const before = text.substring(0, start);
         const after  = text.substring(end, text.length);

@@ -9,7 +9,7 @@
   
   <mat-tab label="Details" style="padding: 1rem;">
     <div> 
-      <table mat-table [dataSource]="messageDetaiTableData" class="mat-elevation-z8" style="width: 100%">
+      <table mat-table [dataSource]="messageDetailTableData" class="mat-elevation-z8" style="width: 100%">
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef> Name </th>
           <td mat-cell *matCellDef="let element" style="font-weight: bold"> {{element.name}} </td>

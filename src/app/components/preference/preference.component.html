@@ -1,14 +1,34 @@
 <div style="display: flex; height: calc(100vh - 45px);">
   <!-- menu -->
   <div class="nav-list">
-    <h3 class="menu-title">Admin Settings</h3>
-    <mat-nav-list>
+      <h3 class="menu-title">{{ this.isAdmin ? "Admin" : "User" }} Settings</h3>
+      <mat-nav-list>
       <a mat-list-item (click)="preferenceGo(link)" style="text-align: right; float: right;"
         *ngFor="let link of links"> {{ link | titlecase }} </a>
     </mat-nav-list>
   </div>
   <!-- body -->
-  <div style="background-color: #fff; flex: 1; padding: 2rem; overflow-y: auto;">
+
+  <div *ngIf="pageId === 'reset'" style="background-color: #fff; flex: 1; padding: 2rem; overflow-y: auto;">
+    <div style="display: flex">
+      <h2 style="padding-left: 2rem;">{{ pageId | titlecase }}</h2>
+    </div>
+    <hr>
+    <div>
+      <!-- content page -->
+      <mat-card class="example-card">
+        <mat-card-header>
+          <mat-card-title>Local storage</mat-card-title>
+          <mat-card-subtitle>Local storage setting</mat-card-subtitle>
+          <div style="flex: 1;">
+            <button mat-flat-button style="float: right;" color="primary" (click)="onClearLocalData()" [disabled]="!getLocalStorageStatus()">Clear local data</button>
+          </div>
+        </mat-card-header>
+      </mat-card>
+    </div>
+  </div>
+
+  <div *ngIf="pageId !== 'reset'" style="background-color: #fff; flex: 1; padding: 2rem; overflow-y: auto;">
     <div style="display: flex">
       <button *ngIf="isAccess[pageId]['add']" mat-flat-button color="primary" (click)="settingDialog()">
         <mat-icon>add_circle_outline</mat-icon>
@@ -36,7 +56,7 @@
             <th mat-header-cell style="text-align: right" *matHeaderCellDef> Action </th>
             <td mat-cell *matCellDef="let element" style="text-align: right"> 
               <button *ngIf="isAccess[pageId]['edit']" mat-icon-button color="primary" (click)="settingDialog(element.item)"><mat-icon>edit</mat-icon></button>
-              <button *ngIf="isAccess[pageId]['delete']" mat-icon-button color="warn" style="margin-left: 1rem;" (click)="onDelete( element.item )"><mat-icon>delete</mat-icon></button>
+              <button *ngIf="isAccess[pageId]['delete']" mat-icon-button color="accent" style="margin-left: 1rem;" (click)="onDelete( element.item )"><mat-icon>delete</mat-icon></button>
             </td>
           </ng-container>
 
@@ -47,5 +67,4 @@
       </table>
     </div>
   </div>
-
 </div>
