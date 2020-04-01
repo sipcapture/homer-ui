@@ -4,11 +4,12 @@ import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 @Component({
     selector: 'app-setting-alert-widget-component',
     templateUrl: 'setting-alert-widget.component.html',
-    styleUrls: ['./setting-alert-widget.component.css']
+    styleUrls: ['./setting-alert-widget.component.scss']
 })
 
 export class SettingAlertWidgetComponent {
 	arrayRequestType: Array<string> = ['GET', 'POST'];
+    arrayComparsionLogic: Array<string> = ['AND', 'OR'];
     comparsionTypeList: { [key: string]: string } = {
         '=': '==',
         '<': '<',
@@ -17,6 +18,8 @@ export class SettingAlertWidgetComponent {
         '>=': '>=',
         '!=': '!=',
     };
+    public show = [false,false,false];
+    public showPicker = [false, false,false];
 	constructor(
         public dialogRef: MatDialogRef<SettingAlertWidgetComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any
@@ -31,14 +34,48 @@ export class SettingAlertWidgetComponent {
         this.data.expectedList;
         this.data.comparsionType;
         this.data.alertState = false;
+        this.data.alertMessage;
+        this.data.comparsionLogic;
+    }
+    changeColorManual(color: any, type: string): void {
+
+        if(type === "success"){
+            this.data.alertSuccessColor = color;
+        }else if(type === "fail"){
+            this.data.alertFailColor = color;
+        }else if(type === "text"){
+            this.data.alertTextColor = color;
+        }   
+    }
+    addToPalette(type){
+        if(type === "success"){
+            if(this.data.alertSuccessColorArray[this.data.alertSuccessColorArray.length-1]!= this.data.alertSuccessColor){
+            this.data.alertSuccessColorArray.push(this.data.alertSuccessColor);
+            }
+        }else if(type === "fail"){
+            if(this.data.alertFailColorArray[this.data.alertFailColorArray.length-1]!= this.data.alertFailColor){
+            this.data.alertFailColorArray.push(this.data.alertFailColor);
+            }
+        }else if(type === "text"){
+            if(this.data.alertTextColorArray[this.data.alertTextColorArray.length-1]!= this.data.alertTextColor){
+            this.data.alertTextColorArray.push(this.data.alertTextColor);
+            }
+        }
     }
     addParams(){
-        console.log(this.data.keyList);
-        if (this.data.keyList[this.data.keyList.length - 1] != "" && this.data.valueList[this.data.valueList.length - 1] != "") {  
-            this.data.keyList.push("");
-            this.data.valueList.push("");
-            this.data.expectedList.push("");
-            this.data.comparsionTypeList.push("==");
+        if(this.data.requestType === "POST"){
+            if (this.data.keyList[this.data.keyList.length - 1] != "") {  
+                this.data.keyList.push("");
+                this.data.valueList.push("");
+                this.data.expectedList.push("");
+                this.data.comparsionTypeList.push("==");
+            }
+        }else{
+            if (this.data.expectedList[this.data.expectedList.length - 1] != ""){
+                this.data.keyList.push("");
+                this.data.expectedList.push("");
+                this.data.comparsionTypeList.push("==");
+            }
         }
     }
     deleteParams(i){
@@ -63,5 +100,16 @@ export class SettingAlertWidgetComponent {
     }
     trackByFn(index, item) {
         return index;  
+    }
+    toggleColors(i): void {
+        this.show[i] = !this.show[i];
+    }
+    togglePicker(i){
+        this.showPicker[i] = !this.showPicker[i];
+    }
+    changeRequestType(){
+        this.data.keyList     = [""];
+        this.data.valueList   = [""];
+        this.data.expectedList= [""];
     }
 }

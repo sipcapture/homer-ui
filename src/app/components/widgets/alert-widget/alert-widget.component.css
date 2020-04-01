@@ -1,9 +1,3 @@
-.alertTrue{
-	background-color: green;
-}
-.alertFalse{
-	background-color: red;
-}
 .alertWidget{
 	height: calc(100% - 10px);
 	width: calc(100% - 10px);
@@ -11,3 +5,4 @@
 	border-radius: .25rem;
 	padding: .75rem 1.25rem;
 }
+
