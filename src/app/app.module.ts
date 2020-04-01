@@ -172,7 +172,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         PrometheusWidgetComponent,
         ProtosearchWidgetComponent,
         ResultChartWidgetComponent,
-    
+        AlertWidgetComponent,
         ResultWidgetComponent,
         RsearchWidgetComponent,
         SettingClockWidgetComponent,
@@ -184,7 +184,8 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingResultChartWidgetComponent,
         SettingResultWidgetComponent,
         SettingsAceEditorWidgetComponent,
-    
+        SettingAlertWidgetComponent,
+        
         /** dialogs */
         DialogAdvancedComponent,
         DialogAgentsubComponent,
