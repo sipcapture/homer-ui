@@ -48,7 +48,6 @@ import {
     ResultChartWidgetComponent,
     ResultWidgetComponent,
     RsearchWidgetComponent,
-    AlertWidgetComponent,
     SettingClockWidgetComponent,
     SettingGeneralIframeWidgetComponent,
     SettingIframeWidgetComponent,
@@ -57,8 +56,9 @@ import {
     SettingProtosearchWidgetComponent,
     SettingResultChartWidgetComponent,
     SettingResultWidgetComponent,
-    SettingsAceEditorWidgetComponent,
-    SettingAlertWidgetComponent,
+    SettingsAceEditorWidgetComponent
+   
+
 } from '@app/components/widgets';
 
 import {
@@ -169,9 +169,9 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         PrometheusWidgetComponent,
         ProtosearchWidgetComponent,
         ResultChartWidgetComponent,
+    
         ResultWidgetComponent,
         RsearchWidgetComponent,
-        AlertWidgetComponent,
         SettingClockWidgetComponent,
         SettingGeneralIframeWidgetComponent,
         SettingIframeWidgetComponent,
@@ -181,7 +181,6 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingResultChartWidgetComponent,
         SettingResultWidgetComponent,
         SettingsAceEditorWidgetComponent,
-        SettingAlertWidgetComponent,
     
         /** dialogs */
         DialogAdvancedComponent,
@@ -193,7 +192,8 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         DialogHepsubComponent,
         DialogMappingComponent,
         DialogUserSettingsComponent,
-        DialogUsersComponent
+        DialogUsersComponent,
+ 
     ],
     // .concat(
         // Object.values<any>(dialogs),
@@ -253,7 +253,6 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         ResultChartWidgetComponent,
         ResultWidgetComponent,
         RsearchWidgetComponent,
-        AlertWidgetComponent,
         SettingClockWidgetComponent,
         SettingGeneralIframeWidgetComponent,
         SettingIframeWidgetComponent,
@@ -263,7 +262,6 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingResultChartWidgetComponent,
         SettingResultWidgetComponent,
         SettingsAceEditorWidgetComponent,
-        SettingAlertWidgetComponent,
 
         /** dashboard */
         AddDashboardDialogComponent,
