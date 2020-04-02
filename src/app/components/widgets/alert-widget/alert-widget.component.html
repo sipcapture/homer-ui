@@ -1,0 +1,17 @@
+<div *ngIf="isConfig" class="alertWidget" [ngStyle]="{'background-color': this._config.alertState ? this._config.alertSuccessColor : this._config.alertFailColor}">
+	<p *ngIf="this._config.alertState">{{ this._config.alertMessage }}</p>
+	<ace-editor *ngIf="displayMessage" #editor
+	  [(text)]="this.displayMessage"
+      [mode]="'json'"
+      [theme]="'eclipse'"
+	  [readOnly]="true"
+	  [autoUpdateContent]="true"
+	  [durationBeforeCallback]="1000"
+	  style="min-height: 300px; width:100%; overflow: auto;"
+	></ace-editor>
+</div>
+<div *ngIf="!isConfig">
+    <button mat-raised-button color="primary" (click)="openDialog()">
+        <mat-icon>settings</mat-icon> Widget Settings
+    </button>
+</div>

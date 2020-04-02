@@ -1,0 +1,8 @@
+.alertWidget{
+	height: calc(100% - 10px);
+	width: calc(100% - 10px);
+	margin-left: 5px;
+	border-radius: .25rem;
+	padding: .75rem 1.25rem;
+}
+
