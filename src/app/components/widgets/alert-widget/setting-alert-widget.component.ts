@@ -30,22 +30,22 @@ export class SettingAlertWidgetComponent {
         this.data.audioUrl;
         this.data.requestType;
         this.data.keyList;
-        this.data.valueList;
+        this.data.postData;
         this.data.expectedList;
         this.data.comparsionType;
         this.data.alertState = false;
         this.data.alertMessage;
         this.data.comparsionLogic;
+        this.data.alertDuration;
     }
     changeColorManual(color: any, type: string): void {
-
         if(type === "success"){
             this.data.alertSuccessColor = color;
         }else if(type === "fail"){
             this.data.alertFailColor = color;
         }else if(type === "text"){
             this.data.alertTextColor = color;
-        }   
+        }
     }
     addToPalette(type){
         if(type === "success"){
@@ -55,6 +55,7 @@ export class SettingAlertWidgetComponent {
         }else if(type === "fail"){
             if(this.data.alertFailColorArray[this.data.alertFailColorArray.length-1]!= this.data.alertFailColor){
             this.data.alertFailColorArray.push(this.data.alertFailColor);
+
             }
         }else if(type === "text"){
             if(this.data.alertTextColorArray[this.data.alertTextColorArray.length-1]!= this.data.alertTextColor){
@@ -66,7 +67,7 @@ export class SettingAlertWidgetComponent {
         if(this.data.requestType === "POST"){
             if (this.data.keyList[this.data.keyList.length - 1] != "") {  
                 this.data.keyList.push("");
-                this.data.valueList.push("");
+                this.data.postData.push("");
                 this.data.expectedList.push("");
                 this.data.comparsionTypeList.push("==");
             }
@@ -79,9 +80,9 @@ export class SettingAlertWidgetComponent {
         }
     }
     deleteParams(i){
-        if (this.data.keyList.length > 1 && this.data.valueList.length > 1 && this.data.expectedList.length > 1) {  
+        if (this.data.keyList.length > 1 && this.data.postData.length > 1 && this.data.expectedList.length > 1) {  
             this.data.keyList.splice(i,1);
-            this.data.valueList.splice(i,1);
+            this.data.postData.splice(i,1);
             this.data.expectedList.splice(i,1);
             this.data.comparsionTypeList.splice(i,1);            
         }
@@ -108,8 +109,11 @@ export class SettingAlertWidgetComponent {
         this.showPicker[i] = !this.showPicker[i];
     }
     changeRequestType(){
+        this.data.alertUrl = this.data.alertUrl.replace(/(\?|\&)([^=]+)\=([^&]+)/, "");
         this.data.keyList     = [""];
-        this.data.valueList   = [""];
+        this.data.postData   = "{}";
         this.data.expectedList= [""];
+        this.data.comparsionTypeList = ["=="];
+
     }
 }

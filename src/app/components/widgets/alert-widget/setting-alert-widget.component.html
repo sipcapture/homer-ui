@@ -11,11 +11,64 @@
   </mat-form-field>
 </div>
 <div mat-dialog-content>
+  <mat-form-field [style.margin-right.px]="10">
+    <mat-label>Request type</mat-label>
+    <mat-select [(value)]="data.requestType">
+      <mat-option *ngFor="let requestType of arrayRequestType" [value]="requestType" (click)="onChange(); changeRequestType()">
+        {{requestType}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
   <mat-form-field>
+    <mat-label>Comparsion logic</mat-label>
+    <mat-select [(value)]="data.comparsionLogic">
+      <mat-option *ngFor="let comparsionLogic of arrayComparsionLogic" [value]="comparsionLogic" (click)="onChange()">
+        {{comparsionLogic}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<div mat-dialog-content >
+  <mat-form-field  *ngIf="data.requestType==='POST'" [ngStyle]="{'width.px':370}">
+      <mat-label>Post request(JSON object)</mat-label>
+      <textarea matInput  [(ngModel)]="data.postData" ></textarea>
+    </mat-form-field>
+</div>
+<div mat-dialog-content>
+  <mat-form-field [ngStyle]="{'margin-right.px': 10, 'width.px':300}">
     <mat-label>Alert message</mat-label>
     <input matInput [(ngModel)]="data.alertMessage">
   </mat-form-field>
+  <mat-form-field [ngStyle]="{'width.px':300}">
+    <mat-label>Alert URL</mat-label>
+    <input matInput [(ngModel)]="data.alertUrl">
+  </mat-form-field>
+  <button matTooltip="Add param" mat-icon-button (click)="addParams()"><mat-icon>add</mat-icon></button>
 </div>
+
+<span>
+  <div mat-dialog-content  *ngFor="let value of data.keyList; let i = index; trackBy: trackByFn">
+    
+    <mat-form-field  *ngIf="data.requestType==='POST'" style="margin-right: 10px; width: 275px;">
+      <mat-label>Key</mat-label>
+      <input matInput [(ngModel)]="data.keyList[i]">
+    </mat-form-field>
+    <mat-form-field matTooltip="Comparsion operator" style="width: 40px; margin-right: 10px;">
+      <mat-select  [(ngModel)]="data.comparsionTypeList[i]" >
+        <mat-option  *ngFor="let type of comparsionTypeList | keyvalue" [value]="type.value">
+          {{type.key}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field style="width: 275px;">
+      <mat-label>Expected</mat-label>
+      <input matInput [(ngModel)]="data.expectedList[i]">
+    </mat-form-field>
+    
+    <button matTooltip="Delete param" mat-icon-button (click)="deleteParams(i)"><mat-icon>close</mat-icon></button>
+  </div>
+</span>
+
 <div class="color-picker">
   <div class="summary-info" (click)="toggleColors(0)">
     <div class="info">
@@ -30,7 +83,7 @@
 
   <div *ngIf="show[0]" class="opened">
     <div class="colors">
-          <color-circle width="210" [colors]=this.data.alertSuccessColorArray [color]=data.alertSuccessColor (onChangeComplete)='changeColorManual($event.color.hex, "success")'></color-circle> 
+          <color-circle width="188" circleSize="33" [colors]=this.data.alertSuccessColorArray [color]=data.alertSuccessColor (onChange)='changeColorManual($event.color.hex, "success")'></color-circle> 
     </div>
 
     <div class="hex-code">
@@ -38,7 +91,7 @@
       <div class="circle" (click)='togglePicker(0)' [ngStyle]="{'background': data.alertSuccessColor}">
         <div *ngIf="showPicker[0]" class="color-chrome">
         <div class="pickerOverlay" (click)='togglePicker(0); $event.stopPropagation()'></div>
-        <color-chrome disableAlpha    [color]=data.alertSuccessColor  (onChange)='changeColorManual($event.color.hex, "success")' (click)="$event.stopPropagation()"></color-chrome>
+        <color-chrome disableAlpha=true    [color]=data.alertSuccessColor  (onChange)='changeColorManual($event.color.hex, "success")' (click)="$event.stopPropagation()"></color-chrome>
         </div>
       </div>
       <button matTooltip="Add to palette" mat-icon-button (click)="addToPalette('success')">
@@ -61,7 +114,7 @@
 
   <div *ngIf="show[1]" class="opened">
     <div class="colors">
-          <color-circle width="210" [colors]=this.data.alertFailColorArray [color]=data.alertFailColor (onChangeComplete)='changeColorManual($event.color.hex, "fail")'></color-circle> 
+          <color-circle width="187" [colors]=this.data.alertFailColorArray [color]=data.alertFailColor (onChangeComplete)='changeColorManual($event.color.hex, "fail")'></color-circle> 
     </div>
 
     <div class="hex-code">
@@ -92,7 +145,7 @@
 
   <div *ngIf="show[2]" class="opened">
     <div class="colors">
-          <color-circle width="210" [colors]=this.data.alertTextColorArray [color]=data.alertTextColor (onChangeComplete)='changeColorManual($event.color.hex, "text")'></color-circle> 
+          <color-circle width="187" [colors]=this.data.alertTextColorArray [color]=data.alertTextColor (onChangeComplete)='changeColorManual($event.color.hex, "text")'></color-circle> 
     </div>
 
     <div class="hex-code">
@@ -111,66 +164,23 @@
     </div>
   </div>
 </div>
-<div mat-dialog-content>
-  <mat-form-field>
-    <mat-label>Request type</mat-label>
-    <mat-select [(value)]="data.requestType">
-      <mat-option *ngFor="let requestType of arrayRequestType" [value]="requestType" (click)="onChange(); changeRequestType()">
-        {{requestType}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-</div>
-<div mat-dialog-content>
-  <mat-form-field>
-    <mat-label>Comparsion logic</mat-label>
-    <mat-select [(value)]="data.comparsionLogic">
-      <mat-option *ngFor="let comparsionLogic of arrayComparsionLogic" [value]="comparsionLogic" (click)="onChange()">
-        {{comparsionLogic}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-</div>
-<div mat-dialog-content>
-  <mat-form-field>
-    <mat-label>Alert URL</mat-label>
-    <input matInput [(ngModel)]="data.alertUrl">
-  </mat-form-field>
-  <button matTooltip="Add param" mat-icon-button (click)="addParams()"><mat-icon>add</mat-icon></button>
-</div>
-<span>
-  <div mat-dialog-content  *ngFor="let key of data.keyList; let i = index; trackBy: trackByFn">
-    <mat-form-field  *ngIf="data.requestType==='POST'" >
-      <mat-label>Key</mat-label>
-      <input matInput [(ngModel)]="data.keyList[i]">
-    </mat-form-field>
-    <mat-form-field style="margin-left: 10px; margin-right: 10px;" *ngIf="data.requestType==='POST'" >
-      <mat-label>Value</mat-label>
-      <input matInput [(ngModel)]="data.valueList[i]">
-    </mat-form-field>
-    <mat-form-field matTooltip="Comparsion operator" style="width: 40px; margin-right: 10px;">
-      <mat-select  [(ngModel)]="data.comparsionTypeList[i]" >
-        <mat-option  *ngFor="let type of comparsionTypeList | keyvalue" [value]="type.value">
-          {{type.key}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Expected</mat-label>
-      <input matInput [(ngModel)]="data.expectedList[i]">
-    </mat-form-field>
-    
-    <button matTooltip="Delete param" mat-icon-button (click)="deleteParams(i)"><mat-icon>close</mat-icon></button>
-  </div>
-</span>
+
+
+<mat-checkbox [(ngModel)]="data.showResponse" labelPosition="Before" (click)="onChange()">Show Response</mat-checkbox>
+
 <div mat-dialog-content>
   <mat-form-field>
     <mat-label>Audio URL</mat-label>
     <input matInput [(ngModel)]="data.audioUrl">
   </mat-form-field>
-  <button matTooltip="Test Audio" mat-icon-button (click)="testAudio()"><mat-icon>play_circle_filled</mat-icon></button>
+  <button matTooltip="Test Audio" mat-icon-button (click)="testAudio()" color="primary"><mat-icon>play_circle_filled</mat-icon></button>
 </div>
-
+<div mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Alert popup duration (in seconds)</mat-label>
+    <input matInput [(ngModel)]="data.alertDuration">
+  </mat-form-field>
+</div>
 <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
   <button mat-raised-button (click)="onNoClick()">Cancel</button>
   <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Ok</button>

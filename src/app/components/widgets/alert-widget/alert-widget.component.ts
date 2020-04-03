@@ -16,7 +16,7 @@ export interface AlertConfig {
     audioUrl: string;
     requestType: string;
     keyList: Array<string>;
-    valueList: Array<string>;
+    postData: string;
     expectedList: Array<string>;
     comparsionTypeList: Array<string>;
     alertMessage: string;
@@ -28,6 +28,7 @@ export interface AlertConfig {
     alertFailColorArray: Array<string>;
     alertTextColorArray: Array<string>;
     comparsionLogic: string;
+    showResponse: boolean;
 }
 
 
@@ -63,29 +64,30 @@ export class AlertWidgetComponent implements IWidget {
         	alertState: false,
         	alertUrl:"",
         	audioUrl:"",
-        	requestType:"GET",
-        	keyList: ["Test1",],
-        	valueList: ["Test2",],
-        	expectedList: ["Test3",],
+        	requestType:"POST",
+        	keyList: ["",],
+        	postData: '',
+        	expectedList: ["",],
         	comparsionTypeList: ["==",],
             alertMessage: 'Your request was succesfull',
-            alertSuccessColor: "#00ff00",
+            alertSuccessColor: "#00bb00",
             alertFailColor: "#ff0000",
             alertTextColor: "#000000",
             alertDuration: 2,
-            alertSuccessColorArray: ['#00ff00'],
+            alertSuccessColorArray: ['#00bb00'],
             alertFailColorArray: ['#ff0000'],
-            alertTextColorArray: ['#000000','#ffffff'],
+            alertTextColorArray: ['#000000','#eeeeff'],
             comparsionLogic: "AND",
+            showResponse: true,
         };
 	    if (this.config) {
             this.isConfig = true;
 	        this._config.title 		= this.config.title 		|| 'Alert Widget';
 	        this._config.alertUrl 	= this.config.alertUrl 		|| "";
 	        this._config.audioUrl 	= this.config.audioUrl 		|| "";
-	        this._config.requestType= this.config.requestType 	|| "GET";
+	        this._config.requestType= this.config.requestType 	|| "POST";
 	        this._config.keyList	= this.config.keyList		|| ["Test1",];
-	        this._config.valueList	= this.config.valueList		|| ["Test2",];
+	        this._config.postData	= this.config.postData		|| '{}';
 	        this._config.expectedList = this.config.expectedList|| ["Test3",];
 	        this._config.comparsionTypeList = this.config.comparsionTypeList|| ["==",];
             this._config.alertMessage = this.config.alertMessage;
@@ -97,6 +99,7 @@ export class AlertWidgetComponent implements IWidget {
             this._config.alertFailColorArray = this.config.alertFailColorArray;
             this._config.alertTextColorArray = this.config.alertTextColorArray;
             this._config.comparsionLogic = this.config.comparsionLogic;
+            this._config.showResponse = this.config.showResponse;
 	    }else {
             this.isConfig = false;
         }
@@ -128,9 +131,7 @@ export class AlertWidgetComponent implements IWidget {
 			'Content-Type':  'application/json'
 			})
 			};
-			for(let i=0; i < this._config.keyList.length; i++){
-				body[this._config.keyList[i]] = this._config.valueList[i]; 
-			}
+			body = JSON.parse(this._config.postData);
 			this.http.post<any>(this._config.alertUrl, body, httpOptions).subscribe(data => {
 				for(let i = 0; i < this._config.keyList.length; i++){
                     if(data != null){
@@ -148,7 +149,6 @@ export class AlertWidgetComponent implements IWidget {
 
 					if(comparsionResult.every(x => x == true) && comparsionResult.length == this._config.expectedList.length){
 						this._config.alertState = true;
-						console.log(this._config.alertState + "AlertState");
 					}
 				}
 				})
@@ -191,7 +191,7 @@ export class AlertWidgetComponent implements IWidget {
                 audioUrl: this._config.audioUrl,
                 requestType: this._config.requestType,
                 keyList: this._config.keyList,
-                valueList: this._config.valueList,
+                postData: this._config.postData,
                 expectedList: this._config.expectedList,
                 comparsionTypeList: this._config.comparsionTypeList,
     		    alertSuccessColor: this._config.alertSuccessColor,
@@ -203,6 +203,7 @@ export class AlertWidgetComponent implements IWidget {
                 alertFailColorArray: this._config.alertFailColorArray,
                 alertTextColorArray: this._config.alertTextColorArray,
                 comparsionLogic: this._config.comparsionLogic,
+                showResponse: this._config.showResponse,
             }
     	});
     	const data = await dialogRef.afterClosed().toPromise();
@@ -212,7 +213,7 @@ export class AlertWidgetComponent implements IWidget {
     		this._config.audioUrl 	= data.audioUrl;
     		this._config.requestType= data.requestType;
     		this._config.keyList	= data.keyList;
-    		this._config.valueList	= data.valueList;
+    		this._config.postData	= data.postData;
     		this._config.alertState	= data.alertState;
     		this._config.expectedList = data.expectedList;
     		this._config.comparsionTypeList = data.comparsionTypeList;
@@ -225,6 +226,7 @@ export class AlertWidgetComponent implements IWidget {
             this._config.alertFailColorArray = data.alertFailColorArray;
             this._config.alertTextColorArray = data.alertTextColorArray;
             this._config.comparsionLogic = data.comparsionLogic;
+            this._config.showResponse = data.showResponse;
     		this.changeSettings.emit({
     			config:this._config,
     			id: this.id,
@@ -242,7 +244,6 @@ export class AlertWidgetComponent implements IWidget {
             alertTextColor: this._config.alertTextColor,
         }
     });
-    console.log(this._config.alertDuration + " " + this._config.alertDuration * 1000)
     }
     ngOnDestroy(){
         clearInterval(this._interval);
