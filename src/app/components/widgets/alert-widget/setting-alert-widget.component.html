@@ -83,7 +83,7 @@
 
   <div *ngIf="show[0]" class="opened">
     <div class="colors">
-          <color-circle width="188" circleSize="33" [colors]=this.data.alertSuccessColorArray [color]=data.alertSuccessColor (onChange)='changeColorManual($event.color.hex, "success")'></color-circle> 
+          <color-circle width="188" circleSize="33" [colors]="this.colorsSuccess | async" [color]=data.alertSuccessColor (onChange)='changeColorManual($event.color.hex, "success")'></color-circle> 
     </div>
 
     <div class="hex-code">
@@ -114,7 +114,7 @@
 
   <div *ngIf="show[1]" class="opened">
     <div class="colors">
-          <color-circle width="187" [colors]=this.data.alertFailColorArray [color]=data.alertFailColor (onChangeComplete)='changeColorManual($event.color.hex, "fail")'></color-circle> 
+          <color-circle width="188" circleSize="33" [colors]='this.colorsFail | async' [color]=data.alertFailColor (onChangeComplete)='changeColorManual($event.color.hex, "fail")'></color-circle> 
     </div>
 
     <div class="hex-code">
@@ -145,7 +145,7 @@
 
   <div *ngIf="show[2]" class="opened">
     <div class="colors">
-          <color-circle width="187" [colors]=this.data.alertTextColorArray [color]=data.alertTextColor (onChangeComplete)='changeColorManual($event.color.hex, "text")'></color-circle> 
+          <color-circle width="188" circleSize="33" [colors]='this.colorsText | async' [color]=data.alertTextColor (onChangeComplete)='changeColorManual($event.color.hex, "text")'></color-circle> 
     </div>
 
     <div class="hex-code">
