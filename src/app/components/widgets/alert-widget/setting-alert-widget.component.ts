@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 @Component({
@@ -20,10 +20,19 @@ export class SettingAlertWidgetComponent {
     };
     public show = [false,false,false];
     public showPicker = [false, false,false];
+    colorsSuccess: any;
+    colorsFail: any;
+    colorsText: any;
 	constructor(
         public dialogRef: MatDialogRef<SettingAlertWidgetComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any
     ) {}
+    ngOnInit(){
+        this.colorsSuccess = Promise.resolve(this.data.alertSuccessColorArray);
+        this.colorsFail = Promise.resolve(this.data.alertFailColorArray);
+        this.colorsText = Promise.resolve(this.data.alertTextColorArray);
+
+    }
     onChange(){
         this.data.title;
         this.data.alertUrl;
@@ -49,17 +58,20 @@ export class SettingAlertWidgetComponent {
     }
     addToPalette(type){
         if(type === "success"){
-            if(this.data.alertSuccessColorArray[this.data.alertSuccessColorArray.length-1]!= this.data.alertSuccessColor){
+            if(!this.data.alertSuccessColorArray.includes(this.data.alertSuccessColor) && this.data.alertSuccessColorArray.length<8){
             this.data.alertSuccessColorArray.push(this.data.alertSuccessColor);
+            this.colorsSuccess = Promise.resolve(this.data.alertSuccessColorArray);
             }
         }else if(type === "fail"){
-            if(this.data.alertFailColorArray[this.data.alertFailColorArray.length-1]!= this.data.alertFailColor){
+            if(!this.data.alertFailColorArray.includes(this.data.alertFailColor) && this.data.alertFailColorArray.length<8){
             this.data.alertFailColorArray.push(this.data.alertFailColor);
-
+            this.colorsFail = Promise.resolve(this.data.alertFailColorArray);
             }
         }else if(type === "text"){
-            if(this.data.alertTextColorArray[this.data.alertTextColorArray.length-1]!= this.data.alertTextColor){
+            if(!this.data.alertTextColorArray.includes(this.data.alertTextColor) && this.data.alertTextColorArray.length<8){
             this.data.alertTextColorArray.push(this.data.alertTextColor);
+            this.colorsText = Promise.resolve(this.data.alertTextColorArray);
+
             }
         }
     }
@@ -67,7 +79,6 @@ export class SettingAlertWidgetComponent {
         if(this.data.requestType === "POST"){
             if (this.data.keyList[this.data.keyList.length - 1] != "") {  
                 this.data.keyList.push("");
-                this.data.postData.push("");
                 this.data.expectedList.push("");
                 this.data.comparsionTypeList.push("==");
             }
@@ -80,9 +91,8 @@ export class SettingAlertWidgetComponent {
         }
     }
     deleteParams(i){
-        if (this.data.keyList.length > 1 && this.data.postData.length > 1 && this.data.expectedList.length > 1) {  
+        if (this.data.keyList.length > 1 && this.data.expectedList.length > 1) {  
             this.data.keyList.splice(i,1);
-            this.data.postData.splice(i,1);
             this.data.expectedList.splice(i,1);
             this.data.comparsionTypeList.splice(i,1);            
         }
