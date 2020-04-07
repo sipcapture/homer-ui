@@ -184,7 +184,7 @@ export class AlertWidgetComponent implements IWidget {
 	}
     async openDialog(){
     	const dialogRef = this.dialog.open(SettingAlertWidgetComponent, {
-            width: '700px',
+            width: '550px',
             data: {
                 title: this._config.title,
                 alertUrl: this._config.alertUrl,

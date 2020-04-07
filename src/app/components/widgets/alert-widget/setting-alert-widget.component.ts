@@ -1,4 +1,4 @@
-import { Component, Inject, ngOnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 @Component({
@@ -58,17 +58,17 @@ export class SettingAlertWidgetComponent {
     }
     addToPalette(type){
         if(type === "success"){
-            if(!this.data.alertSuccessColorArray.includes(this.data.alertSuccessColor)){
+            if(!this.data.alertSuccessColorArray.includes(this.data.alertSuccessColor) && this.data.alertSuccessColorArray.length<8){
             this.data.alertSuccessColorArray.push(this.data.alertSuccessColor);
             this.colorsSuccess = Promise.resolve(this.data.alertSuccessColorArray);
             }
         }else if(type === "fail"){
-            if(!this.data.alertFailColorArray.includes(this.data.alertFailColor)){
+            if(!this.data.alertFailColorArray.includes(this.data.alertFailColor) && this.data.alertFailColorArray.length<8){
             this.data.alertFailColorArray.push(this.data.alertFailColor);
             this.colorsFail = Promise.resolve(this.data.alertFailColorArray);
             }
         }else if(type === "text"){
-            if(!this.data.alertTextColorArray.includes(this.data.alertTextColor)){
+            if(!this.data.alertTextColorArray.includes(this.data.alertTextColor) && this.data.alertTextColorArray.length<8){
             this.data.alertTextColorArray.push(this.data.alertTextColor);
             this.colorsText = Promise.resolve(this.data.alertTextColorArray);
 
