@@ -1,0 +1,51 @@
+<div class="container" (complete)="onFileComplete($event)">
+  
+<div class="files-container">
+    <button mat-button color="warn" (click)="onClick()" class="upload-button">
+        <mat-icon>file_upload</mat-icon>
+        {{text}}
+    </button>
+    <button *ngIf="etherframes.length > 0" mat-button color="danger" (click)="sendHep()" class="upload-button">
+        <mat-icon>file_upload</mat-icon>
+        {{send_text}}
+    </button>
+   
+    <br/>
+    <ul class="file-uploads">
+        <p *ngIf="files.length > 0" class="files-title">{{files.length}} Files uploaded</p>
+        <li *ngFor="let file of files" >
+              <mat-progress-bar mode="determinate" [value]="file.progress"></mat-progress-bar>
+              <div class="file-options" id="file-label">
+                
+                    <p style="color: grey; letter-spacing:1px; font-size:10px;">{{file.data.name}} </p>
+                    <div>
+                        <a title="Retry" (click)="retryFile(file)" *ngIf="file.canRetry">
+                            <mat-icon>refresh</mat-icon></a>
+                            <a title="Cancel" (click)="cancelFile(file)" *ngIf="file.canCancel">
+                            <mat-icon>cancel</mat-icon></a>
+                    </div>
+              </div>
+              
+        </li>
+    </ul>
+    <input type="file" id="fileUpload" name="fileUpload" multiple="multiple" 
+    
+    accept="{{accept}}" style="display:none;"/>
+</div>
+<div *ngIf="filesLog.files.length > 0" class="log">
+    <h2>Files log</h2>
+    <div class="log-data">
+        <p>Max file size: {{filesLog.maxfileSize}}</p> <p>Frames: {{filesLog.frames}}</p> <p *ngIf="filesLog.hosts.length > 0"> -- Hosts: {{filesLog.hosts}}</p>
+    <p>Total: {{filesLog.total}} success: {{filesLog.success}} error: {{filesLog.error}}</p>
+    </div>
+    <div class="log-messages" *ngFor="let file of filesLog.files">
+      <div class="file-name">
+        <p><strong>{{file.filename}}</strong></p> 
+        <strong *ngIf="file.message === 'error'" class="col-warning">{{file.message}}</strong>
+        <strong *ngIf="file.message === 'success'" class="col-success">{{file.message}}</strong>
+      </div>  
+        <p><strong>File size:</strong> {{file.fileSize}}  
+        </div>
+  
+    </div>
+</div>

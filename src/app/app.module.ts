@@ -45,6 +45,7 @@ import {
     InfluxdbchartWidgetComponent,
     PrometheusWidgetComponent,
     ProtosearchWidgetComponent,
+    PcapImportWidgetComponent,
     ResultChartWidgetComponent,
     ResultWidgetComponent,
     RsearchWidgetComponent,
@@ -54,6 +55,7 @@ import {
     SettingInfluxdbchartWidgetComponent,
     SettingPrometheusWidgetComponent,
     SettingProtosearchWidgetComponent,
+    SettingPcapImportWidgetComponent,
     SettingResultChartWidgetComponent,
     SettingResultWidgetComponent,
     SettingsAceEditorWidgetComponent
@@ -168,6 +170,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         InfluxdbchartWidgetComponent,
         PrometheusWidgetComponent,
         ProtosearchWidgetComponent,
+        PcapImportWidgetComponent,
         ResultChartWidgetComponent,
     
         ResultWidgetComponent,
@@ -178,6 +181,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingInfluxdbchartWidgetComponent,
         SettingPrometheusWidgetComponent,
         SettingProtosearchWidgetComponent,
+        SettingPcapImportWidgetComponent,
         SettingResultChartWidgetComponent,
         SettingResultWidgetComponent,
         SettingsAceEditorWidgetComponent,

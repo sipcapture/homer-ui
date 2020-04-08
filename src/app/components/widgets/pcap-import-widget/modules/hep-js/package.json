@@ -1,0 +1,78 @@
+{
+  "_args": [
+    [
+      "hep-js@1.0.20",
+      "/home/jacovinus/homer-ui"
+    ]
+  ],
+  "_from": "hep-js@1.0.20",
+  "_id": "hep-js@1.0.20",
+  "_inBundle": false,
+  "_integrity": "sha512-l7+rCGz9FiJUKm0u9Z6PUJdLsqPf/+Y8W2H83o36vUzOF2ok3Z8jZJW6hhwdi9uC+RTNt2tgbCSUOnQ/Ci3gCA==",
+  "_location": "/hep-js",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "hep-js@1.0.20",
+    "name": "hep-js",
+    "escapedName": "hep-js",
+    "rawSpec": "1.0.20",
+    "saveSpec": null,
+    "fetchSpec": "1.0.20"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/hep-js/-/hep-js-1.0.20.tgz",
+  "_spec": "1.0.20",
+  "_where": "/home/jacovinus/homer-ui",
+  "author": {
+    "name": "Lorenzo Mangani",
+    "email": "lorenzo.mangani@gmail.com",
+    "url": "http://sipcapture.org/"
+  },
+  "bugs": {
+    "url": "https://github.com/sipcapture/hep-js/issues"
+  },
+  "dependencies": {
+    "binary-parser": "^1.3.2",
+    "mixin-deep": "^2.0.0"
+  },
+  "description": "HEP3 Library for Node.JS",
+  "devDependencies": {
+    "chai": "~3.0.0",
+    "mocha": "~2.2.5"
+  },
+  "homepage": "https://github.com/sipcapture/hep-js#readme",
+  "keywords": [
+    "hep",
+    "hep3",
+    "encapsulation",
+    "encoder",
+    "decoder",
+    "packet",
+    "pcap",
+    "homer",
+    "sipcapture",
+    "pcapture",
+    "sip",
+    "voip",
+    "logs",
+    "cdr"
+  ],
+  "license": "GPLv2",
+  "main": "index.js",
+  "name": "hep-js",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/sipcapture/hep-js.git"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "version": "1.0.20",
+  "__processed_by_ivy_ngcc__": {
+    "main": "8.2.14"
+  }
+}
