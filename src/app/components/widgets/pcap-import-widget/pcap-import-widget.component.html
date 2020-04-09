@@ -18,12 +18,7 @@
               <div class="file-options" id="file-label">
                 
                     <p style="color: grey; letter-spacing:1px; font-size:10px;">{{file.data.name}} </p>
-                    <div>
-                        <a title="Retry" (click)="retryFile(file)" *ngIf="file.canRetry">
-                            <mat-icon>refresh</mat-icon></a>
-                            <a title="Cancel" (click)="cancelFile(file)" *ngIf="file.canCancel">
-                            <mat-icon>cancel</mat-icon></a>
-                    </div>
+              
               </div>
               
         </li>

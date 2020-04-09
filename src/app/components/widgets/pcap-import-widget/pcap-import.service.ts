@@ -8,8 +8,8 @@ import { Buffer } from './modules/buffer';
 })
 export class PcapImportService {
 
-// @TODO add ws endpoint to settings
-ws = 'ws://my-websocket/ws'
+
+ws = 'ws://my-web-socket/ws'
 
 connection 
 

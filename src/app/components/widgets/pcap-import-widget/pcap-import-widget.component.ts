@@ -8,19 +8,7 @@ import { DashboardService  } from '@app/services';
 import { Subscription, of} from 'rxjs';
 import { ConstValue } from '@app/models';
 import { Functions } from '@app/helpers/functions';
-import { HttpClient, HttpResponse, HttpRequest, HttpEventType, HttpErrorResponse } from '@angular/common/http';
-import { catchError, last, map, tap } from 'rxjs/operators';
 import { PcapImportService } from './pcap-import.service';
-
-export class FileUploadModel {
-    data: File;
-    state: string;
-    inProgress: boolean;
-    progress: number;
-    canRetry: boolean;
-    canCancel: boolean;
-    sub?: Subscription;
-}
 
 @Component({
     selector: 'app-pcap-import',
@@ -49,18 +37,10 @@ export class FileUploadModel {
     @Input() id: string;
     @Input() config: any;
     @Output() changeSettings = new EventEmitter < any > ();
-      /** Link text */
-    @Input() text = 'Import PCAP files';
-    /** send HEP to server text */
+    @Input() text = 'Import PCAP file';
     @Input() send_text = 'Send HEP to server';
-      /** Name used in form which will be sent in HTTP request. */
     @Input() param = 'file';
-      /** Target URL for file uploading. */
-    @Input() target = 'https://file.io';  // WONT BE USED
-      /** File extension that accepted, same as 'accept' of <input type="file" />. 
-          By the default, it's set to 'image/*'. */
     @Input() accept = 'pcap/*';
-      /** Allow you to add handler after its completion. Bubble up response text from remote. */
     @Output() complete = new EventEmitter<string>();
     
     maxfileSize = 50000;
@@ -80,9 +60,6 @@ export class FileUploadModel {
     etherframes = [];
     reader: FileReader = new FileReader()
   
-   
-    /*end props of handleFileSelect */
-
 
     /* logging props */
     filesLog = {
@@ -101,9 +78,7 @@ export class FileUploadModel {
       fileSize: 0,
     }
 
-
-
-    private files = [] //Array<FileUploadModel> = [];
+    private files = [] 
 
     title: any;
     subsDashboardEvent: Subscription;
@@ -119,10 +94,8 @@ export class FileUploadModel {
     constructor(
         public dialog: MatDialog,
         private _dashboardService : DashboardService,
-        private _http: HttpClient,
         public _pcap : PcapImportService
     
-       
         ) { }
 
         ngOnInit() {
@@ -131,7 +104,6 @@ export class FileUploadModel {
             name: 'pcap-import',
            config: this.config
           }
-      
       
         if (!this.config) {
             this.title = this.config.title || 'PCAP IMPORT';
@@ -155,8 +127,7 @@ export class FileUploadModel {
 
 /** PCAP to hep Upload methods */
 // Ref: https://github.com/lmangani/pcap2hep
-// process packet must be part of the api because of js native methods
-// @ TODO: import the proxy handlers as services
+
 /** Error handlers */
 errorHandler( evt ):any {
   switch ( evt.target.error )
@@ -178,6 +149,7 @@ fileAbortHandler (e):any {
   e.preventDefault();
   alert( 'File read cancelled' );
 }
+
 toHex( d )
 {
   return ( "0" + ( Number( d ).toString( 16 ) ) ).slice( -2 ).toUpperCase()
@@ -199,7 +171,6 @@ handleFileSelect(e) {
   let  blob = this.file.slice( this.fileposition, this.fileposition + 24 );
   this.fileposition += 24;
   this.reader.readAsArrayBuffer( blob );
-// TODO: next => add this to the onClick.fileUpload.onchange
 }
 
 fileProcessor(e){
@@ -210,7 +181,6 @@ fileProcessor(e){
       var uint32array = new Uint32Array( data );
 
       /* Magic number */
-      //  TODO: try to switch this messages on log */
 
       if ( 2712847316 == uint32array[ 0 ] )
       {
@@ -234,14 +204,14 @@ fileProcessor(e){
         /* Swapped byte order nano second timing */
         console.log( "Swapped byte order nano second timing" );
       }
-      /* http://www.tcpdump.org/linktypes.html */
+  
       if ( 1 != uint32array[ 5 ] )
       {
         console.log( "Link layer type not supported" );
         return;
       }
       console.log( "LINKTYPE_ETHERNET" );
-      /* Read our first packet header */
+  
       var blob = this.file.slice( this.fileposition, this.fileposition + 16 );
       this.fileposition += 16;
       this.reader.readAsArrayBuffer( blob );
@@ -276,13 +246,11 @@ fileProcessor(e){
         this.ts_firstether = etherpacket.ts_sec;
       }
       etherpacket.ts_sec_offset = ( this.ts_sec + ( this.ts_usec / 1000000 ) ) - this.ts_firstether;
-      //etherpacket.ts_usec = ts_usec;
       etherpacket.src = "" + this.toHex( uint8array[ 0 ] ) + ":" + this.toHex( uint8array[ 1 ] ) + ":" + this.toHex( uint8array[ 2 ] ) + ":" + this.toHex( uint8array[ 3 ] ) + ":" + this.toHex( uint8array[ 4 ] ) + ":" + this.toHex( uint8array[ 5 ] );
       etherpacket.dst = "" + this.toHex( uint8array[ 6 ] ) + ":" + this.toHex( uint8array[ 7 ] ) + ":" + this.toHex( uint8array[ 8 ] ) + ":" + this.toHex( uint8array[ 9 ] ) + ":" + this.toHex( uint8array[ 10 ] ) + ":" + this.toHex( uint8array[ 11 ] );
       etherpacket.ethertype = "" + this.toHex( uint8array[ 12 ] ) + this.toHex( uint8array[ 13 ] );
       if ( parseInt( etherpacket.ethertype, 16 ) > 1536 )
       {
-        // Ref: https://en.wikipedia.org/wiki/EtherType
         switch ( etherpacket.ethertype )
         {
         case "0800":
@@ -373,12 +341,11 @@ fileProcessor(e){
        
         // We probbaly won't need this as is raw length.
       }
-      // here can return the etherframes to push
+
       this.etherframes.push( etherpacket );
       if ( this.etherframes.length > 100 )
       {
-        // send the parsed data to view
-        //drawGraph( etherframes, ipv4hosts );
+
         this.sendBufferData(this.etherframes, this.ipv4hosts);
         return;
       }
@@ -386,8 +353,7 @@ fileProcessor(e){
       this.fileposition += 16;
       if ( this.fileposition > this.file.size )
       {
-        // send the parsed data to view send the frames and the hosts count if it's less than 100
-      //  drawGraph( etherframes, ipv4hosts );
+  
       this.sendBufferData(this.etherframes, this.ipv4hosts);
         return;
       }
@@ -397,7 +363,7 @@ fileProcessor(e){
     }
   }
 
-// drawGraph function 
+
 sendBufferData(frames, hosts){
   this.filesLog.frames = frames.length;
   if(frames.length > 99){
@@ -409,21 +375,17 @@ this.filesLog.hosts.push(hosts);
 sendHep(){
   this._pcap.processFrames(this.etherframes);
 }
-/**   end pcap methods */ 
 
 onClick() {
     const fileUpload = document.getElementById('fileUpload') as HTMLInputElement;
     fileUpload.onchange = (e) => {
-  
     this.handleFileSelect(e)
-
       this.filesLog.maxfileSize = this.maxfileSize;
           for (let index = 0; index < fileUpload.files.length; index++) {
                 const file = fileUpload.files[index];
                 const log = {...this.fileLog}
                 log.filename = file.name;
                 log.fileSize = file.size;
-                // @ TODO: integrate error / log handlers
                 if(this.maxfileSize === 0 || file.size <= this.maxfileSize)
                 {
                   log.message = 'success';
@@ -442,73 +404,9 @@ onClick() {
           }
 
           console.log(this.filesLog);
-          
-          //this.uploadFiles();
+
     };
     fileUpload.click();
-}
-
-cancelFile(file: FileUploadModel) {
-    file.sub.unsubscribe();
-    this.removeFileFromArray(file);
-}
-
-retryFile(file: FileUploadModel) {
-    this.uploadFile(file);
-    file.canRetry = false;
-}
-
-// @TODO: integrate this with the proxy service method
-private uploadFile(file: FileUploadModel) {
-    const fd = new FormData();
-    fd.append(this.param, file.data);
-
-    const req = new HttpRequest('POST', this.target, fd, {
-          reportProgress: true
-    });
-
-    file.inProgress = true;
-    file.sub = this._http.request(req).pipe(
-          map(event => {
-                switch (event.type) {
-                      case HttpEventType.UploadProgress:
-                            file.progress = Math.round(event.loaded * 100 / event.total);
-                            break;
-                      case HttpEventType.Response:
-                            return event;
-                }
-          }),
-          tap(message => { }),
-          last(),
-          catchError((error: HttpErrorResponse) => {
-                file.inProgress = false;
-                file.canRetry = true;
-                return of(`${file.data.name} upload failed.`);
-          })
-    ).subscribe(
-          (event: any) => {
-                if (typeof (event) === 'object') {
-                      this.removeFileFromArray(file);
-                      this.complete.emit(event.body);
-                }
-          }
-    );
-}
-
-private uploadFiles() {
-    const fileUpload = document.getElementById('fileUpload') as HTMLInputElement;
-    fileUpload.value = '';
-
-    this.files.forEach(file => {
-          this.uploadFile(file);
-    });
-}
-
-private removeFileFromArray(file: FileUploadModel) {
-    const index = this.files.indexOf(file);
-    if (index > -1) {
-          this.files.splice(index, 1);
-    }
 }
 
 /** end upload methods */
@@ -538,11 +436,6 @@ private removeFileFromArray(file: FileUploadModel) {
     }
     this.title = result.title;
     this.saveConfig();
-  }
-
-  onFileComplete(data: any) {
-    console.log(data); // We just print out data bubbled up from event emitter.
-    // here goes the call to proxy
   }
 
   ngOnDestroy() {
