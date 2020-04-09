@@ -26,7 +26,7 @@
 var debug = false;
 
 // Module import
-var Parser = require("binary-parser").Parser;
+var Parser = require("../binary-parser").Parser;
 var mixinDeep = require("mixin-deep");
 
 export const hep = {

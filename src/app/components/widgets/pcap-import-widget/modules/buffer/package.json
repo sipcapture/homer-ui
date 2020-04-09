@@ -31,7 +31,7 @@
   "bugs": {
     "url": "https://github.com/feross/buffer/issues"
   },
-  "bundleDependencies": false,
+  "bundleDependencies": [],
   "contributors": [
     {
       "name": "Romain Beauxis",

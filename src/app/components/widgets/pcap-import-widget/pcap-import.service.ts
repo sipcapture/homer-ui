@@ -9,7 +9,7 @@ import { Buffer } from './modules/buffer';
 export class PcapImportService {
 
 // @TODO add ws endpoint to settings
-ws = 'ws://my-socket-service:8060'
+ws = 'ws://my-websocket/ws'
 
 connection 
 
@@ -101,7 +101,7 @@ hep_proto:any = {
         this.connection.onopen =  () => {
             this.connection.binaryType = 'Buffer';
             frames.forEach(frame => this.processPacket(frame))
-            this.connection.close()
+          this.connection.close()
         }
        
       }
