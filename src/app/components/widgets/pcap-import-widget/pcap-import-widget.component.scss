@@ -9,28 +9,26 @@ li {
       list-style: none;
 }
 .upload-button{
-      padding:5px 10px;
-      border: 1px solid #00747e;
+      padding:2px 5px;
+    
       background: #b7ecf1;
       text-transform: uppercase;
       font-size:10px;
       color:#00747e;
       width:100%;
-      border-radius:10px;
+      border-radius:3px;
       
 }
 .send {
       background:#6296f9;
       color:white;
-      border-radius:0px 10px 10px 0px;
-      text-shadow:1px 1px 4px #000000;
+      border-radius:0px 3px 3px 0px;
       border-left:0px;
-      box-shadow:inset 4px 0px 8px #00747e;
-
+      
 }
 .lefthalf{
       opacity:.5;
-      border-radius: 10px 0px 0px 10px;
+      border-radius: 3px 0px 0px 3px;
       border-right:0px;
       filter: staturation(.5);
       mat-icon{
@@ -140,3 +138,20 @@ li {
       justify-content: space-between;
 }
 .log-data p {font-size: 10px;}
+
+.endpoint{
+      padding-top:20px;
+      font-size:12px;
+      line-height:1em;
+      letter-spacing:1px;
+      background:#fafafa;
+      justify-items:center;
+      display:grid;
+      grid-template-columns:2fr 3fr;
+    
+    
+}
+.endpoint code{
+      cursor:pointer;
+      justify-self: center;
+}

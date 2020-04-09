@@ -9,10 +9,8 @@ import { Buffer } from './modules/buffer';
 export class PcapImportService {
 
 
-ws = 'ws://my-web-socket/ws'
 
 connection 
-
 decoded = {
     ipv4 : {
         tcp:{
@@ -42,6 +40,10 @@ hep_proto:any = {
 
     constructor(){}
 
+    getWs = (w:string='') => {
+       return w;
+    }
+ 
     sendHep3(payload, rcinfo){
             if(rcinfo ) {
                 try {
@@ -96,8 +98,9 @@ hep_proto:any = {
             this.sendHep3(payload, this.hep_proto);
         }
     }
-    processFrames(frames){
-        this.connection =  new WebSocket(this.ws);
+    processFrames(frames,w){
+        let ws = this.getWs(w);
+        this.connection =  new WebSocket(ws);
         this.connection.onopen =  () => {
             this.connection.binaryType = 'Buffer';
             frames.forEach(frame => this.processPacket(frame))

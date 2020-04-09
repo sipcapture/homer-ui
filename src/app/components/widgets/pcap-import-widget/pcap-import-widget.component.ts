@@ -36,12 +36,13 @@ import { PcapImportService } from './pcap-import.service';
  
     @Input() id: string;
     @Input() config: any;
+    
     @Output() changeSettings = new EventEmitter < any > ();
     @Input() text = 'Import PCAP file';
     @Input() send_text = 'Send HEP to server';
     @Input() param = 'file';
     @Input() accept = 'pcap/*';
-    @Output() complete = new EventEmitter<string>();
+  
     
     maxfileSize = 50000; // will not be used
     file;
@@ -55,7 +56,7 @@ import { PcapImportService } from './pcap-import.service';
     etherpacket:any = {};
     etherframes = [];
     reader: FileReader = new FileReader()
-  
+    ws = 'ws://localhost:9080'
 
     /* logging props */
     filesLog = {
@@ -92,17 +93,21 @@ import { PcapImportService } from './pcap-import.service';
         private _dashboardService : DashboardService,
         public _pcap : PcapImportService
     
-        ) { }
+        ) {
+        
+         }
 
         ngOnInit() {
           WidgetArrayInstance[this.id] = this as IWidget; 
           this.config = {
             name: 'pcap-import',
-           config: this.config
+            config: this.config,
+            ws: this.ws
           }
       
         if (!this.config) {
             this.title = this.config.title || 'PCAP IMPORT';
+            this.ws = this.config.ws
          
         }
         this.subsDashboardEvent = this._dashboardService.dashboardEvent.subscribe(this.onDashboardEvent.bind(this));
@@ -363,7 +368,8 @@ this.filesLog.hosts.push(hosts);
 }
 
 sendHep(){
-  this._pcap.processFrames(this.etherframes);
+  
+  this._pcap.processFrames(this.etherframes,this.ws);
 }
 
 onClick() {
@@ -405,12 +411,14 @@ onClick() {
   private saveConfig() {
     const _f = Functions.cloneObject;
     this.config = {
-      title: this.title || this.id
+      title: this.title || this.id,
+      ws: this.ws
     };
   
     this.changeSettings.emit({
       config: _f(this.config),
-      id: this.id
+      id: this.id,
+      ws: this.ws
     });
   }
 
@@ -418,14 +426,16 @@ onClick() {
     const dialogRef = this.dialog.open(SettingPcapImportWidgetComponent, {
       data: {
         title: this.title || this.id,
-        maxfileSize: this.maxfileSize * 1|| 0
+        ws: this.ws
       }
     });
     const result = await dialogRef.afterClosed().toPromise();
     if (!result) {
       return;
     }
+
     this.title = result.title;
+    this.ws = result.ws
     this.saveConfig();
   }
 

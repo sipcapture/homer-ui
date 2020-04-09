@@ -7,13 +7,17 @@
             {{text}}
         </button>
         <button *ngIf="etherframes.length > 0" mat-button color="danger" (click)="sendHep()" class="upload-button send">
-            {{send_text}} <mat-icon>call_made</mat-icon>
+            {{send_text}} <mat-icon>keyboard_arrow_right</mat-icon>
            
         </button>
     </div>
+    <div class="endpoint">
+        <p>Hep Websocket url: </p>
+       <code (click)="openDialog()">{{ws}}</code> 
+    </div>
     <br/>
     <ul class="file-uploads">
-        <p *ngIf="files.length > 0" class="files-title">{{files.length}} Files uploaded</p>
+        <p *ngIf="files.length > 0" class="files-title">{{files.length}} Uploaded</p>
         <li *ngFor="let file of files" >
               <mat-progress-bar mode="determinate" [value]="file.progress"></mat-progress-bar>
               <div class="file-options" id="file-label">
@@ -29,9 +33,9 @@
     accept="{{accept}}" style="display:none;"/>
 </div>
 <div *ngIf="filesLog.files.length > 0" class="log">
-    <h2>Files log</h2>
+    <h2>File log</h2>
     <div class="log-data">
-        <p>Max file size: {{filesLog.maxfileSize}}</p> <p>Frames: {{filesLog.frames}}</p> <p *ngIf="filesLog.hosts.length > 0"> -- Hosts: {{filesLog.hosts}}</p>
+    <p>Frames: {{filesLog.frames}}</p> <p *ngIf="filesLog.hosts.length > 0"> -- Hosts: {{filesLog.hosts}}</p>
     <p>Total: {{filesLog.total}} success: {{filesLog.success}} error: {{filesLog.error}}</p>
     </div>
     <div class="log-messages" *ngFor="let file of filesLog.files">
@@ -42,6 +46,5 @@
       </div>  
         <p><strong>File size:</strong> {{file.fileSize}}  
         </div>
-  
     </div>
 </div>
