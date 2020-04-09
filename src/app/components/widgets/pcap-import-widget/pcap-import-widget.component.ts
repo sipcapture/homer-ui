@@ -29,7 +29,7 @@ import { PcapImportService } from './pcap-import.service';
     description: 'Import PCAP files into HOMER',
     category: 'Import',
     indexName: 'pcap-import',
-    className: 'PcapImportWidgetComponent' // <-- the same name as class name
+    className: 'PcapImportWidgetComponent' 
   })
   
   export class PcapImportWidgetComponent implements IWidget {
@@ -43,11 +43,7 @@ import { PcapImportService } from './pcap-import.service';
     @Input() accept = 'pcap/*';
     @Output() complete = new EventEmitter<string>();
     
-    maxfileSize = 50000;
-
-    vizHosts = '' //etherframes.length
-    vizFrames = '' // ipv4hosts.length
-    /* props of handleFileSelect */
+    maxfileSize = 50000; // will not be used
     file;
     state = 0;
     fileposition = 0;
@@ -159,13 +155,7 @@ toHex( d )
 
 handleFileSelect(e) {
 
-// FileList object
-  let files = e.target['files']; // FileList object
- //let reader: FileReader = new FileReader()
-//this.reader.onerror = this.errorHandler(e);
-  // TODO: map onabort event stoping the file list
-  //this.reader.onabort = this.fileAbortHandler(e);
-  // *fileProcessor method
+  let files = e.target['files']; 
   this.reader.onload = (e) => this.fileProcessor(e);
   this.file = files[ 0 ];
   let  blob = this.file.slice( this.fileposition, this.fileposition + 24 );
@@ -407,6 +397,7 @@ onClick() {
 
     };
     fileUpload.click();
+   
 }
 
 /** end upload methods */

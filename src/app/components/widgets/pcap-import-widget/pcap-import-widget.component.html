@@ -1,15 +1,16 @@
 <div class="container" (complete)="onFileComplete($event)">
   
 <div class="files-container">
-    <button mat-button color="warn" (click)="onClick()" class="upload-button">
-        <mat-icon>file_upload</mat-icon>
-        {{text}}
-    </button>
-    <button *ngIf="etherframes.length > 0" mat-button color="danger" (click)="sendHep()" class="upload-button">
-        <mat-icon>file_upload</mat-icon>
-        {{send_text}}
-    </button>
-   
+    <div class="upload-buttons">
+        <button mat-button color="warn" (click)="onClick()" class="upload-button" [ngClass]="{lefthalf:etherframes.length > 0 }">
+            <mat-icon>file_upload</mat-icon>
+            {{text}}
+        </button>
+        <button *ngIf="etherframes.length > 0" mat-button color="danger" (click)="sendHep()" class="upload-button send">
+            {{send_text}} <mat-icon>call_made</mat-icon>
+           
+        </button>
+    </div>
     <br/>
     <ul class="file-uploads">
         <p *ngIf="files.length > 0" class="files-title">{{files.length}} Files uploaded</p>
