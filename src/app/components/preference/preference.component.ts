@@ -142,7 +142,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 users: ['Firstname', 'Lastname', 'Username', 'Email', 'tools'],
                 'user settings': ['Username', /*'Partid',*/ 'Category', 'Param', 'Data', 'tools'],
                 alias: ['Alias', 'IP Address', 'Port', 'Mask', 'CaptureID', 'Status', 'tools'],
-                advanced: ['Partid', 'Category', 'Param', 'Data', 'tools'],
+                advanced: [/*'Partid',*/ 'Category', 'Param', 'Data', 'tools'],
                 mapping: [/*'Partid', */'Profile', 'HEP alias', 'HEP ID',/* 'Retention',*/ 'tools'],
                 hepsub: ['Profile', 'HEP alias', 'HEP ID', 'Version', 'HepSub', 'tools'],
                 'auth token': ['GUID', 'Name', 'Create Date', 'Expire Date', 'Active', 'tools'],
