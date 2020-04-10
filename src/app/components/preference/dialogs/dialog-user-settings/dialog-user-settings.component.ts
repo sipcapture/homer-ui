@@ -17,7 +17,7 @@ export class DialogUserSettingsComponent {
                 category: '',
                 data: {},
                 param: '',
-                partid: '',
+                partid: 10,
                 username: ''
             };
         }

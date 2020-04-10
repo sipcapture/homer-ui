@@ -21,7 +21,7 @@ export class DialogMappingComponent {
                 hepid: 10,
                 profile: '',
                 partition_step: 10,
-                retention: '',
+                retention: 1,
                 correlation_mapping: {},
                 fields_mapping: {}
             };
