@@ -1,6 +1,26 @@
+
+:host{
+    overflow:hidden;
+}
 .title {
     margin: -1.5rem -1.5rem 2rem -1.5rem;
     width: initial !important;
     display: flex;
     justify-content: space-between;
 }
+
+.example-container {
+    display: grid;
+  height:250px;
+  grid-template-rows: 1fr 1fr 1fr;
+  overflow:hidden;
+}
+
+.example-container > * {
+    width: 100%;
+}
+.dialog-buttons {
+    display:flex;
+    justify-content: flex-end;
+}
+

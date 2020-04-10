@@ -56,7 +56,7 @@ import { PcapImportService } from './pcap-import.service';
     etherpacket:any = {};
     etherframes = [];
     reader: FileReader = new FileReader()
-    ws = 'ws://localhost:9080'
+    ws:string;
 
     /* logging props */
     filesLog = {
@@ -99,6 +99,7 @@ import { PcapImportService } from './pcap-import.service';
 
         ngOnInit() {
           WidgetArrayInstance[this.id] = this as IWidget; 
+          this.ws = this.config.ws ||  'ws://localhost:9080'
           this.config = {
             name: 'pcap-import',
             config: this.config,
@@ -424,6 +425,8 @@ onClick() {
 
   async openDialog() {
     const dialogRef = this.dialog.open(SettingPcapImportWidgetComponent, {
+      width:'350px',
+      height:'350px',
       data: {
         title: this.title || this.id,
         ws: this.ws
@@ -436,6 +439,7 @@ onClick() {
 
     this.title = result.title;
     this.ws = result.ws
+    this.config.ws = this.ws;
     this.saveConfig();
   }
 

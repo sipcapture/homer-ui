@@ -1,5 +1,4 @@
 <div class="container" (complete)="onFileComplete($event)">
-  
 <div class="files-container">
     <div class="upload-buttons">
         <button mat-button color="warn" (click)="onClick()" class="upload-button" [ngClass]="{lefthalf:etherframes.length > 0 }">
@@ -17,20 +16,23 @@
     </div>
     <br/>
     <ul class="file-uploads">
-        <p *ngIf="files.length > 0" class="files-title">{{files.length}} Uploaded</p>
+        <p *ngIf="files.length > 0" class="files-title">{{files.length}} File parsed:</p>
         <li *ngFor="let file of files" >
               <mat-progress-bar mode="determinate" [value]="file.progress"></mat-progress-bar>
               <div class="file-options" id="file-label">
-                
                     <p style="color: grey; letter-spacing:1px; font-size:10px;">{{file.data.name}} </p>
-              
               </div>
               
         </li>
     </ul>
-    <input type="file" id="fileUpload" name="fileUpload" multiple="multiple" 
-    
+<input type="file" id="fileUpload" name="fileUpload"
     accept="{{accept}}" style="display:none;"/>
+</div>
+<div *ngIf="filesLog.files.length === 0" class="nofiles">
+<p>To import PCAP file:</p> 
+    <p>1 - Set the HEP Websocket URL</p>
+    <p>2 - Import the PCAP file to parse as HEP</p>
+    <p>3 - Press on Send HEP to server</p>
 </div>
 <div *ngIf="filesLog.files.length > 0" class="log">
     <h2>File log</h2>
