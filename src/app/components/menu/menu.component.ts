@@ -118,7 +118,7 @@ export class MenuComponent implements OnInit, OnDestroy {
         this.updateDashboardList();
     }
     updateDashboardList() {
-        const subscription = this._ds.getDashboardInfo().subscribe((resData: any) => {
+        this._ds.getDashboardInfo().toPromise().then((resData: any) => {
             if (resData) {
                 this.dashboards = resData.data.sort(function (a, b) {
                     a = (a.name + '').charCodeAt(0);
@@ -133,10 +133,9 @@ export class MenuComponent implements OnInit, OnDestroy {
                 });
                 this.panelList = this.dashboards.map(item => item.name);
                 try {
-                    this.panelName = this.dashboards.filter(item => item.href === this._ds.getCurrentDashBoardId())[0].name;
+                    this.panelName = this.dashboards.find(item => item.href === this._ds.getCurrentDashBoardId()).name;
                     this.currentDashboardId = this._ds.getCurrentDashBoardId();
                 } catch (e) { }
-                subscription.unsubscribe();
             }
         });
     }

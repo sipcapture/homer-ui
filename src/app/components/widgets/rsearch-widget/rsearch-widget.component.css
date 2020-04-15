@@ -1,5 +1,5 @@
 
-.example-container {
+/*.example-container {
     display: flex;
     flex-direction: column;
 }
@@ -8,4 +8,16 @@
     width: 100%;
 }
 
+*/
 
+.example-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    column-gap:10px;
+    padding:20px;
+}
+.example-container > * {
+  font-size:13px;
+  line-height: 13px;
+  letter-spacing:1px;
+}

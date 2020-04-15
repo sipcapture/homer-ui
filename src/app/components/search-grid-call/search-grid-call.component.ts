@@ -67,7 +67,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     comingRequest: any = null;
     arrWindow: Array<any> = [];
     arrMessageDetail: Array<any> = [];
-    searchQueryLoki: any;
+    searchQueryLoki: any = {};
     searchSliderFields = [];
     isLokiQuery = false;
     lastTimestamp: number;
@@ -125,7 +125,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         to: 600000, // + 10min
         message_from: -5000, // - 1sec
         message_to: 5000, // + 1sec
+
     };
+
     private isThisSelfQuery = false;
     private _interval: any;
     private subscriptionRangeUpdateTimeout: Subscription;
@@ -189,7 +191,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
                     this.lastTimestamp = dataId.timestamp;
 
-                    if (this.protocol_profile === ConstValue.LOKI_PREFIX ) {
+                    if (this.protocol_profile === ConstValue.LOKI_PREFIX || (this.localData && this.localData.serverLoki)) {
                         this.queryTextLoki = dataId.query.text;
                         this.isLokiQuery = true;
                     } else {
@@ -240,58 +242,80 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             this.getHeaders();
         }
 
-        this._puss.getAll().toPromise().then((result: any) => {
-            const d = result.data.filter(i => i.param === 'transaction:range')[0];
-            if (d && d.data) {
-                this.limitRange.from = d.data.from || -300000;
-                this.limitRange.to = d.data.to || 600000;
-                this.limitRange.message_from = d.data.message_from || -1000;
-                this.limitRange.message_to = d.data.message_to || 1000;
-            }
+        this._pas.getAll().toPromise().then((result: any) => {
+            this.limitRange.from = -300000;
+            this.limitRange.to = 600000;
+            this.limitRange.message_from = -1000;
+            this.limitRange.message_to = 1000;
+
+            if (result && result.data) {
+                const _advanced = result.data.find(i => i.category === 'search' && i.param === 'transaction');
+                if (_advanced && _advanced.data && _advanced.data.lookup_range) {
+                    const [from, to, message_from, message_to] = _advanced.data.lookup_range;
+
+                    this.limitRange.from = from || -300000;
+                    this.limitRange.to = to || 600000;
+                    this.limitRange.message_from = message_from || -1000;
+                    this.limitRange.message_to = message_to || 1000;
+                }
+            } 
         });
     }
     async initSearchSlider(isImportantClear = false) {
         this.isThisSelfQuery = false;
-        try {
-            const query = this._ds.getSliderQueryDataToWidgetResult(this.id)
-                || this._ds.setSliderQueryDataToWidgetResult(this.id, this.searchService.getLocalStorageQuery());
 
-            if (!query || !query.protocol_id) {
-                return;
-            }
-            const mappings: Array<any> = (await this._pmps.getAll().toPromise() as any).data as Array<any>;
-            const mapping = Functions.cloneObject(mappings.filter(i => i.profile === query.protocol_id.split('_')[1])[0].fields_mapping);
-            mapping.push({ id: ConstValue.LIMIT, name: 'Query Limit' });
 
-            setTimeout(() => {
-                this.searchSliderFields = isImportantClear ? [] : this.searchSlider.getFields();
-                if (query && query.fields) {
-                    query.fields.forEach(i => {
-                        const itemField = {
-                            field_name: i.name,
-                            hepid: 1,
-                            name: i.name,
-                            selection: mapping.filter(j => j.id === i.name)[0].name, // test
-                            type: i.type,
-                            value: i.value
-                        };
-                        if (!this.searchSliderFields.map(j => j.field_name).includes(i.name)) {
-                            this.searchSliderFields.push(itemField);
-                        } else {
-                            this.searchSliderFields.filter(j => j.field_name === i.name)[0].value = i.value;
-                        }
-                        return itemField;
-                    });
-                }
-                this.searchSliderConfig.fields = Functions.cloneObject(this.searchSliderFields);
-                this.searchSliderFields = Functions.cloneObject(this.searchSliderFields);
-                this.searchSliderConfig.countFieldColumns = this.searchSliderConfig.fields.filter(i => i.value !== '').length;
-            }, 100);
+        const query = this._ds.getSliderQueryDataToWidgetResult(this.id)
+            || this._ds.setSliderQueryDataToWidgetResult(this.id, this.searchService.getLocalStorageQuery());
 
-        } catch (err) {
-            console.error('this.initSearchSlider', err);
+        if (!query || !query.protocol_id) {
+            return;
         }
+        const mappings: Array<any> = (await this._pmps.getAll().toPromise() as any).data as Array<any>;
+        const [query_hepid, query_protocol_id]: [number, string] = query.protocol_id.replace('_', ',').split(',');
+        const [mappingItem] = mappings.filter(i => i.profile === query_protocol_id && i.hepid === query_hepid * 1);
+        const mapping = mappingItem && Functions.cloneObject(mappingItem.fields_mapping) || [];
+
+        mapping.push({ id: ConstValue.LIMIT, name: 'Query Limit' });
+
+        setTimeout(() => {
+            this.searchSliderFields = isImportantClear ? [] : this.searchSlider.getFields();
+            if (query && query.fields && query.fields instanceof Array) {
+                query.fields.forEach(i => {
+                    if (!this.searchSliderFields.map(j => j.field_name).includes(i.name)) {
+                        const [itemname] = mapping.filter(j => j.id === i.name);
+                        const itemField: any = {
+                            field_name: i.name,
+                            hepid: query_hepid * 1,
+                            name: i.name,
+                            selection: itemname && itemname.name || i.name, // test
+                            type: i.type,
+                            value: ['intager', 'number'].includes(i.type) ? parseInt(i.value, 10) : String(i.value)
+                        };
+                        this.searchSliderFields.push(itemField);
+                    } else {
+                        const [_searchSliderField] = this.searchSliderFields.filter(j => j.field_name === i.name);
+                        if (_searchSliderField) {
+                            _searchSliderField.value = i.value;
+                        }
+                    }
+                });
+            }
+            this.searchSliderConfig.config.protocol_id = {
+                name: mappingItem && mappingItem.hep_alias,
+                value: query_hepid * 1
+            };
+            this.searchSliderConfig.config.protocol_profile = {
+                name: query_protocol_id,
+                value: query_protocol_id
+            };
+
+            this.searchSliderConfig.fields = Functions.cloneObject(this.searchSliderFields);
+            this.searchSliderFields = Functions.cloneObject(this.searchSliderFields);
+            this.searchSliderConfig.countFieldColumns = this.searchSliderConfig.fields.filter(i => i.value !== '').length;
+        });
     }
+
 
     getSearchSlider() {
         return this.searchSliderConfig.fields.filter(i => i.value !== '').length;
@@ -335,7 +359,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
                 this.protocol_profile = this.localData.protocol_id;
 
-                if (this.protocol_profile === ConstValue.LOKI_PREFIX) {
+                if (this.protocol_profile === ConstValue.LOKI_PREFIX || (this.localData && this.localData.serverLoki)) {
                     this.isLokiQuery = true;
                     this.queryTextLoki = this.localData.text;
                 } else {
@@ -906,6 +930,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }))));
     }
     ngOnDestroy () {
+        if (this.subscriptionDashboardEvent) {
+            this.subscriptionDashboardEvent.unsubscribe();
+        }
         if (this.subscriptionRangeUpdateTimeout) {
             this.subscriptionRangeUpdateTimeout.unsubscribe();
         }
