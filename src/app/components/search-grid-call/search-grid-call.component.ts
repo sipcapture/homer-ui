@@ -67,7 +67,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     comingRequest: any = null;
     arrWindow: Array<any> = [];
     arrMessageDetail: Array<any> = [];
-    searchQueryLoki: any;
+    searchQueryLoki: any = {};
     searchSliderFields = [];
     isLokiQuery = false;
     lastTimestamp: number;
@@ -191,7 +191,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
                     this.lastTimestamp = dataId.timestamp;
 
-                    if (this.protocol_profile === ConstValue.LOKI_PREFIX ) {
+                    if (this.protocol_profile === ConstValue.LOKI_PREFIX || (this.localData && this.localData.serverLoki)) {
                         this.queryTextLoki = dataId.query.text;
                         this.isLokiQuery = true;
                     } else {
@@ -359,7 +359,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
                 this.protocol_profile = this.localData.protocol_id;
 
-                if (this.protocol_profile === ConstValue.LOKI_PREFIX) {
+                if (this.protocol_profile === ConstValue.LOKI_PREFIX || (this.localData && this.localData.serverLoki)) {
                     this.isLokiQuery = true;
                     this.queryTextLoki = this.localData.text;
                 } else {

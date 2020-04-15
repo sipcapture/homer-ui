@@ -339,7 +339,7 @@ export class ProtosearchWidgetComponent implements IWidget {
                     } else if (['boolean'].includes(item.type)) {
                         item.value = item.value === true;
                         b = true;
-                    } else if (['number','integer'].includes(item.type)) {
+                    } else if (['number', 'integer'].includes(item.type)) {
                         b = item.value !== null && item.value !== undefined && !isNaN(item.value * 1);
                     } else if (item.value instanceof Array) {
                         b = item.value.length > 0;
