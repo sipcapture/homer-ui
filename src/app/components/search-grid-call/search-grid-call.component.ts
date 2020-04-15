@@ -125,7 +125,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         to: 600000, // + 10min
         message_from: -5000, // - 1sec
         message_to: 5000, // + 1sec
+
     };
+
     private isThisSelfQuery = false;
     private _interval: any;
     private subscriptionRangeUpdateTimeout: Subscription;
@@ -240,14 +242,23 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             this.getHeaders();
         }
 
-        this._puss.getAll().toPromise().then((result: any) => {
-            const d = result.data.filter(i => i.param === 'transaction:range')[0];
-            if (d && d.data) {
-                this.limitRange.from = d.data.from || -300000;
-                this.limitRange.to = d.data.to || 600000;
-                this.limitRange.message_from = d.data.message_from || -1000;
-                this.limitRange.message_to = d.data.message_to || 1000;
-            }
+        this._pas.getAll().toPromise().then((result: any) => {
+            this.limitRange.from = -300000;
+            this.limitRange.to = 600000;
+            this.limitRange.message_from = -1000;
+            this.limitRange.message_to = 1000;
+
+            if (result && result.data) {
+                const _advanced = result.data.find(i => i.category === 'search' && i.param === 'transaction');
+                if (_advanced && _advanced.data && _advanced.data.lookup_range) {
+                    const [from, to, message_from, message_to] = _advanced.data.lookup_range;
+
+                    this.limitRange.from = from || -300000;
+                    this.limitRange.to = to || 600000;
+                    this.limitRange.message_from = message_from || -1000;
+                    this.limitRange.message_to = message_to || 1000;
+                }
+            } 
         });
     }
     async initSearchSlider(isImportantClear = false) {
@@ -906,6 +917,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }))));
     }
     ngOnDestroy () {
+        if (!this.subscriptionDashboardEvent) {
+               this.subscriptionDashboardEvent.unsubscribe();
+        }
         if (this.subscriptionRangeUpdateTimeout) {
             this.subscriptionRangeUpdateTimeout.unsubscribe();
         }
