@@ -38,7 +38,7 @@ interface SearchFieldItem {
 @Component({
     selector: 'app-protosearch-widget',
     templateUrl: './protosearch-widget.component.html',
-    styleUrls: ['./protosearch-widget.component.scss']
+    styleUrls: ['./protosearch-widget.component.css']
 })
 @Widget({
     title: 'Proto Search',
@@ -158,21 +158,47 @@ export class ProtosearchWidgetComponent implements IWidget {
             } else if (this._cache && this._cache.fields) {
                 const cacheQuery = this.searchService.getLocalStorageQuery();
                 this.fields.forEach(item => {
-                    item.value = (this._cache.fields.filter(i => i.name === item.field_name)[0] || {value: ''}).value;
+                    if (item.hasOwnProperty('system_param') && item.mapping) {
+                        const [constParam, collectionName, propertyName] = item.mapping.split('.');
+                        if (constParam === 'param' &&
+                            this._cache[collectionName] &&
+                            this._cache[collectionName].mapping === propertyName
+                        ) {
+                            item.value = this._cache[collectionName].value;
+                        }
+                    } else {
+                        const [f_field] = this._cache.fields.filter(i => i.name === item.field_name);
+                        item.value = f_field && f_field.value || '';
+                    }
+
                     if (item.formControl) {
                         item.formControl.setValue(item.value);
                     }
                     if (item.field_name === ConstValue.CONTAINER && item.value !== '') {
                         this.targetResultsContainerValue.setValue(item.value);
                     }
-                    if (cacheQuery) {
-                        if (cacheQuery.location &&
-                            cacheQuery.location.mapping &&
-                            item.field_name === cacheQuery.location.mapping &&
-                            item.form_default
-                        ) {
-                            item.value = cacheQuery.location.value.map(i => item.form_default.filter(j => j.value === i)[0].name);
-                        }
+
+                    if (item.type &&
+                        (item.type === 'integer' || item.type === 'number') &&
+                        item.value !== '' && item.value !== null && !isNaN(item.value * 1)
+                    ) {
+                        // console.log(`cacheQuery:${item.type}:`, item, item.value);
+                        item.value = item.value * 1;
+                    }
+
+                    if (item.type &&
+                        item.type === 'boolean' &&
+                        (item.value === 'true' || item.value === 'false')
+                    ) {
+                        item.value = item.value === 'true';
+                    }
+
+                    if (cacheQuery && cacheQuery.location &&
+                        cacheQuery.location.mapping &&
+                        item.field_name === cacheQuery.location.mapping &&
+                        item.form_default
+                    ) {
+                        item.value = cacheQuery.location.value.map(i => item.form_default.find(j => j.value === i).name);
                     }
                 });
             }
@@ -194,7 +220,7 @@ export class ProtosearchWidgetComponent implements IWidget {
 
             this.fields.forEach(item => {
                 if (item.field_name === ConstValue.CONTAINER) {
-                    const _c = this._cache ? this._cache.fields.filter(i => i.name === ConstValue.CONTAINER)[0] : null;
+                    const _c = this._cache ? this._cache.fields.find(i => i.name === ConstValue.CONTAINER) : null;
                     if (_c) {
                         this.targetResultsContainerValue.setValue(_c.value);
                         item.value = _c.value;
@@ -212,8 +238,9 @@ export class ProtosearchWidgetComponent implements IWidget {
         /* clone Object */
         this.fields = Functions.cloneObject(this.config.fields);
 
-        const m = this.mapping.data.filter(i => i.profile === this.config.config.protocol_profile.value &&
-            i.hep_alias === this.config.config.protocol_id.name)[0];
+        const m = this.mapping.data.find(i =>
+            i.profile === this.config.config.protocol_profile.value &&
+            i.hep_alias === this.config.config.protocol_id.name);
 
         if (m && m.fields_mapping) {
             /* patch */
@@ -225,9 +252,15 @@ export class ProtosearchWidgetComponent implements IWidget {
                 }
             }
             this.fields.forEach(i => {
-                const f = m.fields_mapping.filter(j => j.id === i.field_name)[0];
+                const f = m.fields_mapping.find(j => j.id === i.field_name);
+                if (f && f.type) {
+                    i.type = f.type;
+                }
                 if (f && f.form_type) {
                     i.form_type = f.form_type;
+                    // if (i.form_type === 'number' || i.form_type === 'integer') {
+                    //     i.value = isNaN(i.value * 1) ? 0 : i.value * 1;
+                    // }
                 }
                 if (f && f.system_param) {
                     i.system_param = f.system_param;
@@ -298,8 +331,16 @@ export class ProtosearchWidgetComponent implements IWidget {
             fields: this.fields
                 .filter((item: any) => {
                     let b;
+                    // console.log('filter >> ', item.field_name, item.type, item.value);
                     if (typeof item.value === 'string') {
                         b = item.value !== '';
+                    } else if (item.form_type === 'select') {
+                        b = true;
+                    } else if (['boolean'].includes(item.type)) {
+                        item.value = item.value === true;
+                        b = true;
+                    } else if (['number','integer'].includes(item.type)) {
+                        b = item.value !== null && item.value !== undefined && !isNaN(item.value * 1);
                     } else if (item.value instanceof Array) {
                         b = item.value.length > 0;
                     } else if (item.field_name === ConstValue.CONTAINER) {
@@ -311,7 +352,7 @@ export class ProtosearchWidgetComponent implements IWidget {
                 })
                 .map((item: any) => ({
                     name: item.field_name,
-                    value: item.value,
+                    value: typeof item.value === 'object' ? item.value : String(item.value),
                     type: item.type,
                     hepid: item.hepid
                 })),
@@ -322,13 +363,27 @@ export class ProtosearchWidgetComponent implements IWidget {
 
         /* system params */
         this.fields.forEach((item: any) => {
-            if (item.value && item.value !== '' && item.hasOwnProperty('system_param')) {
-                if (item.mapping !== '') {
-                    const paramMapping = item.mapping.split('.');
-                    if (paramMapping.length > 1) {
-                        this.searchQuery[paramMapping[1]] = {
-                            value: item.value.map(i => item.form_default.filter(j => i === j.name)[0].value),
-                            mapping: paramMapping.length === 3 ? paramMapping[2] : ''
+            if (
+                item.value &&
+                item.value !== '' &&
+                item.hasOwnProperty('system_param') &&
+                item.mapping !== ''
+            ) {
+                const [constParam, collectionName, propertyName] = item.mapping.split('.');
+                // const paramMapping = item.mapping.split('.');
+
+                // console.log('system_param ===', item)
+
+                if (constParam === 'param' && collectionName) {
+                    if (item.value instanceof Array && item.form_default) {
+                        this.searchQuery[collectionName] = {
+                            value: item.value.map(i => item.form_default.find(j => i === j.name).value),
+                            mapping: propertyName || ''
+                        };
+                    } else if (typeof item.value !== 'object') {
+                        this.searchQuery[collectionName] = {
+                            value: item.value,
+                            mapping: propertyName || ''
                         };
                     }
                 }
@@ -401,7 +456,7 @@ export class ProtosearchWidgetComponent implements IWidget {
         const _forRestoreFieldsValue = Functions.cloneObject(this.fields);
         this.updateButtonState();
         this.fields.forEach(i => {
-            const restore = _forRestoreFieldsValue.filter(j => j.field_name === i.field_name)[0];
+            const restore = _forRestoreFieldsValue.find(j => j.field_name === i.field_name);
             if (restore) {
                 i.value = restore.value;
                 if (i.formControl) {
@@ -482,7 +537,7 @@ export class ProtosearchWidgetComponent implements IWidget {
 
     onLokiCodeData(event) {
         this.searchQuery = event;
-        this.searchQuery.limit = (this.fields.filter(i => i.field_name === ConstValue.LIMIT)[0] || {value: 100}).value || 100;
+        this.searchQuery.limit = (this.fields.find(i => i.field_name === ConstValue.LIMIT) || {value: 100}).value;
         this.searchQuery.protocol_id = ConstValue.LOKI_PREFIX;
         this.searchQuery.fields = [];
     }
