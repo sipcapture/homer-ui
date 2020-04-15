@@ -316,3 +316,52 @@ h3 {
     border-radius: 4px;
 }
 
+.action-buttons{
+  padding:5px;
+  position:absolute;
+  bottom:10px;
+  right:10px;
+}
+.action-buttons > button{
+  margin:7px;
+  font-size:0.65em;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:#3f3f3f;
+  opacity: 0.85;
+}
+.action-buttons > button:hover{
+  opacity:1;
+}
+
+.setting-buttons{
+  padding:5px;
+  position:relative;
+  bottom:10px;
+  right:10px;
+}
+.setting-buttons > button{
+  margin:7px;
+  font-size:.65em;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:#3f3f3f;
+  opacity: 0.85;
+}
+.setting-buttons > button:hover{
+  opacity:1;
+}
+.widget-block{
+  padding:10px;
+}
+.example-container{
+  font-size:13px;
+}
+
+.circle-swatch .swatch {
+  border: 1px solid;
+}
+
+.chrome-picker{
+  width: 156px !important;
+}

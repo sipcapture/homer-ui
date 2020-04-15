@@ -25,9 +25,7 @@ export class AddDashboardDialogComponent implements OnInit, AfterViewInit, OnDes
         private _ds: DashboardService,
         @Inject(MAT_DIALOG_DATA) public data: any = {}
     ) {
-        const subscription = this._ds.getDashboardInfo().subscribe((list: any) => {
-            subscription.unsubscribe();
-
+        this._ds.getDashboardInfo().toPromise().then((list: any) => {
             if ( list && list.data && list.data.length > 0) {
                 this.typeBoolean.HOME = list.data.filter(i => i.id === 'home').length === 0;
                 this.typeBoolean.SEARCH = list.data.filter(i => i.id === 'search').length === 0;

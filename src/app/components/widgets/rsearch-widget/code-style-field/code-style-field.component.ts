@@ -40,12 +40,11 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
         private _pas: PreferenceAdvancedService,
         private _srs: SearchRemoteService
     ) {
-        const subscription = this._pas.getAll().subscribe((data: any) => {
+        this._pas.getAll().toPromise().then((data: any) => {
             this.serverLoki = data.data
                 .filter(i => i.category === 'search' && i.param === 'lokiserver')
                 .map(i => i.data.host)[0];
             this.updateEditor();
-            subscription.unsubscribe();
         });
     }
 

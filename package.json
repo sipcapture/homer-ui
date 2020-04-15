@@ -62,6 +62,7 @@
     "ng2-ace-editor": "^0.3.9",
     "ng2-charts": "^2.3.0",
     "ngx-ace-wrapper": "^8.0.0",
+    "ngx-color": "^5.0.1",
     "ngx-daterangepicker-material": "git+http://github.com/sipcapture/ngx-daterangepicker-material#dist",
     "ngx-json-viewer": "^2.4.0",
     "ngx-markdown": "^8.2.1",
