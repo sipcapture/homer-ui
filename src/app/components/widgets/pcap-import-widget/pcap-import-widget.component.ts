@@ -99,13 +99,13 @@ import { PcapImportService } from './pcap-import.service';
 
         ngOnInit() {
           WidgetArrayInstance[this.id] = this as IWidget; 
-          this.ws = this.config.ws ||  'ws://localhost:9080'
+          
           this.config = {
             name: 'pcap-import',
             config: this.config,
             ws: this.ws
           }
-      
+          this.ws = this.config.ws ||  'ws://localhost:9080'
         if (!this.config) {
             this.title = this.config.title || 'PCAP IMPORT';
             this.ws = this.config.ws
