@@ -86,18 +86,18 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
                 }
 
                 /* check if we have default fields inside */
-                if (item.fields_mapping.filter(it => it.id === 'limit').length === 0) {
+                if (!item.fields_mapping.find(it => it.id === 'limit')) {
                     item.fields_mapping = item.fields_mapping.concat(this.defaultFields);
                 }
             }
             if (data.config.config.protocol_id) {
                 this.proto.hep_alias = data.config.config.protocol_id.name;
                 this.proto.profile = this.resultConfig.profile;
-                const mapping = this.mappingSortedData
-                    .filter(i => i.hep_alias === data.config.config.protocol_id.name &&
-                        i.profile === data.config.config.protocol_profile.value)[0];
+                const mapping = this.mappingSortedData.find(i =>
+                    i.hep_alias === data.config.config.protocol_id.name &&
+                    i.profile === data.config.config.protocol_profile.value);
 
-                this.proto.fields_mapping = mapping.fields_mapping.map(i => {
+                this.proto.fields_mapping = mapping.fields_mapping.filter(i => !(i.skip === true)).map(i => {
                     i.selected = data.config.fields.map(j => j.field_name).includes(i.id);
                     return i;
                 });
@@ -105,14 +105,17 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
             /* sorting this.proto.fields_mapping by data.config.fields */
             const pm = Functions.cloneObject(this.proto.fields_mapping);
             const pmActive = [];
-            data.config.fields.forEach(j => pmActive.unshift(pm.splice(pm.findIndex(i => i.id === j.field_name), 1)[0]));
-            this.proto.fields_mapping = [].concat(pmActive.reverse(), pm);
+            data.config.fields.forEach(j => {
+                const [pmItem] = pm.splice(pm.findIndex(i => i.id === j.field_name), 1);
+                pmActive.unshift(pmItem);
+            });
+            this.proto.fields_mapping = ([].concat(pmActive.reverse(), pm)).filter(i => !!i);
         } catch (err) {
             this.onNoClick();
 
             this.dialogAlarm.open(DialogAlarmComponent);
 
-            console.warn('ERROR config broken');
+            console.warn('ERROR config broken:', err);
         }
     }
 
@@ -120,8 +123,10 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
         this.validate();
     }
     private getHepId(hep_alias, profile) {
-        const mapping = this.mappingSortedData.filter(i => i.hep_alias === hep_alias && i.profile === profile)[0];
-        return mapping.hepid;
+        return this.mappingSortedData.find(i =>
+            i.hep_alias === hep_alias &&
+            i.profile === profile
+        ).hepid;
     }
     compareProto (a: any, b: any) {
         return a.hep_alias === b.hep_alias && a.profile === b.profile;
@@ -153,10 +158,15 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
         }, 50);
     }
     validate() {
-        this.isValidForm = this.proto.fields_mapping.filter(item => item.selected === true).length > 0;
-        if (this.isValidForm) {
-            this.onChange();
+        try {
+            this.isValidForm = this.proto.fields_mapping.filter(item => item.selected === true).length > 0;
+            if (this.isValidForm) {
+                this.onChange();
+            }
+        } catch (err) {
+            console.error(10, this.proto.fields_mapping);
         }
+
     }
     onUpdateProto(event: any) {
         this.proto.fields_mapping = event;

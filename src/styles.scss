@@ -324,11 +324,11 @@ h3 {
 }
 .action-buttons > button{
   margin:7px;
-  font-size:.65em;
+  font-size:0.65em;
   text-transform:uppercase;
   letter-spacing:1px;
   color:#3f3f3f;
-  opacity: .85;
+  opacity: 0.85;
 }
 .action-buttons > button:hover{
   opacity:1;
@@ -346,7 +346,7 @@ h3 {
   text-transform:uppercase;
   letter-spacing:1px;
   color:#3f3f3f;
-  opacity: .85;
+  opacity: 0.85;
 }
 .setting-buttons > button:hover{
   opacity:1;
@@ -356,11 +356,12 @@ h3 {
 }
 .example-container{
   font-size:13px;
-
-.circle-swatch .swatch{
-  border:1px solid;
 }
+
+.circle-swatch .swatch {
+  border: 1px solid;
+}
+
 .chrome-picker{
   width: 156px !important;
-
 }
