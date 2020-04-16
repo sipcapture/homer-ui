@@ -40,8 +40,7 @@ export class EditDialogComponent {
         this.isSEARCH = this._ds.getCurrentDashBoardId() === 'search';
         this.isHomeOrSearch = this.isSEARCH || this._ds.getCurrentDashBoardId() === 'home';
 
-        const subscription = this._ds.getDashboardInfo().subscribe((list: any) => {
-            subscription.unsubscribe();
+        this._ds.getDashboardInfo().toPromise().then((list: any) => {
             if ( list && list.data && list.data.length > 0) {
                 this.typeBoolean.HOME = list.data.filter(i => i.id === 'home').length === 0;
 

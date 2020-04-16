@@ -16,17 +16,18 @@
         <mat-label>Category</mat-label>
         <input matInput [(ngModel)]="data.data.category">
       </mat-form-field>
-    </div>
-    <div>
       <mat-form-field style="padding-right: 1rem;">
         <mat-label>Param</mat-label>
         <input matInput [(ngModel)]="data.data.param">
       </mat-form-field>
-      <mat-form-field style="padding-right: 1rem;">
-        <mat-label>Partition ID</mat-label>
-        <input matInput [(ngModel)]="data.data.partid">
-      </mat-form-field>
     </div>
+    <!--<div>
+      
+       <mat-form-field style="padding-right: 1rem;">
+            <mat-label>Partition ID</mat-label>
+            <input matInput [(ngModel)]="data.data.partid">
+          </mat-form-field>
+               </div>-->
     <strong>Data</strong><hr />
     <!-- <ngx-json-viewer [json]="data.data.data" [expanded]="false"></ngx-json-viewer> -->
     <ace-editor

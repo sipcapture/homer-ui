@@ -49,6 +49,7 @@ import {
     ResultChartWidgetComponent,
     ResultWidgetComponent,
     RsearchWidgetComponent,
+    AlertWidgetComponent,
     SettingClockWidgetComponent,
     SettingGeneralIframeWidgetComponent,
     SettingIframeWidgetComponent,
@@ -58,7 +59,8 @@ import {
     SettingPcapImportWidgetComponent,
     SettingResultChartWidgetComponent,
     SettingResultWidgetComponent,
-    SettingsAceEditorWidgetComponent
+    SettingsAceEditorWidgetComponent,
+    SettingAlertWidgetComponent,
    
 
 } from '@app/components/widgets';
@@ -111,7 +113,8 @@ import { DynamicModule } from 'ng-dynamic-component';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { ChartsModule } from 'ng2-charts';
 import { MarkdownModule } from 'ngx-markdown';
-
+import { ColorChromeModule } from 'ngx-color/chrome';
+import { ColorCircleModule } from 'ngx-color/circle';
 
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {
 };
@@ -172,7 +175,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         ProtosearchWidgetComponent,
         PcapImportWidgetComponent,
         ResultChartWidgetComponent,
-    
+        AlertWidgetComponent,
         ResultWidgetComponent,
         RsearchWidgetComponent,
         SettingClockWidgetComponent,
@@ -185,7 +188,8 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingResultChartWidgetComponent,
         SettingResultWidgetComponent,
         SettingsAceEditorWidgetComponent,
-    
+        SettingAlertWidgetComponent,
+        
         /** dialogs */
         DialogAdvancedComponent,
         DialogAgentsubComponent,
@@ -225,6 +229,8 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         AceModule,
         AceEditorModule,
         MarkdownModule.forRoot(),
+        ColorChromeModule,
+        ColorCircleModule
     ],
     entryComponents: [
         MenuComponent,
@@ -257,6 +263,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         ResultChartWidgetComponent,
         ResultWidgetComponent,
         RsearchWidgetComponent,
+        AlertWidgetComponent,
         SettingClockWidgetComponent,
         SettingGeneralIframeWidgetComponent,
         SettingIframeWidgetComponent,
@@ -266,6 +273,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingResultChartWidgetComponent,
         SettingResultWidgetComponent,
         SettingsAceEditorWidgetComponent,
+        SettingAlertWidgetComponent,
 
         /** dashboard */
         AddDashboardDialogComponent,

@@ -27,14 +27,14 @@
       <mat-error *ngIf="usergroup.invalid">Should not be empty</mat-error>
     </mat-form-field>
     
-    <mat-form-field style="padding-right: 1rem;">
+    <!-- <mat-form-field style="padding-right: 1rem;">
       <mat-label>Partition ID</mat-label>
       <input matInput autocomplete="none"
         [formControl]="partid"
         [disabled]="!isAdmin"
         required>
       <mat-error *ngIf="partid.invalid">Should not be empty</mat-error>
-    </mat-form-field>
+    </mat-form-field> -->
   </div>
   <div>
     
@@ -44,12 +44,7 @@
         [type]="hidePass1 ? 'password' : 'text'"
         [formControl]="password"
         required>
-      <button mat-icon-button matSuffix
-        (click)="hidePass1 = !hidePass1"
-        [attr.aria-label]="'Hide password'"
-        [attr.aria-pressed]="hidePass1">
-        <mat-icon>{{hidePass1 ? 'visibility_off' : 'visibility'}}</mat-icon>
-      </button>
+      
       <!-- data.isnew -->
       <mat-error *ngIf="data.isNew && password.invalid">The password should not be empty</mat-error>
     </mat-form-field>
@@ -60,14 +55,16 @@
         [type]="hidePass1 ? 'password' : 'text'"
         [formControl]="password2"
         required>
-      <button mat-icon-button matSuffix
-        (click)="hidePass1 = !hidePass1"
-        [attr.aria-label]="'Hide password'"
-        [attr.aria-pressed]="hidePass1">
-        <mat-icon>{{hidePass1 ? 'visibility_off' : 'visibility'}}</mat-icon>
-      </button>
+      
       <mat-error *ngIf="password.value !== password2.value">The password and its confirmation do not coincide</mat-error>
     </mat-form-field>
+    <button mat-icon-button 
+        (click)="hidePass1 = !hidePass1"
+        [attr.aria-label]="'Hide password'"
+        [attr.aria-pressed]="hidePass1"
+        [matTooltip]="hidePass1 ? 'Show password' : 'Hide password'">
+        <mat-icon>{{hidePass1 ? 'visibility_off' : 'visibility'}}</mat-icon>
+    </button>
   </div>
   
   <strong>Personal information</strong><hr />
