@@ -1,0 +1,82 @@
+{
+  "_args": [
+    [
+      "binary-parser@1.5.0",
+      "/home/jacovinus/homer-ui"
+    ]
+  ],
+  "_from": "binary-parser@1.5.0",
+  "_id": "binary-parser@1.5.0",
+  "_inBundle": false,
+  "_integrity": "sha512-z+hqNSnO7trFDPLihjUGTwlSTbcIzLYSCwnbiasFkRvCIY9F3ZTex7Mlm9UAP3w5mfHD3KxejnWFPJjtsVVMuw==",
+  "_location": "/binary-parser",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "binary-parser@1.5.0",
+    "name": "binary-parser",
+    "escapedName": "binary-parser",
+    "rawSpec": "1.5.0",
+    "saveSpec": null,
+    "fetchSpec": "1.5.0"
+  },
+  "_requiredBy": [
+    "/hep-js"
+  ],
+  "_resolved": "https://registry.npmjs.org/binary-parser/-/binary-parser-1.5.0.tgz",
+  "_spec": "1.5.0",
+  "_where": "/home/jacovinus/homer-ui",
+  "author": {
+    "name": "Keichi Takahashi",
+    "email": "keichi.t@me.com",
+    "url": "https://keichi.net/"
+  },
+  "bugs": {
+    "url": "http://github.com/keichi/binary-parser/issues"
+  },
+  "description": "Blazing-fast binary parser builder",
+  "devDependencies": {
+    "@types/node": "^12.0.4",
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1",
+    "prettier": "^1.17.1",
+    "typescript": "^3.5.1"
+  },
+  "engines": {
+    "node": ">=5.10.0"
+  },
+  "files": [
+    "dist/*.js"
+  ],
+  "homepage": "https://github.com/keichi/binary-parser#readme",
+  "keywords": [
+    "binary",
+    "parser",
+    "decode",
+    "unpack",
+    "struct",
+    "buffer",
+    "bit"
+  ],
+  "license": "MIT",
+  "main": "dist/binary_parser.js",
+  "name": "binary-parser",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/keichi/binary-parser.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "check-fmt": "prettier --list-different \"{lib,example,test}/**/*.{ts,js}\"",
+    "cover": "nyc --reporter html mocha",
+    "fmt": "prettier --write \"{lib,example,test}/**/*.{ts,js}\"",
+    "prepare": "npm run build",
+    "test": "mocha",
+    "test-browser": "parcel test/browser.html --open"
+  },
+  "version": "1.5.0",
+  "__processed_by_ivy_ngcc__": {
+    "main": "8.2.14"
+  }
+}

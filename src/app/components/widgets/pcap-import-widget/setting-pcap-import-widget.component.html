@@ -1,0 +1,24 @@
+
+<mat-toolbar class="title" color="primary">
+    <div>Settings</div>
+    <button mat-icon-button (click)="onNoClick()">
+        <mat-icon>close</mat-icon>
+    </button>
+</mat-toolbar>
+
+<div mat-dialog-content ngClass="example-container">
+    <mat-form-field appearance="outline">
+        <mat-label>Title</mat-label>
+        <input matInput [(ngModel)]="data.title">
+    </mat-form-field>
+
+<mat-form-field appearance="outline">
+    <mat-label>HEP Websocket:</mat-label>
+    <input matInput [(ngModel)]="data.ws" placeholder="{{data.ws}}">
+  </mat-form-field>
+ 
+<div mat-dialog-actions ngClass='dialog-buttons'>
+    <button mat-raised-button (click)="onNoClick()">Cancel</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+</div>
+</div>
