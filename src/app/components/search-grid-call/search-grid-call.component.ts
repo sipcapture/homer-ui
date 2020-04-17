@@ -690,9 +690,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }, 300);
     }
 
-    // private setQuickFilter() {
-    //     this.gridApi.setQuickFilter(this.filterGridValue);
-    // }
+    private setQuickFilter() {
+      this.gridOptions.api.setQuickFilter(this.filterGridValue);
+     }
+
     public onGridReady(params) {
         this.gridApi = params.api;
         this.gridColumnApi = params.columnApi;
