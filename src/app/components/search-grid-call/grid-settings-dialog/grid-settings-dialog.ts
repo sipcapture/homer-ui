@@ -19,7 +19,7 @@ export class DialogSettingsGridDialog {
     public apiColumn: any;
     apiPoint: any;
     id: string;
-
+    _interval: any;
     allColumnIds: Array<any> = [];
     _bufferData: Array<any>;
     constructor(
@@ -42,29 +42,46 @@ export class DialogSettingsGridDialog {
             .sort()
             .filter((i, k, arr) => i !== arr[k - 1])
             .map(i => JSON.parse(i));
-
+        let lsIndex = 'result-state';
+        if ( this.id ) {
+            lsIndex += `-${this.id}`;
+        }
+        if(localStorage.getItem(lsIndex)){
+            this.allColumnIds = Functions.cloneObject(JSON.parse(localStorage.getItem(lsIndex)))
+        }
         this._bufferData = Functions.cloneObject(this.allColumnIds);
+        
     }
     onUpdateProto(event) {
         const objField = event.filter(i => {
             const k = this._bufferData.filter(j => i.name === j.name)[0];
             return i.selected !== k.selected;
         })[0];
-
+        
+        this._bufferData = Functions.cloneObject(event);
         this.onChange(objField && objField.selected, objField && objField.field);
-
-        this._bufferData = Functions.cloneObject(this.allColumnIds);
         let lsIndex = 'result-state';
         if ( this.id ) {
             lsIndex += `-${this.id}`;
         }
-        localStorage.setItem(lsIndex, JSON.stringify(this._bufferData));
+        this.updateGrid();
+        if (this._interval) {
+            clearTimeout(this._interval);
+        }
+        this._interval = setTimeout(() => {
+            localStorage.setItem(lsIndex, JSON.stringify(this._bufferData));
+        }, 50);
+        
     }
     onChange(event: boolean, field: string): void {
         this.apiColumn.setColumnVisible(field, event);
         this.apiPoint.sizeColumnsToFit();
     }
-
+    updateGrid(){
+        for(let i=0;this._bufferData.length>i;i++){
+            this.apiColumn.moveColumn(this._bufferData[i].field, i); 
+        }
+    }
     onNoClick(): void {
         this.dialogRef.close();
     }
