@@ -250,13 +250,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
             if (result && result.data) {
                 const _advanced = result.data.find(i => i.category === 'search' && i.param === 'transaction');
-                if (_advanced && _advanced.data && _advanced.data.lookup_range) {
+                if (_advanced && _advanced.data && _advanced.data.lookup_range) {                    
                     const [from, to, message_from, message_to] = _advanced.data.lookup_range;
-
-                    this.limitRange.from = from || -300000;
-                    this.limitRange.to = to || 600000;
-                    this.limitRange.message_from = message_from || -1000;
-                    this.limitRange.message_to = message_to || 1000;
+                    this.limitRange.from = (from * 1000) || -300000;
+                    this.limitRange.to = (from * 1000) || 600000;
+                    this.limitRange.message_from = (message_from * 1000) || -2000;
+                    this.limitRange.message_to = (message_to *1000) || 2000;
                 }
             } 
         });
