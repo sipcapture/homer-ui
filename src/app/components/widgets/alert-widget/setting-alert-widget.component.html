@@ -60,7 +60,7 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field [ngStyle]="{'width.px':201}">
+    <mat-form-field [ngStyle]="{'width.px':data.requestType==='POST' ? 201 : 412}">
       <mat-label>Expected</mat-label>
       <input matInput [(ngModel)]="data.expectedList[i]">
     </mat-form-field>
