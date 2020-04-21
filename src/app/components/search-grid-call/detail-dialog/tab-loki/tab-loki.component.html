@@ -17,11 +17,20 @@
             <i>[ No Result Found ]</i>
         </div>
     </div>
-    <div *ngIf="resultData.length > 0" >
-        <div *ngFor="let i of resultData" class="content-body item">
-            <span class="item-text">{{i.micro_ts}} </span>
-            <span style="color: red" class="item-text"> {{i.custom_2}} </span><br/>
-            <span class="item-text loki-highlight" [innerHTML]="i.custom_1"></span>
+    
+    <div *ngIf="resultData.length > 0" class="loki-search">
+        <div class="header">
+            <div class="item-text">Timestamp</div>
+            <div class="item-text">Messages</div>
         </div>
+        <div class="loki-container">
+        <div *ngFor="let i of resultData; trackBy: identify" class="content-body item">
+            <div class="item-text hover" matTooltip="Labels: { job: {{i.custom_2.job}}, method: {{i.custom_2.method}}, node: {{i.custom_2.node}}, response: {{i.custom_2.response}}, type: {{i.custom_2.type}} }" matTooltipClass="example-tooltip-red" matTooltipPosition="right">{{i.micro_ts}} </div>
+            <div class="item-text loki-highlight" [innerHTML]="i.custom_1"></div>
+
+        </div>
+
     </div>
+ 
+</div>
 </div>
