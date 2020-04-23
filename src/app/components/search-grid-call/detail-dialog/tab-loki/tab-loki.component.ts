@@ -1,13 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectorRef, EventEmitter } from '@angular/core';
 import { DateTimeRangeService } from '@app/services/data-time-range.service';
 import { SearchRemoteService } from '@app/services';
-import { Functions } from '@app/helpers/functions';
 import { SearchService } from '@app/services';
-
 @Component({
     selector: 'app-tab-loki',
     templateUrl: './tab-loki.component.html',
-    styleUrls: ['./tab-loki.component.css']
+    styleUrls: ['./tab-loki.component.css'],
+    encapsulation: ViewEncapsulation.None,
 })
 export class TabLokiComponent implements OnInit {
     @Input() id;
@@ -16,13 +15,19 @@ export class TabLokiComponent implements OnInit {
     queryText: string;
     queryObject: any;
     rxText: string;
+    showTime: true
+    showTags: false
+    showTs: false
+    checked: boolean;
     resultData: Array<any> = [];
     isFirstSearch = true;
     labels: Array<any> = [];
+    lokiLabels;
     constructor(
         private _srs: SearchRemoteService,
         private _dtrs: DateTimeRangeService,
-        private searchService: SearchService
+        private searchService: SearchService,
+        private cdr : ChangeDetectorRef
     ) { }
 
     ngOnInit() {
@@ -35,21 +40,29 @@ export class TabLokiComponent implements OnInit {
         }, []).join(' | ');
 
         this.queryText = `{job="heplify-server"} ${labels}`;
+        this.cdr.detectChanges();
+        
     }
     async doSerchResult () {
-        this.rxText = this.queryObject.rxText
+        this.rxText = this.queryObject.rxText;
         this.isFirstSearch = false;
         const data = await this._srs.getData(this.queryBuilder()).toPromise();
 
         this.resultData = data && data.data ? data.data as Array<any> : [];
+        this.lokiLabels = this.resultData.map(l => {
+            l.custom_2 = this.labelsFormatter(l.custom_2);
+            return l;
+         })
         this.resultData = this.resultData.map(i => {
             i.custom_1 = this.highlight(i.custom_1);
             return i;
         });
+        this.cdr.detectChanges();
     }
     onUpdateData (event) {
         this.queryObject = event;
         this.queryObject.limit = 100;
+        this.cdr.detectChanges();
     }
     queryBuilder() { /** depricated, need use {SearchService} */
         return {
@@ -62,7 +75,18 @@ export class TabLokiComponent implements OnInit {
             timestamp: this._dtrs.getDatesForQuery(true)
         };
     }
-    private highlight(value: string = ''): void {
+
+    private labelsFormatter(rd) {
+        let lokiLabels = JSON.parse(rd)
+        return lokiLabels;
+    }
+
+
+    identify (index, item) {
+        return item.micro_ts;
+    }
+
+    private highlight(value: string = '') {
         let data;
         if (!!this.rxText) {
             const rxText = this.rxText.replace(/\s/g, '');
