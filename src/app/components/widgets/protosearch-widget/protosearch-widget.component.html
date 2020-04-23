@@ -1,10 +1,9 @@
+<span style="display: none;" id='{{this.id}}'></span>
 <form *ngIf="isConfig" class="form-container">
     <div class="inputs-container">
     <div class="example-container" [ngStyle]="{'grid-template-columns': getFieldColumns()}">
         <div *ngFor="let item of fields" style="display: block" >
-            <!--
-                if item is targetResultsContainer
-            -->
+            <!-- if item is targetResultsContainer -->
             <mat-form-field style="display: block" *ngIf="item.field_name !== 'loki' && item.field_name === 'targetResultsContainer'">
                 <mat-label>{{item.selection}}</mat-label>
                 <mat-select
@@ -19,18 +18,14 @@
                 </mat-select>
             </mat-form-field>
             
-            <!--
-                if LOKI Field
-            -->
+            <!-- if LOKI Field -->
             
             <app-code-style-field *ngIf="item.field_name === 'loki' && item.field_name !== 'targetResultsContainer'"
                 style="display: block"
                 [queryText]="lokiQueryText"
                 (updateData)="onLokiCodeData($event)"
             ></app-code-style-field>
-            <!-- 
-                smart-input
-            -->
+            <!-- smart-input -->
             <app-code-style-smart-input-field
                 *ngIf="item.form_type === 'smart-input'"
                 [apiLink]="item.full_api_link"
@@ -39,9 +34,7 @@
             ></app-code-style-smart-input-field>
 
 
-            <!--
-                if other Fields
-            -->
+            <!-- if other Fields -->
             <mat-form-field style="display: block" *ngIf="
                 item.field_name !== 'loki' &&
                 item.field_name !== 'targetResultsContainer' &&
@@ -49,9 +42,7 @@
             ">
                 <mat-label>{{item.selection}}</mat-label>
                 
-                <!--
-                    Text Field (by Default)
-                -->
+                <!-- Text Field (by Default) -->
                 <input matInput *ngIf="!item.form_default"
                     [(ngModel)]="item.value"
                     [ngModelOptions]="{standalone: true}"
@@ -60,9 +51,7 @@
                 >
                 
 
-                <!--
-                    Autocomplete Text Field
-                -->
+                <!-- Autocomplete Text Field -->
                 <input matInput *ngIf="item.form_default && item.form_type === 'input'"
                     [formControl]="item.formControl" [matAutocomplete]="form_default"
                     (keydown.enter)="handleEnterKeyPress($event)">
@@ -72,9 +61,7 @@
                     </mat-option>
                 </mat-autocomplete>
 
-                <!--
-                    SELECT FIELD
-                -->
+                <!-- SELECT FIELD -->
                 <mat-select
                     *ngIf="item.form_type === 'select' && item.form_default"
                     [(ngModel)]="item.value"
@@ -86,9 +73,7 @@
                     </mat-option>
                 </mat-select>
                 
-                <!--
-                    MULTISELECT FIELD
-                -->
+                <!-- MULTISELECT FIELD -->
                 <mat-select multiple
                     *ngIf="item.form_type === 'multiselect' && item.form_default"
                     [(ngModel)]="item.value"
@@ -115,4 +100,4 @@
     <button mat-raised-button color="primary" (click)="openDialog()">
         <mat-icon>settings</mat-icon> Widget Settings
     </button>
-</div>
+</div> 
