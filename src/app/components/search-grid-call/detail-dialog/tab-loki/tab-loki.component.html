@@ -19,18 +19,31 @@
     </div>
     
     <div *ngIf="resultData.length > 0" class="loki-search">
-        <div class="header">
-            <div class="item-text">Timestamp</div>
-            <div class="item-text">Messages</div>
+        <div class="switches">
+            
+            <div class="time-display"> <mat-checkbox class="example-margin" [(ngModel)]="showTime">Time</mat-checkbox> </div>
+            <div class="tags-display" *ngIf="showTime"> <mat-checkbox class="example-margin" [(ngModel)]="showTs">Timeseconds</mat-checkbox> </div>
+            <div class="tags-display"> <mat-checkbox [(ngModel)]="showTags">Tags</mat-checkbox> </div>   
+          </div>
+
+        <div class="header header-loki">
+            <div class="item-text lokitime" *ngIf="showTime">Time</div>
+            <div class="item-text lokitags" *ngIf="showTags">Tags</div>
+            <div class="item-text lokimessage">Messages</div>
         </div>
+
         <div class="loki-container">
-        <div *ngFor="let i of resultData; trackBy: identify" class="content-body item">
-            <div class="item-text hover" matTooltip="Labels: { job: {{i.custom_2.job}}, method: {{i.custom_2.method}}, node: {{i.custom_2.node}}, response: {{i.custom_2.response}}, type: {{i.custom_2.type}} }" matTooltipClass="example-tooltip-red" matTooltipPosition="right">{{i.micro_ts}} </div>
-            <div class="item-text loki-highlight" [innerHTML]="i.custom_1"></div>
+        <div *ngFor="let i of resultData trackBy : identify" class="content-body item">
+            <div class="item-text hover lokitime" 
+            *ngIf="showTime"
+            matTooltipPosition="right">{{i.micro_ts | moment:'YYYY-MM-DD HH:mm:ss'}} <p *ngIf="showTs" class="timeseconds">{{i.micro_ts}}</p></div>
+            <div class="item-text hover lokitags" *ngIf="showTags">
+                 job: {{i.custom_2.job}}, method: {{i.custom_2.method}}, node: {{i.custom_2.node}}, response: {{i.custom_2.response}}, type: {{i.custom_2.type}} 
+            </div>
+            <div class="item-text hover loki-highlight lokimessage" 
+            [innerHTML]="i.custom_1"></div>
 
         </div>
-
     </div>
- 
-</div>
+    </div>
 </div>

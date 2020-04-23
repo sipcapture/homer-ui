@@ -1,27 +1,39 @@
+.loki-search{
+    background:#fafafa;
+    padding:5px;
+}
+.loki-container{
+    display:table;
+}
 .content-body {
     padding: 1rem;
-    background-color: #ffffff;
+
     margin: 0.3rem;
-    display:grid;
-    border-bottom:1px solid lightgray;
-    grid-template-columns: 1fr 7fr;
-    grid-gap:5px;
+ display:table-row;
+}
+
+
+.content-body > div {
+    display:table-cell
 }
 
 .item {
     padding-bottom: 1rem;
     font-size: 0.8em;
 }
-.header{
+.header-loki{
     padding: 1rem;
     margin: 0.3rem;
-    background:#fafafa;
-    box-shadow: 1px 1px 5px -2px #000;
-    display:grid;
-    grid-template-columns: 1fr 6fr;
-    grid-gap:5px;
+    width:100%;
+    display:table-row;
+    font-weight: bold;
+
    
 }
+.header-loki > div {
+    display:table-cell
+}
+
 .item-header{
     font-family:Menlo,Monaco,Consolas,Courier New,monospace;
     color:#1d1d1d;
@@ -32,9 +44,8 @@
     font-size:12px;
     color:#1d1d1d;
 }
-.example-tooltip-red {
-    background: #2e2e2e;
-    width:400px;
+.timestamp-tooltip {
+    background: #c11;
     font-family:Menlo,Monaco,Consolas,Courier New,monospace;
     font-size:12px;
     position:relative;
@@ -42,13 +53,58 @@
     top:35%;
     
   }
+
+
   .hover{
-      cursor: pointer;
+     opacity:1;
   }
   .hover:hover{
-      color:#c21d1d;
+      color:#555;
   }
 .loki-container{
     height:100%;
     overflow-y: auto;
+    
 }
+.switches{
+    display:grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    width:400px;
+    font-size:12px;
+    font-family:Menlo,Monaco,Consolas,Courier New,monospace;
+    padding-top:10px;
+
+
+}
+.swithces p{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+}
+
+
+.lokitime{
+    width:200px;
+    padding:5px;
+  
+}
+.lokitags{
+  width:170px;
+  padding:5px;
+}
+
+.lokimessage{
+    padding:5px;
+    max-width:60%;
+    color:#555;
+  
+}
+.timeseconds {
+    margin-top:10px;
+    color:#222222;
+    opacity: .75;
+}
+.timeseconds:hover {
+    opacity:1;
+}
+

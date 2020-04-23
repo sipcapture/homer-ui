@@ -1,8 +1,7 @@
-import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectorRef, EventEmitter } from '@angular/core';
 import { DateTimeRangeService } from '@app/services/data-time-range.service';
 import { SearchRemoteService } from '@app/services';
 import { SearchService } from '@app/services';
-
 @Component({
     selector: 'app-tab-loki',
     templateUrl: './tab-loki.component.html',
@@ -16,6 +15,10 @@ export class TabLokiComponent implements OnInit {
     queryText: string;
     queryObject: any;
     rxText: string;
+    showTime: true
+    showTags: false
+    showTs: false
+    checked: boolean;
     resultData: Array<any> = [];
     isFirstSearch = true;
     labels: Array<any> = [];
@@ -23,7 +26,8 @@ export class TabLokiComponent implements OnInit {
     constructor(
         private _srs: SearchRemoteService,
         private _dtrs: DateTimeRangeService,
-        private searchService: SearchService
+        private searchService: SearchService,
+        private cdr : ChangeDetectorRef
     ) { }
 
     ngOnInit() {
@@ -36,6 +40,8 @@ export class TabLokiComponent implements OnInit {
         }, []).join(' | ');
 
         this.queryText = `{job="heplify-server"} ${labels}`;
+        this.cdr.detectChanges();
+        
     }
     async doSerchResult () {
         this.rxText = this.queryObject.rxText;
@@ -51,10 +57,12 @@ export class TabLokiComponent implements OnInit {
             i.custom_1 = this.highlight(i.custom_1);
             return i;
         });
+        this.cdr.detectChanges();
     }
     onUpdateData (event) {
         this.queryObject = event;
         this.queryObject.limit = 100;
+        this.cdr.detectChanges();
     }
     queryBuilder() { /** depricated, need use {SearchService} */
         return {
