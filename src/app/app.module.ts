@@ -12,6 +12,7 @@ import { AppRoutingModule } from '@app/app-routing.module';
 import { FilterPipe } from '@app/filter.pipe';
 import { SafePipe } from '@app/safe.pipe';
 import { HtmlPipe } from '@app/html.pipe';
+import { MomentPipe } from './moment.pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HepicMaterialModule } from '@app/app.material-module';
 
@@ -114,6 +115,7 @@ import { MarkdownModule } from 'ngx-markdown';
 import { ColorChromeModule } from 'ngx-color/chrome';
 import { ColorCircleModule } from 'ngx-color/circle';
 
+
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {
 };
 
@@ -124,6 +126,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         FilterPipe,
         SafePipe,
         HtmlPipe,
+        MomentPipe,
         
         /** components */
         AlertComponent,
