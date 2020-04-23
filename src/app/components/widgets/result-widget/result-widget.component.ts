@@ -66,7 +66,6 @@ export class ResultWidgetComponent implements IWidget {
             }else{
                 this.isData=false;
             }
-            console.log('test');
         }, 1000);
 
     

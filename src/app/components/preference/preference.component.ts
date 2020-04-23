@@ -174,8 +174,8 @@ export class PreferenceComponent implements OnInit, OnDestroy {
         } else {
             this.pagesStructure = {
                 users: ['Firstname', 'Lastname', 'Username', 'Email', 'tools'],
-                'user settings': ['Username', 'Partid', 'Category', 'Param', 'Data', 'tools'],
-                advanced: ['Partid', 'Category', 'Param', 'Data'],
+                'user settings': ['Username', /*'Partid',*/ 'Category', 'Param', 'Data', 'tools'],
+                advanced: [/*'Partid',*/ 'Category', 'Param', 'Data'],
             };
 
             this.service = {
