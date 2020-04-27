@@ -5,7 +5,7 @@ import { SearchService } from '@app/services';
 @Component({
     selector: 'app-tab-loki',
     templateUrl: './tab-loki.component.html',
-    styleUrls: ['./tab-loki.component.css'],
+    styleUrls: ['./tab-loki.component.scss'],
     encapsulation: ViewEncapsulation.None,
 })
 export class TabLokiComponent implements OnInit {

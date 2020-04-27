@@ -1,0 +1,32 @@
+.chart-container {
+	position: relative;
+	height: 100%;
+	width: 100%;
+}
+.fill-container {
+	height: 100%;
+	width: 100%;
+}
+.panel-setting {
+	width: 300px;
+	padding: 1rem;
+	position: relative;
+	overflow-y: auto;
+	transition: all 0.3s;
+	opacity: 1;
+	&.hide {
+		opacity: 0;
+		width: 0px;
+	}
+}
+.show-hide-label {
+	position: absolute;
+	display: inline-flex;
+	height: fit-content;
+	padding: 0;
+	z-index: 1;
+	color: #999;
+	cursor: pointer;
+	top: 0;
+	right: 0;
+}

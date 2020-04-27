@@ -21,7 +21,7 @@ export interface GeneralIframeConfig {
 @Component({
     selector: 'app-general-iframe-widget',
     templateUrl: './general-iframe-widget.component.html',
-    styleUrls: ['./general-iframe-widget.component.css']
+    styleUrls: ['./general-iframe-widget.component.scss']
 })
 @Widget({
     title: 'Embed Content',

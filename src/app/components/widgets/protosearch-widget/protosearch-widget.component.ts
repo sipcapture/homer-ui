@@ -38,7 +38,7 @@ interface SearchFieldItem {
 @Component({
     selector: 'app-protosearch-widget',
     templateUrl: './protosearch-widget.component.html',
-    styleUrls: ['./protosearch-widget.component.css']
+    styleUrls: ['./protosearch-widget.component.scss']
 })
 @Widget({
     title: 'Proto Search',

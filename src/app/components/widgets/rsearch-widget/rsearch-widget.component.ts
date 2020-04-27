@@ -10,7 +10,7 @@ import { SearchService } from '@app/services';
 @Component({
     selector: 'app-rsearch-widget',
     templateUrl: './rsearch-widget.component.html',
-    styleUrls: ['./rsearch-widget.component.css']
+    styleUrls: ['./rsearch-widget.component.scss']
 })
 @Widget({
     title: 'Loki Search',

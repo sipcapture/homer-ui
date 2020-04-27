@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 @Component({
   selector: 'app-dialog-hepsub',
   templateUrl: './dialog-hepsub.component.html',
-  styleUrls: ['./dialog-hepsub.component.css']
+  styleUrls: ['./dialog-hepsub.component.scss']
 })
 export class DialogHepsubComponent {
 

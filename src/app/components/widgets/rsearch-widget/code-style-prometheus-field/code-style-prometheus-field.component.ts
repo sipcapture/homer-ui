@@ -5,7 +5,7 @@ import { SearchRemoteService, PreferenceAdvancedService } from '@app/services';
 @Component({
     selector: 'app-code-style-prometheus-field',
     templateUrl: './code-style-prometheus-field.component.html',
-    styleUrls: ['./code-style-prometheus-field.component.css']
+    styleUrls: ['./code-style-prometheus-field.component.scss']
 })
 export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit {
     divHTML: string;
