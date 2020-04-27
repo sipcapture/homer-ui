@@ -3,7 +3,7 @@ import { Component, OnInit, Input } from '@angular/core';
 @Component({
   selector: 'app-tab-logs',
   templateUrl: './tab-logs.component.html',
-  styleUrls: ['./tab-logs.component.css']
+  styleUrls: ['./tab-logs.component.scss']
 })
 export class TabLogsComponent implements OnInit {
     _data: any;

@@ -16,7 +16,7 @@ export interface AceEditorConfig {
 @Component({
     selector: 'app-ace-editor-widget-component',
     templateUrl: 'ace-editor-widget.component.html',
-    styleUrls: ['./ace-editor-widget.component.css']
+    styleUrls: ['./ace-editor-widget.component.scss']
 })
 @Widget({
     title: 'Embed Markdown',

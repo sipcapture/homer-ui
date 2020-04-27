@@ -7,7 +7,7 @@ import * as html2canvas from 'html2canvas';
 @Component({
     selector: 'app-tab-flow',
     templateUrl: './tab-flow.component.html',
-    styleUrls: ['./tab-flow.component.css']
+    styleUrls: ['./tab-flow.component.scss']
 })
 export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('flowtitle', {static: false}) flowtitle;

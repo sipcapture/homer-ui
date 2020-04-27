@@ -10,7 +10,7 @@ import { PrometheusService } from '@app/services/prometheus.service';
 @Component({
     selector: 'app-setting-prometheus-widget-component',
     templateUrl: 'setting-prometheus-widget.component.html',
-    styleUrls: ['./setting-prometheus-widget.component.css']
+    styleUrls: ['./setting-prometheus-widget.component.scss']
 })
 
 export class SettingPrometheusWidgetComponent {

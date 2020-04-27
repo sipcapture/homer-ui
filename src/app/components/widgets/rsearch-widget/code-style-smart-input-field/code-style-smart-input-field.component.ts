@@ -5,7 +5,7 @@ import { SmartService } from '@app/services';
 @Component({
     selector: 'app-code-style-smart-input-field',
     templateUrl: './code-style-smart-input-field.component.html',
-    styleUrls: ['./code-style-smart-input-field.component.css']
+    styleUrls: ['./code-style-smart-input-field.component.scss']
 })
 export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit {
     divHTML: string;

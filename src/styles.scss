@@ -171,8 +171,8 @@ gridster-item {
   height: initial !important;
 }
 login-layout {
-  mat-card-header {
-    .mat-card-header-text {
+  & mat-card-header {
+    & .mat-card-header-text {
       margin: auto;
     }
   }
@@ -180,188 +180,199 @@ login-layout {
 ace-editor {
   box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.4);
 }
-
-.md-drppicker .ranges ul {
-  list-style: none;
-  margin: 0 auto;
-  padding: 0;
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-.md-drppicker.double.drops-down-left.ltr.show-ranges.shown {
-    top: 4.5rem !important;
-    left: auto !important;
-    right: 1rem !important;
-}
-.md-drppicker .ranges ul li button {
-  padding: 0.2rem 0.7rem !important;
-}
-.md-drppicker .ranges ul li button.active {
-    border-radius: 3px;
+.md-drppicker {
+	.ranges {
+		ul {
+			list-style: none;
+			margin: 0 auto;
+			padding: 0;
+			width: 100%;
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			li {
+				button {
+					padding: 0.2rem 0.7rem !important;
+					&.active {
+						border-radius: 3px;
+						background-color: #10c1cf !important;
+						color: #000 !important;
+					}
+				}
+			}
+		}
+	}
+	&.double {
+		&.drops-down-left {
+			&.ltr {
+				&.show-ranges {
+					&.shown {
+						top: 4.5rem !important;
+						left: auto !important;
+						right: 1rem !important;
+					}
+				}
+			}
+		}
+	}
+	.btn {
+		background-color: #10c1cf !important;
+		color: #000 !important;
+	}
 }
 .mat-dialog-content {
-  max-height: 100vh;
+	max-height: 100vh;
 }
 .mat-toolbar-row, .mat-toolbar-single-row {
-  height: 45px !important;
+	height: 45px !important;
 }
-.message-container .ngx-json-viewer {
-  height: initial !important;
+.message-container {
+	.ngx-json-viewer {
+		height: initial !important;
+	}
 }
 .detail-container {
-    border-radius: 8px !important;
+	border-radius: 8px !important;
 }
-/* top bar background & font */
-.mat-toolbar.mat-primary {
-    background: #000000;
-    color: white !important;
+.mat-toolbar {
+	&.mat-primary {
+		background: #000000;
+		color: white !important;
+	}
 }
 .calendar-table {
-    color: black !important;
+	color: black !important;
 }
-/* page titles */
 h3 {
-    font-size: 1.0rem !important;
+	font-size: 1.0rem !important;
 }
-/* log containers */
 .red-container {
-    padding: 0.3rem;
-    background-color: rgb(243, 243, 243) !important;
+	padding: 0.3rem;
+	background-color: rgb(243, 243, 243) !important;
 }
-/* export buttons */
-.mat-figure .mat-raised-button:not([class*=mat-elevation-z]) {
-    width: 80%;
-    height: 80%;
+.mat-figure {
+	.mat-raised-button {
+		&:not([class*=mat-elevation-z]) {
+			width: 80%;
+			height: 80%;
+		}
+	}
 }
-/* call-id legend */
 .label-callid {
-    background: #ffffff;
+	background: #ffffff;
 }
-/* grid settings box */
-.mat-checkbox-layout .mat-checkbox-label {
-    line-height: 24px;
-    min-width: 95px;
+.mat-checkbox-layout {
+	.mat-checkbox-label {
+		line-height: 24px;
+		min-width: 95px;
+	}
 }
-/* modal-resizable (white space) */
-.modal-resizable .mat-dialog-content {
-  max-height: initial !important;
+.modal-resizable {
+	.mat-dialog-content {
+		max-height: initial !important;
+	}
 }
-
-.div-field > span.Pwhite {
-  color: black;
+.div-field {
+	& > span {
+		&.Pwhite {
+			color: black;
+		}
+		&.Pbracket {
+			color: darkred;
+		}
+		&.Pequally {
+			color: darkgrey;
+		}
+		&.Pquotes {
+			color: darkgreen;
+		}
+		&.Plabel {
+			color: blue;
+		}
+		&.SIwhite {
+			color: black;
+		}
+		&.SIbracket {
+			color: darkred;
+		}
+		&.SInumber {
+			color: #c300da;
+		}
+		&.SIequally {
+			color: brown;
+		}
+		&.SIquotes {
+			color: darkgreen;
+			font-style: italic;
+			font-weight: bold;
+		}
+		&.SIlabel {
+			color: blue;
+			font-weight: bold;
+		}
+	}
 }
-.div-field > span.Pbracket {
-  color: darkred;
+.add-widget-button {
+	width: 200px !important;
 }
-.div-field > span.Pequally {
-  color: darkgrey;
-}
-.div-field > span.Pquotes {
-  color: darkgreen;
-}
-.div-field > span.Plabel {
-  color: blue;
-}
-
-
-.div-field > span.SIwhite {
-  color: black;
-}
-.div-field > span.SIbracket {
-  color: darkred;
-}
-.div-field > span.SInumber {
-  color: #c300da;
-}
-
-.div-field > span.SIequally {
-  color: brown;
-}
-.div-field > span.SIquotes {
-  color: darkgreen;
-  font-style: italic;
-  font-weight: bold;
-}
-.div-field > span.SIlabel {
-  color: blue;
-  font-weight: bold;
-}
-.add-widget-button{
-    width: 200px !important;
-}
-
 .md-drppicker td.active, .md-drppicker td.active:hover {
-    background-color: #10c1cf !important;
-    color: #000 !important;
-}
-
-.md-drppicker .ranges ul li button.active {
-    background-color: #10c1cf !important;
-    color: #000 !important;
-}
-
-.md-drppicker .btn {
-    background-color: #10c1cf !important;
-    color: #000 !important;
+	background-color: #10c1cf !important;
+	color: #000 !important;
 }
 .loki-highlight {
-    word-break: break-all;
+	word-break: break-all;
+	span {
+		color: black;
+		background-color: orange;
+		padding: 3px 0;
+		border-radius: 4px;
+	}
 }
-.loki-highlight span {
-    color: black;
-    background-color: orange;
-    padding: 3px 0;
-    border-radius: 4px;
+.action-buttons {
+	padding: 5px;
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+	& > button {
+		margin: 7px;
+		font-size: 0.65em;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		color: #3f3f3f;
+		opacity: 0.85;
+		&:hover {
+			opacity: 1;
+		}
+	}
+}
+.setting-buttons {
+	padding: 5px;
+	position: relative;
+	bottom: 10px;
+	right: 10px;
+	& > button {
+		margin: 7px;
+		font-size: .65em;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		color: #3f3f3f;
+		opacity: 0.85;
+		&:hover {
+			opacity: 1;
+		}
+	}
+}
+.widget-block {
+	padding: 10px;
+}
+.example-container {
+	font-size: 13px;
+}
+.circle-swatch {
+	.swatch {
+		border: 1px solid;
+	}
+}
+.chrome-picker {
+	width: 156px !important;
 }
 
-.action-buttons{
-  padding:5px;
-  position:absolute;
-  bottom:10px;
-  right:10px;
-}
-.action-buttons > button{
-  margin:7px;
-  font-size:0.65em;
-  text-transform:uppercase;
-  letter-spacing:1px;
-  color:#3f3f3f;
-  opacity: 0.85;
-}
-.action-buttons > button:hover{
-  opacity:1;
-}
-
-.setting-buttons{
-  padding:5px;
-  position:relative;
-  bottom:10px;
-  right:10px;
-}
-.setting-buttons > button{
-  margin:7px;
-  font-size:.65em;
-  text-transform:uppercase;
-  letter-spacing:1px;
-  color:#3f3f3f;
-  opacity: 0.85;
-}
-.setting-buttons > button:hover{
-  opacity:1;
-}
-.widget-block{
-  padding:10px;
-}
-.example-container{
-  font-size:13px;
-}
-
-.circle-swatch .swatch {
-  border: 1px solid;
-}
-
-.chrome-picker{
-  width: 156px !important;
-}

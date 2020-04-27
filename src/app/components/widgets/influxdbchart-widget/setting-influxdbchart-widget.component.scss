@@ -1,0 +1,45 @@
+.chack-list {
+	margin-right: 1.3rem;
+}
+.title {
+	margin: -1.5rem -1.5rem 2rem -1.5rem;
+	width: initial !important;
+	display: flex;
+	justify-content: space-between;
+}
+.example-container {
+	display: flex;
+	flex-direction: column;
+	& > * {
+		width: 100%;
+	}
+	& > div {
+		& > .mat-form-field {
+			padding-right: 0.5rem;
+		}
+	}
+	blockquote {
+		display: inline-block;
+		margin: 4px;
+		background-color: bisque;
+		font-family: monospace;
+		padding: 0 5px;
+		border-radius: 4px;
+	}
+}
+.custom-mat-chip {
+	min-height: 26px;
+	padding-left: 10px !important;
+	padding-right: 4px !important;
+}
+.chips-container {
+	position: absolute;
+	z-index: 9999;
+}
+.chips-container-selector {
+	::ng-deep {
+		.mat-select-value {
+			opacity: 0;
+		}
+	}
+}

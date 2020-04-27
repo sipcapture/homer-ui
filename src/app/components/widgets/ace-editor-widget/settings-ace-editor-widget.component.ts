@@ -5,7 +5,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dial
 @Component({
     selector: 'app-settings-ace-editor-widget-component',
     templateUrl: 'settings-ace-editor-widget.component.html',
-    styleUrls: ['./settings-ace-editor-widget.component.css']
+    styleUrls: ['./settings-ace-editor-widget.component.scss']
 })
 export class SettingsAceEditorWidgetComponent {
     @ViewChild('editor', {static: false}) editor;

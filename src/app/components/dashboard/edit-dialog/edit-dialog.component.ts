@@ -16,7 +16,7 @@ export interface DashboardConfig {
 @Component({
     selector: 'app-edit-dialog',
     templateUrl: './edit-dialog.component.html',
-    styleUrls: ['./edit-dialog.component.css']
+    styleUrls: ['./edit-dialog.component.scss']
 })
 export class EditDialogComponent {
     typeList = [];

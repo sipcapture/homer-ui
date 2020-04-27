@@ -6,7 +6,7 @@ import { SelectList } from '../influxdbchart-widget/setting-influxdbchart-widget
 @Component({
     selector: 'app-iframe-rsearch-widget-component',
     templateUrl: 'setting-general-iframe-widget.component.html',
-    styleUrls: ['./setting-general-iframe-widget.component.css']
+    styleUrls: ['./setting-general-iframe-widget.component.scss']
 })
 
 export class SettingGeneralIframeWidgetComponent {

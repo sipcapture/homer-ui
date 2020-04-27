@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 @Component({
     selector: 'app-dialog-authkey',
     templateUrl: './dialog-authkey.component.html',
-    styleUrls: ['./dialog-authkey.component.css']
+    styleUrls: ['./dialog-authkey.component.scss']
 })
 export class DialogAuthKeyComponent {    
     constructor(

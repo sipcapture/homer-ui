@@ -1,0 +1,127 @@
+.on-top {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 1px;
+	height: 1px;
+	margin: auto;
+}
+.detail-container {
+	position: relative;
+	min-width: 200px;
+	min-height: 200px;
+	width: 60vw;
+	border: solid 1px #ccc;
+	color: rgba(0, 0, 0, 0.87);
+	justify-content: center;
+	padding: 1.5rem;
+	overflow: hidden;
+	background: #fff;
+	border-radius: 4px;
+	z-index: 1;
+	opacity: 1;
+	box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
+                0 2px 2px 0 rgba(0, 0, 0, 0.14),
+                0 1px 5px 0 rgba(0, 0, 0, 0.12);
+	.title {
+		cursor: move;
+	}
+	&:active {
+		box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+                0 8px 10px 1px rgba(0, 0, 0, 0.14),
+                0 3px 14px 2px rgba(0, 0, 0, 0.12);
+	}
+	&.full-page {
+		border: solid 0px #ccc;
+		border-radius: 0px;
+		min-width: 100vw !important;
+		width: 100vw !important;
+		min-height: 100vh !important;
+		transform: translate3d(0px, 0px, 0px) !important;
+	}
+	table {
+		width: 100%;
+		overflow: auto;
+		tr {
+			&:hover {
+				background-color: rgba(0, 0, 0, 0.12);
+				cursor: pointer;
+			}
+		}
+	}
+}
+.title {
+	margin: -1.5rem -1.5rem 0 -1.5rem;
+	width: initial !important;
+	display: flex;
+	justify-content: space-between;
+}
+.inside-content {
+	position: absolute;
+	left: 0.3rem;
+	right: 0.3rem;
+	top: 45px;
+	bottom: 0.3rem;
+}
+.animation-off {
+	transition: none;
+}
+.resize {
+	position: absolute;
+	&.right {
+		width: 0.5rem;
+		right: 0;
+		height: 100%;
+		top: 0;
+		cursor: ew-resize;
+	}
+	&.bottom {
+		bottom: 0;
+		height: 0.5rem;
+		width: 100%;
+		left: 0;
+		cursor: ns-resize;
+	}
+	&.left {
+		width: 0.5rem;
+		left: 0;
+		height: 100%;
+		top: 0;
+		cursor: ew-resize;
+	}
+	&.top {
+		top: 0;
+		height: 0.5rem;
+		width: 100%;
+		left: 0;
+		cursor: ns-resize;
+	}
+	&.corner {
+		width: 1rem;
+		height: 1rem;
+		cursor: nwse-resize;
+		&.tl {
+			top: 0;
+			left: 0;
+		}
+		&.tr {
+			top: 0;
+			right: 0;
+			cursor: nesw-resize;
+		}
+		&.bl {
+			bottom: 0;
+			left: 0;
+			cursor: nesw-resize;
+		}
+		&.br {
+			right: 0;
+			bottom: 0;
+		}
+	}
+}

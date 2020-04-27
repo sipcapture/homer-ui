@@ -12,7 +12,7 @@ export interface DialogData {
 @Component({
     selector: 'app-grid-setting-dialog',
     templateUrl: 'grid-settings-dialog.html',
-    styleUrls: ['./grid-settings-dialog.css']
+    styleUrls: ['./grid-settings-dialog.scss']
 })
 export class DialogSettingsGridDialog {
 

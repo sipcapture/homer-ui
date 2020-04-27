@@ -1,0 +1,45 @@
+.box.clock-widget > h2,
+.box.clock-widget > h3,
+.box.clock-widget > h5,
+.box.clock-widget > p {
+	text-align: center;
+}
+.box {
+	&.clock-widget {
+		height: 100%;
+	}
+}
+.analog-clock {
+	position: relative;
+	margin: 30px auto 0;
+	width: 200px;
+	height: 200px;
+	background-color: aliceblue;
+	border-radius: 50%;
+}
+.hand {
+	position: absolute;
+	left: 50%;
+	width: 1px;
+	height: 50%;
+	transform-origin: 100% 100%;
+}
+.hour {
+	background-color: #f44336;
+}
+.minute {
+	background-color: #3f51b5;
+}
+.second {
+	background-color: #9e9e9e;
+}
+.center-circle {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate3d(-50%, -50%, 0);
+	width: 14px;
+	height: 14px;
+	background-color: black;
+	border-radius: 50%;
+}
