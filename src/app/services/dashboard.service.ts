@@ -6,6 +6,7 @@ import { environment } from '@environments/environment';
 
 export interface DashboardEventData {
     current: string;
+    currentWidget: any;
     currentWidgetList: Array<any>;
     resultWidget?: any;
 }
@@ -17,6 +18,7 @@ export interface DashboardEventData {
 export class DashboardService {
     static dbSetting: DashboardEventData = {
         current: '',
+        currentWidget: '',
         currentWidgetList: [],
         resultWidget: {}
     };
@@ -38,6 +40,7 @@ export class DashboardService {
     clearLocalStorage() {
         this.dbs = {
             current: '',
+            currentWidget: {},
             currentWidgetList: [],
             resultWidget: {}
         };
@@ -46,7 +49,10 @@ export class DashboardService {
         this.dbs.current = val;
         this.update();
     }
-
+    setCurrentWidgetId(val: any) {
+        this.dbs.currentWidget = val;
+        this.update();
+    }
     setWidgetListCurrentDashboard(widgetList: any) {
         this.dbs.currentWidgetList = widgetList;
         this.update();

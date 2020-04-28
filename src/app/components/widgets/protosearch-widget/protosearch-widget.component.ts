@@ -45,7 +45,8 @@ interface SearchFieldItem {
     description: 'Display Protocol Search Form',
     category: 'Search',
     indexName: 'display-results',
-    className: 'ProtosearchWidgetComponent'
+    className: 'ProtosearchWidgetComponent',
+    submit: true,
 })
 export class ProtosearchWidgetComponent implements IWidget {
     @Input() id: string;
@@ -137,7 +138,7 @@ export class ProtosearchWidgetComponent implements IWidget {
         this.initSubscribes();
         this.checkLast();
     }
-    @HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+    /*@HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
         if (event.key === "Enter" && event.ctrlKey === true) {
             if(localStorage.getItem('lastWidget') === this.id){
                 this.doSearchResult ();
@@ -159,9 +160,10 @@ export class ProtosearchWidgetComponent implements IWidget {
             }else{
                 i=0
             }
+            console.log(this._ds.dbs.current);
             localStorage.setItem('lastWidget',indexes[i].id);
         } 
-    }
+    }*/
     @HostListener('document:mouseover', ['$event']) onMouseoverHandler(event: any) {
         let widgets =  this._ds.dbs.currentWidgetList;
         let thisWidget =  widgets.findIndex(widget => widget.id === this.id)
@@ -563,7 +565,6 @@ export class ProtosearchWidgetComponent implements IWidget {
             this.dosearch.emit({});
             return;
         }
-
         this.router.navigate(['search/result']);
         this.dosearch.emit({});
     }
