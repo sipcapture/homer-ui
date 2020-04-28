@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 @Component({
   selector: 'app-dialog-agentsub',
   templateUrl: './dialog-agentsub.component.html',
-  styleUrls: ['./dialog-agentsub.component.css']
+  styleUrls: ['./dialog-agentsub.component.scss']
 })
 export class DialogAgentsubComponent {
 

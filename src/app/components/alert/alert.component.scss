@@ -1,0 +1,51 @@
+.alert {
+	width: 400px;
+	padding-right: 15px;
+	padding-left: 70px;
+	position: absolute;
+	top: auto;
+	bottom: 40px;
+	left: 30px;
+	color: white;
+}
+.alert-danger {
+	background-color: #F44336;
+	.circle {
+		color: #F44336;
+	}
+}
+.alert-success {
+	background-color: #8BC34A;
+	.circle {
+		color: #8BC34A;
+	}
+}
+.circle {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 100%;
+	background-color: white;
+}
+.alert-type {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: rgba(0,0,0,.14);
+	width: 60px;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+.close-message {
+	font-size: 20px;
+	height: 20px;
+	width: 20px;
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	cursor: pointer;
+}

@@ -9,7 +9,7 @@ import { Functions } from '@app/helpers/functions';
 @Component({
     selector: 'app-result-widget',
     templateUrl: './result-widget.component.html',
-    styleUrls: ['./result-widget.component.css']
+    styleUrls: ['./result-widget.component.scss']
 })
 @Widget({
     title: 'Display Results',

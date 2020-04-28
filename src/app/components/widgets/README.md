@@ -98,7 +98,7 @@ import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
             <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
         </div>
     `,
-    styleUrls: ['./my-clock-widget.component.css']
+    styleUrls: ['./my-clock-widget.component.scss']
 })
 
 export class SettingMyWidgetComponent {

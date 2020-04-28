@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 @Component({
   selector: 'app-dialog-authtoken-display',
   templateUrl: './dialog-authtoken-display.component.html',
-  styleUrls: ['./dialog-authtoken-display.component.css']
+  styleUrls: ['./dialog-authtoken-display.component.scss']
 })
 
 export class DialogAuthTokenDisplayComponent {

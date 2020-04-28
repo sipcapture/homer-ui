@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 @Component({
     selector: 'app-setting-result-widget-component',
     templateUrl: 'setting-result-widget.component.html',
-    styleUrls: ['./setting-result-widget.component.css']
+    styleUrls: ['./setting-result-widget.component.scss']
 })
 export class SettingResultWidgetComponent {
     constructor(

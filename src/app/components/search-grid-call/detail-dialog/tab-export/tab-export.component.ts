@@ -7,7 +7,7 @@ import { SearchService } from '@app/services';
 @Component({
   selector: 'app-tab-export',
   templateUrl: './tab-export.component.html',
-  styleUrls: ['./tab-export.component.css']
+  styleUrls: ['./tab-export.component.scss']
 })
 export class TabExportComponent implements OnInit {
     @Input() callid;

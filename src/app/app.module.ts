@@ -15,7 +15,7 @@ import { HtmlPipe } from '@app/html.pipe';
 import { MomentPipe } from './moment.pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HepicMaterialModule } from '@app/app.material-module';
-
+import {MatIconModule} from '@angular/material/icon';
 /* @app/components */
 // import * as components from '@app/components';
 // import * as widgets from '@app/components/widgets';
@@ -222,6 +222,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         routing,
         AppRoutingModule,
         HepicMaterialModule,
+        MatIconModule,
         AgGridModule.withComponents([]),
         NgxDaterangepickerMd.forRoot(),
         NgxJsonViewerModule,
