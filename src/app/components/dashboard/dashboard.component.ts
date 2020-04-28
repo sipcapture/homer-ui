@@ -1,5 +1,5 @@
 // GRIDSTER & ANGULAR
-import { Component, OnInit, ViewEncapsulation, ViewChildren, QueryList, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChildren, QueryList, OnDestroy, AfterViewInit, ViewChild, HostListener } from '@angular/core';
 import { GridsterConfig, GridType } from 'angular-gridster2';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DashboardModel, DashboardContentModel } from '@app/models';
@@ -36,7 +36,27 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         private _ds: DashboardService,
         private router: Router,
         public dialog: MatDialog) {}
+    @HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+        if (event.key === "Enter" && event.ctrlKey === true) {
+            const w: IWidget = WidgetArrayInstance[this._ds.dbs.currentWidget.id];
+            if (w && w.doSearchResult) {
+                w.doSearchResult();
+            }
 
+        }
+        let widgets =  this._ds.dbs.currentWidgetList;
+        let firstWidget =  widgets.findIndex(widget => widget.strongIndex === "ProtosearchWidgetComponent")
+        if (event.key === "Tab" && event.shiftKey === true) {
+            event.preventDefault();
+            let i = widgets.findIndex(widget => widget.id === this._ds.dbs.currentWidget.id);
+            if(i<this.submitCheck().length -1){
+                i++;
+            }else{
+                i=0
+            }
+            this._ds.setCurrentWidgetId(this.submitCheck()[i]);
+        } 
+    }
     ngOnInit() {
         // Grid options
         this.gridOptions = {
@@ -161,7 +181,30 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.scrollTop();
         });
     }
-
+    submitCheck(){
+        let submitWidgets = [];
+        let dashboardSubmitWidgets = [];
+        for(let i = 0; i<WidgetArray.length;i++){
+            if(WidgetArray[i].submit){
+                submitWidgets.push(WidgetArray[i]);
+            }
+        }
+        for(let i=0; i<this._ds.dbs.currentWidgetList.length;i++){
+            for(let j=0; j<submitWidgets.length;j++){
+                if(this._ds.dbs.currentWidgetList[i].strongIndex === submitWidgets[j].strongIndex){
+                    dashboardSubmitWidgets.push(this._ds.dbs.currentWidgetList[i])
+                }
+            }
+        }
+        return dashboardSubmitWidgets;
+    }
+    changeCurrent(id:string){
+        for(let i = 0; i<this.submitCheck().length; i++){
+            if(id===this.submitCheck()[i].id){
+                this._ds.setCurrentWidgetId(this.submitCheck()[i]);
+            }
+        }
+    }
     itemChange(item: any) {
         if (item.name === 'iframe') {
             const w: IWidget = WidgetArrayInstance[item.id];
