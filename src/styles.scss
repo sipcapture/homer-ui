@@ -1,14 +1,54 @@
 /* You can add global styles to this file, and also import other style files */
 
-
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
-@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500");
-@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
-@import url("//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css");
 
+@import '~bootstrap/dist/css/bootstrap.min.css';
 @import '~@angular/material/theming';
 @import 'theme.scss';
 @include mat-core();
+// add material icons styles font
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(./assets/fonts/MaterialIcons-Regular.eot); /* For IE6-8 */
+  src: local('Material Icons'),
+       local('MaterialIcons-Regular'),
+       url(./assets/fonts/MaterialIcons-Regular.woff2) format('woff2'),
+       url(./assets/fonts/MaterialIcons-Regular.woff) format('woff'),
+       url(./assets/fonts/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+h1,h2,h3,h4,p,mat-label,div,strong,em,b{
+	font-family:Helvetica, Arial, sans-serif;
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+
 
 // using deeppurple-amber color combo: https://github.com/angular/material2/blob/master/src/lib/core/theming/prebuilt/deeppurple-amber.scss
 $primary: mat-palette($homerprimary);
@@ -36,14 +76,6 @@ $row-border-width: 1px;
 $hover-color: cornsilk;
 $ag-suppress-legacy-var-import: true;
 
-/* 
-.ag-cell {
-	-webkit-user-select:text;
-	-moz-user-select:text;
-	-ms-user-select:text;
-	user-select:text;
-}
-*/
 
 a:not([href]){
   cursor: pointer; 
@@ -109,67 +141,73 @@ gridster-item {
 }
 
 .box-header {
-  border-bottom: 1px solid #fff;
-  padding: 0 30px 0 10px;
-  cursor: move;
-  position: relative;
+	border-bottom: 1px solid #fff;
+	padding: 0 30px 0 10px;
+	cursor: move;
+	position: relative;
+	h3 {
+		margin-top: 8px;
+		display: inline-block;
+		color: #909090;
+	
+  font-size: 14px !important;
+		text-transform: uppercase;
+	}
 }
-
-.box-header h3 {
-  margin-top: 8px;
-  display: inline-block;
-  color: #909090;
-  /* color: #e4e4e4; */
-  font-size: 12px;
-  text-transform: uppercase;
-}
-
 .box-header-btns {
-  top: 4px;
-  right: 10px;
-  cursor: pointer;
-  position: absolute;
+	top: 4px;
+	right: 10px;
+	cursor: pointer;
+	position: absolute;
 }
-
 .box-icon-header {
-  font-size: 16px; 
+	font-size: 16px;
 }
-
 .pull-right {
-  font-size: 16px;
-  color: #333;
-  text-decoration: none;  
+	font-size: 16px;
+	color: #333;
+	text-decoration: none;
 }
-
 [draggable] {
-  user-select: none;
-  cursor: pointer;
+	user-select: none;
+	cursor: pointer;
 }
-
-.header .ng-star-inserted .md-drppicker .buttons {
-  position: absolute;
-  right: 1rem;
-  bottom: 1rem;
+.header {
+	.ng-star-inserted {
+		.md-drppicker {
+			.buttons {
+				position: absolute;
+				right: 1rem;
+				bottom: 1rem;
+			}
+		}
+	}
 }
-
 .alert {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  z-index: 9999;
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	z-index: 9999;
+}
+.detail-container {
+	.mat-tab-body-wrapper {
+		height: 100%;
+	}
+}
+.out-window {
+	.mat-tab-body-content {
+		&.ng-trigger {
+			&.ng-trigger-translateTab {
+				height: calc(100vh - 3.05rem) !important;
+			}
+		}
+	}
+	.ngx-json-viewer {
+		height: initial !important;
+	}
 }
 
-.detail-container .mat-tab-body-wrapper {
-    height: 100%
-}
-
-.out-window .mat-tab-body-content.ng-trigger.ng-trigger-translateTab {
-  height: calc(100vh - 3.05rem) !important;
-}
-.out-window .ngx-json-viewer {
-  height: initial !important;
-}
 login-layout {
   & mat-card-header {
     & .mat-card-header-text {
