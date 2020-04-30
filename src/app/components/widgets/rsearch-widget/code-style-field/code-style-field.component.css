@@ -7,7 +7,7 @@
     background-color: rgb(253, 255, 226);
     margin-bottom: 1.25em;
     min-height: 28px;
-    max-height: 28px;
+    word-break: break-all;
 }
 .menu-title {
     background: rgba(0,0,0,0.1);

@@ -170,8 +170,8 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
             event.preventDefault();
             return;
         }
-
-        if ([221].indexOf(event.keyCode) !== -1) {
+        console.log('test')
+        if (['}',']',')'].indexOf(event.key) !== -1) {
             if (')}]'.indexOf(this.editor.innerText[0]) !== -1) {
                 this.editor.innerText = this.editor.innerText.slice(1);
             }
@@ -182,7 +182,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
             event.preventDefault();
             return false;
         }
-        if ([219, 222, 188, 187, 192].indexOf(event.keyCode) !== -1) {
+        if (['{','[','"',"'",',','=','`'].indexOf(event.key) !== -1) {
         // if (['[', '"', ',', '=', '`'].includes(event.key)) {
 
             const getLastLetter = window.getSelection().anchorNode.textContent.split('')[0];
