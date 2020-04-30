@@ -4,7 +4,7 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag
 @Component({
     selector: 'app-drag-drop-list',
     templateUrl: './drag-drop-list.component.html',
-    styleUrls: ['./drag-drop-list.component.css']
+    styleUrls: ['./drag-drop-list.component.scss']
 })
 export class DragDropListComponent implements OnInit {
     _list: Array<any>;

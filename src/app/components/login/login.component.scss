@@ -17,10 +17,10 @@ mat-card-content {
         text-align: center;
         display: flex;
         flex-direction: column;
-        h2 {
+        & h2 {
             margin-top: 2rem;
         }
-        > img {
+        & > img {
             width: 190px;
         }
     }

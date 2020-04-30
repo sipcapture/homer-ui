@@ -46,7 +46,7 @@ import { SessionStorageService } from '../../services/session-storage.service';
 @Component({
     selector: 'app-preference',
     templateUrl: './preference.component.html',
-    styleUrls: ['./preference.component.css']
+    styleUrls: ['./preference.component.scss']
 })
 export class PreferenceComponent implements OnInit, OnDestroy {
     isLoading = false;

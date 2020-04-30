@@ -6,7 +6,7 @@ import { PreferenceAdvancedService } from '@app/services';
 @Component({
   selector: 'app-add-dialog',
   templateUrl: './add-dialog.component.html',
-  styleUrls: ['./add-dialog.component.css']
+  styleUrls: ['./add-dialog.component.scss']
 })
 export class AddDialogComponent {
     widgets = {};

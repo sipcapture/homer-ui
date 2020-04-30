@@ -1,0 +1,21 @@
+table {
+	width: 100%;
+	overflow: auto;
+	tr {
+		transition: background-color 0.3s;
+		height: 38px;
+		&:hover {
+			background-color: rgba(0, 0, 0, 0.12);
+			cursor: pointer;
+		}
+	}
+}
+
+.mat-row {
+  &:nth-child(2n+1){
+    background-color: #e4f0ec;
+  }
+  &:not(:nth-child(2n+1)){
+    background-color:#ffffff;
+  }
+}

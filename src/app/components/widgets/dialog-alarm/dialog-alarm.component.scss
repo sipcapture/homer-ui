@@ -1,0 +1,19 @@
+.title {
+	margin: -1.5rem -1.5rem 2rem -1.5rem;
+	width: initial !important;
+	display: flex;
+	justify-content: space-between;
+}
+.example-container {
+	display: flex;
+	flex-direction: column;
+	& > * {
+		width: 100%;
+	}
+}
+.alarm {
+	font-size: 54pt;
+	color: red;
+	height: 71px;
+	width: 71px;
+}
