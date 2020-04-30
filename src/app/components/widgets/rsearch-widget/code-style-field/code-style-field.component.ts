@@ -170,7 +170,6 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
             event.preventDefault();
             return;
         }
-        console.log('test')
         if (['}',']',')'].indexOf(event.key) !== -1) {
             if (')}]'.indexOf(this.editor.innerText[0]) !== -1) {
                 this.editor.innerText = this.editor.innerText.slice(1);
