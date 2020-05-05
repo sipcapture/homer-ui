@@ -99,18 +99,17 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             maxRows: 5,
         };
         this.getData();
-        this._interval = setInterval(() => {
+    }
+    checkWidgets(){
             let widgets =  this._ds.dbs.currentWidgetList;
             let limitedWidgets = [];
             for(let i=0;i<WidgetArray.length;i++){
-                
                 if(WidgetArray[i].minHeight != undefined && limitedWidgets.indexOf(WidgetArray[i]) === -1){
                     limitedWidgets.push(WidgetArray[i]);
                 }
                 if(WidgetArray[i].minWidth != undefined  && limitedWidgets.indexOf(WidgetArray[i]) === -1){
                     limitedWidgets.push(WidgetArray[i]);
                 }
-
             }
             for(let i=0;i<widgets.length;i++){
                 for(let j=0;j<limitedWidgets.length;j++){
@@ -119,33 +118,39 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                     }
                 }
             }
-        }, 1000);
+
     }
     checkSize(id,widgetType){
         let widget = document.getElementById(id);
-        if(widget.getBoundingClientRect().width>widgetType.minWidth){
-            this.limitSize(id,'height',widgetType.minWidth);
-        };
-        if(widget.getBoundingClientRect().height>widgetType.minHeight){
-            this.limitSize(id,'width',widgetType.minHeight);
+        if (widgetType.minWidth != undefined && widgetType.minHeight != undefined) {
+            this.limitSize(id,widgetType.minHeight,widgetType.minWidth);
+        }else if(widgetType.minHeight != undefined){
+            this.limitSize(id,widgetType.minHeight,1);
+        }else if(widgetType.minWidth != undefined){
+            this.limitSize(id,1,widgetType.minWidth);
         };
     }
-    limitSize(id,dim,size){
-        let columnRes = screen.width / this.dashboardCollection.data.config.columns;
-
-        if(dim==='width'){
+    limitSize(id,height,width){
+        if(this.dashboardCollection.data.config.ignoreMinSize === false){
+            let grid = document.getElementById('gridster');
+            let columnRes = grid.getBoundingClientRect().width / this.dashboardCollection.data.config.columns;
+            let rowRes = grid.getBoundingClientRect().height / this.dashboardCollection.data.config.maxrows;
             let i = this.dashboardArray.findIndex(widget => widget.id === id);
-            let colAmount = Math.ceil(size/columnRes);
-            this.dashboardArray[i].minItemCols=1;
-            console.log(size + "/"+columnRes + '=' + colAmount)
+            let colAmount = Math.ceil(width/columnRes);
+            this.dashboardArray[i].cols=colAmount
+            this.dashboardArray[i].minItemCols=colAmount;
+            let rowAmount = Math.ceil(height/rowRes);
+            this.dashboardArray[i].rows=rowAmount;
+            this.dashboardArray[i].minItemRows=rowAmount;
+        }else{
+            for(let i = 0; i<this.dashboardArray.length;i++){
+                this.dashboardArray[i].minItemRows=1;
+                this.dashboardArray[i].minItemCols=1;
+            }
         }
-/*        if(dim==='height'){
-            let i = this.dashboardArray.findIndex(widget => widget.id === id);
-
-            this.dashboardArray[i].minItemRows=1;
-        }*/
-
+        this.gridOptions.api.optionsChanged();
     }
+
     ngAfterViewInit () {
         this.updateTrigger();
     }
@@ -282,6 +287,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 break;
         }
         this.gridOptions.api.optionsChanged();
+        setTimeout(() => {
+            this.checkWidgets();
+        },100);
     }
 
     openSettings(item: any) {
@@ -325,6 +333,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.dashboardArray.push(widget);
         this.save();
         this._ds.update();
+        setTimeout(() => {
+            this.checkWidgets();
+        },100);
     }
     onDownloadDashboardSettings() {
         Functions.saveToFile(JSON.stringify(this.dashboardCollection, null, 2), `${this.dashboardTitle}.json`);
@@ -342,6 +353,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             columns: _d.config.columns || 5,
             maxrows: _d.config.maxrows || 5,
             pushing: !!_d.config.pushing,
+            ignoreMinSize: _d.config.ignoreMinSize || false,
             gridType: _d.config.gridType || GridType.Fit,
         }});
 
@@ -362,6 +374,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             dd.config.columns = data.columns;
             dd.config.maxrows = data.maxrows;
             dd.config.pushing = data.pushing;
+            dd.config.ignoreMinSize = data.ignoreMinSize;
             dd.config.gridType = data.gridType;
 
             ((g, c) => {
@@ -383,6 +396,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.getData();
             this._ds.update();
         });
+        setTimeout(() => {
+            this.checkWidgets();
+        },100);
     }
 
     async onDashboardDelete() {
@@ -410,6 +426,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngOnDestroy() {
+        clearInterval(this._interval);
     }
 
     private getWidgetItemClass(item: DashboardContentModel): IWidgetMetaData {

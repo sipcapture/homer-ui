@@ -11,7 +11,7 @@
 	<div *ngIf="isIframe">
 		<iframe [src]="iframeUrl | safe"></iframe>
 	</div>
-	<gridster *ngIf="!isIframe" [options]="gridOptions">
+	<gridster *ngIf="!isIframe" [options]="gridOptions" id="gridster">
 		<gridster-item [item]="item" *ngFor="let item of dashboardArray; let i = index;" class="widget-item" (mouseover)="changeCurrent(item.id)" id={{item.id}}>
 			<div class="box-header drag-handler" 
 				(mouseenter)="hoverme=true" 
