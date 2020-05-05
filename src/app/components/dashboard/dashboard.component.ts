@@ -28,6 +28,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     isHome = false;
     iframeUrl: string;
     postSaveHash: string;
+    _interval: any;
     @ViewChildren('widgets') widgets: QueryList<IWidget>;
     @ViewChild('customWidget', {static: false}) customWidget: any;
 
@@ -98,6 +99,52 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             maxRows: 5,
         };
         this.getData();
+        this._interval = setInterval(() => {
+            let widgets =  this._ds.dbs.currentWidgetList;
+            let limitedWidgets = [];
+            for(let i=0;i<WidgetArray.length;i++){
+                
+                if(WidgetArray[i].minHeight != undefined && limitedWidgets.indexOf(WidgetArray[i]) === -1){
+                    limitedWidgets.push(WidgetArray[i]);
+                }
+                if(WidgetArray[i].minWidth != undefined  && limitedWidgets.indexOf(WidgetArray[i]) === -1){
+                    limitedWidgets.push(WidgetArray[i]);
+                }
+
+            }
+            for(let i=0;i<widgets.length;i++){
+                for(let j=0;j<limitedWidgets.length;j++){
+                    if(widgets[i].strongIndex === limitedWidgets[j].strongIndex){
+                        this.checkSize(widgets[i].id,limitedWidgets[j]);
+                    }
+                }
+            }
+        }, 1000);
+    }
+    checkSize(id,widgetType){
+        let widget = document.getElementById(id);
+        if(widget.getBoundingClientRect().width>widgetType.minWidth){
+            this.limitSize(id,'height',widgetType.minWidth);
+        };
+        if(widget.getBoundingClientRect().height>widgetType.minHeight){
+            this.limitSize(id,'width',widgetType.minHeight);
+        };
+    }
+    limitSize(id,dim,size){
+        let columnRes = screen.width / this.dashboardCollection.data.config.columns;
+
+        if(dim==='width'){
+            let i = this.dashboardArray.findIndex(widget => widget.id === id);
+            let colAmount = Math.ceil(size/columnRes);
+            this.dashboardArray[i].minItemCols=1;
+            console.log(size + "/"+columnRes + '=' + colAmount)
+        }
+/*        if(dim==='height'){
+            let i = this.dashboardArray.findIndex(widget => widget.id === id);
+
+            this.dashboardArray[i].minItemRows=1;
+        }*/
+
     }
     ngAfterViewInit () {
         this.updateTrigger();
