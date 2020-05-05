@@ -1,0 +1,11 @@
+.example-container {
+	display: grid;
+	grid-template-columns: 1fr;
+	column-gap: 10px;
+	padding: 20px;
+	& > * {
+		font-size: 13px;
+		line-height: 13px;
+		letter-spacing: 1px;
+	}
+}

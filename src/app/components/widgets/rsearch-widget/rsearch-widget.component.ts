@@ -10,7 +10,7 @@ import { SearchService } from '@app/services';
 @Component({
     selector: 'app-rsearch-widget',
     templateUrl: './rsearch-widget.component.html',
-    styleUrls: ['./rsearch-widget.component.css']
+    styleUrls: ['./rsearch-widget.component.scss']
 })
 @Widget({
     title: 'Loki Search',
@@ -18,7 +18,8 @@ import { SearchService } from '@app/services';
     category: 'Search',
     indexName: 'rsearch',
     settingWindow: false,
-    className: 'RsearchWidgetComponent'
+    className: 'RsearchWidgetComponent',
+    submit: true,
 })
 export class RsearchWidgetComponent implements IWidget {
     @Input() id: string;

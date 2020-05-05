@@ -9,7 +9,7 @@ import { Functions } from '@app/helpers/functions';
 @Component({
     selector: 'app-result-widget',
     templateUrl: './result-widget.component.html',
-    styleUrls: ['./result-widget.component.css']
+    styleUrls: ['./result-widget.component.scss']
 })
 @Widget({
     title: 'Display Results',
@@ -66,7 +66,6 @@ export class ResultWidgetComponent implements IWidget {
             }else{
                 this.isData=false;
             }
-            console.log('test');
         }, 1000);
 
     

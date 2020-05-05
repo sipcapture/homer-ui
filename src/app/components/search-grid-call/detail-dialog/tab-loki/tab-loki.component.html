@@ -11,17 +11,37 @@
     </div>
 </div>
 <div>
-    <div *ngIf="resultData.length === 0" class="content-body">
+    <div *ngIf="resultData.length === 0" class="loki-body">
         <strong>Ready to Search Logs!</strong> Fine tune your query and hit Refresh
         <div *ngIf="!isFirstSearch">
             <i>[ No Result Found ]</i>
         </div>
     </div>
-    <div *ngIf="resultData.length > 0" >
-        <div *ngFor="let i of resultData" class="content-body item">
-            <span class="item-text">{{i.micro_ts}} </span>
-            <span style="color: red" class="item-text"> {{i.custom_2}} </span><br/>
-            <span class="item-text loki-highlight" [innerHTML]="i.custom_1"></span>
+    
+    <div *ngIf="resultData.length > 0" class="loki-search">
+        <div class="switches">
+            
+            <div class="time-display"> <mat-checkbox class="example-margin" [(ngModel)]="showTime">Time</mat-checkbox> </div>
+            <div class="tags-display" *ngIf="showTime"> <mat-checkbox class="example-margin" [(ngModel)]="showTs">Timeseconds</mat-checkbox> </div>
+            <div class="tags-display"> <mat-checkbox class="example-margin" [(ngModel)]="showTags">Tags</mat-checkbox> </div>   
+          </div>
+
+        <div class="header-loki">
+            <div class="item-tex-loki lokitime" *ngIf="showTime">Time</div>
+            <div class="item-tex-loki lokitags" *ngIf="showTags">Tags</div>
+            <div class="item-tex-loki lokimessage">Messages</div>
         </div>
+
+        <div class="loki-container">
+        <div *ngFor="let i of resultData trackBy : identify" class="loki-body item">
+            <div class="item-tex-loki hover lokitime" 
+            *ngIf="showTime">{{i.micro_ts | moment:'YYYY-MM-DD HH:mm:ss'}} <p *ngIf="showTs" class="timeseconds">{{i.micro_ts}}</p></div>
+            <div class="item-tex-loki hover lokitags" *ngIf="showTags">
+                 job: {{i.custom_2.job}}, method: {{i.custom_2.method}}, node: {{i.custom_2.node}}, response: {{i.custom_2.response}}, type: {{i.custom_2.type}} 
+            </div>
+            <div class="item-tex-loki hover loki-highlight lokimessage" 
+            [innerHTML]="i.custom_1"></div>
+        </div>
+    </div>
     </div>
 </div>

@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild, Output, EventEmitter, HostListener, After
 @Component({
     selector: 'app-modal-resizable',
     templateUrl: './modal-resizable.component.html',
-    styleUrls: ['./modal-resizable.component.css']
+    styleUrls: ['./modal-resizable.component.scss']
 })
 export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy {
     static ZIndex = 12;

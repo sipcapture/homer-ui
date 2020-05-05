@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 @Component({
   selector: 'app-dialog-advanced',
   templateUrl: './dialog-advanced.component.html',
-  styleUrls: ['./dialog-advanced.component.css']
+  styleUrls: ['./dialog-advanced.component.scss']
 })
 export class DialogAdvancedComponent {
 

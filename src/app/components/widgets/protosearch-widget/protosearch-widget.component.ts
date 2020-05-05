@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SettingProtosearchWidgetComponent } from './setting-protosearch-widget.component';
 import { Router } from '@angular/router';
@@ -38,14 +38,15 @@ interface SearchFieldItem {
 @Component({
     selector: 'app-protosearch-widget',
     templateUrl: './protosearch-widget.component.html',
-    styleUrls: ['./protosearch-widget.component.css']
+    styleUrls: ['./protosearch-widget.component.scss']
 })
 @Widget({
     title: 'Proto Search',
     description: 'Display Protocol Search Form',
     category: 'Search',
     indexName: 'display-results',
-    className: 'ProtosearchWidgetComponent'
+    className: 'ProtosearchWidgetComponent',
+    submit: true,
 })
 export class ProtosearchWidgetComponent implements IWidget {
     @Input() id: string;
@@ -76,7 +77,7 @@ export class ProtosearchWidgetComponent implements IWidget {
     mapping: any;
     targetResultsContainerValue = new FormControl();
     SmartInputQueryText: string = '';
-
+    _lastInterval:any;
     constructor(
         public dialog: MatDialog,
         private router: Router,
@@ -118,7 +119,8 @@ export class ProtosearchWidgetComponent implements IWidget {
                 cols: 2,
                 rows: 2,
                 x: 0,
-                y: 1
+                y: 1,
+                isLast: false
             };
         } else {
             this.isConfig = true;
@@ -134,6 +136,54 @@ export class ProtosearchWidgetComponent implements IWidget {
         this.updateButtonState();
 
         this.initSubscribes();
+        this.checkLast();
+    }
+    /*@HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+        if (event.key === "Enter" && event.ctrlKey === true) {
+            if(localStorage.getItem('lastWidget') === this.id){
+                this.doSearchResult ();
+            }
+        }
+        let widgets =  this._ds.dbs.currentWidgetList;
+        let firstWidget =  widgets.findIndex(widget => widget.strongIndex === "ProtosearchWidgetComponent")
+        if (event.key === "Tab" && event.shiftKey === true && widgets[firstWidget].id === this.id) {
+            event.preventDefault();
+            let indexes = [];
+            for(let i = 0; i < widgets.length; i++){
+                if(widgets[i].strongIndex==="ProtosearchWidgetComponent" && widgets[i].config){
+                    indexes.push({id:widgets[i].id,index:i});
+                }
+            }
+            let i = indexes.findIndex(widget => widget.id === localStorage.getItem('lastWidget'));
+            if(i<indexes.length -1){
+                i++;
+            }else{
+                i=0
+            }
+            console.log(this._ds.dbs.current);
+            localStorage.setItem('lastWidget',indexes[i].id);
+        } 
+    }*/
+    @HostListener('document:mouseover', ['$event']) onMouseoverHandler(event: any) {
+        let widgets =  this._ds.dbs.currentWidgetList;
+        let thisWidget =  widgets.findIndex(widget => widget.id === this.id)
+        if(event.target.matches('.widget-block') && event.target.children[2].firstChild.id === this.id && widgets[thisWidget].config) {
+            localStorage.setItem('lastWidget', this.id);
+        }
+    }
+    checkLast(){
+        if(this._lastInterval){
+            clearInterval(this._lastInterval);
+        }
+        this._lastInterval = setInterval(()=>{
+
+            let lastId = localStorage.getItem('lastWidget');
+            if(lastId == this.id){
+                this.config.isLast = true;
+            }else{
+                this.config.isLast = false;
+            }
+        },50);
     }
     getFieldColumns() {
         if (this.autoline) {
@@ -515,7 +565,6 @@ export class ProtosearchWidgetComponent implements IWidget {
             this.dosearch.emit({});
             return;
         }
-
         this.router.navigate(['search/result']);
         this.dosearch.emit({});
     }
@@ -562,6 +611,9 @@ export class ProtosearchWidgetComponent implements IWidget {
         }
         if (this.subscriptionStorage) {
             this.dashboardEventSubscriber.unsubscribe();
+        }
+        if(this._lastInterval){
+            clearInterval(this._lastInterval);
         }
     }
 }

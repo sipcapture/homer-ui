@@ -1,0 +1,36 @@
+.loading {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	background-color: rgba(255,255,255,0.6);
+	display: flex;
+	justify-content: center;
+	align-content: center;
+	align-items: center;
+	z-index: 9999999;
+}
+.button-icon-right-top {
+	position: absolute;
+	right: 0;
+	margin: 0.2rem;
+	z-index: 2;
+}
+.filter-container {
+	background-color: #fff;
+	top: 3rem;
+	right: 1rem;
+	padding: 1rem;
+	border: 1px solid rgba(0,0,0,0.2);
+	border-radius: 4px;
+	box-shadow: 0px 3px 7px rgba(0,0,0,0.4);
+}
+.filter-label {
+	font-size: 0.8em;
+	color: rgba(0,0,0,0.8);
+	background-color: rgba(0,0,0,0.2);
+	margin: -1rem;
+	margin-bottom: 1rem;
+	padding: 0.5rem;
+}

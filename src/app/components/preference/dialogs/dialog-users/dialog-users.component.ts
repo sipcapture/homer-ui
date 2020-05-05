@@ -8,7 +8,7 @@ import { emailValidator } from '@app/helpers/email-validator.directive';
 @Component({
     selector: 'app-dialog-users',
     templateUrl: './dialog-users.component.html',
-    styleUrls: ['./dialog-users.component.css']
+    styleUrls: ['./dialog-users.component.scss']
 })
 export class DialogUsersComponent {
     isValidForm = false;

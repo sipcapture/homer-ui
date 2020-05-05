@@ -14,7 +14,7 @@ import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 @Component({
     selector: 'app-influxdbchart-widget',
     templateUrl: './influxdbchart-widget.component.html',
-    styleUrls: ['./influxdbchart-widget.component.css']
+    styleUrls: ['./influxdbchart-widget.component.scss']
 })
 @Widget({
     title: 'InfluxDB',

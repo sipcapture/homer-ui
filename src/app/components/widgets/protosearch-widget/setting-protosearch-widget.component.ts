@@ -9,7 +9,7 @@ import { Functions } from '../../../helpers/functions';
 @Component({
     selector: 'app-setting-protosearch-widget-component',
     templateUrl: 'setting-protosearch-widget.component.html',
-    styleUrls: ['./setting-protosearch-widget.component.css']
+    styleUrls: ['./setting-protosearch-widget.component.scss']
 })
 
 export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {

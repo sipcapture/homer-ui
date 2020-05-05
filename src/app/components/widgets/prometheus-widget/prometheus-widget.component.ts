@@ -13,7 +13,7 @@ import * as moment from 'moment';
 @Component({
     selector: 'app-prometheus-widget',
     templateUrl: './prometheus-widget.component.html',
-    styleUrls: ['./prometheus-widget.component.css']
+    styleUrls: ['./prometheus-widget.component.scss']
 })
 @Widget({
     title: 'Prometheus',

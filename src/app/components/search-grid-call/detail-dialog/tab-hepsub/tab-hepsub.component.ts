@@ -6,7 +6,7 @@ import { MatTabGroup } from '@angular/material/tabs';
 @Component({
     selector: 'app-tab-hepsub',
     templateUrl: './tab-hepsub.component.html',
-    styleUrls: ['./tab-hepsub.component.css']
+    styleUrls: ['./tab-hepsub.component.scss']
 })
 export class TabHepsubComponent implements OnInit, OnDestroy {
     @Input() id: any;

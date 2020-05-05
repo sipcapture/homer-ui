@@ -31,7 +31,7 @@ export interface IframeConfig {
 @Component({
     selector: 'app-iframe-widget',
     templateUrl: './grafana-widget.component.html',
-    styleUrls: ['./grafana-widget.component.css']
+    styleUrls: ['./grafana-widget.component.scss']
 })
 @Widget({
     title: 'Grafana',

@@ -7,7 +7,7 @@ import { Functions } from '@app/helpers/functions';
 @Component({
     selector: 'app-tab-qos',
     templateUrl: './tab-qos.component.html',
-    styleUrls: ['./tab-qos.component.css']
+    styleUrls: ['./tab-qos.component.scss']
 })
 export class TabQosComponent implements OnInit {
     @Input() callid;

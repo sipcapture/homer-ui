@@ -21,7 +21,7 @@ export interface MesagesData {
 @Component({
     selector: 'app-tab-messages',
     templateUrl: './tab-messages.component.html',
-    styleUrls: ['./tab-messages.component.css']
+    styleUrls: ['./tab-messages.component.scss']
 })
 
 export class TabMessagesComponent implements OnInit {

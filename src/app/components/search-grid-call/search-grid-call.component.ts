@@ -41,7 +41,7 @@ import { MatDialog } from '@angular/material/dialog';
 @Component({
     selector: 'app-search-grid-call',
     templateUrl: './search-grid-call.component.html',
-    styleUrls: ['./search-grid-call.component.css']
+    styleUrls: ['./search-grid-call.component.scss']
 })
 export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit {
     private gridApi;
