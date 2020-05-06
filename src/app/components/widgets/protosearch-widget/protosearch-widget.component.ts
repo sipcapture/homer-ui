@@ -47,6 +47,8 @@ interface SearchFieldItem {
     indexName: 'display-results',
     className: 'ProtosearchWidgetComponent',
     submit: true,
+    minHeight:300,
+    minWidth:300
 })
 export class ProtosearchWidgetComponent implements IWidget {
     @Input() id: string;

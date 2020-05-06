@@ -21,7 +21,9 @@ import * as moment from 'moment';
     category: 'Metrics',
     indexName: 'prometheuschart',
     advancedName: 'promserver',
-    className: 'PrometheusWidgetComponent'
+    className: 'PrometheusWidgetComponent',
+    minHeight: 300,
+    minWidth: 300
 })
 export class PrometheusWidgetComponent implements IWidget {
     @Input() id: string;
