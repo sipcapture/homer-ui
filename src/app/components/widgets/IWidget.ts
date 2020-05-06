@@ -22,4 +22,6 @@ export interface IWidgetMetaData {
     settingWindow?: boolean;
     className?: string;
     submit?: boolean;
+    minWidth?: number;
+    minHeight?:number;
 }

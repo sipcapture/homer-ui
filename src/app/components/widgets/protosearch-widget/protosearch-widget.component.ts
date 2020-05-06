@@ -47,6 +47,8 @@ interface SearchFieldItem {
     indexName: 'display-results',
     className: 'ProtosearchWidgetComponent',
     submit: true,
+    minHeight:300,
+    minWidth:300
 })
 export class ProtosearchWidgetComponent implements IWidget {
     @Input() id: string;
@@ -137,39 +139,6 @@ export class ProtosearchWidgetComponent implements IWidget {
 
         this.initSubscribes();
         this.checkLast();
-    }
-    /*@HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
-        if (event.key === "Enter" && event.ctrlKey === true) {
-            if(localStorage.getItem('lastWidget') === this.id){
-                this.doSearchResult ();
-            }
-        }
-        let widgets =  this._ds.dbs.currentWidgetList;
-        let firstWidget =  widgets.findIndex(widget => widget.strongIndex === "ProtosearchWidgetComponent")
-        if (event.key === "Tab" && event.shiftKey === true && widgets[firstWidget].id === this.id) {
-            event.preventDefault();
-            let indexes = [];
-            for(let i = 0; i < widgets.length; i++){
-                if(widgets[i].strongIndex==="ProtosearchWidgetComponent" && widgets[i].config){
-                    indexes.push({id:widgets[i].id,index:i});
-                }
-            }
-            let i = indexes.findIndex(widget => widget.id === localStorage.getItem('lastWidget'));
-            if(i<indexes.length -1){
-                i++;
-            }else{
-                i=0
-            }
-            console.log(this._ds.dbs.current);
-            localStorage.setItem('lastWidget',indexes[i].id);
-        } 
-    }*/
-    @HostListener('document:mouseover', ['$event']) onMouseoverHandler(event: any) {
-        let widgets =  this._ds.dbs.currentWidgetList;
-        let thisWidget =  widgets.findIndex(widget => widget.id === this.id)
-        if(event.target.matches('.widget-block') && event.target.children[2].firstChild.id === this.id && widgets[thisWidget].config) {
-            localStorage.setItem('lastWidget', this.id);
-        }
     }
     checkLast(){
         if(this._lastInterval){

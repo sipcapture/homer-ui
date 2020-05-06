@@ -20,6 +20,8 @@ import { SearchService } from '@app/services';
     settingWindow: false,
     className: 'RsearchWidgetComponent',
     submit: true,
+    minHeight:300,
+    minWidth:300
 })
 export class RsearchWidgetComponent implements IWidget {
     @Input() id: string;

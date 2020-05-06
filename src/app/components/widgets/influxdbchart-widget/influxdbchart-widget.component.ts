@@ -21,7 +21,9 @@ import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
     description: 'Display InfluxDB Metrics',
     category: 'Metrics',
     indexName: 'influxdbchart',
-    className: 'InfluxdbchartWidgetComponent'
+    className: 'InfluxdbchartWidgetComponent',
+    minHeight:300,
+    minWidth:300
 })
 export class InfluxdbchartWidgetComponent implements IWidget {
     @Input() id: string;

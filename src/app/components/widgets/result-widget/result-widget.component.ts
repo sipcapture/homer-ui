@@ -17,7 +17,9 @@ import { Functions } from '@app/helpers/functions';
     category: 'Visualize',
     indexName: 'result',
     settingWindow: true,
-    className: 'ResultWidgetComponent'
+    className: 'ResultWidgetComponent',
+    minWidth: 400,
+    minHeight:600
 })
 export class ResultWidgetComponent implements IWidget {
     @Input() id: string;
