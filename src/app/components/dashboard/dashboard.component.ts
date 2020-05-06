@@ -145,10 +145,15 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             let rowRes = grid.getBoundingClientRect().height / this.dashboardCollection.data.config.maxrows;
             let i = this.dashboardArray.findIndex(widget => widget.id === id);
             let colAmount = Math.ceil(width/columnRes);
-            this.dashboardArray[i].cols=colAmount
+
+            if(this.dashboardArray[i].rows<colAmount){
+                this.dashboardArray[i].cols=colAmount;
+            }
             this.dashboardArray[i].minItemCols=colAmount;
             let rowAmount = Math.ceil(height/rowRes);
-            this.dashboardArray[i].rows=rowAmount;
+            if(this.dashboardArray[i].rows<rowAmount){
+                this.dashboardArray[i].rows=rowAmount;
+            }
             this.dashboardArray[i].minItemRows=rowAmount;
         }else{
             for(let i = 0; i<this.dashboardArray.length;i++){
@@ -343,6 +348,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this._ds.update();
         setTimeout(() => {
             this.checkWidgets();
+
         },100);
     }
     onDownloadDashboardSettings() {
