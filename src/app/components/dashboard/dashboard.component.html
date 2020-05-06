@@ -16,7 +16,7 @@
 			<div class="box-header drag-handler" 
 				(mouseenter)="hoverme=true" 
 				(mouseleave)="hoverme=false" 
-				[ngStyle]="{'background-color': item.id === this._ds.dbs.currentWidget.id ? '#f8f8f8' : '#ffffff' }">
+				[ngStyle]="{'background-color': this._ds.dbs.currentWidget != undefined && item.id === this._ds.dbs.currentWidget.id   ? '#f8f8f8' : '#ffffff'  }">
 				
 				<h3 *ngIf="item.name !== 'rsearch'" class="ng-binding" >
 					{{ item.config ? item.config.title: item.title || item.id }}

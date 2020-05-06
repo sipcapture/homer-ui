@@ -38,23 +38,31 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         private router: Router,
         public dialog: MatDialog) {}
     @HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
-        if (event.key === "Enter" && event.ctrlKey === true) {
-            const w: IWidget = WidgetArrayInstance[this._ds.dbs.currentWidget.id];
-            if (w && w.doSearchResult) {
-                w.doSearchResult();
-            }
+        if (this._ds.dbs.currentWidget != undefined){
+            if (event.key === "Enter" && event.ctrlKey === true) {
+                const w: IWidget = WidgetArrayInstance[this._ds.dbs.currentWidget.id];
+                if (w && w.doSearchResult) {
+                    w.doSearchResult();
+                }
 
+            }
         }
         let widgets =  this._ds.dbs.currentWidgetList;
         let firstWidget =  widgets.findIndex(widget => widget.strongIndex === "ProtosearchWidgetComponent")
         if (event.key === "Tab" && event.shiftKey === true) {
             event.preventDefault();
-            let i = widgets.findIndex(widget => widget.id === this._ds.dbs.currentWidget.id);
-            if(i<this.submitCheck().length -1){
-                i++;
+            let i = 0;
+            if (this._ds.dbs.currentWidget != undefined){
+                i = widgets.findIndex(widget => widget.id === this._ds.dbs.currentWidget.id);
+                if(i<this.submitCheck().length -1){
+                    i++;
+                }else{
+                    i=0
+                }
             }else{
-                i=0
+                i = 0;
             }
+            
             this._ds.setCurrentWidgetId(this.submitCheck()[i]);
         } 
     }
