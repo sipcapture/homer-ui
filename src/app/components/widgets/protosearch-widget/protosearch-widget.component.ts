@@ -121,8 +121,7 @@ export class ProtosearchWidgetComponent implements IWidget {
                 cols: 2,
                 rows: 2,
                 x: 0,
-                y: 1,
-                isLast: false
+                y: 1
             };
         } else {
             this.isConfig = true;
@@ -136,24 +135,9 @@ export class ProtosearchWidgetComponent implements IWidget {
         });
         this.mapping = await this.preferenceMappingProtocolService.getAll().toPromise();
         this.updateButtonState();
-
         this.initSubscribes();
-        this.checkLast();
     }
-    checkLast(){
-        if(this._lastInterval){
-            clearInterval(this._lastInterval);
-        }
-        this._lastInterval = setInterval(()=>{
 
-            let lastId = localStorage.getItem('lastWidget');
-            if(lastId == this.id){
-                this.config.isLast = true;
-            }else{
-                this.config.isLast = false;
-            }
-        },50);
-    }
     getFieldColumns() {
         if (this.autoline) {
             this.countFieldColumns = Math.min(4, this.fields.length);
