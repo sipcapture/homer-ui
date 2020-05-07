@@ -28,6 +28,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     isHome = false;
     iframeUrl: string;
     postSaveHash: string;
+    _interval: any;
     @ViewChildren('widgets') widgets: QueryList<IWidget>;
     @ViewChild('customWidget', {static: false}) customWidget: any;
 
@@ -37,23 +38,31 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         private router: Router,
         public dialog: MatDialog) {}
     @HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
-        if (event.key === "Enter" && event.ctrlKey === true) {
-            const w: IWidget = WidgetArrayInstance[this._ds.dbs.currentWidget.id];
-            if (w && w.doSearchResult) {
-                w.doSearchResult();
-            }
+        if (this._ds.dbs.currentWidget != undefined){
+            if (event.key === "Enter" && event.ctrlKey === true) {
+                const w: IWidget = WidgetArrayInstance[this._ds.dbs.currentWidget.id];
+                if (w && w.doSearchResult) {
+                    w.doSearchResult();
+                }
 
+            }
         }
         let widgets =  this._ds.dbs.currentWidgetList;
         let firstWidget =  widgets.findIndex(widget => widget.strongIndex === "ProtosearchWidgetComponent")
         if (event.key === "Tab" && event.shiftKey === true) {
             event.preventDefault();
-            let i = widgets.findIndex(widget => widget.id === this._ds.dbs.currentWidget.id);
-            if(i<this.submitCheck().length -1){
-                i++;
+            let i = 0;
+            if (this._ds.dbs.currentWidget != undefined){
+                i = widgets.findIndex(widget => widget.id === this._ds.dbs.currentWidget.id);
+                if(i<this.submitCheck().length -1){
+                    i++;
+                }else{
+                    i=0
+                }
             }else{
-                i=0
+                i = 0;
             }
+            
             this._ds.setCurrentWidgetId(this.submitCheck()[i]);
         } 
     }
@@ -99,6 +108,62 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         };
         this.getData();
     }
+    checkWidgets(){
+            let widgets =  this._ds.dbs.currentWidgetList;
+            let limitedWidgets = [];
+            for(let i=0;i<WidgetArray.length;i++){
+                if(WidgetArray[i].minHeight != undefined && limitedWidgets.indexOf(WidgetArray[i]) === -1){
+                    limitedWidgets.push(WidgetArray[i]);
+                }
+                if(WidgetArray[i].minWidth != undefined  && limitedWidgets.indexOf(WidgetArray[i]) === -1){
+                    limitedWidgets.push(WidgetArray[i]);
+                }
+            }
+            for(let i=0;i<widgets.length;i++){
+                for(let j=0;j<limitedWidgets.length;j++){
+                    if(widgets[i].strongIndex === limitedWidgets[j].strongIndex){
+                        this.checkSize(widgets[i].id,limitedWidgets[j]);
+                    }
+                }
+            }
+
+    }
+    checkSize(id,widgetType){
+        let widget = document.getElementById(id);
+        if (widgetType.minWidth != undefined && widgetType.minHeight != undefined) {
+            this.limitSize(id,widgetType.minHeight,widgetType.minWidth);
+        }else if(widgetType.minHeight != undefined){
+            this.limitSize(id,widgetType.minHeight,1);
+        }else if(widgetType.minWidth != undefined){
+            this.limitSize(id,1,widgetType.minWidth);
+        };
+    }
+    limitSize(id,height,width){
+        if(this.dashboardCollection.data.config.ignoreMinSize === false){
+            let grid = document.getElementById('gridster');
+            let columnRes = grid.getBoundingClientRect().width / this.dashboardCollection.data.config.columns;
+            let rowRes = grid.getBoundingClientRect().height / this.dashboardCollection.data.config.maxrows;
+            let i = this.dashboardArray.findIndex(widget => widget.id === id);
+            let colAmount = Math.ceil(width/columnRes);
+
+            if(this.dashboardArray[i].rows<colAmount){
+                this.dashboardArray[i].cols=colAmount;
+            }
+            this.dashboardArray[i].minItemCols=colAmount;
+            let rowAmount = Math.ceil(height/rowRes);
+            if(this.dashboardArray[i].rows<rowAmount){
+                this.dashboardArray[i].rows=rowAmount;
+            }
+            this.dashboardArray[i].minItemRows=rowAmount;
+        }else{
+            for(let i = 0; i<this.dashboardArray.length;i++){
+                this.dashboardArray[i].minItemRows=1;
+                this.dashboardArray[i].minItemCols=1;
+            }
+        }
+        this.gridOptions.api.optionsChanged();
+    }
+
     ngAfterViewInit () {
         this.updateTrigger();
     }
@@ -235,6 +300,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 break;
         }
         this.gridOptions.api.optionsChanged();
+        setTimeout(() => {
+            this.checkWidgets();
+        },100);
     }
 
     openSettings(item: any) {
@@ -278,6 +346,10 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.dashboardArray.push(widget);
         this.save();
         this._ds.update();
+        setTimeout(() => {
+            this.checkWidgets();
+
+        },100);
     }
     onDownloadDashboardSettings() {
         Functions.saveToFile(JSON.stringify(this.dashboardCollection, null, 2), `${this.dashboardTitle}.json`);
@@ -295,6 +367,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             columns: _d.config.columns || 5,
             maxrows: _d.config.maxrows || 5,
             pushing: !!_d.config.pushing,
+            ignoreMinSize: _d.config.ignoreMinSize || false,
             gridType: _d.config.gridType || GridType.Fit,
         }});
 
@@ -315,6 +388,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             dd.config.columns = data.columns;
             dd.config.maxrows = data.maxrows;
             dd.config.pushing = data.pushing;
+            dd.config.ignoreMinSize = data.ignoreMinSize;
             dd.config.gridType = data.gridType;
 
             ((g, c) => {
@@ -336,6 +410,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.getData();
             this._ds.update();
         });
+        setTimeout(() => {
+            this.checkWidgets();
+        },100);
     }
 
     async onDashboardDelete() {
@@ -363,6 +440,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngOnDestroy() {
+        clearInterval(this._interval);
     }
 
     private getWidgetItemClass(item: DashboardContentModel): IWidgetMetaData {

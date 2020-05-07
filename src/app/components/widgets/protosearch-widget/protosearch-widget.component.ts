@@ -47,6 +47,8 @@ interface SearchFieldItem {
     indexName: 'display-results',
     className: 'ProtosearchWidgetComponent',
     submit: true,
+    minHeight:300,
+    minWidth:300
 })
 export class ProtosearchWidgetComponent implements IWidget {
     @Input() id: string;
@@ -119,8 +121,7 @@ export class ProtosearchWidgetComponent implements IWidget {
                 cols: 2,
                 rows: 2,
                 x: 0,
-                y: 1,
-                isLast: false
+                y: 1
             };
         } else {
             this.isConfig = true;
@@ -134,57 +135,9 @@ export class ProtosearchWidgetComponent implements IWidget {
         });
         this.mapping = await this.preferenceMappingProtocolService.getAll().toPromise();
         this.updateButtonState();
-
         this.initSubscribes();
-        this.checkLast();
     }
-    /*@HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
-        if (event.key === "Enter" && event.ctrlKey === true) {
-            if(localStorage.getItem('lastWidget') === this.id){
-                this.doSearchResult ();
-            }
-        }
-        let widgets =  this._ds.dbs.currentWidgetList;
-        let firstWidget =  widgets.findIndex(widget => widget.strongIndex === "ProtosearchWidgetComponent")
-        if (event.key === "Tab" && event.shiftKey === true && widgets[firstWidget].id === this.id) {
-            event.preventDefault();
-            let indexes = [];
-            for(let i = 0; i < widgets.length; i++){
-                if(widgets[i].strongIndex==="ProtosearchWidgetComponent" && widgets[i].config){
-                    indexes.push({id:widgets[i].id,index:i});
-                }
-            }
-            let i = indexes.findIndex(widget => widget.id === localStorage.getItem('lastWidget'));
-            if(i<indexes.length -1){
-                i++;
-            }else{
-                i=0
-            }
-            console.log(this._ds.dbs.current);
-            localStorage.setItem('lastWidget',indexes[i].id);
-        } 
-    }*/
-    @HostListener('document:mouseover', ['$event']) onMouseoverHandler(event: any) {
-        let widgets =  this._ds.dbs.currentWidgetList;
-        let thisWidget =  widgets.findIndex(widget => widget.id === this.id)
-        if(event.target.matches('.widget-block') && event.target.children[2].firstChild.id === this.id && widgets[thisWidget].config) {
-            localStorage.setItem('lastWidget', this.id);
-        }
-    }
-    checkLast(){
-        if(this._lastInterval){
-            clearInterval(this._lastInterval);
-        }
-        this._lastInterval = setInterval(()=>{
 
-            let lastId = localStorage.getItem('lastWidget');
-            if(lastId == this.id){
-                this.config.isLast = true;
-            }else{
-                this.config.isLast = false;
-            }
-        },50);
-    }
     getFieldColumns() {
         if (this.autoline) {
             this.countFieldColumns = Math.min(4, this.fields.length);
