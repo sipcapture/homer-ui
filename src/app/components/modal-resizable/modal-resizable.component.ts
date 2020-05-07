@@ -159,9 +159,6 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
             const xMove = winPosition.x + (evt.clientX - x0);
              const yMoven = winPosition.y + (evt.clientY  - y0 );
              const yMove = (yMoven <= 0) ? 0 : yMoven;
-           
-           
-            //console.log(evt.clientY)
             this.containerWindow.nativeElement.style.transform = `translate3d(${xMove}px, ${yMove}px, 0px)`;
         };
         
