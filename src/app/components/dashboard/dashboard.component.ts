@@ -163,7 +163,19 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         this.gridOptions.api.optionsChanged();
     }
+    resizeExcess(){
+        let columns = this.dashboardCollection.data.config.columns;
+        let rows = this.dashboardCollection.data.config.maxrows;
+        let cols = this.dashboardCollection.data.config.columns;
 
+        for(let i=0;i<this.dashboardArray.length;i++){
+            if(this.dashboardArray[i].rows>rows || this.dashboardArray[i].cols>cols){
+                this.dashboardArray[i].rows = 1;
+                this.dashboardArray[i].cols = 1;
+                this.gridOptions.api.getNextPossiblePosition(this.dashboardArray[i]);
+            }
+        }
+    }
     ngAfterViewInit () {
         this.updateTrigger();
     }
@@ -301,6 +313,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         this.gridOptions.api.optionsChanged();
         setTimeout(() => {
+            this.resizeExcess();
             this.checkWidgets();
         },100);
     }
@@ -348,7 +361,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this._ds.update();
         setTimeout(() => {
             this.checkWidgets();
-
+            this.resizeExcess();
         },100);
     }
     onDownloadDashboardSettings() {
@@ -409,10 +422,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.onDashboardSave().toPromise().then(() => {
             this.getData();
             this._ds.update();
-        });
-        setTimeout(() => {
+            this.resizeExcess();
             this.checkWidgets();
-        },100);
+        });
     }
 
     async onDashboardDelete() {
