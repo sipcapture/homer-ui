@@ -1,6 +1,6 @@
 .on-top {
 	position: absolute;
-	top: 0;
+	top:0;
 	left: 0;
 	bottom: 0;
 	right: 0;
@@ -30,6 +30,10 @@
                 0 1px 5px 0 rgba(0, 0, 0, 0.12);
 	.title {
 		cursor: move;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
 	}
 	&:active {
 		box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
