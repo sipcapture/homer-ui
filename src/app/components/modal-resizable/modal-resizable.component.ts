@@ -1,4 +1,15 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, HostListener, AfterViewInit, Input, OnDestroy } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    ViewChild,
+    Output,
+    EventEmitter,
+    HostListener,
+    AfterViewInit,
+    Input,
+    OnDestroy,
+    ChangeDetectionStrategy
+} from '@angular/core';
 
 @Component({
     selector: 'app-modal-resizable',
@@ -22,10 +33,10 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
     @Input() minHeight = 300;
     @Input() mouseEventData = null;
     @Input() isBrowserWindow = false;
-    @Input() startZIndex: number = 0;
-    __isBrowserWindow = false;
+    @Input() startZIndex = 0;
     @Output() close: EventEmitter<any> = new EventEmitter();
     @Output() browserWindow: EventEmitter<any> = new EventEmitter();
+    __isBrowserWindow = false;
     isFullPage = false;
 
     constructor() { }
@@ -35,14 +46,12 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
     onFullPage () {
         this.isFullPage = !this.isFullPage;
     }
-   
+
     @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
         event.preventDefault();
         event.stopPropagation();
         this.onClose();
     }
-   
-
     ngAfterViewInit() {
         /* attache window to native document.body */
         document.body.appendChild(this.layerZIndex.nativeElement);
@@ -65,6 +74,7 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
                 x: this.mouseEventData.clientX - mouseOffset,
                 y: this.mouseEventData.clientY - mouseOffset
             });
+            this.mouseEventData.focus = () => this.onFocus();
         }
         this.onFocus();
         if (this.isBrowserWindow) {
@@ -112,10 +122,11 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
         };
 
         const size = { w: 0, h: 0 },
-              vh = vector[controlName].h,
-              vv = vector[controlName].v,
-              position = {x: winPosition.x, y: winPosition.y};
+            vh = vector[controlName].h,
+            vv = vector[controlName].v,
+            position = {x: winPosition.x, y: winPosition.y};
 
+        window.document.body.classList.add('no-selected-text');
         window.document.body.onmousemove = evt => {
             if (vh !== 0) {
                 const cX = Math.floor(Math[(vh > 0) ? 'max' : 'min'](x0 + vh * (this.minWidth - winWidth), evt.clientX));
@@ -135,7 +146,7 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
 
         window.document.body.onmouseleave = window.document.body.onmouseup = () => {
             this.containerWindow.nativeElement.classList.remove('animation-off');
-
+            window.document.body.classList.remove('no-selected-text');
             window.document.body.onmouseleave = null;
             window.document.body.onmousemove = null;
             window.document.body.onmouseup = null;
@@ -152,18 +163,23 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
         const x0 = event.clientX;
         const y0 = event.clientY;
         const winPosition = this.getTranslatePosition(this.containerWindow.nativeElement);
+        winPosition.h = this.containerWindow.nativeElement.offsetHeight;
+
+        const documentHeigth = document.body.offsetHeight;
+        const top0px = (documentHeigth - winPosition.h) / -2;
 
         this.containerWindow.nativeElement.classList.add('animation-off');
+        window.document.body.classList.add('no-selected-text');
 
         window.document.body.onmousemove = evt => {
             const xMove = winPosition.x + (evt.clientX - x0);
-             const yMoven = winPosition.y + (evt.clientY  - y0 );
-             const yMove = (yMoven <= 0) ? 0 : yMoven;
+            const yMove = Math.max(top0px, winPosition.y + (evt.clientY - y0));
             this.containerWindow.nativeElement.style.transform = `translate3d(${xMove}px, ${yMove}px, 0px)`;
         };
-        
+
         window.document.body.onmouseleave = window.document.body.onmouseup = () => {
             this.containerWindow.nativeElement.classList.remove('animation-off');
+            window.document.body.classList.remove('no-selected-text');
 
             window.document.body.onmouseleave = null;
             window.document.body.onmousemove = null;
