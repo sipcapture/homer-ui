@@ -29,6 +29,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     iframeUrl: string;
     postSaveHash: string;
     _interval: any;
+
     @ViewChildren('widgets') widgets: QueryList<IWidget>;
     @ViewChild('customWidget', {static: false}) customWidget: any;
 
@@ -108,6 +109,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         };
         this.getData();
     }
+
+
     checkWidgets(){
             let widgets =  this._ds.dbs.currentWidgetList;
             let limitedWidgets = [];
@@ -139,23 +142,48 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         };
     }
     limitSize(id,height,width){
-        if(this.dashboardCollection.data.config.ignoreMinSize === false){
-            let grid = document.getElementById('gridster');
-            let columnRes = grid.getBoundingClientRect().width / this.dashboardCollection.data.config.columns;
-            let rowRes = grid.getBoundingClientRect().height / this.dashboardCollection.data.config.maxrows;
+        let columnRes:number;
+        let rowRes:number;
+        let grid = document.getElementById('gridster');
+        if(this.dashboardCollection.data.config != undefined){
+            columnRes = grid.getBoundingClientRect().width / this.dashboardCollection.data.config.columns;
+            rowRes = grid.getBoundingClientRect().height / this.dashboardCollection.data.config.maxrows;
+        }
+        if(this.dashboardCollection.data.config.ignoreMinSize != "ignore"){
+
+            
             let i = this.dashboardArray.findIndex(widget => widget.id === id);
             let colAmount = Math.ceil(width/columnRes);
-
-            if(this.dashboardArray[i].rows<colAmount){
-                this.dashboardArray[i].cols=colAmount;
+            if(this.dashboardCollection.data.config.ignoreMinSize === "warning"){
+                this.dashboardArray[i].minItemRows=1;
+                this.dashboardArray[i].minItemCols=1;
             }
-            this.dashboardArray[i].minItemCols=colAmount;
+            if(this.dashboardArray[i].rows<colAmount){
+                if(this.dashboardCollection.data.config.ignoreMinSize === "limit"){
+                    this.dashboardArray[i].cols=colAmount;
+                    this.dashboardArray[i].minItemCols=colAmount;
+                }else if(this.dashboardCollection.data.config.ignoreMinSize === "warning"){
+                    this.dashboardArray[i].isWarning=true;
+                }
+            }else{
+                if(this.dashboardCollection.data.config.ignoreMinSize === "warning"){
+                    this.dashboardArray[i].isWarning=false;
+                }
+            }
             let rowAmount = Math.ceil(height/rowRes);
             if(this.dashboardArray[i].rows<rowAmount){
-                this.dashboardArray[i].rows=rowAmount;
+                if(this.dashboardCollection.data.config.ignoreMinSize === "limit"){
+                    this.dashboardArray[i].rows=rowAmount;
+                    this.dashboardArray[i].minItemRows=rowAmount;
+                }else if(this.dashboardCollection.data.config.ignoreMinSize === "warning"){
+                    this.dashboardArray[i].isWarning=true;
+                }
+            }else{
+                if(this.dashboardCollection.data.config.ignoreMinSize === "warning"){
+                    this.dashboardArray[i].isWarning=false;
+                }
             }
-            this.dashboardArray[i].minItemRows=rowAmount;
-        }else{
+        }else if(this.dashboardCollection.data.config.ignoreMinSize === "ignore"){
             for(let i = 0; i<this.dashboardArray.length;i++){
                 this.dashboardArray[i].minItemRows=1;
                 this.dashboardArray[i].minItemCols=1;
@@ -163,11 +191,16 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         this.gridOptions.api.optionsChanged();
     }
+    dismissWarning(item){
+        let i = this.dashboardArray.findIndex(widget => widget.id === item.id);
+        this.dashboardArray[i].isWarning = false;    }
     resizeExcess(){
-        let columns = this.dashboardCollection.data.config.columns;
-        let rows = this.dashboardCollection.data.config.maxrows;
-        let cols = this.dashboardCollection.data.config.columns;
-
+        let rows:number;
+        let cols:number;
+        if(this.dashboardCollection.data.config != undefined){
+            rows = this.dashboardCollection.data.config.maxrows;
+            cols = this.dashboardCollection.data.config.columns;
+        }
         for(let i=0;i<this.dashboardArray.length;i++){
             if(this.dashboardArray[i].rows>rows || this.dashboardArray[i].cols>cols){
                 this.dashboardArray[i].rows = 1;
@@ -283,11 +316,16 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
     itemChange(item: any) {
+
+        console.log(item)
         if (item.name === 'iframe') {
             const w: IWidget = WidgetArrayInstance[item.id];
             if (w && w.refresh) {
                 w.refresh();
             }
+        }
+        if(this.dashboardCollection.data.config.ignoreMinSize === "warning"){
+            this.checkSize(item.id,item.strongIndex)
         }
         this.save();
         return true;
@@ -380,7 +418,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             columns: _d.config.columns || 5,
             maxrows: _d.config.maxrows || 5,
             pushing: !!_d.config.pushing,
-            ignoreMinSize: _d.config.ignoreMinSize || false,
+            ignoreMinSize: _d.config.ignoreMinSize || 'limit',
             gridType: _d.config.gridType || GridType.Fit,
         }});
 

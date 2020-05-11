@@ -52,10 +52,15 @@
         <mat-option [value]="'horizontalFixed'">Horizontal Fixed</mat-option>
       </mat-select>
     </mat-form-field>
-    <div mat-dialog-content>
-      <mat-checkbox labelPosition="Before" [(ngModel)]="data.pushing">Pushing</mat-checkbox>
-      <mat-checkbox labelPosition="Before" [(ngModel)]="data.ignoreMinSize">Ignore minimum size</mat-checkbox>
-    </div>
+    <mat-form-field>
+      <mat-select [(value)]="data.ignoreMinSize" >
+        <mat-option *ngFor="let mode of ignoreMinSizeList | keyvalue" [value]="mode.value">
+          {{mode.key}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-checkbox labelPosition="Before" [(ngModel)]="data.pushing">Pushing</mat-checkbox>
+
   </div>
   <hr style="width: 100%;">
   <div>

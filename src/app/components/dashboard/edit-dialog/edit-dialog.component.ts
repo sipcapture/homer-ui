@@ -29,7 +29,11 @@ export class EditDialogComponent {
     };
     isHomeOrSearch = false;
     isSEARCH = false;
-
+    ignoreMinSizeList: { [key: string]: string } = {
+        'Limit': 'limit',
+        'Warning': 'warning',
+        'Ignore': 'Ignore'
+    };
     callBackExport: Function = null;
 
     constructor(
