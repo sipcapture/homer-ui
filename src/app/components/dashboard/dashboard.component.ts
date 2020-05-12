@@ -193,7 +193,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     dismissWarning(item){
         let i = this.dashboardArray.findIndex(widget => widget.id === item.id);
-        this.dashboardArray[i].isWarning = false;    }
+        this.dashboardArray[i].isDismissed = true;    
+    }
     resizeExcess(){
         let rows:number;
         let cols:number;
@@ -314,21 +315,75 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 this._ds.setCurrentWidgetId(this.submitCheck()[i]);
             }
         }
+        this.save()
     }
     itemChange(item: any) {
 
-        console.log(item)
         if (item.name === 'iframe') {
             const w: IWidget = WidgetArrayInstance[item.id];
             if (w && w.refresh) {
                 w.refresh();
             }
         }
-        if(this.dashboardCollection.data.config.ignoreMinSize === "warning"){
-            this.checkSize(item.id,item.strongIndex)
-        }
+        this.warningCheck(item);
         this.save();
         return true;
+    }
+    warningCheck(item: any){
+        if(this.dashboardCollection.data.config.ignoreMinSize === "warning"){
+            let columnRes:number;
+            let rowRes:number;
+            let grid = document.getElementById('gridster');
+            if(this.dashboardCollection.data.config != undefined){
+                columnRes = grid.getBoundingClientRect().width / this.dashboardCollection.data.config.columns;
+                rowRes = grid.getBoundingClientRect().height / this.dashboardCollection.data.config.maxrows;
+            }
+            let iW = WidgetArray.findIndex(widget => widget.strongIndex === item.strongIndex);
+            let iD = this.dashboardArray.findIndex(widget => widget.id === item.id);
+            let height = WidgetArray[iW].minHeight;
+            let rowAmount = Math.ceil(height/rowRes);
+            if(this.dashboardArray[iD].rows<rowAmount){
+                if(this.dashboardCollection.data.config.ignoreMinSize === "warning"){
+                    this.dashboardArray[iD].isWarning=true;
+                }
+            }
+            let width = WidgetArray[iW].minWidth;
+            let colAmount = Math.ceil(width/columnRes);
+            if(this.dashboardArray[iD].rows<colAmount){
+                if(this.dashboardCollection.data.config.ignoreMinSize === "warning"){
+                    this.dashboardArray[iD].isWarning=true;
+                }
+            }
+            if(this.dashboardArray[iD].rows>=colAmount && this.dashboardArray[iD].rows>=rowAmount){
+                if(this.dashboardCollection.data.config.ignoreMinSize === "warning"){
+                    this.dashboardArray[iD].isWarning=false;
+                    this.dashboardArray[iD].isWarning=false;
+                }
+            }
+        }
+    }
+    getSize(item){
+        let i = WidgetArray.findIndex(widget => widget.strongIndex === item.strongIndex);
+        let size = "";
+        let columnRes:number;
+        let rowRes:number;
+        let grid = document.getElementById('gridster');
+        if(this.dashboardCollection.data.config != undefined){
+                columnRes = grid.getBoundingClientRect().width / this.dashboardCollection.data.config.columns;
+                rowRes = grid.getBoundingClientRect().height / this.dashboardCollection.data.config.maxrows;
+            }
+        if(WidgetArray[i].minWidth != undefined){
+            let width = WidgetArray[i].minWidth;
+            let colAmount = Math.ceil(width/columnRes);
+            size += colAmount + " columns ";
+        }
+        if(WidgetArray[i].minHeight != undefined){
+            let height = WidgetArray[i].minHeight;
+            let rowAmount = Math.ceil(height/rowRes);
+            size += rowAmount + " rows ";
+
+        }
+        return size;
     }
     private save () {
         setTimeout(async () => await this.onDashboardSave().toPromise());

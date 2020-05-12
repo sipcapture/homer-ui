@@ -31,8 +31,10 @@
 				</div>
 			</div>
 			<div class="widget-warning" *ngIf="this.dashboardCollection.data.config.ignoreMinSize === 'warning' && item.isWarning && !item.isDismissed" >
-				WARNING
-				<button class="warning-dismiss" title="Dismiss" mat-raised-button color="primary" (click)="dismissWarning(item)">Dismiss warning <mat-icon>close</mat-icon></button>
+				<p>Widget is too small, we recommend increasing it's size to {{ getSize(item) }}</p>
+				<button mat-icon-button  class="warning-dismiss" matTooltip="Dismiss warning"  (click)="dismissWarning(item)">
+				    <mat-icon>close</mat-icon>
+				</button>
 			</div>
 			<div class="widget-block" *ngIf="this.dashboardCollection.data.config.ignoreMinSize != 'warning' || !item.isWarning || item.isDismissed">
 				<div class="shadow-polygon" style="display: none;"></div>
