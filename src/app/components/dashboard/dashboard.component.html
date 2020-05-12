@@ -30,7 +30,13 @@
 					</div>
 				</div>
 			</div>
-			<div class="widget-block">
+			<div class="widget-warning" *ngIf="this.dashboardCollection.data.config.ignoreMinSize === 'warning' && item.isWarning && !item.isDismissed" >
+				<p>Widget is too small, we recommend increasing it's size to {{ getSize(item) }}</p>
+				<button mat-icon-button  class="warning-dismiss" matTooltip="Dismiss warning"  (click)="dismissWarning(item)">
+				    <mat-icon>close</mat-icon>
+				</button>
+			</div>
+			<div class="widget-block" *ngIf="this.dashboardCollection.data.config.ignoreMinSize != 'warning' || !item.isWarning || item.isDismissed">
 				<div class="shadow-polygon" style="display: none;"></div>
 				<ndc-dynamic class="no-drag"
 					[ndcDynamicComponent]="getComponentWidget(item)"
@@ -38,6 +44,7 @@
 					[ndcDynamicOutputs]="item.output"
 				></ndc-dynamic>
 			</div>
+			
 		</gridster-item>
 	</gridster>
 	<div *ngIf="!isIframe && (dashboardArray && dashboardArray.length === 0)" class="no-content">

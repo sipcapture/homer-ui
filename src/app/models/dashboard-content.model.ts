@@ -12,4 +12,6 @@ export interface DashboardContentModel {
     strongIndex?: string;
     minItemCols?: number;
     minItemRows?: number;
+    isWarning?: boolean;
+    isDismissed?: boolean;
 }
