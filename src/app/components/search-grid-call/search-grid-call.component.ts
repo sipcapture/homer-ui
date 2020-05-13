@@ -58,7 +58,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     defaultColDef: Object;
     columnDefs: Array<Object>;
     myPredefColumns: Array<Object>;
-    rowData: Object;
+    rowData: any = [];
     showPortal = false;
     private isOpenDialog = false;
     title = 'Call Result';
@@ -182,6 +182,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     ngOnInit() {
+
         if (this.inContainer) {
             this.subscriptionDashboardEvent = this._ds.dashboardEvent.subscribe(data => {
                 const dataId = data.resultWidget[this.id];
@@ -585,6 +586,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     public update(isImportant = false) {
+
+        
+        console.log(this.rowData);
         if (this.isNewData() && !isImportant) {
             return;
         }
@@ -595,7 +599,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         } else {
             this.getQueryData();
         }
-
+        this.rowData = null;
         if ( this.isLokiQuery ) {
             this._srs.getData(this.queryBuilderForLoki()).toPromise().then(result => {
                 this.rowData = result.data.sort(( a, b ) => {
@@ -614,6 +618,13 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             });
         } else {
             this._scs.getData(this.config).toPromise().then(result => {
+                if (!result || !result.data) {
+                    this.rowData = [];
+                    this.dataReady.emit({});
+                    console.log('test')
+                    return;
+                }
+
                 this.rowData = result.data;
                 this.sizeToFit();
                 this.selectCallIdFromGetParams();
@@ -621,6 +632,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.dataReady.emit({});
                 this.initSearchSlider();
             }, err => {
+                console.log('test')
                 this.rowData = [];
                 this.dataReady.emit({});
             });
