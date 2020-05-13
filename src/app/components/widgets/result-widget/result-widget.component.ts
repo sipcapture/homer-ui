@@ -28,7 +28,6 @@ export class ResultWidgetComponent implements IWidget {
 
     lastTimestamp: number;
     title: string;
-    isData:boolean;
     isLoaded = false;
     _interval: any;
     constructor(
@@ -60,15 +59,6 @@ export class ResultWidgetComponent implements IWidget {
 
     ngOnInit() {
         WidgetArrayInstance[this.id] = this as IWidget;
-        this._interval = setInterval(() => {
-            var ls = JSON.parse(localStorage.getItem('searchQueryWidgetsResult'));
-            if (Object.keys(ls.resultWidget).length != 0){
-                this.isData=true;
-                clearInterval(this._interval);
-            }else{
-                this.isData=false;
-            }
-        }, 1000);
 
     
     }
