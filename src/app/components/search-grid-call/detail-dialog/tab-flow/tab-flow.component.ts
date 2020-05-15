@@ -111,11 +111,22 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this.aliasTitle = Object.keys(hosts).map( i => {
             const alias = this.dataItem.data.alias[i];
-            const al = i.split(':');
-            const IP = al[0];
-            const PORT = al[1] ? ':' + al[1] : '';
-
-            return { ip: i, alias, IP, PORT };
+            // This is where the GUI splits port from IP Address. 
+            //Note: not perfect. It works 'backwards' from the end of the string
+            //If last IPv6 block has letters and digits, and there is no port, then
+            // the regexp will fail, and result in null. This is a 'best' effort
+            const regex = RegExp('(.*(?!$))(?::)([0-9]+)?$');
+            if(regex.exec(i) != null){
+                const IP    = regex.exec(i)[1] // gives IP
+                const PORT  = regex.exec(i)[2] // gives port
+                return { ip: i, alias, IP, PORT };
+            } else {
+                //fall back to the old method if things don't work out.
+                const al    = i.split(':');
+                const IP    = al[0];
+                const PORT  = al[1] ? ':' + al[1] : '';
+                return { ip: i, alias, IP, PORT };
+            }
         });
         const colCount = this.aliasTitle.length;
         const data = this.dataItem.data;
