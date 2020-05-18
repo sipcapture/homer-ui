@@ -103,7 +103,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 increment++;
             }
         });
-
+        
         this.aliasTitle = Object.keys(hosts).map( i => {
             const alias = this.dataItem.data.alias[i];
             // This is where the GUI splits port from IP Address. 
@@ -112,15 +112,15 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             // the regexp will fail, and result in null. This is a 'best' effort
             const regex = RegExp('(.*(?!$))(?::)([0-9]+)?$');
             if(regex.exec(i) != null){
-                const IP    = regex.exec(i)[1] // gives IP
-                const PORT  = regex.exec(i)[2] // gives port
+                const IP    = regex.exec(i)[1]; // gives IP
+                const PORT  = regex.exec(i)[2]; // gives port
                 return { ip: i, alias, IP, PORT };
             } else {
                 // fall back to the old method if things don't work out.
                 const al    = i.split(':');
                 const IP    = al[0];
                 const PORT  = al[1] ? ':' + al[1] : '';
-                return { ip: i, alias, IP, PORT };
+                return { ip: this.compIPV6(i), alias, IP: this.compIPV6(IP), PORT };
             }
         });
 
@@ -193,7 +193,9 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         row.mouseEventData = event;
         this.messageWindow.emit(row);
     }
-
+    compIPV6(input) {
+        return input.replace(/\b(?:0+:){2,}/, ':');
+    }
     /**
     * Sort object properties (only own properties will be sorted).
     * @param {object} obj object to sort properties
