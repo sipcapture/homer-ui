@@ -100,7 +100,7 @@ export class Functions {
     static getColorByString(str: string) {
         const col = Functions.getColorByStringHEX(str);
         const num = parseInt(col, 16) % 360;
-        return `hsl(${num}, 100%, 25%)`;
+        return `hsl(${num}, 100%, 40%)`;
     }
     static getColorByStringHEX(str: string) {
         if (str === 'LOG') {

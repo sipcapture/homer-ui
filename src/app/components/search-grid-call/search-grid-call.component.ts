@@ -586,9 +586,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     public update(isImportant = false) {
-
-        
-        console.log(this.rowData);
         if (this.isNewData() && !isImportant) {
             return;
         }
@@ -682,9 +679,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 'background-color': '#fff'
             }
         }
-        const sid = params.data.sid;
-        const his = this.hashCode(sid);
-        const color = 'hsla(' + this.intToARGB(his) + ', 75%, 85%, 0.3)';
+        const callid = params.data.callid;
+        const col = Functions.getColorByStringHEX(callid);
+        const baseColor = parseInt(col, 16) % 360;
+        const color = 'hsla(' + (baseColor - 180) + ', 75%, 80%, 0.2)';
         return {
             'background-color': color
         };
