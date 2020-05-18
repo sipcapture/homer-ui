@@ -620,18 +620,23 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 if (!result || !result.data) {
                     this.rowData = [];
                     this.dataReady.emit({});
-                    console.log('test')
                     return;
                 }
 
                 this.rowData = result.data;
+                for(let i = 0; i< this.rowData.length; i++){
+                    if(this.rowData[i].protocol != undefined && this.rowData[i].protocol === 17){
+                        this.rowData[i].protocol = 'UDP'
+                    }else if(this.rowData[i].protocol != undefined && this.rowData[i].protocol === 6){
+                        this.rowData[i].protocol = 'TCP'
+                    }
+                }
                 this.sizeToFit();
                 this.selectCallIdFromGetParams();
                 this.openTransactionByAdvancedSettings();
                 this.dataReady.emit({});
                 this.initSearchSlider();
             }, err => {
-                console.log('test')
                 this.rowData = [];
                 this.dataReady.emit({});
             });
