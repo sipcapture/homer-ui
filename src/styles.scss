@@ -19,7 +19,7 @@
        url(./assets/fonts/MaterialIcons-Regular.ttf) format('truetype');
 }
 
-h1,h2,h3,h4,p,mat-label,div,strong,em,b{
+h1,h2,h3,h4,p,mat-label,strong,em,b{
 	font-family:Helvetica, Arial, sans-serif;
 }
 
@@ -76,6 +76,15 @@ $row-border-width: 1px;
 $hover-color: cornsilk;
 $ag-suppress-legacy-var-import: true;
 
+.ag-cell {
+	padding-right:5px !important;
+	padding-left:5px !important;
+}
+
+.ag-header-cell{
+	padding-right:5px !important;
+	padding-left: 5px !important;
+}
 
 a:not([href]){
   cursor: pointer; 
