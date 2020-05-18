@@ -23,7 +23,9 @@ export class SettingsAceEditorWidgetComponent {
     ngAfterViewInit() {
         this.editor.getEditor().setOptions({
             showLineNumbers: true,
-            tabSize: 2
+            tabSize: 2,
+            fontFamily: "Menlo,Monaco,Consolas,Courier New,monospace",
+            
         });
     }
 
