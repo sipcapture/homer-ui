@@ -149,15 +149,17 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         private searchService: SearchService
     ) {
         this.myPredefColumns = [{
-            headerName: 'Checkboxes',
+            headerName: '',
             field: 'checkbox',
-            minWidth: 60,
-            maxWidth: 60,
+            minWidth: 34,
+            maxWidth: 34,
+            resizable: false,
             checkboxSelection: true,
             lockPosition: true,
             cellRendererParams: { checkbox: true },
             pinned: 'left',
             cellClass: 'no-border',
+            headerClass: 'no-border',
             headerCheckboxSelection: true
         }];
 
