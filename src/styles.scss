@@ -18,7 +18,7 @@
        url(./assets/fonts/MaterialIcons-Regular.woff) format('woff'),
        url(./assets/fonts/MaterialIcons-Regular.ttf) format('truetype');
 }
-
+/// fonts settings :
 h1,h2,h3,h4,p,strong,em,b,
 mat-label,
 .mat-list-base .mat-list-item .mat-list-item-content, .mat-list-base .mat-list-option .mat-list-item-content,.mat-table,.mat-button, 
@@ -32,7 +32,7 @@ button, .md-drppicker, .month,
 	font-family:Helvetica, Arial, sans-serif;
 }
 
-/// fonts settings :.mat-button, .mat-fab, .mat-flat-button, .mat-icon-button, .mat-mini-fab, .mat-raised-button, .mat-stroked-button
+
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
