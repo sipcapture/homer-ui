@@ -1,54 +1,67 @@
-<div #flowscreen>
-  <!-- title hosts / alias -->
-  <div class="title-container" [ngStyle]="{
-    'top': (isExport ? '1rem' : '0px'),
-    'position': (isExport ? 'inherit' : 'absolute')
-  }" #flowtitle>
-    <div *ngFor="let title of aliasTitle">
-        <span *ngIf="title.alias + '' !== title.ip + ''" class="title">
-          <strong>{{ title.alias }}</strong>
-          <br>
-          {{ title.IP  + (!_isSimplifyPort ? title.PORT : '')}}
-        </span>
-        <span *ngIf="title.alias + '' === title.ip + ''" class="title">
-          {{ title.IP  + (!_isSimplifyPort ? title.PORT : '') }}
-        </span>
-    </div>
+<div class="flowscreen" style="position: relative;" #flowscreen>
+  <!-- flow grid lines -->
+  <div class="flow-grid-lines" [ngStyle]="{'min-width.px': (isSimplify ? 150 : 200) * (flowGridLines.length)}"> <!-- wrapper -->
+      <div *ngFor="let title of flowGridLines" class="line"></div>
   </div>
 
-  <div [ngStyle]="{
-    'position': 'relative',
-    'margin-top': '4rem',
-    'margin-bottom': '6rem',
-    'min-width': (aliasTitle.length * 150) + 'px'
-  }" #flowpage>
-    <!-- grid lines -->
-    <div class="title-container grid-container">
-      <div *ngFor="let title of aliasTitle" class="grid-vertical-line"></div>
-    </div>
+  <!-- hosts -->
+  <div class="hosts">
+      <!-- host titles -->
+      <ng-template ngFor let-itemhost [ngForOf]="aliasTitle">
+          <div *ngIf="!itemhost.hidden" [ngClass]="'item-wrapper' + (isSimplify ? ' big' : '')"> <!-- wrapper -->
+              <div class="item"> <!-- container -->
+                  <div> {{ itemhost.alias !== itemhost.ip && itemhost.alias !== '' ? itemhost.IP : '' }} </div>
+                  <div style="text-align: center; font-size: 14px;">
+                    {{itemhost.alias === itemhost.ip || itemhost.alias === '' ? itemhost.IP : itemhost.alias}}
+                </div>
+              </div>
+          </div>
+      </ng-template>
+  </div>
 
-    <!-- content -->
-    <div 
+  <!-- flow packets -->
+  <div class="flow-packets-wrapper">
+      <div 
       *ngFor="let item of arrayItems; let idx = index"
-      [className]="'arrow ' + item.course + (item.method_text === 'RTCP' ? ' rtcp' : '') + ' disable-arrow' "
-      [ngStyle]="{'width': item.style.width + '%', 'left': item.style.left + '%', 'color': item.color }"
-      (click)="onClickItem(item.id, $event)"> 
-        <div [ngStyle]="{'color': item.color_method}"><strong>{{ item.method_text }} </strong></div>
-        <div *ngIf="!_isSimplify" style="color: darkblue; font-size: 0.9em;">{{ item.ruri_user }} </div>
-        
-        <!-- arrow --><div [className]="'arrow ' + item.course + (item.method_text === 'RTCP' ? ' rtcp' : '')"></div>
+      [ngStyle]="{
+          'min-width.px': (isSimplify ? 150 : 200) * (flowGridLines.length),
+          'display': item.invisibleDisplayNone ? 'none' : 'flex',
+          'overflow': item.invisibleDisplayNone ? 'hidden' : 'inherit',
+          'max-height.px': !item.invisible ? 100 : 0,
+          'opacity': !item.invisible ? 1 : 0.0001
+      }">
+          <div class="bg-color-polygon" [ngStyle]="{'background-color': item.options.color }" ></div> <!-- background-color -->
 
-        <div *ngIf="!_isSimplify" style="color: grey;">[{{ idx + 1 }}][{{ item.proto | uppercase }}] {{ item.micro_ts }}</div>
-        <div style="color: grey;">+ {{ item.diffTs }} s</div>
-    </div>
-  </div>
-  <div class="label-callid-container" [ngStyle]="{
-    'position': (isExport ? 'inherit' : 'absolute')
-  }">
-      <div class="label-callid" *ngFor="let itemLabel of labels"
-        [ngStyle]="{'color': itemLabel.color_sid}"> * {{ itemLabel.callid }} </div>
+          <div [ngStyle]="{'flex': item.options.start || 0.0000001 }"></div> <!-- left space -->
+          <div [ngStyle]="{
+              'flex': item.options.middle || 0.0000001,
+              'text-align': item.options.direction ? 'right' : 'left'
+          }"
+          class="item-flow-packet"
+          (click)="onClickItem(item.id, $event)"> <!-- content -->
+              <div class="call_text" [ngStyle]="{'color': item.color_method ? item.color_method : 'initial' }"> {{
+                  item.method_text 
+              }} <span *ngIf="item.QOS" [ngClass]="item.options.mosColor"></span> {{
+                  item.QOS ? item.QOS.MOS + ' [' + item.QOS.qosTYPEless + ']' : ''
+              }} </div>
+              <div class="call_text-mini" [ngStyle]="{'height.px': !isSimplify ? 15 : 0}">{{item.ruri_user}}</div>
+              <div [ngClass]="'port-label-' + (!item.options.direction ? 'left' : 'right')">{{ item.srcPort }}</div>
+              <div
+                  [ngClass]="'arrow' + (item.options.direction ? ' left': '') + (!item.options.arrowStyleSolid ? ' arrow-solid' : ' arrow-dotted')"
+                  [ngStyle]="{'color': item.options.color }" 
+              ></div>
+              <div [ngClass]="'port-label-' + (item.options.direction ? 'left' : 'right')">{{ item.dstPort }}</div>
+              <div class="call-text-date" [ngStyle]="{'maxHeight.px': !isSimplify ? 50 : 0}">[{{ idx + 1 }}][{{ item.proto | uppercase }}] {{ item.micro_ts }}</div>
+              <div class="call-text-date">+ {{ item.diffTs }} s</div>
+          </div>
+          <div [ngStyle]="{'flex': item.options.rightEnd || 0.0000001 }"></div> <!-- right space -->
+      </div>
   </div>
 </div>
+<div class="label-callid-container">
+  <div class="label-callid-wrapper" *ngFor="let itemLabel of labels" [ngStyle]="{'color': itemLabel.color_sid}"> * {{ itemLabel.callid }} </div>
+</div>
+
 <div id="download" style="display: none;">
   <img #canvas>
   <a #downloadLink></a>

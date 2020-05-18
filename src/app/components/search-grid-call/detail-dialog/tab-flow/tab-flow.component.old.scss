@@ -1,0 +1,102 @@
+.title-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.3rem;
+    position: absolute;
+    overflow: hidden;
+    z-index: 2;
+    right: 20px;
+    left: 0;
+}
+.title-container > div {
+    flex: 1;
+    min-width: 150px;
+}
+.title-container > div > .title {
+    display: inline-block;
+    border-radius: 4px;
+    background-color: #eee;
+    padding: 0.3rem;
+    font-size: 0.8em;
+    border: 1px solid #aaa;
+    /* box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5); */
+}
+
+.title-container > .grid-vertical-line {
+    border-right: 1px dotted #ccc;
+}
+
+.grid-container {
+    z-index: -1;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    padding: 0;
+}
+
+.arrow {
+    position: relative;
+    border-bottom: 2px solid;
+    padding: 0.5rem 0;
+    font-size: 0.7em;
+    cursor: pointer;
+    background-color: transparent;
+    transition: background-color 0.3s;
+    min-width: 150px;
+}
+.arrow > * {
+    padding: 0 4px;
+}
+.rtcp {
+    border-bottom-style: dotted;
+}
+.arrow:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+.arrow.right > div {
+    text-align: left;
+}
+.arrow.left > div {
+    text-align: right;
+}
+
+.right:before {
+    content: "";
+    border: 7px solid transparent;
+    border-left: 14px solid;
+    position: absolute;
+    right: -8px;
+    bottom: -8.5px;
+}
+.left:before {
+    content: "";
+    border: 7px solid transparent;
+    border-right: 14px solid;
+    position: absolute;
+    left: -8px;
+    bottom: -7.5px;
+}
+
+.label-callid-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+    bottom: 20px;
+    text-align: center;
+}
+
+.label-callid {
+    text-align: center;
+    font-weight: 900;
+    display: inline-block;
+    padding: 0 1rem;
+}
+.disable-arrow {
+    border: 0px !important;
+}
+.disable-arrow:before {
+    border: 0px solid transparent !important;
+}
