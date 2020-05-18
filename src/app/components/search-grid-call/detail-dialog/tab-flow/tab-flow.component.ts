@@ -117,8 +117,14 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             // the regexp will fail, and result in null. This is a 'best' effort
             const regex = RegExp('(.*(?!$))(?::)([0-9]+)?$');
             if(regex.exec(i) != null){
-                const IP    = regex.exec(i)[1] // gives IP
-                const PORT  = regex.exec(i)[2] // gives port
+                var IP    = regex.exec(i)[1] // gives IP
+                if(IP.indexOf(':') > 0 ) {
+                    //got an IPv6
+                    //pre+suffix [ IPv6 ] to make addr:port delineation clearer
+                    IP = '[' + IP + ']'
+                }
+                var PORT  = regex.exec(i)[2] // gives port
+                PORT = PORT ? ":" + PORT : ''
                 return { ip: i, alias, IP, PORT };
             } else {
                 //fall back to the old method if things don't work out.
