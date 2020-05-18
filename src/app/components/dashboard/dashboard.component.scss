@@ -67,3 +67,23 @@ iframe {
 	right: 0;
 	bottom: 0;
 }
+.widget-warning{
+	position: absolute;
+	top: calc(25%);
+	left: calc(10%);
+	background-color: #ff6700;
+	height: 100px;
+	width: 80%;
+	margin-left: 5px;
+	border-radius: .25rem;
+	padding: 1.25rem 1.25rem;
+	p{
+		font-size: 0.85rem;
+		width: calc(100% - .75rem)
+	}
+	.warning-dismiss{
+		position: absolute;
+		top: -5px;
+		right: -5px;
+	}
+}

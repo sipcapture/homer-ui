@@ -18,7 +18,10 @@ import { SearchService } from '@app/services';
     category: 'Search',
     indexName: 'rsearch',
     settingWindow: false,
-    className: 'RsearchWidgetComponent'
+    className: 'RsearchWidgetComponent',
+    submit: true,
+    minHeight:300,
+    minWidth:300
 })
 export class RsearchWidgetComponent implements IWidget {
     @Input() id: string;

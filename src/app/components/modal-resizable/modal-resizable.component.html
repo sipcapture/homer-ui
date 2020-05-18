@@ -7,7 +7,7 @@
       [ngStyle]="{'background-color': headerColor}"
       (mousedown)="onStartMove($event)">
       <div> {{ title }} </div>
-      <div style="display: flex">
+      <div>
         <button mat-icon-button (click)="onFullPage()">
           <mat-icon *ngIf="!isFullPage">fullscreen</mat-icon>
           <mat-icon *ngIf="isFullPage">fullscreen_exit</mat-icon>

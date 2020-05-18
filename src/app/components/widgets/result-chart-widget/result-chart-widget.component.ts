@@ -42,7 +42,9 @@ type SortType = 'SUM' | 'COUNT' | 'MIN' | 'MAX';
     description: 'Display Search chart results in Widgets',
     category: 'Visualize',
     indexName: 'display-results-chart',
-    className: 'ResultChartWidgetComponent'
+    className: 'ResultChartWidgetComponent',
+    minHeight:400,
+    minWidth:600
     // settingWindow: false
 })
 export class ResultChartWidgetComponent implements IWidget {

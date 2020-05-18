@@ -39,7 +39,9 @@ export interface IframeConfig {
     category: 'Metrics',
     indexName: 'iframe',
     advancedName: 'grafana',
-    className: 'IframeWidgetComponent'
+    className: 'IframeWidgetComponent',
+    minHeight: 300,
+    minWidth: 300
 })
 export class IframeWidgetComponent implements IWidget {
     @Input() config: IframeConfig;
