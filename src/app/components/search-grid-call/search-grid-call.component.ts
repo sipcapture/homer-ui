@@ -794,13 +794,14 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         };
         let localDataQOS: any = null, localData: any = null;
 
-        this._ers.postQOS(this.searchService.queryBuilderQOS(row, selectedCallId)).toPromise().then(dataQOS => {
-            localDataQOS = dataQOS;
-            readyToOpen(localData, localDataQOS);
-        });
+        this._cts.getTransaction(request).toPromise().then(res => {
+            const allCallIds = res.data.calldata.map(i => i.sid).sort().filter((i, k, a) => a[k - 1] !== i);
+            this._ers.postQOS(this.searchService.queryBuilderQOS(row, allCallIds)).toPromise().then(dataQOS => {
+                localDataQOS = dataQOS;
+                readyToOpen(localData, localDataQOS);
+            });
 
-        this._cts.getTransaction(request).toPromise().then(data => {
-            localData = data;
+            localData = res;
             readyToOpen(localData, localDataQOS);
         });
     }

@@ -185,7 +185,6 @@ export class ProtosearchWidgetComponent implements IWidget {
                         (item.type === 'integer' || item.type === 'number') &&
                         item.value !== '' && item.value !== null && !isNaN(item.value * 1)
                     ) {
-                        // console.log(`cacheQuery:${item.type}:`, item, item.value);
                         item.value = item.value * 1;
                     }
 
@@ -334,7 +333,6 @@ export class ProtosearchWidgetComponent implements IWidget {
             fields: this.fields
                 .filter((item: any) => {
                     let b;
-                    // console.log('filter >> ', item.field_name, item.type, item.value);
                     if (typeof item.value === 'string') {
                         b = item.value !== '';
                     } else if (item.form_type === 'select') {
@@ -373,10 +371,7 @@ export class ProtosearchWidgetComponent implements IWidget {
                 item.mapping !== ''
             ) {
                 const [constParam, collectionName, propertyName] = item.mapping.split('.');
-                // const paramMapping = item.mapping.split('.');
-
-                // console.log('system_param ===', item)
-
+                
                 if (constParam === 'param' && collectionName) {
                     if (item.value instanceof Array && item.form_default) {
                         this.searchQuery[collectionName] = {

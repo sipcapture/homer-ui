@@ -250,7 +250,6 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
 
     onSavePng() {
         if (!this._flagAfterViewInit) {
-            console.log('waiting FLOW before save a PNG');
             setTimeout(this.onSavePng.bind(this), 1000);
             return;
         }
