@@ -5,7 +5,7 @@
   </div>
 
     <!-- hosts -->
-    <div class="hosts">
+    <div class="hosts" [ngStyle]="{'min-width.px': (isSimplify ? 150 : 200) * (flowGridLines.length)}">
         <!-- host titles -->
         <ng-template ngFor let-itemhost [ngForOf]="aliasTitle">
             <div *ngIf="!itemhost.hidden"
