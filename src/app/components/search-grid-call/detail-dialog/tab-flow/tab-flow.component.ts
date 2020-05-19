@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild, OnDestroy, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild, OnDestroy, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import * as moment from 'moment';
 import { MesagesData } from '../tab-messages/tab-messages.component';
 import { Functions } from '../../../../helpers/functions';
@@ -7,7 +7,8 @@ import * as html2canvas from 'html2canvas';
 @Component({
     selector: 'app-tab-flow',
     templateUrl: './tab-flow.component.html',
-    styleUrls: ['./tab-flow.component.scss']
+    styleUrls: ['./tab-flow.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('flowtitle', {static: false}) flowtitle;
@@ -16,6 +17,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input()
     set isSimplify(val: boolean) {
         this._isSimplify = val;
+        this.cdr.detectChanges();
     }
     get isSimplify() {
         return this._isSimplify;
@@ -26,6 +28,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input()
     set isSimplifyPort(val: boolean) {
         this._isSimplifyPort = val;
+        this.cdr.detectChanges();
     }
     get isSimplifyPort() {
         return this._isSimplifyPort;
@@ -36,6 +39,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input() set dataItem(val) {
         this._dataItem = val;
         setTimeout(this.initData.bind(this));
+        this.cdr.detectChanges();
     }
     get dataItem () {
         return this._dataItem;
@@ -43,6 +47,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input() set exportAsPNG(val) {
         if (val) {
             this.isExport = true;
+            this.cdr.detectChanges();
             setTimeout(() => {
                 this.onSavePng();
             }, 500);
@@ -62,20 +67,10 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     color_sid: string;
     _interval: any;
     labels: Array<any> = [];
-
-    constructor() { }
+    flowGridLines = [];
+    constructor(private cdr: ChangeDetectorRef) { }
 
     ngAfterViewInit() {
-        const self = this;
-        if (!this._interval) {
-            this._interval = setInterval(() => {
-                try {
-                    const wftc = self.flowpage.nativeElement.parentElement.parentElement;
-                    self.flowtitle.nativeElement.style.left = -wftc.scrollLeft + 'px';
-                } catch (e) { }
-            } , 20); // 60 fps
-        }
-
         this._flagAfterViewInit = true;
     }
     ngOnDestroy () {
@@ -108,26 +103,29 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 increment++;
             }
         });
-
+        
         this.aliasTitle = Object.keys(hosts).map( i => {
             const alias = this.dataItem.data.alias[i];
             // This is where the GUI splits port from IP Address. 
-            //Note: not perfect. It works 'backwards' from the end of the string
-            //If last IPv6 block has letters and digits, and there is no port, then
+            // Note: not perfect. It works 'backwards' from the end of the string
+            // If last IPv6 block has letters and digits, and there is no port, then
             // the regexp will fail, and result in null. This is a 'best' effort
             const regex = RegExp('(.*(?!$))(?::)([0-9]+)?$');
             if(regex.exec(i) != null){
-                const IP    = regex.exec(i)[1] // gives IP
-                const PORT  = regex.exec(i)[2] // gives port
+                const IP    = regex.exec(i)[1]; // gives IP
+                const PORT  = regex.exec(i)[2]; // gives port
                 return { ip: i, alias, IP, PORT };
             } else {
-                //fall back to the old method if things don't work out.
+                // fall back to the old method if things don't work out.
                 const al    = i.split(':');
                 const IP    = al[0];
                 const PORT  = al[1] ? ':' + al[1] : '';
-                return { ip: i, alias, IP, PORT };
+                return { ip: this.compIPV6(i), alias, IP: this.compIPV6(IP), PORT };
             }
         });
+
+        console.log('aliasTitle:', this.aliasTitle);
+
         const colCount = this.aliasTitle.length;
         const data = this.dataItem.data;
         let diffTs = 0;
@@ -142,18 +140,36 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 callid: i
             }
         });
+        this.flowGridLines = Array.from({length: Object.keys(hosts).length - 1});
         this.arrayItems = data.calldata.map((item, key, arr) => {
+            console.log({item});
             diffTs = key - 1 >= 0 && arr[key - 1] !== null ? (item.micro_ts - arr[key - 1].micro_ts) / 1000 : 0;
-
+            const {min, max, abs} = Math;
             const srcPosition = hosts[item.srcId].position,
                 dstPosition = hosts[item.dstId].position,
                 course = srcPosition < dstPosition ? 'right' : 'left',
-                position_from = Math.min(srcPosition, dstPosition),
-                position_width = Math.abs(srcPosition - dstPosition),
+                position_from = min(srcPosition, dstPosition),
+                position_width = abs(srcPosition - dstPosition),
                 color_method = Functions.getColorByString(item.method_text);
 
+            const a = srcPosition;
+            const b = dstPosition;
+            const mosColor = '';
+            const options = {
+                mosColor,
+                color: Functions.getColorByString(item.sid),
+                start: min(a, b),
+                middle: abs(a - b) || 1,
+                direction: a > b,
+                rightEnd: Object.keys(hosts).length - 1 - max(a, b),
+                shortdata: '',
+                arrowStyleSolid: item.method_text === 'RTCP'
+            };
             return {
-                course : course,
+                options,
+                course,
+                srcPort: item.srcPort,
+                dstPort: item.dstPort,
                 method_text: item.method_text,
                 ruri_user: item.ruri_user,
                 id: item.id,
@@ -169,6 +185,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             };
         });
         this.dataSource = Functions.messageFormatter(this.dataItem.data.messages);
+        this.cdr.detectChanges();
     }
 
     onClickItem(id: any, event = null) {
@@ -176,7 +193,9 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         row.mouseEventData = event;
         this.messageWindow.emit(row);
     }
-
+    compIPV6(input) {
+        return input.replace(/\b(?:0+:){2,}/, ':');
+    }
     /**
     * Sort object properties (only own properties will be sorted).
     * @param {object} obj object to sort properties

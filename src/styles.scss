@@ -18,9 +18,18 @@
        url(./assets/fonts/MaterialIcons-Regular.woff) format('woff'),
        url(./assets/fonts/MaterialIcons-Regular.ttf) format('truetype');
 }
-
-h1,h2,h3,h4,p,mat-label,div,strong,em,b{
-	font-family:Helvetica, Arial, sans-serif;
+/// fonts settings:
+h1,h2,h3,h4,p,strong,em,b,
+mat-label,
+.mat-list-base .mat-list-item .mat-list-item-content, .mat-list-base .mat-list-option .mat-list-item-content,.mat-table,.mat-button, 
+.mat-raised-button, .mat-icon-button, .mat-stroked-button, .mat-flat-button, .mat-fab, .mat-mini-fab,
+.ag-theme-material,
+.ag-header-cell, .ag-cell-wrapper,
+.label-callid,.title,
+.ag-filter-select,.ag-filter .ag-filter-filter, 
+button, .md-drppicker, .month,
+.ag-paging-panel, .cdk-drag {
+	font-family:'Roboto', Helvetica, Arial, sans-serif;
 }
 
 .material-icons {
@@ -76,6 +85,15 @@ $row-border-width: 1px;
 $hover-color: cornsilk;
 $ag-suppress-legacy-var-import: true;
 
+.ag-cell {
+	padding-right:5px !important;
+	padding-left:5px !important;
+}
+
+.ag-header-cell{
+	padding-right:5px !important;
+	padding-left: 5px !important;
+}
 
 a:not([href]){
   cursor: pointer; 
