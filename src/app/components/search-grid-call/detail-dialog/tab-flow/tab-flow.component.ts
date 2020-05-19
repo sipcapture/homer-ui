@@ -57,7 +57,6 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @ViewChild('flowpage', {static: true}) flowpage: ElementRef;
     @ViewChild('flowscreen', {static: true}) flowscreen: ElementRef;
-    // </div>
     @ViewChild('canvas', {static: true}) canvas: ElementRef;
     @ViewChild('downloadLink', {static: true}) downloadLink: ElementRef;
     isExport = false;
@@ -103,28 +102,42 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 increment++;
             }
         });
-        
+
         this.aliasTitle = Object.keys(hosts).map( i => {
             const alias = this.dataItem.data.alias[i];
-            // This is where the GUI splits port from IP Address. 
+            // This is where the GUI splits port from IP Address.
             // Note: not perfect. It works 'backwards' from the end of the string
             // If last IPv6 block has letters and digits, and there is no port, then
             // the regexp will fail, and result in null. This is a 'best' effort
             const regex = RegExp('(.*(?!$))(?::)([0-9]+)?$');
-            if(regex.exec(i) != null){
-                const IP    = regex.exec(i)[1]; // gives IP
+            if (regex.exec(i) != null) {
+                const IP    = regex.exec(i)[1].replace(/\[|\]/g, ''); // gives IP
                 const PORT  = regex.exec(i)[2]; // gives port
-                return { ip: i, alias, IP, PORT };
+                return {
+                    ip: i,
+                    isIPv6: IP.match(/\:/g) && IP.match(/\:/g).length > 1,
+                    shortIPtext1: this.compIPV6(IP),
+                    shortIPtext2: this.shortcutIPv6String(IP),
+                    alias,
+                    IP,
+                    PORT
+                };
             } else {
                 // fall back to the old method if things don't work out.
                 const al    = i.split(':');
-                const IP    = al[0];
+                const IP    = al[0].replace(/\[|\]/g, '');
                 const PORT  = al[1] ? ':' + al[1] : '';
-                return { ip: this.compIPV6(i), alias, IP: this.compIPV6(IP), PORT };
+                return {
+                    ip: i,
+                    shortIPtext1: this.compIPV6(IP),
+                    shortIPtext2: this.shortcutIPv6String(IP),
+                    isIPv6: IP.match(/\:/g) && IP.match(/\:/g).length > 1,
+                    alias,
+                    IP,
+                    PORT
+                };
             }
         });
-
-        console.log('aliasTitle:', this.aliasTitle);
 
         const colCount = this.aliasTitle.length;
         const data = this.dataItem.data;
@@ -142,7 +155,6 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         });
         this.flowGridLines = Array.from({length: Object.keys(hosts).length - 1});
         this.arrayItems = data.calldata.map((item, key, arr) => {
-            console.log({item});
             diffTs = key - 1 >= 0 && arr[key - 1] !== null ? (item.micro_ts - arr[key - 1].micro_ts) / 1000 : 0;
             const {min, max, abs} = Math;
             const srcPosition = hosts[item.srcId].position,
@@ -195,6 +207,11 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     compIPV6(input) {
         return input.replace(/\b(?:0+:){2,}/, ':');
+    }
+    shortcutIPv6String(str = '') {
+        const regexp = /^\[?([\da-fA-F]+)\:.*\:([\da-fA-F]+)\]?$/g;
+        const regfn = (fullstring, start, end) => `${start}:...:${end}`;
+        return str.replace(regexp, regfn);
     }
     /**
     * Sort object properties (only own properties will be sorted).

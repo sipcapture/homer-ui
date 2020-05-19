@@ -38,12 +38,12 @@ export class DialogSettingsGridDialog {
             selected: column.visible
         }));
         this.allColumnIds = this.allColumnIds
-            .map(i => JSON.stringify(i))
+            .map( i => JSON.stringify(i))
             .sort()
             .filter((i, k, arr) => i !== arr[k - 1])
             .map(i => JSON.parse(i));
-        let i = this.allColumnIds.findIndex(column => column.field === 'checkbox');
-        this.allColumnIds.splice(i,1);
+        let ic = this.allColumnIds.findIndex(column => column.field === 'checkbox');
+        this.allColumnIds.splice(ic,1);
         let lsIndex = 'result-state';
         if ( this.id ) {
             lsIndex += `-${this.id}`;
