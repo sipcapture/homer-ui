@@ -32,6 +32,11 @@ button, .md-drppicker, .month,
 	font-family:'Roboto', Helvetica, Arial, sans-serif;
 }
 
+// ag-borders adjustment
+.ag-theme-material .ag-ltr .ag-cell {
+	border-right: 1px solid lightgray;
+}
+
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
@@ -84,15 +89,38 @@ $row-height: 40px;
 $row-border-width: 1px;
 $hover-color: cornsilk;
 $ag-suppress-legacy-var-import: true;
+// fix borders ag-grid
+.ag-row{
+	border:none !important;
+}
 
 .ag-cell {
 	padding-right:5px !important;
 	padding-left:5px !important;
+	border:none !important;
+	border-right:1px solid lightgray !important;
 }
 
 .ag-header-cell{
 	padding-right:5px !important;
 	padding-left: 5px !important;
+}
+// fix borders mat-table
+
+td.mat-cell{
+	border-bottom-style:unset !important;
+	border-right-style: solid !important;
+	border-right-width: 1px !important;
+	border-right-color: lightgray !important;
+	padding-left:5px !important;
+	font-size:12px;
+	color:rgb(33, 51, 71);
+}
+cdk-header-cell{
+	padding-left: 5px !important;
+}
+tbody{
+	border:1px solid lightgray;
 }
 
 a:not([href]){
