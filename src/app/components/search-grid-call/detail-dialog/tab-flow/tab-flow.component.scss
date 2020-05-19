@@ -35,6 +35,9 @@
         flex: 1;
     }
 }
+::ng-deep .mat-tooltip {
+    font-size: 14px;
+}
 .hosts {
     position: sticky;
     top: 0px;
@@ -42,6 +45,7 @@
     justify-content: space-between;
     z-index: 1;
     background: white;
+    
     .item-wrapper {
         min-width: 200px;
         transition: all 0.3s ease;
@@ -130,13 +134,13 @@
                 }
             }
             .call_text {
-                font-size: 14px;
+                font-size: 16px;
                 font-weight: 600;
                 color: #24465f;
                 padding: 0 4px;
             }
             .call_text-mini {
-                font-size: 10px;
+                font-size: 12px;
                 color: #24465f;
                 text-overflow: ellipsis;
                 white-space: nowrap;

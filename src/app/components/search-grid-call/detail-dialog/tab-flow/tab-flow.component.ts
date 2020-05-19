@@ -57,7 +57,6 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @ViewChild('flowpage', {static: true}) flowpage: ElementRef;
     @ViewChild('flowscreen', {static: true}) flowscreen: ElementRef;
-    // </div>
     @ViewChild('canvas', {static: true}) canvas: ElementRef;
     @ViewChild('downloadLink', {static: true}) downloadLink: ElementRef;
     isExport = false;
@@ -80,7 +79,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         this.initData();
     }
     initData() {
-        this.color_sid = Functions.getColorByString(this.callid);
+        this.color_sid = Functions.getColorByString(this.callid,100,40,1);
 
         const IpList = ([].concat(...this.dataItem.data.calldata.map(i => [i.srcId, i.dstId]))).reduce((a, b) => {
             if (!a.includes(b)) {
@@ -103,28 +102,42 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 increment++;
             }
         });
-        
+
         this.aliasTitle = Object.keys(hosts).map( i => {
             const alias = this.dataItem.data.alias[i];
-            // This is where the GUI splits port from IP Address. 
+            // This is where the GUI splits port from IP Address.
             // Note: not perfect. It works 'backwards' from the end of the string
             // If last IPv6 block has letters and digits, and there is no port, then
             // the regexp will fail, and result in null. This is a 'best' effort
             const regex = RegExp('(.*(?!$))(?::)([0-9]+)?$');
-            if(regex.exec(i) != null){
-                const IP    = regex.exec(i)[1]; // gives IP
+            if (regex.exec(i) != null) {
+                const IP    = regex.exec(i)[1].replace(/\[|\]/g, ''); // gives IP
                 const PORT  = regex.exec(i)[2]; // gives port
-                return { ip: i, alias, IP, PORT };
+                return {
+                    ip: i,
+                    isIPv6: IP.match(/\:/g) && IP.match(/\:/g).length > 1,
+                    shortIPtext1: this.compIPV6(IP),
+                    shortIPtext2: this.shortcutIPv6String(IP),
+                    alias,
+                    IP,
+                    PORT
+                };
             } else {
                 // fall back to the old method if things don't work out.
                 const al    = i.split(':');
-                const IP    = al[0];
+                const IP    = al[0].replace(/\[|\]/g, '');
                 const PORT  = al[1] ? ':' + al[1] : '';
-                return { ip: this.compIPV6(i), alias, IP: this.compIPV6(IP), PORT };
+                return {
+                    ip: i,
+                    shortIPtext1: this.compIPV6(IP),
+                    shortIPtext2: this.shortcutIPv6String(IP),
+                    isIPv6: IP.match(/\:/g) && IP.match(/\:/g).length > 1,
+                    alias,
+                    IP,
+                    PORT
+                };
             }
         });
-
-        console.log('aliasTitle:', this.aliasTitle);
 
         const colCount = this.aliasTitle.length;
         const data = this.dataItem.data;
@@ -136,13 +149,12 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             return a;
         }, []).map(i => {
             return {
-                color_sid: Functions.getColorByString(i),
+                color_sid: Functions.getColorByString(i,100,40,1),
                 callid: i
             }
         });
         this.flowGridLines = Array.from({length: Object.keys(hosts).length - 1});
         this.arrayItems = data.calldata.map((item, key, arr) => {
-            console.log({item});
             diffTs = key - 1 >= 0 && arr[key - 1] !== null ? (item.micro_ts - arr[key - 1].micro_ts) / 1000 : 0;
             const {min, max, abs} = Math;
             const srcPosition = hosts[item.srcId].position,
@@ -150,14 +162,14 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 course = srcPosition < dstPosition ? 'right' : 'left',
                 position_from = min(srcPosition, dstPosition),
                 position_width = abs(srcPosition - dstPosition),
-                color_method = Functions.getColorByString(item.method_text);
+                color_method = Functions.getMethodColor(item.method_text);
 
             const a = srcPosition;
             const b = dstPosition;
             const mosColor = '';
             const options = {
                 mosColor,
-                color: Functions.getColorByString(item.sid),
+                color: Functions.getColorByString(item.sid,100,40,1),
                 start: min(a, b),
                 middle: abs(a - b) || 1,
                 direction: a > b,
@@ -174,7 +186,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 ruri_user: item.ruri_user,
                 id: item.id,
                 color_method: color_method,
-                color: Functions.getColorByString(item.sid),
+                color: Functions.getColorByString(item.sid,100,40,1),
                 micro_ts: moment( item.micro_ts).format('YYYY-MM-DD HH:mm:ss.SSS Z'),
                 diffTs: diffTs.toFixed(3),
                 proto: Functions.protoCheck(item.protocol),
@@ -195,6 +207,11 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     compIPV6(input) {
         return input.replace(/\b(?:0+:){2,}/, ':');
+    }
+    shortcutIPv6String(str = '') {
+        const regexp = /^\[?([\da-fA-F]+)\:.*\:([\da-fA-F]+)\]?$/g;
+        const regfn = (fullstring, start, end) => `${start}:...:${end}`;
+        return str.replace(regexp, regfn);
     }
     /**
     * Sort object properties (only own properties will be sorted).
