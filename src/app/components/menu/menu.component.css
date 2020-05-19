@@ -78,7 +78,8 @@ button:focus {
     color: #E0121A;
 }
 .logo-base > img {
-    width: 32px;
+    width: 30px;
+    margin-left: -14px;
 }
 .header {
     justify-content: space-between;
