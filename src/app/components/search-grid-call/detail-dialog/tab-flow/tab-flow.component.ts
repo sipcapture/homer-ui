@@ -80,7 +80,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         this.initData();
     }
     initData() {
-        this.color_sid = Functions.getColorByString(this.callid);
+        this.color_sid = Functions.getColorByString(this.callid,100,40,1);
 
         const IpList = ([].concat(...this.dataItem.data.calldata.map(i => [i.srcId, i.dstId]))).reduce((a, b) => {
             if (!a.includes(b)) {
@@ -136,7 +136,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             return a;
         }, []).map(i => {
             return {
-                color_sid: Functions.getColorByString(i),
+                color_sid: Functions.getColorByString(i,100,40,1),
                 callid: i
             }
         });
@@ -150,14 +150,14 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 course = srcPosition < dstPosition ? 'right' : 'left',
                 position_from = min(srcPosition, dstPosition),
                 position_width = abs(srcPosition - dstPosition),
-                color_method = Functions.getColorByString(item.method_text);
+                color_method = Functions.getMethodColor(item.method_text);
 
             const a = srcPosition;
             const b = dstPosition;
             const mosColor = '';
             const options = {
                 mosColor,
-                color: Functions.getColorByString(item.sid),
+                color: Functions.getColorByString(item.sid,100,40,1),
                 start: min(a, b),
                 middle: abs(a - b) || 1,
                 direction: a > b,
@@ -174,7 +174,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 ruri_user: item.ruri_user,
                 id: item.id,
                 color_method: color_method,
-                color: Functions.getColorByString(item.sid),
+                color: Functions.getColorByString(item.sid,100,40,1),
                 micro_ts: moment( item.micro_ts).format('YYYY-MM-DD HH:mm:ss.SSS Z'),
                 diffTs: diffTs.toFixed(3),
                 proto: Functions.protoCheck(item.protocol),

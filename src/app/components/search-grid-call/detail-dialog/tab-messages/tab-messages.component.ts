@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import * as moment from 'moment';
-import { Functions } from '../../../../helpers/functions';
+import { Functions } from '@app/helpers/functions';
 
 export interface MesagesData {
     id: string;
@@ -50,6 +50,9 @@ export class TabMessagesComponent implements OnInit {
     getAliasByIP (ip) {
         const alias = this.dataItem.data.alias;
         return alias[ip] || ip;
+    }
+    getMethodColor(method){
+        return Functions.getMethodColor(method);
     }
     ngOnInit() {
         this.dataSource = Functions.messageFormatter(this.dataItem.data.messages);

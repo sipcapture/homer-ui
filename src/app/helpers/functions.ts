@@ -97,10 +97,11 @@ export class Functions {
         }
     }
 
-    static getColorByString(str: string) {
+    static getColorByString(str: string, saturation:number, lightness:number, alpha:number, offset?: number) {
         const col = Functions.getColorByStringHEX(str);
         const num = parseInt(col, 16) % 360;
-        return `hsl(${num}, 100%, 40%)`;
+        offset = offset || 0;
+        return `hsl(${num - offset}, ${saturation}%, ${lightness}%,${alpha})`;
     }
     static getColorByStringHEX(str: string) {
         if (str === 'LOG') {
@@ -122,6 +123,27 @@ export class Functions {
             col = col.substring(0, 6);
         }
         return col;
+    }
+    static getMethodColor (str){
+        let color:string = 'hsl(0,0%,0%)'
+        if(str === 'INVITE'){
+            color = 'hsl(227.5,82.4%,51%)'
+        }else if(str === "BYE" || str === "CANCEL"){
+            color = 'hsl(120,100%,25%)'
+        }else if(str >= 100 && str < 200){
+            color = 'hsl(0,0%,0%)'
+        }else if(str >= 200 && str < 300){
+            color = 'hsl(120,70%,50%)'
+        }else if(str >= 300 && str < 400){
+            color = 'hsl(280,100%,50%)'
+        }else if(str >= 400 && str < 500){
+            color = 'hsl(15,100%,45%)'
+        }else if(str >= 500 && str < 700){
+            color = 'hsl(0,100%,45%)'
+        }else {
+            color = 'hsl(0,0%,0%)'
+        }
+        return color
     }
     static messageFormatter(dist: Array<any>) {
         const dataSource: Array<any> = [];

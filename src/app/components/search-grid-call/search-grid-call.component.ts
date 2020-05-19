@@ -671,13 +671,21 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     private getCallIDColor (params) {
         return (!params.hasOwnProperty('value') ||
             (typeof params.value === 'undefined')) ?  {} :
-                {'color': Functions.getColorByString(params.value)};
+                {'color': Functions.getColorByString(params.value,100,25,1,180)};
     }
 
     private getMethodColor (params) {
+        if(params.hasOwnProperty('value') && typeof params.value != undefined){
+
+            let color = Functions.getMethodColor(params.value); 
+
+            return {'color' : color};
+        }else{
+            return{}
+        }
         return (!params.hasOwnProperty('value') ||
             (typeof params.value === 'undefined')) ?  {} :
-                {'color': Functions.getColorByString(params.value)};
+                {'color': Functions.getColorByString(params.value,100,30,1)};
     }
 
     private getBkgColorTable(params) {
@@ -686,12 +694,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 'background-color': '#fff'
             }
         }
-        const callid = params.data.callid;
-        const col = Functions.getColorByStringHEX(callid);
-        const baseColor = parseInt(col, 16) % 360;
-        const color = 'hsla(' + (baseColor - 180) + ', 75%, 80%, 0.2)';
         return {
-            'background-color': color
+            'background-color': Functions.getColorByString(params.data.callid,60,80,0.8)
         };
     }
 
@@ -746,7 +750,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             return a;
         }, []);
 
-        const color = Functions.getColorByString(sid);
+        const color = Functions.getColorByString(sid,75,60,1);
 
         const request = {
             param: Functions.cloneObject(this.config.param || {} as any),
@@ -812,7 +816,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
         const _protocol_profile = row && row.data && row.data.profile ? row.data.profile : this.protocol_profile;
 
-        const color = Functions.getColorByString(row.data.method || 'LOG');
+        const color = Functions.getColorByString(row.data.method || 'LOG',100,40,1);
         const mData = {
             loaded: false,
             data: {} as any,
