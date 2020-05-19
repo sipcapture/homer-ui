@@ -149,15 +149,17 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         private searchService: SearchService
     ) {
         this.myPredefColumns = [{
-            headerName: 'Checkboxes',
+            headerName: '',
             field: 'checkbox',
-            minWidth: 60,
-            maxWidth: 60,
+            minWidth: 34,
+            maxWidth: 34,
+            resizable: false,
             checkboxSelection: true,
             lockPosition: true,
             cellRendererParams: { checkbox: true },
             pinned: 'left',
             cellClass: 'no-border',
+            headerClass: 'no-border',
             headerCheckboxSelection: true
         }];
 
@@ -586,9 +588,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     public update(isImportant = false) {
-
-        
-        console.log(this.rowData);
         if (this.isNewData() && !isImportant) {
             return;
         }
@@ -621,18 +620,23 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 if (!result || !result.data) {
                     this.rowData = [];
                     this.dataReady.emit({});
-                    console.log('test')
                     return;
                 }
 
                 this.rowData = result.data;
+                for(let i = 0; i< this.rowData.length; i++){
+                    if(this.rowData[i].protocol != undefined && this.rowData[i].protocol === 17){
+                        this.rowData[i].protocol = 'UDP'
+                    }else if(this.rowData[i].protocol != undefined && this.rowData[i].protocol === 6){
+                        this.rowData[i].protocol = 'TCP'
+                    }
+                }
                 this.sizeToFit();
                 this.selectCallIdFromGetParams();
                 this.openTransactionByAdvancedSettings();
                 this.dataReady.emit({});
                 this.initSearchSlider();
             }, err => {
-                console.log('test')
                 this.rowData = [];
                 this.dataReady.emit({});
             });
@@ -682,9 +686,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 'background-color': '#fff'
             }
         }
-        const sid = params.data.sid;
-        const his = this.hashCode(sid);
-        const color = 'hsla(' + this.intToARGB(his) + ', 75%, 85%, 0.3)';
+        const callid = params.data.callid;
+        const col = Functions.getColorByStringHEX(callid);
+        const baseColor = parseInt(col, 16) % 360;
+        const color = 'hsla(' + (baseColor - 180) + ', 75%, 80%, 0.2)';
         return {
             'background-color': color
         };

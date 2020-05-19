@@ -42,6 +42,8 @@ export class DialogSettingsGridDialog {
             .sort()
             .filter((i, k, arr) => i !== arr[k - 1])
             .map(i => JSON.parse(i));
+        let i = this.allColumnIds.findIndex(column => column.field === 'checkbox');
+        this.allColumnIds.splice(i,1);
         let lsIndex = 'result-state';
         if ( this.id ) {
             lsIndex += `-${this.id}`;
@@ -49,6 +51,8 @@ export class DialogSettingsGridDialog {
         if(localStorage.getItem(lsIndex)){
             this.allColumnIds = Functions.cloneObject(JSON.parse(localStorage.getItem(lsIndex)))
         }
+        let i = this.allColumnIds.findIndex(column => column.field === 'checkbox');
+        this.allColumnIds.splice(i,1);
         this._bufferData = Functions.cloneObject(this.allColumnIds);
         
     }
