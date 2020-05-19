@@ -1,28 +1,49 @@
-table {
-	width: 100%;
-	overflow: auto;
-	tr {
-		transition: background-color 0.3s;
-		height: 38px;
-		//font-family:	Menlo,Monaco,Consolas,Courier New,monospace !important;
-		
-		color:rgb(27, 27, 41);
-		&:hover {
-			cursor: pointer;
-			background-color: rgb(174, 216, 253) !important;
+:host{
+	overflow-y: auto;
+	overflow-x: hidden;
+	table {
+		width: 100%;
+		overflow-x: hidden;
+		tr {
+			transition: background-color 0.3s;
+			height: 38px;
+			//font-family:	Menlo,Monaco,Consolas,Courier New,monospace !important;
+			
+			color:rgb(27, 27, 41);
+			&:hover {
+				cursor: pointer;
+				background-color: rgb(174, 216, 253) !important;
+			}
+		}
+	}
+	.mat-tab-body-content{
+		overflow-x:hidden !important;
+	}
+	td.mat-cell{
+		border-bottom-style:unset !important;
+		border-right-style: solid !important;
+		border-right-width: 1px !important;
+		border-right-color: lightgray !important;
+		padding-left:5px !important;
+		//font-size:12px;
+		color:rgb(33, 51, 71);
+	}
+	cdk-header-cell{
+		padding-left: 5px !important;
+	}
+	tbody{
+		border:1px solid lightgray;
+	}
+	.mat-row {
+		&:nth-child(2n+1){
+			background-color: #DFF1FF;
+			
+	
+		}
+		&:not(:nth-child(2n+1)){
+			background-color:#EFF8FF;
+	
 		}
 	}
 }
 
-
-.mat-row {
-  &:nth-child(2n+1){
-		background-color: #DFF1FF;
-		
-
-  }
-  &:not(:nth-child(2n+1)){
-		background-color:#EFF8FF;
-
-	}
-}
