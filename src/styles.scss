@@ -107,21 +107,7 @@ $ag-suppress-legacy-var-import: true;
 }
 // fix borders mat-table
 
-td.mat-cell{
-	border-bottom-style:unset !important;
-	border-right-style: solid !important;
-	border-right-width: 1px !important;
-	border-right-color: lightgray !important;
-	padding-left:5px !important;
-	font-size:12px;
-	color:rgb(33, 51, 71);
-}
-cdk-header-cell{
-	padding-left: 5px !important;
-}
-tbody{
-	border:1px solid lightgray;
-}
+
 
 a:not([href]){
   cursor: pointer; 
@@ -243,6 +229,7 @@ gridster-item {
 }
 .out-window {
 	.mat-tab-body-content {
+	
 		&.ng-trigger {
 			&.ng-trigger-translateTab {
 				height: calc(100vh - 3.05rem) !important;
