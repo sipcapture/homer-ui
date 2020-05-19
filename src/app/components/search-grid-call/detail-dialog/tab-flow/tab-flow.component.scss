@@ -35,6 +35,9 @@
         flex: 1;
     }
 }
+::ng-deep .mat-tooltip {
+    font-size: 14px;
+}
 .hosts {
     position: sticky;
     top: 0px;
@@ -42,6 +45,7 @@
     justify-content: space-between;
     z-index: 1;
     background: white;
+    
     .item-wrapper {
         min-width: 200px;
         transition: all 0.3s ease;

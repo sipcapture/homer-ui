@@ -4,18 +4,25 @@ table {
 	tr {
 		transition: background-color 0.3s;
 		height: 38px;
+		//font-family:	Menlo,Monaco,Consolas,Courier New,monospace !important;
+		
+		color:rgb(27, 27, 41);
 		&:hover {
-			background-color: rgba(0, 0, 0, 0.12);
 			cursor: pointer;
+			background-color: rgb(174, 216, 253) !important;
 		}
 	}
 }
 
+
 .mat-row {
   &:nth-child(2n+1){
-    background-color: #e4f0ec;
+		background-color: #DFF1FF;
+		
+
   }
   &:not(:nth-child(2n+1)){
-    background-color:#ffffff;
-  }
+		background-color:#EFF8FF;
+
+	}
 }
