@@ -41,7 +41,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     @HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
         let ls = JSON.parse(localStorage.getItem('searchQueryWidgetsResult'));
         let currentWidget:any;
-        if(ls.currentWidget != undefined){
+        if(ls != null && ls.currentWidget != undefined){
             currentWidget = ls.currentWidget; 
         }else{
             currentWidget = this._ds.dbs.currentWidget;
@@ -56,7 +56,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         }
         let widgetList:Array<any>;
-        if(ls.currentWidgetList != undefined){
+        if(ls != null && ls.currentWidgetList != undefined){
             widgetList = ls.currentWidgetList;
         }else{
             widgetList = this._ds.dbs.currentWidgetList;
@@ -308,7 +308,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         let dashboardSubmitWidgets:Array<any> = [];
         let ls = JSON.parse(localStorage.getItem('searchQueryWidgetsResult'));
         let widgetList:Array<any>;
-        if(ls.currentWidgetList != undefined){
+        if(ls != null && ls.currentWidgetList != undefined){
             widgetList = ls.currentWidgetList;
         }else{
             widgetList = this._ds.dbs.currentWidgetList;
@@ -331,7 +331,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     changeCurrent(id:string){
         let ls = JSON.parse(localStorage.getItem('searchQueryWidgetsResult'));
         let currentWidget:any;
-        if(ls.currentWidget != undefined){
+        if(ls !=null && ls.currentWidget != undefined){
             currentWidget = ls.currentWidget; 
         }else{
             currentWidget = this._ds.dbs.currentWidget;
@@ -339,7 +339,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         if(id != currentWidget.id){
             for(let i = 0; i<this.submitCheck().length; i++){
                 if(id===this.submitCheck()[i].id){
-                    ls.currentWidget.id
+                    currentWidget.id
                     this._ds.setCurrentWidgetId(this.submitCheck()[i]);
                 }
             }
