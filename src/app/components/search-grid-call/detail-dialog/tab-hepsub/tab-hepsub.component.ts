@@ -18,7 +18,7 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
 
     @ViewChild('matTabGroup', {static: false}) matTabGroup: MatTabGroup;
     indexTabPosition = 0;
-    
+
     isLogs = true;
     subTabList = [];
     jsonData: any;
@@ -41,15 +41,14 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
                 this.haveData.emit(true);
             } else {
                 this.haveData.emit(false);
-                console.log('No hepsub connected: ', res);
             }
-        })
+        });
         setTimeout(() => {
             this.isLogs = this.dataLogs.length > 0;
-        })
+        });
         this._interval = setInterval(() => {
             this.matTabGroup.realignInkBar();
-        }, 350)
+        }, 350);
     }
     async onTabClick(uuid, type) {
         const res2 = await this.agentsubService.getHepsubElements({uuid, type, data: this.getQuery()}).toPromise();
