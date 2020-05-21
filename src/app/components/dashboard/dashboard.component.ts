@@ -39,31 +39,42 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         private router: Router,
         public dialog: MatDialog) {}
     @HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
-        if (this._ds.dbs.currentWidget != undefined){
+        let ls = JSON.parse(localStorage.getItem('searchQueryWidgetsResult'));
+        let currentWidget:any;
+        if(ls != null && ls.currentWidget != undefined){
+            currentWidget = ls.currentWidget; 
+        }else{
+            currentWidget = this._ds.dbs.currentWidget;
+        }
+        if (currentWidget != undefined){
             if (event.key === "Enter" && event.ctrlKey === true) {
-                const w: IWidget = WidgetArrayInstance[this._ds.dbs.currentWidget.id];
+                const w: IWidget = WidgetArrayInstance[currentWidget.id];
                 if (w && w.doSearchResult) {
                     w.doSearchResult();
                 }
 
             }
         }
-        let widgets =  this._ds.dbs.currentWidgetList;
-        let firstWidget =  widgets.findIndex(widget => widget.strongIndex === "ProtosearchWidgetComponent")
+        let widgetList:Array<any>;
+        if(ls != null && ls.currentWidgetList != undefined){
+            widgetList = ls.currentWidgetList;
+        }else{
+            widgetList = this._ds.dbs.currentWidgetList;
+        }
+        let firstWidget =  widgetList.findIndex(widget => widget.strongIndex === "ProtosearchWidgetComponent")
         if (event.key === "Tab" && event.shiftKey === true) {
             event.preventDefault();
             let i = 0;
-            if (this._ds.dbs.currentWidget != undefined){
-                i = widgets.findIndex(widget => widget.id === this._ds.dbs.currentWidget.id);
-                if(i<this.submitCheck().length -1){
-                    i++;
+            if (currentWidget != undefined){
+                i = this.submitCheck().findIndex(widget => widget.id === currentWidget.id);
+                if(i<this.submitCheck().length - 1){
+                    i+=1;
                 }else{
                     i=0
                 }
             }else{
                 i = 0;
             }
-            
             this._ds.setCurrentWidgetId(this.submitCheck()[i]);
         } 
     }
@@ -293,29 +304,47 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
     submitCheck(){
-        let submitWidgets = [];
-        let dashboardSubmitWidgets = [];
+        let submitWidgets:Array<any> = [];
+        let dashboardSubmitWidgets:Array<any> = [];
+        let ls = JSON.parse(localStorage.getItem('searchQueryWidgetsResult'));
+        let widgetList:Array<any>;
+        if(ls != null && ls.currentWidgetList != undefined){
+            widgetList = ls.currentWidgetList;
+        }else{
+            widgetList = this._ds.dbs.currentWidgetList;
+        }
         for(let i = 0; i<WidgetArray.length;i++){
             if(WidgetArray[i].submit){
                 submitWidgets.push(WidgetArray[i]);
             }
         }
-        for(let i=0; i<this._ds.dbs.currentWidgetList.length;i++){
+
+        for(let i=0; i<widgetList.length;i++){
             for(let j=0; j<submitWidgets.length;j++){
-                if(this._ds.dbs.currentWidgetList[i].strongIndex === submitWidgets[j].strongIndex){
-                    dashboardSubmitWidgets.push(this._ds.dbs.currentWidgetList[i])
+                if(widgetList[i].strongIndex === submitWidgets[j].strongIndex){
+                    dashboardSubmitWidgets.push(widgetList[i])
                 }
             }
         }
         return dashboardSubmitWidgets;
     }
     changeCurrent(id:string){
-        for(let i = 0; i<this.submitCheck().length; i++){
-            if(id===this.submitCheck()[i].id){
-                this._ds.setCurrentWidgetId(this.submitCheck()[i]);
-            }
+        let ls = JSON.parse(localStorage.getItem('searchQueryWidgetsResult'));
+        let currentWidget:any;
+        if(ls !=null && ls.currentWidget != undefined){
+            currentWidget = ls.currentWidget; 
+        }else{
+            currentWidget = this._ds.dbs.currentWidget;
         }
-        this.save()
+        if(id != currentWidget.id){
+            for(let i = 0; i<this.submitCheck().length; i++){
+                if(id===this.submitCheck()[i].id){
+                    currentWidget.id
+                    this._ds.setCurrentWidgetId(this.submitCheck()[i]);
+                }
+            }
+            this.save()
+        }
     }
     itemChange(item: any) {
 
