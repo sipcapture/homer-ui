@@ -56,6 +56,7 @@ export class ProtosearchWidgetComponent implements IWidget {
     @Input() fields = [];
     @Input() autoline = false;
     @Input() targetResultId = null;
+    @Input() onlySmartField = false;
     @Output() changeSettings = new EventEmitter<any> ();
     @Output() dosearch = new EventEmitter<any> ();
 
@@ -79,7 +80,7 @@ export class ProtosearchWidgetComponent implements IWidget {
     mapping: any;
     targetResultsContainerValue = new FormControl();
     SmartInputQueryText: string = '';
-    _lastInterval:any;
+    _lastInterval: any;
     constructor(
         public dialog: MatDialog,
         private router: Router,
@@ -126,6 +127,7 @@ export class ProtosearchWidgetComponent implements IWidget {
         } else {
             this.isConfig = true;
         }
+        
         this.widgetId = this.id || '_' + Functions.md5(JSON.stringify(this.config));
 
         this.config.config = this.config.config || {};
@@ -333,9 +335,7 @@ export class ProtosearchWidgetComponent implements IWidget {
             fields: this.fields
                 .filter((item: any) => {
                     let b;
-                    if (item.field_name === 'smartinput') {
-                        b = false;
-                    } else if (typeof item.value === 'string') {
+                    if (typeof item.value === 'string') {
                         b = item.value !== '';
                     } else if (item.form_type === 'select') {
                         b = true;
@@ -388,14 +388,6 @@ export class ProtosearchWidgetComponent implements IWidget {
             }
         });
 
-        /** smart input additional fields */
-        if (this.fieldsFromSmartInput) {
-            const getCurrentHepId = this.config.config.protocol_id.value;
-            this.fieldsFromSmartInput.forEach(i => {
-                i.hepid = getCurrentHepId;
-                this.searchQuery.fields.push(i)
-            });
-        }
 
         this.searchService.setLocalStorageQuery(Functions.cloneObject(this.searchQuery));
         this._sss.saveProtoSearchConfig(this.widgetId, Functions.cloneObject(this.searchQuery));
@@ -547,7 +539,11 @@ export class ProtosearchWidgetComponent implements IWidget {
         this.searchQuery.fields = [];
     }
     onSmartInputCodeData(event, item = null) {
-        this.fieldsFromSmartInput = event.parsedFields;
+        this.fields.forEach(i => {
+            if (item && item.field_name === i.field_name && i.form_type === 'smart-input') {
+                i.value = event.text;
+            }
+        });
         this.saveState();
     }
     private get isLoki(): boolean {

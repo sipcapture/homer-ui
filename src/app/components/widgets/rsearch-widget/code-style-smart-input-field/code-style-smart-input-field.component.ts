@@ -173,10 +173,9 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
     }
     onMenuMessage (item, event: any = null) {
         if (!event || (event.keyCode === 13 || event.keyCode === 32 )) {
-            item = item.split('.')[1];
-            this.typeInTextarea(item + '=');
+            const str = this.editor.innerText.replace(/[\w\d]*\.\s*$/g, '');
+            this.typeInTextarea(str + item + '=', true);
             this.updateEditor(null, true);
-            const c = this.editor.innerText.length - 1;
         }
         if (event && event.keyCode === 27) {
             this.trigger.closeMenu();
@@ -258,9 +257,8 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
         } else {
             this.restoreSelection(anchorIndex, focusIndex);
         }
-
         this.updateData.emit({
-            text: textContent,
+            text: textContent.replace(/\s+/g, ' '),
             serverLoki: this.serverLoki,
             obj: this.getObject(textContent),
             parsedFields: this.getfieldCollectionFromQuery(this.getObject(textContent)),
@@ -295,15 +293,20 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
             sel.setBaseAndExtent(anchorNode, anchorIndex, focusNode, focusIndex);
         } catch (err) { }
     }
-    private typeInTextarea(str) {
+    private typeInTextarea(str, autoClear = false) {
         const sel = window.getSelection() as Selection;
-        const el = sel.anchorNode.parentNode as HTMLElement;
+        const el = this.editor; // sel.anchorNode.parentNode as HTMLElement;
         const start = sel['baseOffset'] || 1;
         const end = sel['extentOffset'] || 1;
         const text = el.innerText;
         const before = text.substring(0, start);
         const after  = text.substring(end, text.length);
-        el.innerText = (before + str + after);
+
+        if (autoClear ) {
+            el.innerText = str;
+        } else {
+            el.innerText = before + str + after;
+        }
         el.focus();
         return false;
     }
