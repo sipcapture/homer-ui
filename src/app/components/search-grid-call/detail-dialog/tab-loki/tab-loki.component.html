@@ -1,4 +1,4 @@
-<div style="display: flex;">
+<div style="display: flex;padding-top:10px;padding-left:10px;">
     <div style="flex: 1">
         <app-code-style-field
             [queryText]="queryText"
@@ -6,12 +6,14 @@
             (keyEnter)="doSerchResult()"
         ></app-code-style-field>
     </div>
-    <div style="display: flex; align-items: center; padding: 0 0.5rem;">
+
+    <div style="display: flex; align-items: center; padding: 0 0.5rem;padding-left:10px">
         <button mat-raised-button (click)="doSerchResult()">Refresh search</button>
     </div>
 </div>
+
 <div>
-    <div *ngIf="resultData.length === 0" class="loki-body">
+    <div *ngIf="resultData.length === 0" style="padding-left:20px">
         <strong>Ready to Search Logs!</strong> Fine tune your query and hit Refresh
         <div *ngIf="!isFirstSearch">
             <i>[ No Result Found ]</i>
@@ -20,26 +22,24 @@
     
     <div *ngIf="resultData.length > 0" class="loki-search">
         <div class="switches">
-            
-            <div class="time-display"> <mat-checkbox class="example-margin" [(ngModel)]="showTime">Time</mat-checkbox> </div>
-            <div class="tags-display" *ngIf="showTime"> <mat-checkbox class="example-margin" [(ngModel)]="showTs">Timeseconds</mat-checkbox> </div>
+
+            <div class="tags-display"> <mat-checkbox class="example-margin" [(ngModel)]="showTs">Timeseconds</mat-checkbox> </div>
             <div class="tags-display"> <mat-checkbox class="example-margin" [(ngModel)]="showTags">Tags</mat-checkbox> </div>   
           </div>
 
         <div class="header-loki">
-            <div class="item-tex-loki lokitime" *ngIf="showTime">Time</div>
-            <div class="item-tex-loki lokitags" *ngIf="showTags">Tags</div>
-            <div class="item-tex-loki lokimessage">Messages</div>
+            <div class="item-tex-loki lokitimeheader">Time</div>
+            <div class="item-tex-loki lokitags" *ngIf="showTags" style="color:grey">Tags</div>
+            <div class="item-tex-loki lokimessage" style="color:grey">Messages</div>
         </div>
 
         <div class="loki-container">
-        <div *ngFor="let i of resultData trackBy : identify" class="loki-body item">
-            <div class="item-tex-loki hover lokitime" 
-            *ngIf="showTime">{{i.micro_ts | moment:'YYYY-MM-DD HH:mm:ss'}} <p *ngIf="showTs" class="timeseconds">{{i.micro_ts}}</p></div>
+             <div *ngFor="let i of resultData trackBy : identify" class="loki-body item">
+            <div class="item-tex-loki hover lokitime">{{i.micro_ts | moment:'YYYY-MM-DD HH:mm:ss'}} <p *ngIf="showTs" class="timeseconds">{{i.micro_ts}}</p></div>
             <div class="item-tex-loki hover lokitags" *ngIf="showTags">
                  job: {{i.custom_2.job}}, method: {{i.custom_2.method}}, node: {{i.custom_2.node}}, response: {{i.custom_2.response}}, type: {{i.custom_2.type}} 
             </div>
-            <div class="item-tex-loki hover loki-highlight lokimessage" 
+            <div class="item-tex-loki hover loki-highlight lokimessage"
             [innerHTML]="i.custom_1"></div>
         </div>
     </div>
