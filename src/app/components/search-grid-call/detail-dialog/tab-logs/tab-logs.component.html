@@ -1,3 +1,17 @@
-<div *ngFor="let item of _data" class="red-container">
+<!--<div *ngFor="let item of _data" class="red-container">
   <ngx-json-viewer [json]="item" [expanded]="false"></ngx-json-viewer>
 </div>
+-->
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z2">
+  <ng-container matColumnDef="timestamp">
+    <th mat-header-cell *matHeaderCellDef>Timestamp</th>
+    <td mat-cell *matCellDef="let element">{{element.timestamp | moment:'YYYY-MM-DD HH:mm:ss'}}</td>
+  </ng-container>
+  <ng-container matColumnDef="message">
+    <th mat-header-cell *matHeaderCellDef>Message</th>
+    <td mat-cell *matCellDef="let element">{{element.message}}</td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+

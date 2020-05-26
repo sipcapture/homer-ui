@@ -6,6 +6,15 @@
 	display: table;
 	height: 100%;
 	overflow-y: auto;
+	
+		&:nth-child(2n+1){
+			background-color: #DFF1FF;
+		}
+		&:not(:nth-child(2n+1)){
+			background-color:#EFF8FF;
+		
+	}
+	
 }
 .loki-body {
 	padding: 1rem;
@@ -27,13 +36,13 @@
 	}
 }
 .item-header {
-	font-family: Menlo,Monaco,Consolas,Courier New,monospace;
+
 	color: #1d1d1d;
 }
 .item-tex-loki {
 	word-break: break-word;
-	font-family: Menlo,Monaco,Consolas,Courier New,monospace;
-	font-size: 12px;
+	
+	font-size: 14px;
 	color: #1d1d1d;
 }
 
@@ -47,8 +56,7 @@
 	display: grid;
 	grid-template-columns: 1fr 2fr 1fr;
 	width: 400px;
-	font-size: 12px;
-	font-family: Menlo,Monaco,Consolas,Courier New,monospace;
+	font-size: 14px;
 	padding-top: 10px;
 }
 .swithces {

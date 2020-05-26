@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectorRef, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectorRef, EventEmitter, ɵConsole } from '@angular/core';
 import { DateTimeRangeService } from '@app/services/data-time-range.service';
 import { SearchRemoteService } from '@app/services';
 import { SearchService } from '@app/services';
+
 @Component({
     selector: 'app-tab-loki',
     templateUrl: './tab-loki.component.html',
@@ -11,18 +12,18 @@ import { SearchService } from '@app/services';
 export class TabLokiComponent implements OnInit {
     @Input() id;
     @Input() dataItem: any;
-
     queryText: string;
     queryObject: any;
     rxText: string;
     showTime: true
     showTags: false
-    showTs: false
+    showTs: true
     checked: boolean;
     resultData: Array<any> = [];
     isFirstSearch = true;
     labels: Array<any> = [];
     lokiLabels;
+    dataSource: Array<any> = []
     constructor(
         private _srs: SearchRemoteService,
         private _dtrs: DateTimeRangeService,
@@ -49,14 +50,15 @@ export class TabLokiComponent implements OnInit {
         const data = await this._srs.getData(this.queryBuilder()).toPromise();
 
         this.resultData = data && data.data ? data.data as Array<any> : [];
-        this.lokiLabels = this.resultData.map(l => {
+        this.lokiLabels = this.resultData.map((l) => {
             l.custom_2 = this.labelsFormatter(l.custom_2);
             return l;
          })
-        this.resultData = this.resultData.map(i => {
-            i.custom_1 = this.highlight(i.custom_1);
-            return i;
+        this.resultData = this.resultData.map((m) => {
+            m.custom_1 = this.highlight(m.custom_1);
+            return m;
         });
+        console.log(this.resultData) // this will be the 
         this.cdr.detectChanges();
     }
     onUpdateData (event) {
@@ -80,7 +82,6 @@ export class TabLokiComponent implements OnInit {
         let lokiLabels = JSON.parse(rd)
         return lokiLabels;
     }
-
 
     identify (index, item) {
         return item.micro_ts;
