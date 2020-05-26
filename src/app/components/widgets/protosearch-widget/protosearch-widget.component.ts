@@ -47,8 +47,8 @@ interface SearchFieldItem {
     indexName: 'display-results',
     className: 'ProtosearchWidgetComponent',
     submit: true,
-    minHeight:300,
-    minWidth:300
+    minHeight: 300,
+    minWidth: 300
 })
 export class ProtosearchWidgetComponent implements IWidget {
     @Input() id: string;
@@ -67,7 +67,7 @@ export class ProtosearchWidgetComponent implements IWidget {
     searchQueryLoki: any;
 
     countFieldColumns = 1;
-
+    fieldsFromSmartInput: any;
     _cache: any;
     buttonState = true;
     searchQuery: any;
@@ -333,7 +333,9 @@ export class ProtosearchWidgetComponent implements IWidget {
             fields: this.fields
                 .filter((item: any) => {
                     let b;
-                    if (typeof item.value === 'string') {
+                    if (item.field_name === 'smartinput') {
+                        b = false;
+                    } else if (typeof item.value === 'string') {
                         b = item.value !== '';
                     } else if (item.form_type === 'select') {
                         b = true;
@@ -361,7 +363,6 @@ export class ProtosearchWidgetComponent implements IWidget {
                 this.config.config.protocol_profile.value // 1_call | 1_ default | 1_registration
         };
 
-
         /* system params */
         this.fields.forEach((item: any) => {
             if (
@@ -371,7 +372,6 @@ export class ProtosearchWidgetComponent implements IWidget {
                 item.mapping !== ''
             ) {
                 const [constParam, collectionName, propertyName] = item.mapping.split('.');
-                
                 if (constParam === 'param' && collectionName) {
                     if (item.value instanceof Array && item.form_default) {
                         this.searchQuery[collectionName] = {
@@ -387,6 +387,15 @@ export class ProtosearchWidgetComponent implements IWidget {
                 }
             }
         });
+
+        /** smart input additional fields */
+        if (this.fieldsFromSmartInput) {
+            const getCurrentHepId = this.config.config.protocol_id.value;
+            this.fieldsFromSmartInput.forEach(i => {
+                i.hepid = getCurrentHepId;
+                this.searchQuery.fields.push(i)
+            });
+        }
 
         this.searchService.setLocalStorageQuery(Functions.cloneObject(this.searchQuery));
         this._sss.saveProtoSearchConfig(this.widgetId, Functions.cloneObject(this.searchQuery));
@@ -516,7 +525,6 @@ export class ProtosearchWidgetComponent implements IWidget {
         this.router.navigate(['search/result']);
         this.dosearch.emit({});
     }
-
     handleEnterKeyPress(event) {
         const tagName = event.target.tagName.toLowerCase();
         if (tagName !== 'textarea') {
@@ -539,12 +547,7 @@ export class ProtosearchWidgetComponent implements IWidget {
         this.searchQuery.fields = [];
     }
     onSmartInputCodeData(event, item = null) {
-        this.fields.forEach(i => {
-            if (item && item.field_name === i.field_name && i.form_type === 'smart-input') {
-                i.value = event.text;
-            }
-        });
-
+        this.fieldsFromSmartInput = event.parsedFields;
         this.saveState();
     }
     private get isLoki(): boolean {
@@ -560,7 +563,7 @@ export class ProtosearchWidgetComponent implements IWidget {
         if (this.subscriptionStorage) {
             this.dashboardEventSubscriber.unsubscribe();
         }
-        if(this._lastInterval){
+        if (this._lastInterval) {
             clearInterval(this._lastInterval);
         }
     }
