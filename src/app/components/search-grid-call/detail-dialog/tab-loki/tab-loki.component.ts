@@ -15,9 +15,9 @@ export class TabLokiComponent implements OnInit {
     queryText: string;
     queryObject: any;
     rxText: string;
-    showTime: true
-    showTags: false
-    showTs: true
+    showTime: true;
+    showTags: false;
+    showTs: true;
     checked: boolean;
     resultData: Array<any> = [];
     isFirstSearch = true;

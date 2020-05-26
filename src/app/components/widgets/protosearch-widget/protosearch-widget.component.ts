@@ -102,7 +102,7 @@ export class ProtosearchWidgetComponent implements IWidget {
                 sizeX: 2,
                 sizeY: 2,
                 config: {
-                    title: 'CALL SIP SEARCH',
+                    title: 'Call SIP Search',
                     searchbutton: false,
                     protocol_id: {
                         name: 'SIP',

@@ -1,19 +1,11 @@
 .loki-search {
-	background: #fafafa;
+
 	padding: 5px;
 }
 .loki-container {
 	display: table;
 	height: 100%;
 	overflow-y: auto;
-	
-		&:nth-child(2n+1){
-			background-color: #DFF1FF;
-		}
-		&:not(:nth-child(2n+1)){
-			background-color:#EFF8FF;
-		
-	}
 	
 }
 .loki-body {
@@ -24,24 +16,25 @@
 		display: table-cell;
 	}
 }
-
+mat-tab-group{
+	font-family: 'Roboto',Helvetica,Arial,sans-serif;
+}
 .header-loki {
 	padding: 1rem;
 	margin: 0.3rem;
 	width: 100%;
 	display: table-row;
 	font-weight: bold;
+	color:grey;
 	& > div {
 		display: table-cell;
 	}
 }
 .item-header {
-
 	color: #1d1d1d;
 }
 .item-tex-loki {
 	word-break: break-word;
-	
 	font-size: 14px;
 	color: #1d1d1d;
 }
@@ -66,12 +59,19 @@
 		align-items: center;
 	}
 }
-.lokitime {
-	width: 200px;
+.lokitimeheader{
+	width: 155px !important;
 	padding: 5px;
+	color:grey;
+}
+.lokitime {
+	width:155px;
+	padding: 5px;
+	border-left:5px solid  #DFF1FF;
+	border-bottom:5px solid transparent;
 }
 .lokitags {
-	width: 170px;
+	width: 160px;
 	padding: 5px;
 }
 .lokimessage {

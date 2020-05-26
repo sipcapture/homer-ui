@@ -9,6 +9,7 @@ export interface hepLog {
   styleUrls: ['./tab-logs.component.scss']
 })
 export class TabLogsComponent implements OnInit {
+    showTs:false;
     _data: any;
     _d: any;
     dataSource: Array<hepLog> = [];
