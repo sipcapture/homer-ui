@@ -47,8 +47,8 @@ interface SearchFieldItem {
     indexName: 'display-results',
     className: 'ProtosearchWidgetComponent',
     submit: true,
-    minHeight:300,
-    minWidth:300
+    minHeight: 300,
+    minWidth: 300
 })
 export class ProtosearchWidgetComponent implements IWidget {
     @Input() id: string;
@@ -56,6 +56,7 @@ export class ProtosearchWidgetComponent implements IWidget {
     @Input() fields = [];
     @Input() autoline = false;
     @Input() targetResultId = null;
+    @Input() onlySmartField = false;
     @Output() changeSettings = new EventEmitter<any> ();
     @Output() dosearch = new EventEmitter<any> ();
 
@@ -67,7 +68,7 @@ export class ProtosearchWidgetComponent implements IWidget {
     searchQueryLoki: any;
 
     countFieldColumns = 1;
-
+    fieldsFromSmartInput: any;
     _cache: any;
     buttonState = true;
     searchQuery: any;
@@ -79,7 +80,7 @@ export class ProtosearchWidgetComponent implements IWidget {
     mapping: any;
     targetResultsContainerValue = new FormControl();
     SmartInputQueryText: string = '';
-    _lastInterval:any;
+    _lastInterval: any;
     constructor(
         public dialog: MatDialog,
         private router: Router,
@@ -126,6 +127,7 @@ export class ProtosearchWidgetComponent implements IWidget {
         } else {
             this.isConfig = true;
         }
+        
         this.widgetId = this.id || '_' + Functions.md5(JSON.stringify(this.config));
 
         this.config.config = this.config.config || {};
@@ -361,7 +363,6 @@ export class ProtosearchWidgetComponent implements IWidget {
                 this.config.config.protocol_profile.value // 1_call | 1_ default | 1_registration
         };
 
-
         /* system params */
         this.fields.forEach((item: any) => {
             if (
@@ -371,7 +372,6 @@ export class ProtosearchWidgetComponent implements IWidget {
                 item.mapping !== ''
             ) {
                 const [constParam, collectionName, propertyName] = item.mapping.split('.');
-                
                 if (constParam === 'param' && collectionName) {
                     if (item.value instanceof Array && item.form_default) {
                         this.searchQuery[collectionName] = {
@@ -387,6 +387,7 @@ export class ProtosearchWidgetComponent implements IWidget {
                 }
             }
         });
+
 
         this.searchService.setLocalStorageQuery(Functions.cloneObject(this.searchQuery));
         this._sss.saveProtoSearchConfig(this.widgetId, Functions.cloneObject(this.searchQuery));
@@ -516,7 +517,6 @@ export class ProtosearchWidgetComponent implements IWidget {
         this.router.navigate(['search/result']);
         this.dosearch.emit({});
     }
-
     handleEnterKeyPress(event) {
         const tagName = event.target.tagName.toLowerCase();
         if (tagName !== 'textarea') {
@@ -544,7 +544,6 @@ export class ProtosearchWidgetComponent implements IWidget {
                 i.value = event.text;
             }
         });
-
         this.saveState();
     }
     private get isLoki(): boolean {
@@ -560,7 +559,7 @@ export class ProtosearchWidgetComponent implements IWidget {
         if (this.subscriptionStorage) {
             this.dashboardEventSubscriber.unsubscribe();
         }
-        if(this._lastInterval){
+        if (this._lastInterval) {
             clearInterval(this._lastInterval);
         }
     }
