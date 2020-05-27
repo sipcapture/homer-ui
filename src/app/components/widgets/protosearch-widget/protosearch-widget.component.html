@@ -5,6 +5,7 @@
         apiLink="/smart/search/tag/1/call"
         [queryText]="onlySmartFieldTEXT"
         (updateData)="onSmartInputCodeData($event)"
+        (keyEnter)="doSearchResult()"
     ></app-code-style-smart-input-field>
 </div>
 <form *ngIf="isConfig && !onlySmartField">

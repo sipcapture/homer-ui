@@ -87,7 +87,6 @@ export class DetailDialogComponent implements OnInit {
 
     @Input() set qosData(value) {
         this._qosData = value;
-        console.log('_qosData', {value});
     }
     get qosData() {
         return this._qosData;
@@ -124,7 +123,6 @@ export class DetailDialogComponent implements OnInit {
                         title: 'RTP'
                     });
                 }
-                console.log('onTabQos', this._qosData, this.checkboxListFilterPayloadType);
             }
         });
     }

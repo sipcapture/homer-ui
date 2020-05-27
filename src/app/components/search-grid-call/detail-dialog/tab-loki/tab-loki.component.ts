@@ -42,7 +42,6 @@ export class TabLokiComponent implements OnInit {
 
         this.queryText = `{job="heplify-server"} ${labels}`;
         this.cdr.detectChanges();
-        
     }
     async doSerchResult () {
         this.rxText = this.queryObject.rxText;
@@ -58,7 +57,7 @@ export class TabLokiComponent implements OnInit {
             m.custom_1 = this.highlight(m.custom_1);
             return m;
         });
-        console.log(this.resultData) // this will be the 
+
         this.cdr.detectChanges();
     }
     onUpdateData (event) {
@@ -79,8 +78,7 @@ export class TabLokiComponent implements OnInit {
     }
 
     private labelsFormatter(rd) {
-        let lokiLabels = JSON.parse(rd)
-        return lokiLabels;
+        return JSON.parse(rd);
     }
 
     identify (index, item) {

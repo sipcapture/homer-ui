@@ -57,14 +57,12 @@ export class ProtosearchWidgetComponent implements IWidget {
     @Input() set fields(val) {
         this._fields = val;
         if (this.onlySmartField) {
-            console.log('this._fields', this._fields);
             const fSmartinput = this._fields.find(i => i.field_name === 'smartinput');
             if (fSmartinput && fSmartinput.value) {
                 this.onlySmartFieldTEXT = fSmartinput.value;
             } else {
                 this.onlySmartFieldTEXT = this._fields.map(item => `${item.name}=${item.value}`).join(' AND ');
             }
-            console.log('this.onlySmartFieldTEXT === ', this.onlySmartFieldTEXT);
         }
     }
     get fields() {
@@ -145,7 +143,7 @@ export class ProtosearchWidgetComponent implements IWidget {
         } else {
             this.isConfig = true;
         }
-        
+
         this.widgetId = this.id || '_' + Functions.md5(JSON.stringify(this.config));
 
         this.config.config = this.config.config || {};
@@ -166,6 +164,7 @@ export class ProtosearchWidgetComponent implements IWidget {
         }
         return Array.from({length: this.countFieldColumns}, i => '1fr').join(' ');
     }
+
     private initSubscribes() {
         this.subscriptionStorage = this._sss.sessionStorage.subscribe((data: UserSettings) => {
             this._cache = data.protosearchSettings[this.widgetId];
@@ -557,11 +556,23 @@ export class ProtosearchWidgetComponent implements IWidget {
         this.searchQuery.fields = [];
     }
     onSmartInputCodeData(event, item = null) {
-        this.fields.forEach(i => {
-            if (item && item.field_name === i.field_name && i.form_type === 'smart-input') {
-                i.value = event.text;
-            }
-        });
+        if (this.onlySmartField) {
+            console.log('onSmartInputCodeData::this.fields', this.fields);
+            this.fields = [{
+                field_name: 'smartinput',
+                hepid: this.config.config.protocol_id.value,
+                name: 'smartinput',
+                selection: 'Smart Input',
+                type: 'string',
+                value: event.text
+            }];
+        } else {
+            this.fields.forEach(i => {
+                if (item && item.field_name === i.field_name && i.form_type === 'smart-input') {
+                    i.value = event.text;
+                }
+            });
+        }
         this.saveState();
     }
     private get isLoki(): boolean {
