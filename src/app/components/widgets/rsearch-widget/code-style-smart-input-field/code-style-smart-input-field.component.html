@@ -1,13 +1,11 @@
 <mat-label style="color: rgba(0, 0, 0, 0.54); font-size: 0.8em;">Smart Input</mat-label>
 
-<div ngDefaultControl
+<div
     spellcheck="false"
-    name="divContainer"
     contenteditable="true"
     class="div-field"
-    (keyup)="onKeyUpDiv($event)"
-    (keydown)="onKeyDownDiv($event)"
-    #divContainer></div>
+#divContainer></div>
+
 
 <div [matMenuTriggerFor]="trigger" style="position: absolute;"></div>
 

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SettingProtosearchWidgetComponent } from './setting-protosearch-widget.component';
 import { Router } from '@angular/router';
@@ -38,7 +38,8 @@ interface SearchFieldItem {
 @Component({
     selector: 'app-protosearch-widget',
     templateUrl: './protosearch-widget.component.html',
-    styleUrls: ['./protosearch-widget.component.scss']
+    styleUrls: ['./protosearch-widget.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 @Widget({
     title: 'Proto Search',
@@ -56,14 +57,18 @@ export class ProtosearchWidgetComponent implements IWidget {
     _fields = [];
     @Input() set fields(val) {
         this._fields = val;
-        if (this.onlySmartField) {
-            const fSmartinput = this._fields.find(i => i.field_name === 'smartinput');
-            if (fSmartinput && fSmartinput.value) {
-                this.onlySmartFieldTEXT = fSmartinput.value;
-            } else {
-                this.onlySmartFieldTEXT = this._fields.map(item => `${item.name}=${item.value}`).join(' AND ');
+        setTimeout(() => {
+            if (this.onlySmartField) {
+                const fSmartinput = this._fields.find(i => i.field_name === 'smartinput');
+                if (fSmartinput && fSmartinput.value) {
+                    this.onlySmartFieldTEXT = fSmartinput.value;
+                } else {
+                    this.onlySmartFieldTEXT = this._fields.map(item => `${item.name}=${item.value}`).join(' AND ');
+                }
+                this.onlySmartFieldTEXT = this.onlySmartFieldTEXT || '';
             }
-        }
+            this.cdr.detectChanges();
+        })
     }
     get fields() {
         return this._fields;
@@ -103,6 +108,7 @@ export class ProtosearchWidgetComponent implements IWidget {
         private searchService: SearchService,
         private _sss: SessionStorageService,
         private _ds: DashboardService,
+        private cdr: ChangeDetectorRef,
         private preferenceMappingProtocolService: PreferenceMappingProtocolService) {}
 
     async ngOnInit() {
@@ -223,6 +229,7 @@ export class ProtosearchWidgetComponent implements IWidget {
                     }
                 });
             }
+            this.cdr.detectChanges();
         });
 
         this.dashboardEventSubscriber = this._ds.dashboardEvent.subscribe( (data: DashboardEventData) => {
@@ -319,6 +326,7 @@ export class ProtosearchWidgetComponent implements IWidget {
                 }
             });
         }
+        this.cdr.detectChanges();
     }
     private autocompliteFiltring (item: any) {
         const options: Array<any> = item.form_default;
@@ -341,6 +349,7 @@ export class ProtosearchWidgetComponent implements IWidget {
             );
 
         item.filteredOptions = filteredOptions;
+        this.cdr.detectChanges();
     }
     private saveState() {
         if (this.isLoki) {
@@ -424,6 +433,7 @@ export class ProtosearchWidgetComponent implements IWidget {
             }
         });
         this._sss.removeProtoSearchConfig(this.widgetId);
+        this.cdr.detectChanges();
     }
 
     public async openDialog() {
@@ -486,6 +496,7 @@ export class ProtosearchWidgetComponent implements IWidget {
             id: this.id
         });
         this.isConfig = true;
+        this.cdr.detectChanges();
     }
 
     onChangeField (event = null, item = null) {
@@ -501,6 +512,7 @@ export class ProtosearchWidgetComponent implements IWidget {
             }
         });
         this.saveState();
+        this.cdr.detectChanges();
     }
     onChangeTargetResultsContainer () {
         this.fields.forEach(i => {
@@ -509,6 +521,7 @@ export class ProtosearchWidgetComponent implements IWidget {
             }
         });
         this.saveState();
+        this.cdr.detectChanges();
     }
     doSearchResult () {
         const targetResultSelf = {
@@ -533,6 +546,7 @@ export class ProtosearchWidgetComponent implements IWidget {
         }
         this.router.navigate(['search/result']);
         this.dosearch.emit({});
+        this.cdr.detectChanges();
     }
     handleEnterKeyPress(event) {
         const tagName = event.target.tagName.toLowerCase();
@@ -540,6 +554,7 @@ export class ProtosearchWidgetComponent implements IWidget {
             setTimeout(this.doSearchResult.bind(this), 100);
             return false;
         }
+        this.cdr.detectChanges();
     }
 
     compareResultListItem (a: any, b: any) {
@@ -554,13 +569,17 @@ export class ProtosearchWidgetComponent implements IWidget {
         this.searchQuery.limit = (this.fields.find(i => i.field_name === ConstValue.LIMIT) || {value: 100}).value;
         this.searchQuery.protocol_id = ConstValue.LOKI_PREFIX;
         this.searchQuery.fields = [];
+        this.cdr.detectChanges();
     }
     onSmartInputCodeData(event, item = null) {
         if (this.onlySmartField) {
-            console.log('onSmartInputCodeData::this.fields', this.fields);
+            const hepid = this.config &&
+                    this.config.config &&
+                    this.config.config.protocol_id &&
+                    this.config.config.protocol_id.value || 1;
             this.fields = [{
                 field_name: 'smartinput',
-                hepid: this.config.config.protocol_id.value,
+                hepid,
                 name: 'smartinput',
                 selection: 'Smart Input',
                 type: 'string',
@@ -574,6 +593,7 @@ export class ProtosearchWidgetComponent implements IWidget {
             });
         }
         this.saveState();
+        this.cdr.detectChanges();
     }
     private get isLoki(): boolean {
         return this.fields.filter(i => i.field_name === 'loki').length !== 0;

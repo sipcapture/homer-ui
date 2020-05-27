@@ -1,5 +1,15 @@
 // GRIDSTER & ANGULAR
-import { Component, OnInit, ViewEncapsulation, ViewChildren, QueryList, OnDestroy, AfterViewInit, ViewChild, HostListener } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    ViewEncapsulation,
+    ViewChildren,
+    QueryList,
+    OnDestroy,
+    AfterViewInit,
+    ViewChild,
+    HostListener
+} from '@angular/core';
 import { GridsterConfig, GridType } from 'angular-gridster2';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DashboardModel, DashboardContentModel } from '@app/models';
@@ -12,12 +22,14 @@ import { IWidget, IWidgetMetaData } from '../widgets/IWidget';
 import { Observable } from 'rxjs';
 import { WidgetArray, WidgetArrayInstance } from '@app/helpers/widget';
 import { Functions } from '@app/helpers/functions';
+import { ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
     styleUrls: ['./dashboard.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     gridOptions: GridsterConfig;
@@ -39,44 +51,43 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         private router: Router,
         public dialog: MatDialog) {}
     @HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
-        let ls = JSON.parse(localStorage.getItem('searchQueryWidgetsResult'));
-        let currentWidget:any;
-        if(ls != null && ls.currentWidget != undefined){
-            currentWidget = ls.currentWidget; 
-        }else{
+        const ls = JSON.parse(localStorage.getItem('searchQueryWidgetsResult'));
+        let currentWidget: any;
+        if (ls != null && ls.currentWidget !== undefined) {
+            currentWidget = ls.currentWidget;
+        } else {
             currentWidget = this._ds.dbs.currentWidget;
         }
-        if (currentWidget != undefined){
-            if (event.key === "Enter" && event.ctrlKey === true) {
+        if (currentWidget !== undefined) {
+            if (event.key === 'Enter' && event.ctrlKey === true) {
                 const w: IWidget = WidgetArrayInstance[currentWidget.id];
                 if (w && w.doSearchResult) {
                     w.doSearchResult();
                 }
-
             }
         }
-        let widgetList:Array<any>;
-        if(ls != null && ls.currentWidgetList != undefined){
+        let widgetList: Array<any>;
+        if (ls != null && ls.currentWidgetList !== undefined) {
             widgetList = ls.currentWidgetList;
-        }else{
+        } else {
             widgetList = this._ds.dbs.currentWidgetList;
         }
-        let firstWidget =  widgetList.findIndex(widget => widget.strongIndex === "ProtosearchWidgetComponent")
-        if (event.key === "Tab" && event.shiftKey === true) {
+        const firstWidget =  widgetList.findIndex(widget => widget.strongIndex === 'ProtosearchWidgetComponent');
+        if (event.key === 'Tab' && event.shiftKey === true) {
             event.preventDefault();
             let i = 0;
-            if (currentWidget != undefined){
+            if (currentWidget !== undefined) {
                 i = this.submitCheck().findIndex(widget => widget.id === currentWidget.id);
-                if(i<this.submitCheck().length - 1){
-                    i+=1;
-                }else{
-                    i=0
+                if (i < this.submitCheck().length - 1) {
+                    i += 1;
+                } else {
+                    i = 0;
                 }
-            }else{
+            } else {
                 i = 0;
             }
             this._ds.setCurrentWidgetId(this.submitCheck()[i]);
-        } 
+        }
     }
     ngOnInit() {
         // Grid options
@@ -122,99 +133,97 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
 
-    checkWidgets(){
-            let widgets =  this._ds.dbs.currentWidgetList;
-            let limitedWidgets = [];
-            for(let i=0;i<WidgetArray.length;i++){
-                if(WidgetArray[i].minHeight != undefined && limitedWidgets.indexOf(WidgetArray[i]) === -1){
-                    limitedWidgets.push(WidgetArray[i]);
-                }
-                if(WidgetArray[i].minWidth != undefined  && limitedWidgets.indexOf(WidgetArray[i]) === -1){
-                    limitedWidgets.push(WidgetArray[i]);
+    checkWidgets() {
+        const widgets =  this._ds.dbs.currentWidgetList;
+        const limitedWidgets = [];
+        for(let i = 0 ; i < WidgetArray.length; i++) {
+            if (WidgetArray[i].minHeight !== undefined && limitedWidgets.indexOf(WidgetArray[i]) === -1) {
+                limitedWidgets.push(WidgetArray[i]);
+            }
+            if (WidgetArray[i].minWidth !== undefined  && limitedWidgets.indexOf(WidgetArray[i]) === -1) {
+                limitedWidgets.push(WidgetArray[i]);
+            }
+        }
+        for (let i = 0; i < widgets.length; i++) {
+            for (let j = 0; j < limitedWidgets.length; j++) {
+                if (widgets[i].strongIndex === limitedWidgets[j].strongIndex) {
+                    this.checkSize(widgets[i].id, limitedWidgets[j]);
                 }
             }
-            for(let i=0;i<widgets.length;i++){
-                for(let j=0;j<limitedWidgets.length;j++){
-                    if(widgets[i].strongIndex === limitedWidgets[j].strongIndex){
-                        this.checkSize(widgets[i].id,limitedWidgets[j]);
-                    }
-                }
-            }
+        }
 
     }
-    checkSize(id,widgetType){
-        let widget = document.getElementById(id);
-        if (widgetType.minWidth != undefined && widgetType.minHeight != undefined) {
-            this.limitSize(id,widgetType.minHeight,widgetType.minWidth);
-        }else if(widgetType.minHeight != undefined){
-            this.limitSize(id,widgetType.minHeight,1);
-        }else if(widgetType.minWidth != undefined){
-            this.limitSize(id,1,widgetType.minWidth);
-        };
+    checkSize(id, widgetType) {
+        const widget = document.getElementById(id);
+        if (widgetType.minWidth !== undefined && widgetType.minHeight !== undefined) {
+            this.limitSize(id, widgetType.minHeight, widgetType.minWidth);
+        } else if (widgetType.minHeight !== undefined) {
+            this.limitSize(id, widgetType.minHeight, 1);
+        } else if (widgetType.minWidth !== undefined) {
+            this.limitSize(id, 1, widgetType.minWidth);
+        }
     }
-    limitSize(id,height,width){
-        let columnRes:number;
-        let rowRes:number;
-        let grid = document.getElementById('gridster');
-        if(this.dashboardCollection.data.config != undefined){
+    limitSize(id, height, width) {
+        let columnRes: number;
+        let rowRes: number;
+        const grid = document.getElementById('gridster');
+        if (this.dashboardCollection.data.config !== undefined) {
             columnRes = grid.getBoundingClientRect().width / this.dashboardCollection.data.config.columns;
             rowRes = grid.getBoundingClientRect().height / this.dashboardCollection.data.config.maxrows;
         }
-        if(this.dashboardCollection.data.config.ignoreMinSize != "ignore"){
-
-            
+        if (this.dashboardCollection.data.config.ignoreMinSize !== 'ignore') {
             let i = this.dashboardArray.findIndex(widget => widget.id === id);
-            let colAmount = Math.ceil(width/columnRes);
-            if(this.dashboardCollection.data.config.ignoreMinSize === "warning"){
-                this.dashboardArray[i].minItemRows=1;
-                this.dashboardArray[i].minItemCols=1;
+            const colAmount = Math.ceil(width / columnRes);
+            if (this.dashboardCollection.data.config.ignoreMinSize === 'warning') {
+                this.dashboardArray[i].minItemRows = 1;
+                this.dashboardArray[i].minItemCols = 1;
             }
-            if(this.dashboardArray[i].rows<colAmount){
-                if(this.dashboardCollection.data.config.ignoreMinSize === "limit"){
-                    this.dashboardArray[i].cols=colAmount;
-                    this.dashboardArray[i].minItemCols=colAmount;
-                }else if(this.dashboardCollection.data.config.ignoreMinSize === "warning"){
-                    this.dashboardArray[i].isWarning=true;
+            if (this.dashboardArray[i].rows < colAmount) {
+                if (this.dashboardCollection.data.config.ignoreMinSize === 'limit') {
+                    this.dashboardArray[i].cols = colAmount;
+                    this.dashboardArray[i].minItemCols = colAmount;
+                } else if (this.dashboardCollection.data.config.ignoreMinSize === 'warning') {
+                    this.dashboardArray[i].isWarning = true;
                 }
-            }else{
-                if(this.dashboardCollection.data.config.ignoreMinSize === "warning"){
-                    this.dashboardArray[i].isWarning=false;
-                }
-            }
-            let rowAmount = Math.ceil(height/rowRes);
-            if(this.dashboardArray[i].rows<rowAmount){
-                if(this.dashboardCollection.data.config.ignoreMinSize === "limit"){
-                    this.dashboardArray[i].rows=rowAmount;
-                    this.dashboardArray[i].minItemRows=rowAmount;
-                }else if(this.dashboardCollection.data.config.ignoreMinSize === "warning"){
-                    this.dashboardArray[i].isWarning=true;
-                }
-            }else{
-                if(this.dashboardCollection.data.config.ignoreMinSize === "warning"){
-                    this.dashboardArray[i].isWarning=false;
+            } else {
+                if (this.dashboardCollection.data.config.ignoreMinSize === 'warning') {
+                    this.dashboardArray[i].isWarning = false;
                 }
             }
-        }else if(this.dashboardCollection.data.config.ignoreMinSize === "ignore"){
-            for(let i = 0; i<this.dashboardArray.length;i++){
-                this.dashboardArray[i].minItemRows=1;
-                this.dashboardArray[i].minItemCols=1;
+            let rowAmount = Math.ceil(height / rowRes);
+            if (this.dashboardArray[i].rows < rowAmount) {
+                if (this.dashboardCollection.data.config.ignoreMinSize === 'limit') {
+                    this.dashboardArray[i].rows = rowAmount;
+                    this.dashboardArray[i].minItemRows = rowAmount;
+                } else if (this.dashboardCollection.data.config.ignoreMinSize === 'warning') {
+                    this.dashboardArray[i].isWarning = true;
+                }
+            } else {
+                if (this.dashboardCollection.data.config.ignoreMinSize === 'warning') {
+                    this.dashboardArray[i].isWarning = false;
+                }
+            }
+        } else if (this.dashboardCollection.data.config.ignoreMinSize === 'ignore') {
+            for(let i = 0; i < this.dashboardArray.length; i++) {
+                this.dashboardArray[i].minItemRows = 1;
+                this.dashboardArray[i].minItemCols = 1;
             }
         }
         this.gridOptions.api.optionsChanged();
     }
-    dismissWarning(item){
+    dismissWarning(item) {
         let i = this.dashboardArray.findIndex(widget => widget.id === item.id);
-        this.dashboardArray[i].isDismissed = true;    
+        this.dashboardArray[i].isDismissed = true;
     }
-    resizeExcess(){
-        let rows:number;
-        let cols:number;
-        if(this.dashboardCollection.data.config != undefined){
+    resizeExcess() {
+        let rows: number;
+        let cols: number;
+        if (this.dashboardCollection.data.config !== undefined) {
             rows = this.dashboardCollection.data.config.maxrows;
             cols = this.dashboardCollection.data.config.columns;
         }
-        for(let i=0;i<this.dashboardArray.length;i++){
-            if(this.dashboardArray[i].rows>rows || this.dashboardArray[i].cols>cols){
+        for (let i = 0; i < this.dashboardArray.length; i++) {
+            if (this.dashboardArray[i].rows > rows || this.dashboardArray[i].cols > cols) {
                 this.dashboardArray[i].rows = 1;
                 this.dashboardArray[i].cols = 1;
                 this.gridOptions.api.getNextPossiblePosition(this.dashboardArray[i]);
@@ -226,14 +235,13 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     scrollTop() {
         setTimeout(() => {
-            '.widget-item'
             const dom = document.querySelector('.scrollVertical');
             if (dom && dom.scrollTop) {
                 dom.scrollTop = 0;
             } else {
                 this.scrollTop();
             }
-            Array.from(document.querySelectorAll('.widget-item')).forEach(i => i.scrollTop = 0)
+            Array.from(document.querySelectorAll('.widget-item')).forEach(i => i.scrollTop = 0);
         }, 100);
     }
     updateTrigger() {
@@ -305,47 +313,47 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.scrollTop();
         });
     }
-    submitCheck(){
-        let submitWidgets:Array<any> = [];
-        let dashboardSubmitWidgets:Array<any> = [];
-        let ls = JSON.parse(localStorage.getItem('searchQueryWidgetsResult'));
-        let widgetList:Array<any>;
-        if(ls != null && ls.currentWidgetList != undefined){
+    submitCheck() {
+        const submitWidgets: Array<any> = [];
+        const dashboardSubmitWidgets: Array<any> = [];
+        const ls = JSON.parse(localStorage.getItem('searchQueryWidgetsResult'));
+        let widgetList: Array<any>;
+        if (ls != null && ls.currentWidgetList !== undefined) {
             widgetList = ls.currentWidgetList;
-        }else{
+        } else {
             widgetList = this._ds.dbs.currentWidgetList;
         }
-        for(let i = 0; i<WidgetArray.length;i++){
-            if(WidgetArray[i].submit){
+        for(let i = 0; i < WidgetArray.length; i++) {
+            if (WidgetArray[i].submit) {
                 submitWidgets.push(WidgetArray[i]);
             }
         }
 
-        for(let i=0; i<widgetList.length;i++){
-            for(let j=0; j<submitWidgets.length;j++){
-                if(widgetList[i].strongIndex === submitWidgets[j].strongIndex){
-                    dashboardSubmitWidgets.push(widgetList[i])
+        for (let i = 0; i < widgetList.length; i++) {
+            for (let j = 0; j < submitWidgets.length; j++) {
+                if (widgetList[i].strongIndex === submitWidgets[j].strongIndex) {
+                    dashboardSubmitWidgets.push(widgetList[i]);
                 }
             }
         }
         return dashboardSubmitWidgets;
     }
-    changeCurrent(id:string){
-        let ls = JSON.parse(localStorage.getItem('searchQueryWidgetsResult'));
-        let currentWidget:any;
-        if(ls !=null && ls.currentWidget != undefined){
-            currentWidget = ls.currentWidget; 
-        }else{
+    changeCurrent(id: string) {
+        const ls = JSON.parse(localStorage.getItem('searchQueryWidgetsResult'));
+        let currentWidget: any;
+        if (ls != null && ls.currentWidget !== undefined) {
+            currentWidget = ls.currentWidget;
+        } else {
             currentWidget = this._ds.dbs.currentWidget;
         }
-        if(id != currentWidget.id){
-            for(let i = 0; i<this.submitCheck().length; i++){
-                if(id===this.submitCheck()[i].id){
-                    currentWidget.id
+        if (id !== currentWidget.id) {
+            for (let i = 0; i < this.submitCheck().length; i++) {
+                if (id === this.submitCheck()[i].id) {
+                    // currentWidget.id
                     this._ds.setCurrentWidgetId(this.submitCheck()[i]);
                 }
             }
-            this.save()
+            this.save();
         }
     }
     itemChange(item: any) {
@@ -360,58 +368,58 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.save();
         return true;
     }
-    warningCheck(item: any){
-        if(this.dashboardCollection.data.config.ignoreMinSize === "warning"){
+    warningCheck(item: any) {
+        if (this.dashboardCollection.data.config.ignoreMinSize === 'warning') {
             let columnRes:number;
             let rowRes:number;
             let grid = document.getElementById('gridster');
-            if(this.dashboardCollection.data.config != undefined){
+            if (this.dashboardCollection.data.config !== undefined) {
                 columnRes = grid.getBoundingClientRect().width / this.dashboardCollection.data.config.columns;
                 rowRes = grid.getBoundingClientRect().height / this.dashboardCollection.data.config.maxrows;
             }
             let iW = WidgetArray.findIndex(widget => widget.strongIndex === item.strongIndex);
             let iD = this.dashboardArray.findIndex(widget => widget.id === item.id);
             let height = WidgetArray[iW].minHeight;
-            let rowAmount = Math.ceil(height/rowRes);
-            if(this.dashboardArray[iD].rows<rowAmount){
-                if(this.dashboardCollection.data.config.ignoreMinSize === "warning"){
-                    this.dashboardArray[iD].isWarning=true;
+            let rowAmount = Math.ceil(height / rowRes);
+            if (this.dashboardArray[iD].rows < rowAmount) {
+                if (this.dashboardCollection.data.config.ignoreMinSize === 'warning') {
+                    this.dashboardArray[iD].isWarning = true;
                 }
             }
             let width = WidgetArray[iW].minWidth;
-            let colAmount = Math.ceil(width/columnRes);
-            if(this.dashboardArray[iD].rows<colAmount){
-                if(this.dashboardCollection.data.config.ignoreMinSize === "warning"){
-                    this.dashboardArray[iD].isWarning=true;
+            let colAmount = Math.ceil(width / columnRes);
+            if (this.dashboardArray[iD].rows < colAmount) {
+                if (this.dashboardCollection.data.config.ignoreMinSize === 'warning') {
+                    this.dashboardArray[iD].isWarning = true;
                 }
             }
-            if(this.dashboardArray[iD].rows>=colAmount && this.dashboardArray[iD].rows>=rowAmount){
-                if(this.dashboardCollection.data.config.ignoreMinSize === "warning"){
+            if (this.dashboardArray[iD].rows>=colAmount && this.dashboardArray[iD].rows>=rowAmount) {
+                if (this.dashboardCollection.data.config.ignoreMinSize === 'warning') {
                     this.dashboardArray[iD].isWarning=false;
                     this.dashboardArray[iD].isWarning=false;
                 }
             }
         }
     }
-    getSize(item){
+    getSize(item) {
         let i = WidgetArray.findIndex(widget => widget.strongIndex === item.strongIndex);
-        let size = "";
+        let size = '';
         let columnRes:number;
         let rowRes:number;
         let grid = document.getElementById('gridster');
-        if(this.dashboardCollection.data.config != undefined){
+        if (this.dashboardCollection.data.config != undefined) {
                 columnRes = grid.getBoundingClientRect().width / this.dashboardCollection.data.config.columns;
                 rowRes = grid.getBoundingClientRect().height / this.dashboardCollection.data.config.maxrows;
             }
-        if(WidgetArray[i].minWidth != undefined){
+        if (WidgetArray[i].minWidth != undefined) {
             let width = WidgetArray[i].minWidth;
             let colAmount = Math.ceil(width/columnRes);
-            size += colAmount + " columns ";
+            size += colAmount + ' columns ';
         }
-        if(WidgetArray[i].minHeight != undefined){
+        if (WidgetArray[i].minHeight != undefined) {
             let height = WidgetArray[i].minHeight;
             let rowAmount = Math.ceil(height/rowRes);
-            size += rowAmount + " rows ";
+            size += rowAmount + ' rows ';
 
         }
         return size;
