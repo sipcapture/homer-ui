@@ -22,7 +22,8 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
     @Input() hepid: number = 1;
     @Input() set queryText(val) {
         this._queryText = val;
-        this.updateEditor(null);
+        this.typeInTextarea(this._queryText, true);
+        this.updateEditor(null, true);
     }
     get queryText() {
         return this._queryText;
@@ -232,6 +233,7 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
     }
 
     private updateEditor(event, setEnd = false) {
+        
         const sel = window.getSelection();
         const textSegments = this.getTextSegments(this.editor);
         const textContent = textSegments.map(({text}) => text).join('');
@@ -250,13 +252,15 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
 
         try {
             this.editor.innerHTML = this.setStyleCodeColors(textContent);
+            if (setEnd) {
+                this.restoreSelection(this.editor.innerText.length, this.editor.innerText.length);
+            } else {
+                this.restoreSelection(anchorIndex, focusIndex);
+            }
+    
         } catch (err) { }
 
-        if (setEnd) {
-            this.restoreSelection(this.editor.innerText.length, this.editor.innerText.length);
-        } else {
-            this.restoreSelection(anchorIndex, focusIndex);
-        }
+        
         this.updateData.emit({
             text: textContent.replace(/\s+/g, ' '),
             serverLoki: this.serverLoki,
@@ -294,20 +298,25 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
         } catch (err) { }
     }
     private typeInTextarea(str, autoClear = false) {
-        const sel = window.getSelection() as Selection;
-        const el = this.editor; // sel.anchorNode.parentNode as HTMLElement;
-        const start = sel['baseOffset'] || 1;
-        const end = sel['extentOffset'] || 1;
-        const text = el.innerText;
-        const before = text.substring(0, start);
-        const after  = text.substring(end, text.length);
+        try {
+            const sel = window.getSelection() as Selection;
+            const el = this.editor; // sel.anchorNode.parentNode as HTMLElement;
+            const start = sel['baseOffset'] || 1;
+            const end = sel['extentOffset'] || 1;
+            const text = el.innerText;
+            const before = text.substring(0, start);
+            const after  = text.substring(end, text.length);
 
-        if (autoClear ) {
-            el.innerText = str;
-        } else {
-            el.innerText = before + str + after;
+            if (autoClear ) {
+                el.innerText = str;
+            } else {
+                el.innerText = before + str + after;
+            }
+            el.focus();
+            return false;
+        } catch (_) {
+            return false;
         }
-        el.focus();
         return false;
     }
 }

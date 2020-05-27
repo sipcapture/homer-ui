@@ -226,12 +226,14 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     scrollTop() {
         setTimeout(() => {
+            '.widget-item'
             const dom = document.querySelector('.scrollVertical');
             if (dom && dom.scrollTop) {
                 dom.scrollTop = 0;
             } else {
                 this.scrollTop();
             }
+            Array.from(document.querySelectorAll('.widget-item')).forEach(i => i.scrollTop = 0)
         }, 100);
     }
     updateTrigger() {

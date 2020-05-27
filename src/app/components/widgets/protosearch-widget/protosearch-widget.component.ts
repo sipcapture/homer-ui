@@ -53,10 +53,28 @@ interface SearchFieldItem {
 export class ProtosearchWidgetComponent implements IWidget {
     @Input() id: string;
     @Input() config: any;
-    @Input() fields = [];
+    _fields = [];
+    @Input() set fields(val) {
+        this._fields = val;
+        if (this.onlySmartField) {
+            console.log('this._fields', this._fields);
+            const fSmartinput = this._fields.find(i => i.field_name === 'smartinput');
+            if (fSmartinput && fSmartinput.value) {
+                this.onlySmartFieldTEXT = fSmartinput.value;
+            } else {
+                this.onlySmartFieldTEXT = this._fields.map(item => `${item.name}=${item.value}`).join(' AND ');
+            }
+            console.log('this.onlySmartFieldTEXT === ', this.onlySmartFieldTEXT);
+        }
+    }
+    get fields() {
+        return this._fields;
+    }
+
     @Input() autoline = false;
     @Input() targetResultId = null;
     @Input() onlySmartField = false;
+    onlySmartFieldTEXT = '';
     @Output() changeSettings = new EventEmitter<any> ();
     @Output() dosearch = new EventEmitter<any> ();
 
