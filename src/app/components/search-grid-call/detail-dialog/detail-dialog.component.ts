@@ -10,13 +10,14 @@ import { PreferenceAdvancedService } from '@app/services';
 export class DetailDialogComponent implements OnInit {
     @Input() titleId: string;
     @Input() sipDataItem: any;
-    @Input() qosData: any;
+   
     @Input() headerColor: any;
     @Input() mouseEventData: any;
     @Input() snapShotTimeRange: any;
     isSimplify = true;
     isSimplifyPort = true;
     IdFromCallID;
+    RTPFilterForFLOW = true;
     activeTab = 0;
     isFilterOpened = false;
     isFilterOpenedOutside = false;
@@ -82,14 +83,22 @@ export class DetailDialogComponent implements OnInit {
         }
     }
 
+    _qosData: any;
+
+    @Input() set qosData(value) {
+        this._qosData = value;
+        console.log('_qosData', {value});
+    }
+    get qosData() {
+        return this._qosData;
+    }
+
     @Output() openMessage: EventEmitter<any> = new EventEmitter();
     @Output() close: EventEmitter<any> = new EventEmitter();
     @ViewChild('filterContainer', {static: false}) filterContainer: ElementRef;
     dataLogs: Array<any>;
-    
-    constructor(
-        private _pas: PreferenceAdvancedService
-    ) { }
+
+    constructor( private _pas: PreferenceAdvancedService ) { }
 
     ngOnInit () {
         this.setTabByAdvanced();
@@ -106,6 +115,17 @@ export class DetailDialogComponent implements OnInit {
     onTabQos(isVisible: boolean) {
         setTimeout(() => {
             this.tabs.qos = isVisible;
+            if(isVisible) {
+                const isRTP = this._qosData && this._qosData.rtp && this._qosData.rtp.data && this._qosData.rtp.data.length > 0;
+                if(isRTP) {
+                    this.checkboxListFilterPayloadType.push({
+                        payloadType: '5',
+                        selected: true,
+                        title: 'RTP'
+                    });
+                }
+                console.log('onTabQos', this._qosData, this.checkboxListFilterPayloadType);
+            }
         });
     }
     onClose () {
@@ -113,7 +133,7 @@ export class DetailDialogComponent implements OnInit {
     }
 
     addWindow(data: any) {
-        if (data.method === 'LOG') {
+        if (data.method === 'LOG' || data.typeItem === 'RTP') {
             this.openMessage.emit({
                 data: data,
                 isLog: true,
@@ -171,6 +191,10 @@ export class DetailDialogComponent implements OnInit {
 
                 return boolPayloadType && boolPort && boolCallId;
             });
+
+            const RTPFilter = this.checkboxListFilterPayloadType.find(i => i.title === 'RTP');
+            this.RTPFilterForFLOW = RTPFilter ? RTPFilter.selected : true;
+
             const selectedId = this.sipDataItem.data.messages.map(i => i.id);
 
             this.sipDataItem.data.calldata = fc(this._messagesBuffer).calldata.filter(i => selectedId.includes(i.id));

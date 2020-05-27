@@ -1,4 +1,16 @@
-import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild, OnDestroy, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Input,
+    Output,
+    EventEmitter,
+    AfterViewInit,
+    ViewChild,
+    OnDestroy,
+    ElementRef,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef
+} from '@angular/core';
 import * as moment from 'moment';
 import { MesagesData } from '../tab-messages/tab-messages.component';
 import { Functions } from '../../../../helpers/functions';
@@ -44,6 +56,26 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     get dataItem () {
         return this._dataItem;
     }
+    _qosData: any;
+    @Input() set qosData(value) {
+        this._qosData = value;
+        
+        const {rtcp, rtp} = this._qosData;
+        const arrRTCP = rtcp.data.map((i, key) => this.formattingQosItemAsFlowElement(i, key));
+        const arrRTP = rtp.data.map((i, key) => this.formattingQosItemAsFlowElement(i, key));
+        this.arrayItemsRTP_AGENT = [].concat(arrRTP);
+        
+        setTimeout(this.initData.bind(this));
+        this.cdr.detectChanges();
+    }
+    _RTPFilterForFLOW = true;
+    @Input() set RTPFilterForFLOW(val: boolean) {
+        this._RTPFilterForFLOW = val;
+        this.initData();
+    }
+    get RTPFilterForFLOW() {
+        return this._RTPFilterForFLOW;
+    }
     @Input() set exportAsPNG(val) {
         if (val) {
             this.isExport = true;
@@ -63,6 +95,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     aliasTitle: Array<any>;
     dataSource: Array<MesagesData> = [];
     arrayItems: Array<any>;
+    arrayItemsRTP_AGENT: Array<any> = [];
     color_sid: string;
     _interval: any;
     labels: Array<any> = [];
@@ -78,10 +111,62 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     ngOnInit() {
         this.initData();
     }
+    formattingQosItemAsFlowElement (item: any, pid: number) {
+        item = Functions.cloneObject(item);
+        item.micro_ts = item.micro_ts || (item.timeSeconds * 1000 + item.timeUseconds / 1000);
+        const sIP = item.srcIp;
+        const sPORT = item.srcPort;
+        const dIP = item.dstIp;
+        const dPORT = item.dstPort;
+        const diffTs = 0;
+        const protoName = Functions.protoCheck(item.proto).toUpperCase();
+        const eventName = item.proto === 'rtcp' ? 'RTCP' : 'RTP';
+        return {
+            id: item.id,
+            callid: item.sid,
+            sid: item.sid,
+            method_text: eventName,
+            description: `${sIP}:${sPORT} -> ${dIP}:${dPORT}`,
+            info_date: `[${pid}][${protoName}] ${moment(item.micro_ts).format('YYYY-MM-DD HH:mm:ss.SSS Z')}`,
+            diff: `+${diffTs.toFixed(2)}ms`,
+            source_ip : sIP,
+            source_port : sPORT,
+            srcId: `${sIP}:${sPORT}`,
+            dstId: `${dIP}:${dPORT}`,
+            srcIp: item.srcIp,
+            srcPort: item.srcPort,
+            dstIp: item.dstIp,
+            dstPort: item.dstPort,
+            destination_ip: dIP,
+            destination_port: dPORT,
+            micro_ts: (item.timeSeconds * 1000 + item.timeUseconds / 1000),
+            source_data: item,
+            typeItem: item.proto === 'rtcp' ? 'RTCP' : 'RTP',
+            QOS: item,
+            MOS: item.raw.MOS,
+            __is_flow_item__: true,
+            RTPmessageData: {
+                id: item.id || '--',
+                create_date: moment(item.micro_ts).format('YYYY-MM-DD'),
+                timeSeconds: moment(item.micro_ts).format('HH:mm:ss.SSS Z'),
+                diff: `${diffTs.toFixed(2)} s`,
+                method: eventName,
+                mcolor: Functions.getMethodColor(eventName),
+                Msg_Size: item.raw ? (JSON.stringify(item.raw) + '').length : '--',
+                srcIp_srcPort: `${sIP}:${sPORT}`,
+                dstIp_dstPort: `${dIP}:${dPORT}`,
+                dstPort: dPORT,
+                proto: protoName,
+                type: item.typeItem,
+                item: item
+            }
+        };
+    }
     initData() {
-        this.color_sid = Functions.getColorByString(this.callid,100,40,1);
+        this.color_sid = Functions.getColorByString(this.callid, 100, 40, 1);
 
-        const IpList = ([].concat(...this.dataItem.data.calldata.map(i => [i.srcId, i.dstId]))).reduce((a, b) => {
+        const IpList = ([].concat(...[].concat(...(this._RTPFilterForFLOW ? this.arrayItemsRTP_AGENT : []), ...this.dataItem.data.calldata)
+        .map(i => [i.srcId, i.dstId]))).reduce((a, b) => {
             if (!a.includes(b)) {
                 a.push(b);
             }
@@ -89,9 +174,23 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         }, []);
 
         let hosts = Functions.cloneObject(this.dataItem.data.hosts);
-
+        /** added host from RTP AGENT */
+        if (this._RTPFilterForFLOW) {
+            this.arrayItemsRTP_AGENT.forEach(item => {
+                [`${item.source_ip}:${item.source_port}`, `${item.destination_ip}:${item.destination_port}`].forEach( IP_PORT => {
+                    if (!hosts[IP_PORT]) {
+                        hosts[IP_PORT] = {
+                            host: [IP_PORT],
+                            position: Object.keys(hosts).length
+                        };
+                    }
+                });
+            });
+        }
         /* sort it */
         hosts = this.sortProperties(hosts, 'position', true, false);
+
+        
 
         let increment = 0;
         Object.keys(hosts).map(i => {
@@ -149,13 +248,23 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             return a;
         }, []).map(i => {
             return {
-                color_sid: Functions.getColorByString(i,100,40,1),
+                color_sid: Functions.getColorByString(i, 100, 40, 1),
                 callid: i
-            }
+            };
         });
+        
         this.flowGridLines = Array.from({length: Object.keys(hosts).length - 1});
-        this.arrayItems = data.calldata.map((item, key, arr) => {
+        const sortedArray = [].concat(
+            ...(this._RTPFilterForFLOW ? this.arrayItemsRTP_AGENT : []),
+            ...data.calldata)
+        .sort((itemA, itemB) => {
+            const a = itemA.micro_ts;
+            const b = itemB.micro_ts;
+            return a < b ? -1 : a > b ? 1 : 0;
+        });
+        this.arrayItems = sortedArray.map((item, key, arr) => {
             diffTs = key - 1 >= 0 && arr[key - 1] !== null ? (item.micro_ts - arr[key - 1].micro_ts) / 1000 : 0;
+
             const {min, max, abs} = Math;
             const srcPosition = hosts[item.srcId].position,
                 dstPosition = hosts[item.dstId].position,
@@ -169,24 +278,26 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             const mosColor = '';
             const options = {
                 mosColor,
-                color: Functions.getColorByString(item.sid,100,40,1),
+                color: Functions.getColorByString(item.sid, 100, 40, 1),
                 start: min(a, b),
                 middle: abs(a - b) || 1,
                 direction: a > b,
                 rightEnd: Object.keys(hosts).length - 1 - max(a, b),
                 shortdata: '',
-                arrowStyleSolid: item.method_text === 'RTCP'
+                arrowStyleSolid: item.method_text === 'RTCP' || item.method_text === 'RTP'
             };
             return {
                 options,
                 course,
+                source_data: item,
                 srcPort: item.srcPort,
                 dstPort: item.dstPort,
                 method_text: item.method_text,
+                packetType: item.method_text === 'RTCP' || item.method_text === 'RTP' ? item.method_text : 'SIP',
                 ruri_user: item.ruri_user,
                 id: item.id,
                 color_method: color_method,
-                color: Functions.getColorByString(item.sid,100,40,1),
+                color: Functions.getColorByString(item.sid, 100, 40, 1),
                 micro_ts: moment( item.micro_ts).format('YYYY-MM-DD HH:mm:ss.SSS Z'),
                 diffTs: diffTs.toFixed(3),
                 proto: Functions.protoCheck(item.protocol),
@@ -196,14 +307,23 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 }
             };
         });
+
         this.dataSource = Functions.messageFormatter(this.dataItem.data.messages);
         this.cdr.detectChanges();
     }
 
-    onClickItem(id: any, event = null) {
-        const row: any = this.dataSource.filter(i => i.id === id)[0];
-        row.mouseEventData = event;
-        this.messageWindow.emit(row);
+    onClickItem(item: any, event = null) {
+        if (item.source_data.QOS) {
+            const rtpROW: any = Object.assign({
+                typeItem: 'RTP',
+                mouseEventData: event,
+            }, Functions.cloneObject(item.source_data.RTPmessageData));
+            this.messageWindow.emit(rtpROW);
+        } else {
+            const row: any = this.dataSource.find(i => i.id === item.id) as any;
+            row.mouseEventData = event;
+            this.messageWindow.emit(row);
+        }
     }
     compIPV6(input) {
         return input.replace(/\b(?:0+:){2,}/, ':');

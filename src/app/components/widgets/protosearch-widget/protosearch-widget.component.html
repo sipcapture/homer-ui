@@ -1,4 +1,4 @@
-<span style="display: none;" id='{{this.id}}'></span>
+<span style="display: none;" [id]="id"></span>
 <form *ngIf="isConfig" class="form-container">
     <div class="inputs-container">
     <div class="example-container" [ngStyle]="{'grid-template-columns': getFieldColumns()}">
@@ -25,7 +25,10 @@
                 [queryText]="lokiQueryText"
                 (updateData)="onLokiCodeData($event)"
             ></app-code-style-field>
+            
+            
             <!-- smart-input -->
+            
             <app-code-style-smart-input-field
                 *ngIf="item.form_type === 'smart-input'"
                 [apiLink]="item.full_api_link"
@@ -35,6 +38,7 @@
 
 
             <!-- if other Fields -->
+
             <mat-form-field style="display: block" *ngIf="
                 item.field_name !== 'loki' &&
                 item.field_name !== 'targetResultsContainer' &&

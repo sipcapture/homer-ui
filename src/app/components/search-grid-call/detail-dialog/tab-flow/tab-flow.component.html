@@ -40,7 +40,7 @@
                 'text-align': item.options.direction ? 'right' : 'left'
             }"
             class="item-flow-packet"
-            (click)="onClickItem(item.id, $event)"> <!-- content -->
+            (click)="onClickItem(item, $event)"> <!-- content -->
                 <div class="call_text" [ngStyle]="{'color': item.color_method ? item.color_method : 'initial' }"> {{
                     item.method_text 
                 }} <span *ngIf="item.QOS" [ngClass]="item.options.mosColor"></span> {{
