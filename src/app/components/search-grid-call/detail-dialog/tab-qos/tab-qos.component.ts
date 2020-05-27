@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ChartType, ChartDataSets, ChartColor } from 'chart.js';
-import { Label, Color } from 'ng2-charts';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild } from '@angular/core';
+import { Chart, ChartType, ChartDataSets, ChartColor } from 'chart.js';
+import { Label, Color, BaseChartDirective } from 'ng2-charts';
 import * as moment from 'moment';
+
 import { Functions } from '@app/helpers/functions';
 
 @Component({
@@ -9,20 +10,109 @@ import { Functions } from '@app/helpers/functions';
     templateUrl: './tab-qos.component.html',
     styleUrls: ['./tab-qos.component.scss']
 })
+
 export class TabQosComponent implements OnInit {
     @Input() callid;
     @Input() dataItem: any;
     @Input() qosData: any;
     @Input() id;
-
+   
     @Output() haveData = new EventEmitter();
     isError = false;
     errorMessage: any;
+    @ViewChild('rtpChart', { static: false }) rtpChart: BaseChartDirective;
+    @ViewChild('rtcpChart', { static: false }) rtcpChart: BaseChartDirective;
 
     labels: Array<any> = [];
     isRTCP = false;
     isRTP = false;
-
+    public testData: ChartDataSets[] = [
+        {
+            data: [1,2,3],
+            label: 'TOTAL_PK',
+            backgroundColor: [],
+            hoverBackgroundColor: [],
+            fill: false,
+            borderWidth: 0
+        }, {
+            data: [1,2,3],
+            label: 'EXPECTED_PK',
+            backgroundColor: [],
+            hoverBackgroundColor: [],
+            fill: false,
+            borderWidth: 0
+        }, {
+            data: [1,2,3],
+            label: 'JITTER',
+            backgroundColor: [],
+            hoverBackgroundColor: [],
+            fill: false,
+            borderWidth: 0
+        }, {
+            data: [1,2,3],
+            label: 'MOS',
+            backgroundColor: [],
+            hoverBackgroundColor: [],
+            fill: false,
+            borderWidth: 0
+        }, {
+            data: [1,2,3],
+            label: 'DELTA',
+            backgroundColor: [],
+            hoverBackgroundColor: [],
+            fill: false,
+            borderWidth: 0
+        }, {
+            data: [1,2,3],
+            label: 'PACKET_LOSS',
+            backgroundColor: [],
+            hoverBackgroundColor: [],
+            fill: false,
+            borderWidth: 0
+        },{
+            data: [,,,4,5],
+            label: 'TOTAL_PK',
+            backgroundColor: [],
+            hoverBackgroundColor: [],
+            fill: false,
+            borderWidth: 0
+        }, {
+            data: [,,,4,5],
+            label: 'EXPECTED_PK',
+            backgroundColor: [],
+            hoverBackgroundColor: [],
+            fill: false,
+            borderWidth: 0
+        }, {
+            data: [,,,4,5],
+            label: 'JITTER',
+            backgroundColor: [],
+            hoverBackgroundColor: [],
+            fill: false,
+            borderWidth: 0
+        }, {
+            data: [,,,4,5],
+            label: 'MOS',
+            backgroundColor: [],
+            hoverBackgroundColor: [],
+            fill: false,
+            borderWidth: 0
+        }, {
+            data: [,,,4,5],
+            label: 'DELTA',
+            backgroundColor: [],
+            hoverBackgroundColor: [],
+            fill: false,
+            borderWidth: 0
+        }, {
+            data: [,,,4,5],
+            label: 'PACKET_LOSS',
+            backgroundColor: [],
+            hoverBackgroundColor: [],
+            fill: false,
+            borderWidth: 0
+        },
+    ];
     public chartDataRTP: ChartDataSets[] = [
         {
             data: [],
@@ -84,7 +174,7 @@ export class TabQosComponent implements OnInit {
             }]
         },
         legend: {
-            display: false
+            display: true
         }
     };
 
@@ -92,7 +182,6 @@ export class TabQosComponent implements OnInit {
     public chartType: ChartType = 'bar';
     public chartLegend = true;
     public lineChartColors: Color[] = [];
-
     public chartData: ChartDataSets[] = [
         {
             data: [],
@@ -100,7 +189,7 @@ export class TabQosComponent implements OnInit {
             backgroundColor: [],
             hoverBackgroundColor: [],
             fill: false,
-            borderWidth: 0
+            borderWidth: 0,
         }, {
             data: [],
             label: 'octets',
@@ -210,21 +299,20 @@ export class TabQosComponent implements OnInit {
     constructor() { }
 
     ngOnInit() {
+        let testData = [];
         this.labels = this.dataItem.data.calldata.map(i => i.sid).reduce((a, b) => {
             if (a.indexOf(b) === -1) {
                 a.push(b);
             }
             return a;
         }, []);
-
-        try {
+/*        try {*/
             this.parseRTCP(this.qosData.rtcp.data);
             this.parseRTP(this.qosData.rtp.data);
             this.haveData.emit(this.qosData.rtcp.data.length > 0 || this.qosData.rtp.data.length > 0 );
-        } catch (err) {
+/*        } catch (err) {
             this.onErrorMessage(err);
-        }
-
+        }*/
     }
     onErrorMessage(err: any) {
         this.isError = true;
@@ -576,6 +664,7 @@ export class TabQosComponent implements OnInit {
                 val.hoverBackgroundColor = arrHoverBackgroundColor
                     .concat(Array.from({ length: _data.length }, i => rColor.borderColor));
             });
+
         });
     }
 
@@ -594,15 +683,23 @@ export class TabQosComponent implements OnInit {
             borderColor: rColor100
         };
     }
-    private getData(item: any, index: string) {
-        const data = item[index + 'Data'] as Array<number> || [];
-        if (item[index]) {
+    private getData(item: any, label: string) {
+        let emptyArray:Array<any> = [];
+        let emptyLength: number = 0;
+        
+        /*emptyLength += item[label+'Data']
+        
+
+            emptyArray = Array(emptyLength);*/
+        const data = item[label + 'Data'] as Array<number> || [];
+        const result = emptyArray.concat(data);
+        if (item[label]) {
             return Functions.cloneObject( data );
         }
         return Array.from({ length: data.length }, i => 0);
     }
 
-    onChangeChackBox(item: any, base = false) {
+    onChangeChackBox(item: any, type: any, base = false) {  
         if (base) {
             item.packets = item.octets = item.highest_seq_no = item.ia_jitter = item.lsr = item.mos = item.packets_lost = item._chacked;
             item._indeterminate = false;
@@ -612,10 +709,42 @@ export class TabQosComponent implements OnInit {
             item._indeterminate = !item._chacked &&
                 !(!item.packets && !item.octets && !item.highest_seq_no && !item.ia_jitter && !item.lsr && !item.mos && !item.packets_lost);
         }
+        let checkArray = [];
+        for(let i = 0; i < this.streams.length;i++){
+            if(this.streams[i][type] === false){
+                checkArray.push(false)
+            }else{
+                checkArray.push(true);
+            }
+        }
+        let index: number;
+        for(let i = 0; i < this.rtcpChart.datasets.length;i++){
+            console.log(this.rtcpChart.datasets[i].label)
+            console.log(type)
+            if(this.rtcpChart.datasets[i].label === type){
+                index = i;
+            }
+        }
+        let streamsCopy = Functions.cloneObject(this.streams);
+        //Removes disabled datastream
+        if(base && item._chacked === false){
+            streamsCopy = streamsCopy.filter(stream => stream.dstIp != item.dstIp && stream.srcIp != item.srcIp);
+            item.create_date.forEach(create_date => this.chartLabels = this.chartLabels.filter(label=> label != moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
+        }else if(base && item._chacked === true){
+            item.create_date.forEach(create_date => this.chartLabels.push(moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
+        }
+        //Hides disabled labels
+        if(!base){
+            if(checkArray.every(x => x == false)){
+                this.rtcpChart.hideDataset(index,true)
+            }else{
+                this.rtcpChart.hideDataset(index,false)
+          }
+        }
         this.renderChartData(this.streams, this.chartData);
     }
 
-    onChangeChackBoxRTP(item: any, base = false) {
+    onChangeChackBoxRTP(item: any, type: any, base = false) {
         if (base) {
             item.TOTAL_PK = item.EXPECTED_PK = item.JITTER = item.MOS = item.DELTA = item.PACKET_LOSS = item._chacked;
             item._indeterminate = false;
@@ -624,7 +753,38 @@ export class TabQosComponent implements OnInit {
             item._indeterminate = !item._chacked &&
                 !(!item.TOTAL_PK && !item.EXPECTED_PK && !item.JITTER && !item.MOS && !item.DELTA && !item.PACKET_LOSS);
         }
-        this.renderChartData(this.streamsRTP, this.chartDataRTP);
+        let checkArray = [];
+        for(let i = 0; i < this.streamsRTP.length;i++){
+            if(this.streamsRTP[i][type] === false){
+                checkArray.push(false)
+            }else{
+                checkArray.push(true);
+            }
+        }
+        let index: number;
+        for(let i = 0; i < this.rtpChart.datasets.length;i++){
+            if(this.rtpChart.datasets[i].label === type){
+                index = i;
+            }
+        }
+        let streamsCopy = Functions.cloneObject(this.streamsRTP);
+        //Removes disabled datastream
+        if(base && item._chacked === false){
+            streamsCopy = streamsCopy.filter(stream => stream.dstIp != item.dstIp && stream.srcIp != item.srcIp);
+            item.create_date.forEach(create_date => this.chartLabelsRTP = this.chartLabelsRTP.filter(label=> label != moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
+        }else if(base && item._chacked === true){
+            item.create_date.forEach(create_date => this.chartLabelsRTP.push(moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
+        }
+        //Hides disabled labels
+        if(!base){
+            if(checkArray.every(x => x == false)){
+                this.rtpChart.hideDataset(index,true)
+            }else{
+                this.rtpChart.hideDataset(index,false)
+          }
+        }
+        console.log(this.chartDataRTP)
+        this.renderChartData(streamsCopy, this.chartDataRTP);
     }
 
     yAxisFormatter (label) {
