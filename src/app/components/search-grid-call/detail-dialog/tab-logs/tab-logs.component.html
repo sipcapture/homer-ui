@@ -17,10 +17,9 @@ Messages
 </div>
   </div>
   <div class="hep-logs-content">
-    
   <div *ngFor="let data of dataSource" class="body-row">
 <div class="hep-logs-time">
-{{data.timestamp | moment:'YYYY-MM-DD HH:mm:ss'}}
+{{data.timestamp | moment:'YYYY-MM-DD HH:mm:ss.SSS'}}
 <p *ngIf="showTs">{{data.timestamp}}</p>
   </div>
   <div class="hep-logs-messages">
