@@ -22,7 +22,7 @@ import { IWidget, IWidgetMetaData } from '../widgets/IWidget';
 import { Observable } from 'rxjs';
 import { WidgetArray, WidgetArrayInstance } from '@app/helpers/widget';
 import { Functions } from '@app/helpers/functions';
-import { ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 
 @Component({
     selector: 'app-dashboard',
@@ -49,6 +49,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         private _route: ActivatedRoute,
         private _ds: DashboardService,
         private router: Router,
+        private cdr: ChangeDetectorRef,
         public dialog: MatDialog) {}
     @HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
         const ls = JSON.parse(localStorage.getItem('searchQueryWidgetsResult'));
@@ -252,6 +253,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 i.onmouseup = window.document.body.onmouseleave = evt => shadows.forEach( (j: any) => j.style.display = 'none' );
                 i.onmousedown = evt => shadows.forEach( (j: any) => j.style.display = 'block' );
             });
+            this.cdr.detectChanges();
         }, 500);
     }
 
@@ -311,6 +313,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.updateTrigger();
             this.changedOptions();
             this.scrollTop();
+            this.cdr.detectChanges();
         });
     }
     submitCheck() {
@@ -370,33 +373,33 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     warningCheck(item: any) {
         if (this.dashboardCollection.data.config.ignoreMinSize === 'warning') {
-            let columnRes:number;
-            let rowRes:number;
-            let grid = document.getElementById('gridster');
+            let columnRes: number;
+            let rowRes: number;
+            const grid = document.getElementById('gridster');
             if (this.dashboardCollection.data.config !== undefined) {
                 columnRes = grid.getBoundingClientRect().width / this.dashboardCollection.data.config.columns;
                 rowRes = grid.getBoundingClientRect().height / this.dashboardCollection.data.config.maxrows;
             }
-            let iW = WidgetArray.findIndex(widget => widget.strongIndex === item.strongIndex);
-            let iD = this.dashboardArray.findIndex(widget => widget.id === item.id);
-            let height = WidgetArray[iW].minHeight;
-            let rowAmount = Math.ceil(height / rowRes);
+            const iW = WidgetArray.findIndex(widget => widget.strongIndex === item.strongIndex);
+            const iD = this.dashboardArray.findIndex(widget => widget.id === item.id);
+            const height = WidgetArray[iW].minHeight;
+            const rowAmount = Math.ceil(height / rowRes);
             if (this.dashboardArray[iD].rows < rowAmount) {
                 if (this.dashboardCollection.data.config.ignoreMinSize === 'warning') {
                     this.dashboardArray[iD].isWarning = true;
                 }
             }
-            let width = WidgetArray[iW].minWidth;
-            let colAmount = Math.ceil(width / columnRes);
+            const width = WidgetArray[iW].minWidth;
+            const colAmount = Math.ceil(width / columnRes);
             if (this.dashboardArray[iD].rows < colAmount) {
                 if (this.dashboardCollection.data.config.ignoreMinSize === 'warning') {
                     this.dashboardArray[iD].isWarning = true;
                 }
             }
-            if (this.dashboardArray[iD].rows>=colAmount && this.dashboardArray[iD].rows>=rowAmount) {
+            if (this.dashboardArray[iD].rows >= colAmount && this.dashboardArray[iD].rows >= rowAmount) {
                 if (this.dashboardCollection.data.config.ignoreMinSize === 'warning') {
-                    this.dashboardArray[iD].isWarning=false;
-                    this.dashboardArray[iD].isWarning=false;
+                    this.dashboardArray[iD].isWarning = false;
+                    this.dashboardArray[iD].isWarning = false;
                 }
             }
         }
@@ -404,8 +407,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     getSize(item) {
         let i = WidgetArray.findIndex(widget => widget.strongIndex === item.strongIndex);
         let size = '';
-        let columnRes:number;
-        let rowRes:number;
+        let columnRes: number;
+        let rowRes: number;
         let grid = document.getElementById('gridster');
         if (this.dashboardCollection.data.config != undefined) {
                 columnRes = grid.getBoundingClientRect().width / this.dashboardCollection.data.config.columns;
@@ -447,7 +450,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         setTimeout(() => {
             this.resizeExcess();
             this.checkWidgets();
-        },100);
+            this.cdr.detectChanges();
+        }, 100);
     }
 
     openSettings(item: any) {
@@ -494,7 +498,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         setTimeout(() => {
             this.checkWidgets();
             this.resizeExcess();
-        },100);
+            this.cdr.detectChanges();
+        }, 100);
     }
     onDownloadDashboardSettings() {
         Functions.saveToFile(JSON.stringify(this.dashboardCollection, null, 2), `${this.dashboardTitle}.json`);
@@ -550,13 +555,13 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.changedOptions();
 
         })(this.dashboardCollection, _d);
-
         this.onDashboardSave().toPromise().then(() => {
             this.getData();
             this._ds.update();
             this.resizeExcess();
             this.checkWidgets();
         });
+        this.cdr.detectChanges();
     }
 
     async onDashboardDelete() {
@@ -564,7 +569,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             this._ds.deleteDashboardStore(this._ds.getCurrentDashBoardId()).toPromise().then(() => {
                 this.router.navigateByUrl('/');
                 this._ds.update();
+                this.cdr.detectChanges();
             });
+            this.cdr.detectChanges();
         }
     }
 

@@ -1,4 +1,13 @@
-import { Component, Input, Output, EventEmitter, HostListener, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+    Input,
+    Output,
+    Component,
+    ViewChild,
+    EventEmitter,
+    AfterViewInit,
+    ChangeDetectorRef,
+    ChangeDetectionStrategy,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SettingProtosearchWidgetComponent } from './setting-protosearch-widget.component';
 import { Router } from '@angular/router';
@@ -21,6 +30,7 @@ import {
 } from '@app/services';
 import { ConstValue } from '@app/models';
 import { FormControl } from '@angular/forms';
+import { CodeStyleSmartInputFieldComponent } from '../rsearch-widget/code-style-smart-input-field/code-style-smart-input-field.component';
 
 
 
@@ -51,24 +61,14 @@ interface SearchFieldItem {
     minHeight: 300,
     minWidth: 300
 })
-export class ProtosearchWidgetComponent implements IWidget {
+export class ProtosearchWidgetComponent implements IWidget, AfterViewInit {
     @Input() id: string;
     @Input() config: any;
     _fields = [];
     @Input() set fields(val) {
         this._fields = val;
-        setTimeout(() => {
-            if (this.onlySmartField) {
-                const fSmartinput = this._fields.find(i => i.field_name === 'smartinput');
-                if (fSmartinput && fSmartinput.value) {
-                    this.onlySmartFieldTEXT = fSmartinput.value;
-                } else {
-                    this.onlySmartFieldTEXT = this._fields.map(item => `${item.name}=${item.value}`).join(' AND ');
-                }
-                this.onlySmartFieldTEXT = this.onlySmartFieldTEXT || '';
-            }
-            this.cdr.detectChanges();
-        })
+        console.log('set fields::', (this.onlySmartField ? 'slider' : 'protosaerch'), this._fields);
+        this.initSliderSmartInput();
     }
     get fields() {
         return this._fields;
@@ -80,6 +80,8 @@ export class ProtosearchWidgetComponent implements IWidget {
     onlySmartFieldTEXT = '';
     @Output() changeSettings = new EventEmitter<any> ();
     @Output() dosearch = new EventEmitter<any> ();
+
+    @ViewChild('onlySmartFieldElement', {static: false}) onlySmartFieldElement: CodeStyleSmartInputFieldComponent;
 
     private subscriptionStorage: Subscription;
     private dashboardEventSubscriber: Subscription;
@@ -161,7 +163,25 @@ export class ProtosearchWidgetComponent implements IWidget {
         this.updateButtonState();
         this.initSubscribes();
     }
+    ngAfterViewInit() {
+        this.initSliderSmartInput();
+    }
+    private initSliderSmartInput() {
+        if (this.onlySmartFieldElement) {
+            const fSmartinput = this._fields.find(i => i.field_name === 'smartinput');
+            if (fSmartinput && fSmartinput.value && fSmartinput.value !== '') {
+                this.onlySmartFieldTEXT = fSmartinput.value;
+            } else {
+                this.onlySmartFieldTEXT = this._fields.filter(i => i.value !== '')
+                    .map(item => `${item.name}="${item.value}"`).join(' AND ');
+            }
 
+            console.log(this.onlySmartFieldTEXT);
+
+            this.onlySmartFieldElement.setQueryText(this.onlySmartFieldTEXT);
+            this.cdr.detectChanges();
+        }
+    }
     getFieldColumns() {
         if (this.autoline) {
             this.countFieldColumns = Math.min(4, this.fields.length);
@@ -414,11 +434,12 @@ export class ProtosearchWidgetComponent implements IWidget {
             }
         });
 
-
+console.log('save-> searchQuer ', Functions.cloneObject(this.searchQuery));
         this.searchService.setLocalStorageQuery(Functions.cloneObject(this.searchQuery));
         this._sss.saveProtoSearchConfig(this.widgetId, Functions.cloneObject(this.searchQuery));
 
         this.searchQuery.fields = this.searchQuery.fields.filter(i => i.name !== ConstValue.CONTAINER);
+        this.cdr.detectChanges();
     }
 
     onClearFields () {
@@ -542,6 +563,7 @@ export class ProtosearchWidgetComponent implements IWidget {
                 this._ds.setQueryToWidgetResult(_targetResult.id, this.searchQuery);
             }
             this.dosearch.emit({});
+            this.cdr.detectChanges();
             return;
         }
         this.router.navigate(['search/result']);
@@ -573,18 +595,27 @@ export class ProtosearchWidgetComponent implements IWidget {
     }
     onSmartInputCodeData(event, item = null) {
         if (this.onlySmartField) {
+            console.log('onSmartInputCodeData:event.text', event);
             const hepid = this.config &&
-                    this.config.config &&
-                    this.config.config.protocol_id &&
-                    this.config.config.protocol_id.value || 1;
-            this.fields = [{
-                field_name: 'smartinput',
-                hepid,
-                name: 'smartinput',
-                selection: 'Smart Input',
-                type: 'string',
-                value: event.text
-            }];
+                this.config.config &&
+                this.config.config.protocol_id &&
+                this.config.config.protocol_id.value || 1;
+            const [sf] = this.fields;
+
+            if (!sf || !(sf.field_name === 'smartinput' && this.fields.length === 1)) {
+                this.fields = [{
+                    field_name: 'smartinput',
+                    hepid,
+                    name: 'smartinput',
+                    selection: 'Smart Input',
+                    type: 'string',
+                    value: event.text
+                }];
+            } else {
+                sf.value = event.text;
+                sf.hepid = hepid;
+                console.log(JSON.stringify(this.fields, null, 4));
+            }
         } else {
             this.fields.forEach(i => {
                 if (item && item.field_name === i.field_name && i.form_type === 'smart-input') {
@@ -592,6 +623,7 @@ export class ProtosearchWidgetComponent implements IWidget {
                 }
             });
         }
+        console.log('this.fields', (this.onlySmartField ? 'slider' : 'protosearch'), this.fields);
         this.saveState();
         this.cdr.detectChanges();
     }

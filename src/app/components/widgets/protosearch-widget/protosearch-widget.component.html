@@ -3,10 +3,9 @@
     <!-- smart-input -->          
     <app-code-style-smart-input-field
         apiLink="/smart/search/tag/1/call"
-        [queryText]="onlySmartFieldTEXT"
         (updateData)="onSmartInputCodeData($event)"
         (keyEnter)="doSearchResult()"
-    ></app-code-style-smart-input-field>
+    #onlySmartFieldElement></app-code-style-smart-input-field>
 </div>
 <form *ngIf="isConfig && !onlySmartField">
     <div class="inputs-container">
@@ -43,6 +42,7 @@
                     [apiLink]="item.full_api_link"
                     [queryText]="item.value"
                     (updateData)="onSmartInputCodeData($event, item)"
+                    (keyEnter)="doSearchResult()"
                 ></app-code-style-smart-input-field>
 
 

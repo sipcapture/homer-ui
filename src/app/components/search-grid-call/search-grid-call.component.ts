@@ -36,12 +36,14 @@ import {
 } from '@app/services';
 import { DialogSettingsGridDialog } from './grid-settings-dialog/grid-settings-dialog';
 import { MatDialog } from '@angular/material/dialog';
+import { ChangeDetectionStrategy } from '@angular/core';
 
 
 @Component({
     selector: 'app-search-grid-call',
     templateUrl: './search-grid-call.component.html',
-    styleUrls: ['./search-grid-call.component.scss']
+    styleUrls: ['./search-grid-call.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit {
     private gridApi;
@@ -215,6 +217,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                         this.update(true);
                     }
                 }
+                this.changeDetectorRefs.detectChanges();
             });
         } else {
             setTimeout(() => { /** <== fixing ExpressionChangedAfterItHasBeenCheckedError */
@@ -588,6 +591,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     public update(isImportant = false) {
+        console.log('public update', Functions.cloneObject(this.config));
         if (this.isNewData() && !isImportant) {
             return;
         }
@@ -610,6 +614,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 setTimeout(() => { /** for grid updated autoHeight and sizeToFit */
                     this.rowData = Functions.cloneObject(this.rowData);
                     this.dataReady.emit({});
+                    this.changeDetectorRefs.detectChanges();
                 }, 600);
             }, err => {
                 this.rowData = [];
@@ -620,15 +625,16 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 if (!result || !result.data) {
                     this.rowData = [];
                     this.dataReady.emit({});
+                    this.changeDetectorRefs.detectChanges();
                     return;
                 }
 
                 this.rowData = result.data;
-                for(let i = 0; i< this.rowData.length; i++){
-                    if(this.rowData[i].protocol != undefined && this.rowData[i].protocol === 17){
-                        this.rowData[i].protocol = 'UDP'
-                    }else if(this.rowData[i].protocol != undefined && this.rowData[i].protocol === 6){
-                        this.rowData[i].protocol = 'TCP'
+                for (let i = 0; i < this.rowData.length; i++){
+                    if (this.rowData[i].protocol !== undefined && this.rowData[i].protocol === 17) {
+                        this.rowData[i].protocol = 'UDP';
+                    } else if (this.rowData[i].protocol !== undefined && this.rowData[i].protocol === 6) {
+                        this.rowData[i].protocol = 'TCP';
                     }
                 }
                 this.sizeToFit();
@@ -636,6 +642,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.openTransactionByAdvancedSettings();
                 this.dataReady.emit({});
                 this.initSearchSlider();
+                this.changeDetectorRefs.detectChanges();
             }, err => {
                 this.rowData = [];
                 this.dataReady.emit({});
@@ -675,17 +682,17 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     private getMethodColor (params) {
-        if(params.hasOwnProperty('value') && typeof params.value != undefined){
+        if (params.hasOwnProperty('value') && typeof params.value !== undefined) {
 
-            let color = Functions.getMethodColor(params.value); 
+            const color = Functions.getMethodColor(params.value);
 
             return {'color' : color};
-        }else{
-            return{}
+        } else {
+            return {};
         }
-        return (!params.hasOwnProperty('value') ||
-            (typeof params.value === 'undefined')) ?  {} :
-                {'color': Functions.getColorByString(params.value,100,30,1)};
+        // return (!params.hasOwnProperty('value') ||
+        //     (typeof params.value === 'undefined')) ?  {} :
+        //         {'color': Functions.getColorByString(params.value, 100, 30, 1)};
     }
 
     private getBkgColorTable(params) {
@@ -803,6 +810,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
             localData = res;
             readyToOpen(localData, localDataQOS);
+            this.changeDetectorRefs.detectChanges();
         });
     }
 

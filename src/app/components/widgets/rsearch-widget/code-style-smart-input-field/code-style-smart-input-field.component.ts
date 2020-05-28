@@ -22,16 +22,21 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
     divHTML: string;
     divText: string;
     serverLoki: string;
-    editor: HTMLElement;
+    editor: any;
     _queryText = '';
 
     menuTitle: string;
-
+    isFocusOnField = false;
     private _menuDOM: HTMLElement;
     private lastMenuXPosition = 0;
     @Input() apiLink = '';
     @Input() hepid = 1;
-    @Input() queryText;
+    @Input() set queryText(val: string) {
+        this.setQueryText(val);
+    }
+    get queryText() {
+        return this._queryText;
+    }
 
     @Output() updateData: EventEmitter<any> = new EventEmitter();
     @Output() keyEnter: EventEmitter<any> = new EventEmitter();
@@ -44,13 +49,36 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
         private smartService: SmartService,
         private cdr: ChangeDetectorRef
     ) { }
-
+    public setQueryText(value: string) {
+        if(this.isFocusOnField) {
+            return;
+        }
+        console.log('[1]>>');
+        if (this._queryText === value) {
+            return;
+        }
+        this._queryText = value;
+        this.editor.innerText = this._queryText;
+        console.log('@Input() set queryText => ', this._queryText);
+        this.updateEditor(null);
+        this.cdr.detectChanges();
+    }
+    public getQueryText() {
+        return this._queryText;
+    }
     ngOnInit() {
     }
     ngAfterViewInit () {
         this.editor = this.divContainer.nativeElement;
+        this.editor.onfocus = event => {
+            this.isFocusOnField = true;
+        }
+        this.editor.onfocusout = event => {
+            this.isFocusOnField = false;
+        }
         this.editor.onkeyup = this.onKeyUpDiv.bind(this);
         this.editor.oninput = (evt: any) => {
+            console.log('[2]>>');
             if (evt.inputType === 'deleteContentBackward') {
                 evt.preventDefault();
                 return;
@@ -58,10 +86,11 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
             this.updateEditor(null);
         };
 
-        if (this.queryText) {
-            this.editor.innerText = this.queryText;
+        if (this._queryText) {
+            this.editor.innerText = this._queryText;
             this.updateEditor(null);
         }
+        this.cdr.detectChanges();
     }
     async getLabels() {
         try {
@@ -79,9 +108,8 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
 
             const readyAdded: any = this.getObject(this.editor.innerText);
 
-            this.popupList = labels.filter(i => {
-                return Object.keys(readyAdded).indexOf(i) === -1;
-            });
+            this.popupList = labels;
+            
 
             if ( this.popupList.length > 0) {
                 this.trigger.openMenu();
@@ -90,6 +118,7 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
             } else {
                 this.trigger.closeMenu();
             }
+            this.cdr.detectChanges();
         } catch (error) {
             console.error({error});
         }
@@ -124,16 +153,18 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
         }
     }
     onKeyDownDiv(event) {
+        console.log('[4]>>');
         if (!!({ArrowDown: 1, ArrowUp: 1, Enter: 1})[event.key]) {
             this.triggerNavMenu(event.key);
             event.preventDefault();
             this.editor.innerHTML = '' + this.editor.innerText;
             return;
         }
-        // this.cdr.detectChanges();
     }
     onKeyUpDiv(event) {
+        console.log('[3]>>');
         if (!!{Shift: 1, Control: 1, Alt: 1, Backspace: 1}[event.key]) {
+            this.updateEditor(null);
             return;
         }
 
@@ -318,15 +349,15 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
     }
     private typeInTextarea(str, autoClear = false) {
         try {
-            const sel = window.getSelection() as Selection;
+            const sel: any = window.getSelection();
             const el = this.editor; // sel.anchorNode.parentNode as HTMLElement;
-            const start = sel['baseOffset'] || 1;
-            const end = sel['extentOffset'] || 1;
+            const start = sel.baseOffset || 1;
+            const end = sel.extentOffset || 1;
             const text = el.innerText;
             const before = text.substring(0, start);
             const after  = text.substring(end, text.length);
 
-            if (autoClear ) {
+            if ( autoClear ) {
                 el.innerText = str;
             } else {
                 el.innerText = before + str + after;
