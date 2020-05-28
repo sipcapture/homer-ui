@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Chart, ChartType, ChartDataSets, ChartColor } from 'chart.js';
 import { Label, Color, BaseChartDirective } from 'ng2-charts';
 import * as moment from 'moment';
@@ -87,7 +87,7 @@ export class TabQosComponent implements OnInit {
             }]
         },
         legend: {
-            display: true
+            display: false
         }
     };
 
@@ -212,7 +212,6 @@ export class TabQosComponent implements OnInit {
     constructor() { }
 
     ngOnInit() {
-        let testData = [];
         this.labels = this.dataItem.data.calldata.map(i => i.sid).reduce((a, b) => {
             if (a.indexOf(b) === -1) {
                 a.push(b);
@@ -599,15 +598,7 @@ export class TabQosComponent implements OnInit {
         };
     }
     private getData(item: any, label: string) {
-        let emptyArray:Array<any> = [];
-        let emptyLength: number = 0;
-        
-        /*emptyLength += item[label+'Data']
-        
-
-            emptyArray = Array(emptyLength);*/
         const data = item[label + 'Data'] as Array<number> || [];
-        const result = emptyArray.concat(data);
         if (item[label]) {
             return Functions.cloneObject( data );
         }
