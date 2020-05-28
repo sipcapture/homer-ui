@@ -256,14 +256,15 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
             if (result && result.data) {
                 const _advanced = result.data.find(i => i.category === 'search' && i.param === 'transaction');
-                if (_advanced && _advanced.data && _advanced.data.lookup_range) {                    
+                if (_advanced && _advanced.data && _advanced.data.lookup_range) {
                     const [from, to, message_from, message_to] = _advanced.data.lookup_range;
                     this.limitRange.from = (from * 1000) || -300000;
                     this.limitRange.to = (to * 1000) || 600000;
                     this.limitRange.message_from = (message_from * 1000) || -2000;
-                    this.limitRange.message_to = (message_to *1000) || 2000;
+                    this.limitRange.message_to = (message_to * 1000) || 2000;
+                    this.changeDetectorRefs.detectChanges();
                 }
-            } 
+            }
         });
     }
     async initSearchSlider(isImportantClear = false) {
@@ -282,7 +283,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         const mapping = mappingItem && Functions.cloneObject(mappingItem.fields_mapping) || [];
 
         mapping.push({ id: ConstValue.LIMIT, name: 'Query Limit' });
-
+        this.changeDetectorRefs.detectChanges();
         setTimeout(() => {
             this.searchSliderFields = isImportantClear ? [] : this.searchSlider.getFields();
             if (query && query.fields && query.fields instanceof Array) {
@@ -318,6 +319,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             this.searchSliderConfig.fields = Functions.cloneObject(this.searchSliderFields);
             this.searchSliderFields = Functions.cloneObject(this.searchSliderFields);
             this.searchSliderConfig.countFieldColumns = this.searchSliderConfig.fields.filter(i => i.value !== '').length;
+            this.changeDetectorRefs.detectChanges();
         });
     }
 
@@ -611,6 +613,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     return ( a < b ) ? -1 : (( a > b ) ? 1 : 0);
                 });
                 this.sizeToFit();
+                this.changeDetectorRefs.detectChanges();
                 setTimeout(() => { /** for grid updated autoHeight and sizeToFit */
                     this.rowData = Functions.cloneObject(this.rowData);
                     this.dataReady.emit({});
@@ -806,6 +809,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             this._ers.postQOS(this.searchService.queryBuilderQOS(row, allCallIds)).toPromise().then(dataQOS => {
                 localDataQOS = dataQOS;
                 readyToOpen(localData, localDataQOS);
+                this.changeDetectorRefs.detectChanges();
             });
 
             localData = res;

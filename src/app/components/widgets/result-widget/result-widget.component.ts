@@ -10,7 +10,7 @@ import { Functions } from '@app/helpers/functions';
     selector: 'app-result-widget',
     templateUrl: './result-widget.component.html',
     styleUrls: ['./result-widget.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.Default
 })
 @Widget({
     title: 'Display Results',
@@ -56,6 +56,7 @@ export class ResultWidgetComponent implements IWidget {
         this.isLoaded = false;
         setTimeout(() => {
             this.isLoaded = true;
+            this.cdr.detectChanges();
         }, 1000);
     }
 
