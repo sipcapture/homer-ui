@@ -7,13 +7,21 @@
   <h5 *ngIf="isRTP">RTP</h5>
   <div class="responcive">
     <div class="chart-container">
-      <canvas baseChart #rtpChart='base-chart'
+      <canvas *ngIf="!isNoDataRTP" baseChart #rtpChart='base-chart'
         [datasets]="chartDataRTP"
         [labels]="chartLabelsRTP"
         [options]="chartOptions"
         [legend]="chartLegend"
         [chartType]="chartType">
       </canvas>
+      <div *ngIf="isNoDataRTP" class="nodata" >
+        <div [ngStyle]="{'backgroundColor':color}" class='nodata-card'>
+          <div class='text-container'>
+            <h1>No Data shown</h1>
+            <p>Please select datastreams to display chart</p>
+          </div>
+        </div>
+      </div>
       <!-- [colors]="lineChartColorsRTP" -->
     </div>
     
@@ -68,13 +76,21 @@
   <h5 *ngIf="isRTCP">RTCP</h5>
   <div class="responcive">
     <div class="chart-container">
-      <canvas baseChart #rtcpChart='base-chart'
+      <canvas *ngIf="!isNoDataRTCP" baseChart #rtcpChart='base-chart'
         [datasets]="chartData"
         [labels]="chartLabels"
         [options]="chartOptions"
         [legend]="chartLegend"
         [chartType]="chartType">
       </canvas>
+      <div *ngIf="isNoDataRTCP" class="nodata" >
+        <div [ngStyle]="{'backgroundColor':color}" class='nodata-card'>
+          <div class='text-container'>
+            <h1>No Data shown</h1>
+            <p>Please select datastreams to display chart</p>
+          </div>
+        </div>
+      </div>
       <!-- [colors]="lineChartColors" -->
     </div>
     

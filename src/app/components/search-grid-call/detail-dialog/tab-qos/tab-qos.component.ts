@@ -22,10 +22,12 @@ export class TabQosComponent implements OnInit {
     errorMessage: any;
     @ViewChild('rtpChart', { static: false }) rtpChart: BaseChartDirective;
     @ViewChild('rtcpChart', { static: false }) rtcpChart: BaseChartDirective;
-
+    color: any;
     labels: Array<any> = [];
     isRTCP = false;
     isRTP = false;
+    isNoDataRTP = false;
+    isNoDataRTCP = false;
     public chartDataRTP: ChartDataSets[] = [
         {
             data: [],
@@ -225,6 +227,7 @@ export class TabQosComponent implements OnInit {
         } catch (err) {
             this.onErrorMessage(err);
         }
+        this.color = Functions.getColorByString(this.callid,75,60,1);
     }
     onErrorMessage(err: any) {
         this.isError = true;
@@ -616,23 +619,34 @@ export class TabQosComponent implements OnInit {
             item._indeterminate = !item._chacked &&
                 !(!item.packets && !item.octets && !item.highest_seq_no && !item.ia_jitter && !item.lsr && !item.mos && !item.packets_lost);
         }
-        let checkArray = [];    
-        this.streams.forEach(stream => checkArray.push(stream[type]));
-
+        let checkArray = [];   
+            this.streams.forEach(stream => checkArray.push(stream[type]));
+        
         let index: number;
-        for(let i = 0; i < this.rtcpChart.datasets.length;i++){
-            if(this.rtcpChart.datasets[i].label === type){
-                index = i;
+        if(this.rtcpChart != undefined){ 
+            for(let i = 0; i < this.rtcpChart.datasets.length;i++){
+                if(this.rtcpChart.datasets[i].label === type){
+                    index = i;
+                }
             }
         }
         let streamsCopy = Functions.cloneObject(this.streams);
         //Removes disabled datastream
-        if(base && item._chacked === false){
-            streamsCopy = streamsCopy.filter(stream => stream.dstIp != item.dstIp && stream.srcIp != item.srcIp);
-            item.create_date.forEach(create_date => this.chartLabels = this.chartLabels.filter(label=> label != moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
-        }else if(base && item._chacked === true && !_indeterminate){
-            item.create_date.forEach(create_date => this.chartLabels.push(moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
-        }
+        this.streams.forEach((stream) => {
+            if(base && !stream._chacked){
+                streamsCopy = streamsCopy.filter(lStream => lStream.dstIp != stream.dstIp && lStream.srcIp != stream.srcIp);
+                stream.create_date.forEach(create_date => this.chartLabelsRTP = this.chartLabelsRTP.filter(label=> label != moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
+            }else if(base && stream._chacked && !_indeterminate){  
+                stream.create_date.forEach(create_date => this.chartLabelsRTP = this.chartLabelsRTP.filter(label=> label != moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
+                stream.create_date.forEach(create_date => this.chartLabelsRTP.push(moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
+            }
+
+        })     
+        if(streamsCopy.length === 0){
+            this.isNoDataRTCP = true;
+        }else{
+            this.isNoDataRTCP = false;
+        };      
         //Hides disabled labels
         if(!base){
             if(checkArray.every(x => x == false)){
@@ -641,7 +655,7 @@ export class TabQosComponent implements OnInit {
                 this.rtcpChart.hideDataset(index,false)
           }
         }
-        this.renderChartData(this.streams, this.chartData);
+        this.renderChartData(streamsCopy, this.chartData);
     }
 
     onChangeChackBoxRTP(item: any, type: any, base = false) {
@@ -657,19 +671,26 @@ export class TabQosComponent implements OnInit {
         let checkArray = [];
         this.streamsRTP.forEach(stream => checkArray.push(stream[type]));
         let index: number;
-        for(let i = 0; i < this.rtpChart.datasets.length;i++){
-            if(this.rtpChart.datasets[i].label === type){
-                index = i;
+        if(this.rtpChart != undefined){
+            for(let i = 0; i < this.rtpChart.datasets.length;i++){
+                if(this.rtpChart.datasets[i].label === type){
+                    index = i;
+                }
             }
         }
         let streamsCopy = Functions.cloneObject(this.streamsRTP);
         //Removes disabled datastream
-        if(base && !item._chacked){
-            streamsCopy = streamsCopy.filter(stream => stream.dstIp != item.dstIp && stream.srcIp != item.srcIp);
-            item.create_date.forEach(create_date => this.chartLabelsRTP = this.chartLabelsRTP.filter(label=> label != moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
-        }else if(base && item._chacked && !_indeterminate){
-            item.create_date.forEach(create_date => this.chartLabelsRTP.push(moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
-        }
+        this.streamsRTP.forEach((stream) => {
+            if(base && !stream._chacked){
+                streamsCopy = streamsCopy.filter(lStream => lStream.dstIp != stream.dstIp && lStream.srcIp != stream.srcIp);
+                stream.create_date.forEach(create_date => this.chartLabelsRTP = this.chartLabelsRTP.filter(label=> label != moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
+            }else if(base && stream._chacked && !_indeterminate){  
+                stream.create_date.forEach(create_date => this.chartLabelsRTP = this.chartLabelsRTP.filter(label=> label != moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
+                stream.create_date.forEach(create_date => this.chartLabelsRTP.push(moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
+            }
+
+        })                        
+
         //Hides disabled labels
         if(!base){
             if(checkArray.every(x => x == false)){
@@ -677,8 +698,14 @@ export class TabQosComponent implements OnInit {
             }else{
                this.rtpChart.hideDataset(index,false)   
             }
-        }
+        }       
+        if(streamsCopy.length === 0){
+            this.isNoDataRTP = true;
+        }else{
+            this.isNoDataRTP = false;
+        };        
         this.renderChartData(streamsCopy, this.chartDataRTP);
+
     }
 
     yAxisFormatter (label) {
