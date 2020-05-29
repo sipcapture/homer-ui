@@ -1,7 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
-
+$roboto-font-path: "~roboto-fontface/fonts" !default;
+@import "~roboto-fontface/css/roboto/sass/roboto-fontface";
 @import '~bootstrap/dist/css/bootstrap.min.css';
 @import '~@angular/material/theming';
 @import 'theme.scss';
@@ -17,6 +18,10 @@
        url(./assets/fonts/MaterialIcons-Regular.woff2) format('woff2'),
        url(./assets/fonts/MaterialIcons-Regular.woff) format('woff'),
        url(./assets/fonts/MaterialIcons-Regular.ttf) format('truetype');
+}
+@font-face {
+	font-family: 'Roboto';
+	src: url(./assets/fonts/Roboto-Regular.ttf) format('truetype');
 }
 /// fonts settings:
 h1,h2,h3,h4,p,strong,em,b,
@@ -36,7 +41,7 @@ button, .md-drppicker, .month,
 .ag-theme-material .ag-ltr .ag-cell {
 	border-right: 1px solid lightgray;
 }
-
+.title{font-size:16px;}
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
@@ -180,7 +185,8 @@ gridster-item {
 		color: #909090;
 	
   font-size: 14px !important;
-		text-transform: uppercase;
+		text-transform: capitalize;
+		font-weight: bold;
 	}
 }
 .box-header-btns {
@@ -402,14 +408,11 @@ h3 {
 	right: 10px;
 	& > button {
 		margin: 7px;
-		font-size: 0.65em;
-		text-transform: uppercase;
+		font-size: 0.75em;
+		text-transform: Capitalize;
 		letter-spacing: 1px;
 		color: #3f3f3f;
-		opacity: 0.85;
-		&:hover {
-			opacity: 1;
-		}
+	
 	}
 }
 .setting-buttons {
@@ -419,14 +422,10 @@ h3 {
 	right: 10px;
 	& > button {
 		margin: 7px;
-		font-size: .65em;
-		text-transform: uppercase;
+		font-size: .75em;
+		text-transform: capitalize;
 		letter-spacing: 1px;
 		color: #3f3f3f;
-		opacity: 0.85;
-		&:hover {
-			opacity: 1;
-		}
 	}
 }
 .widget-block {

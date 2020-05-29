@@ -218,4 +218,22 @@ export class Functions {
             }, 0);
         }
     }
+
+     static getTimeStamp(v: number,p: string):number {
+        let vlength = v.toString().length
+        let tlength = 0
+        let s = 10
+        let ms = 13
+        let usec = 16
+        switch(p){
+          case 'sec' : tlength = s ;
+          break;
+          case 'msec' : tlength = ms;
+          break;
+          case 'usec' : tlength = usec;
+          break;
+          default: tlength = ms
+        }
+      return Math.floor(v * Math.pow(10, (tlength - vlength)))
+    }
 }
