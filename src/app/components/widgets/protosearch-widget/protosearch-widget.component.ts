@@ -65,7 +65,6 @@ export class ProtosearchWidgetComponent implements IWidget, AfterViewInit {
     @Input() id: string;
     _config: any;
     @Input() set config(value: any) {
-        console.log('set fields:: config', value);
         this._config = value;
     }
     get config() {
@@ -75,8 +74,6 @@ export class ProtosearchWidgetComponent implements IWidget, AfterViewInit {
     @Input() set fields(val) {
         this._fields = Functions.cloneObject(val);
         this.cdr.detectChanges();
-        console.log('set fields::', (this.onlySmartField ? 'slider' : 'protosaerch'), this._fields);
-        console.log('set fields:: {config}', (this.onlySmartField ? 'slider' : 'protosaerch'), this.config);
         this.initSliderSmartInput(true);
     }
     get fields() {
@@ -181,13 +178,12 @@ export class ProtosearchWidgetComponent implements IWidget, AfterViewInit {
             const configData = this.config && this.config.param && this.config.param.search;
             if (onlyFieldsDoParse && configData) {
                 const [fields] = Object.values(configData) as any;
-                console.log({configData}, fields);
                 this.onlySmartFieldTEXT = fields.map(item => {
-                        if (item.name === 'smartinput') {
-                            return item.value;
-                        }
-                        return `${item.name}="${item.value}"`;
-                    }).join(' AND ');
+                    if (item.name === 'smartinput') {
+                        return item.value;
+                    }
+                    return `${item.name}="${item.value}"`;
+                }).join(' AND ');
             } else {
                 const fSmartinput = this._fields.find(i => i.field_name === 'smartinput');
                 if (fSmartinput && fSmartinput.value && fSmartinput.value !== '') {
@@ -198,11 +194,8 @@ export class ProtosearchWidgetComponent implements IWidget, AfterViewInit {
                 }
 
             }
-            console.log(this.onlySmartFieldTEXT,this.onlySmartFieldElement);
             this.cdr.detectChanges();
             this.onlySmartFieldElement.setQueryText(this.onlySmartFieldTEXT);
-        } else {
-            console.log('set fields:: element sf', this.onlySmartFieldElement);
         }
     }
     getFieldColumns() {
@@ -459,7 +452,6 @@ export class ProtosearchWidgetComponent implements IWidget, AfterViewInit {
             }
         });
 
-console.log('save-> searchQuer ', Functions.cloneObject(this.searchQuery));
         this.searchService.setLocalStorageQuery(Functions.cloneObject(this.searchQuery));
         this._sss.saveProtoSearchConfig(this.widgetId, Functions.cloneObject(this.searchQuery));
 
@@ -615,7 +607,6 @@ console.log('save-> searchQuer ', Functions.cloneObject(this.searchQuery));
     }
     onSmartInputCodeData(event, item = null) {
         if (this.onlySmartField) {
-            console.log('onSmartInputCodeData:event.text', event);
             const hepid = this.config &&
                 this.config.config &&
                 this.config.config.protocol_id &&
@@ -634,7 +625,6 @@ console.log('save-> searchQuer ', Functions.cloneObject(this.searchQuery));
             } else {
                 sf.value = event.text;
                 sf.hepid = hepid;
-                console.log(JSON.stringify(this.fields, null, 4));
             }
         } else {
             this.fields.forEach(i => {
@@ -644,7 +634,6 @@ console.log('save-> searchQuer ', Functions.cloneObject(this.searchQuery));
             });
             this.saveState();
         }
-        console.log('this.fields', (this.onlySmartField ? 'slider' : 'protosearch'), this.fields);
         // this.saveState();
         this.cdr.detectChanges();
     }

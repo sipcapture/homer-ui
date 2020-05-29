@@ -54,17 +54,11 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
         private cdr: ChangeDetectorRef
     ) { }
     public setQueryText(value: string) {
-        console.log('[1]>> firstone', this.isFocusOnField, value);
-        if (this.isFocusOnField && !this.simplefield) {
-            return;
-        }
-        console.log('[1]>>');
-        if (this._queryText === value) {
+        if (this.isFocusOnField && !this.simplefield || this._queryText === value) {
             return;
         }
         this._queryText = value;
         this.editor.innerText = this._queryText;
-        console.log('@Input() set queryText => ', this._queryText);
         this.updateEditor(null);
         this.cdr.detectChanges();
     }
@@ -83,7 +77,6 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
         };
         this.editor.onkeyup = this.onKeyUpDiv.bind(this);
         this.editor.oninput = (evt: any) => {
-            console.log('[2]>>');
             if (evt.inputType === 'deleteContentBackward') {
                 evt.preventDefault();
                 return;
@@ -158,7 +151,6 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
         }
     }
     onKeyDownDiv(event) {
-        console.log('[4]>>');
         if (!!({ArrowDown: 1, ArrowUp: 1, Enter: 1})[event.key]) {
             this.triggerNavMenu(event.key);
             event.preventDefault();
@@ -167,7 +159,6 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
         }
     }
     onKeyUpDiv(event) {
-        console.log('[3]>>');
         if (!!{Shift: 1, Control: 1, Alt: 1, Backspace: 1}[event.key]) {
             this.updateEditor(null);
             return;

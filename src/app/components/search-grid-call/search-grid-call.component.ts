@@ -593,7 +593,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     public update(isImportant = false) {
-        console.log('public update', Functions.cloneObject(this.config));
         if (this.isNewData() && !isImportant) {
             return;
         }
