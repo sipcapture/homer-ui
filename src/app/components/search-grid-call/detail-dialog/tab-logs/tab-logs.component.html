@@ -1,3 +1,32 @@
-<div *ngFor="let item of _data" class="red-container">
+<!--<div *ngFor="let item of _data" class="red-container">
   <ngx-json-viewer [json]="item" [expanded]="false"></ngx-json-viewer>
 </div>
+-->
+<div *ngIf="dataSource" class="hep-logs">
+  <div class="switches">
+
+    <div class="tags-display"> <mat-checkbox class="example-margin" [(ngModel)]="showTs">Timeseconds</mat-checkbox> </div>
+  
+  </div>
+  <div class="hep-logs-header">
+<div class="hep-logs-time-header">
+Timestamp
+</div>
+<div class="hep-logs-messages-header">
+Messages
+</div>
+  </div>
+  <div class="hep-logs-content">
+    
+  <div *ngFor="let data of dataSource" class="body-row">
+<div class="hep-logs-time">
+{{data.timestamp | moment:'YYYY-MM-DD HH:mm:ss'}}
+<p *ngIf="showTs">{{data.timestamp}}</p>
+  </div>
+  <div class="hep-logs-messages">
+{{data.message}}
+  </div>
+</div>
+  </div>
+</div>
+

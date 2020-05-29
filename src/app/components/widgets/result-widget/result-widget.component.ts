@@ -1,4 +1,4 @@
-import { Component,  Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 import { IWidget } from '../IWidget';
 import { DashboardService } from '@app/services';
@@ -9,7 +9,8 @@ import { Functions } from '@app/helpers/functions';
 @Component({
     selector: 'app-result-widget',
     templateUrl: './result-widget.component.html',
-    styleUrls: ['./result-widget.component.scss']
+    styleUrls: ['./result-widget.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Default
 })
 @Widget({
     title: 'Display Results',
@@ -19,7 +20,7 @@ import { Functions } from '@app/helpers/functions';
     settingWindow: true,
     className: 'ResultWidgetComponent',
     minWidth: 400,
-    minHeight:600
+    minHeight: 600
 })
 export class ResultWidgetComponent implements IWidget {
     @Input() id: string;
@@ -32,7 +33,8 @@ export class ResultWidgetComponent implements IWidget {
     _interval: any;
     constructor(
         public dialog: MatDialog,
-        private _ds: DashboardService
+        private _ds: DashboardService,
+        private cdr: ChangeDetectorRef
     ) {
         this._ds.dashboardEvent.subscribe(data => {
             const dataId = data.resultWidget[this.id];
@@ -54,16 +56,16 @@ export class ResultWidgetComponent implements IWidget {
         this.isLoaded = false;
         setTimeout(() => {
             this.isLoaded = true;
+            this.cdr.detectChanges();
         }, 1000);
     }
 
     ngOnInit() {
         WidgetArrayInstance[this.id] = this as IWidget;
-
-    
     }
     onDataReady() {
         this.isLoaded = true;
+        this.cdr.detectChanges();
     }
     async openDialog() {
         const dialogRef = this.dialog.open(SettingResultWidgetComponent, {
@@ -73,6 +75,7 @@ export class ResultWidgetComponent implements IWidget {
         if (result) {
             this.title = result.title;
             this.saveConfig();
+            this.cdr.detectChanges();
         }
     }
     private saveConfig() {

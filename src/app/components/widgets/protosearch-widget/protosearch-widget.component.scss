@@ -35,9 +35,17 @@
 		text-transform: uppercase;
 		letter-spacing: 1px;
 		color: #3f3f3f;
-		opacity: .85;
-		&:hover {
-			opacity: 1;
-		}
 	}
+}
+.info-label {
+	display: inline-block;
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	font-size: 12px;
+	color: #999;
+	background: #fff;
+	padding: 0.5rem 1rem;
+	border-radius: 4px;
+	z-index: -1;
 }
