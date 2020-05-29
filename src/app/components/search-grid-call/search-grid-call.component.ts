@@ -796,7 +796,14 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
         this._cts.getTransaction(request).toPromise().then(res => {
             const allCallIds = res.data.calldata.map(i => i.sid).sort().filter((i, k, a) => a[k - 1] !== i);
-            this._ers.postQOS(this.searchService.queryBuilderQOS(row, allCallIds)).toPromise().then(dataQOS => {
+            let timestampArray:Array<number> = [];
+            res.data.calldata.forEach(data => timestampArray.push(data.micro_ts));
+            let timestamp = {
+                from: Math.min(...timestampArray) + this.limitRange.from,
+                to: Math.max(...timestampArray) + this.limitRange.to
+            }
+            windowData.snapShotTimeRange = timestamp; 
+            this._ers.postQOS(this.searchService.queryBuilderQOS(row, allCallIds, timestamp)).toPromise().then(dataQOS => {
                 localDataQOS = dataQOS;
                 readyToOpen(localData, localDataQOS);
             });

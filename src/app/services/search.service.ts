@@ -137,7 +137,7 @@ export class SearchService {
         return locationArray;
     }
 
-    public queryBuilderQOS (row: any, selectedCallId: any) { /** search-grid-call */
+    public queryBuilderQOS (row: any, selectedCallId: any,timestamp:any) { /** search-grid-call */
 
         const labels = selectedCallId;
 
@@ -155,7 +155,7 @@ export class SearchService {
             dbnode.node = [row.data.dbnode];
         }
         return {
-            timestamp: this.dateTimeRangeService.getDatesForQuery(true),
+            timestamp: timestamp,
             param: {
                 search: search,
                 location: dbnode,
