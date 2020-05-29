@@ -327,7 +327,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     getSearchSlider() {
         return this.searchSliderConfig.fields.filter(i => i.value !== '').length;
     }
-    // get
 
     private getQueryData() {
         if (!this.id) {
@@ -577,12 +576,13 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     private isNewData(): boolean {
+        const json = JSON.stringify;
         const _md5 = Functions.md5(
-            JSON.stringify(this.queryBuilderForLoki()) +
-            JSON.stringify(this.isLokiQuery) +
-            JSON.stringify(this._dtrs.getDatesForQuery(true)) +
-            JSON.stringify(this.config) +
-            JSON.stringify(this.searchQueryLoki)
+            json(this.queryBuilderForLoki()) +
+            json(this.isLokiQuery) +
+            json(this._dtrs.getDatesForQuery(true)) +
+            json(this.config) +
+            json(this.searchQueryLoki)
         );
         const bool = this._latestQuery === _md5;
         if (!bool) {
@@ -693,9 +693,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         } else {
             return {};
         }
-        // return (!params.hasOwnProperty('value') ||
-        //     (typeof params.value === 'undefined')) ?  {} :
-        //         {'color': Functions.getColorByString(params.value, 100, 30, 1)};
     }
 
     private getBkgColorTable(params) {

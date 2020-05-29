@@ -32,15 +32,15 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
     @Input() apiLink = '';
     @Input() hepid = 1;
     @Input() set queryText(val: string) {
-        console.log(`queryText(${val})`);
         if (val === '' && this.editor) {
-            this.editor.innerText = this._queryText;
+            this.editor.innerText = '';
         }
         this.setQueryText(val);
     }
     get queryText() {
         return this._queryText;
     }
+    @Input() simplefield = false;
 
     @Output() updateData: EventEmitter<any> = new EventEmitter();
     @Output() keyEnter: EventEmitter<any> = new EventEmitter();
@@ -54,7 +54,8 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
         private cdr: ChangeDetectorRef
     ) { }
     public setQueryText(value: string) {
-        if (this.isFocusOnField) {
+        console.log('[1]>> firstone', this.isFocusOnField, value);
+        if (this.isFocusOnField && !this.simplefield) {
             return;
         }
         console.log('[1]>>');
@@ -76,10 +77,10 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
         this.editor = this.divContainer.nativeElement;
         this.editor.onfocus = event => {
             this.isFocusOnField = true;
-        }
+        };
         this.editor.onfocusout = event => {
             this.isFocusOnField = false;
-        }
+        };
         this.editor.onkeyup = this.onKeyUpDiv.bind(this);
         this.editor.oninput = (evt: any) => {
             console.log('[2]>>');

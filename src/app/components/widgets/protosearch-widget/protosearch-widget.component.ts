@@ -63,12 +63,21 @@ interface SearchFieldItem {
 })
 export class ProtosearchWidgetComponent implements IWidget, AfterViewInit {
     @Input() id: string;
-    @Input() config: any;
+    _config: any;
+    @Input() set config(value: any) {
+        console.log('set fields:: config', value);
+        this._config = value;
+    }
+    get config() {
+        return this._config;
+    }
     _fields = [];
     @Input() set fields(val) {
-        this._fields = val;
+        this._fields = Functions.cloneObject(val);
+        this.cdr.detectChanges();
         console.log('set fields::', (this.onlySmartField ? 'slider' : 'protosaerch'), this._fields);
-        this.initSliderSmartInput();
+        console.log('set fields:: {config}', (this.onlySmartField ? 'slider' : 'protosaerch'), this.config);
+        this.initSliderSmartInput(true);
     }
     get fields() {
         return this._fields;
@@ -102,7 +111,7 @@ export class ProtosearchWidgetComponent implements IWidget, AfterViewInit {
     isConfig = false;
     mapping: any;
     targetResultsContainerValue = new FormControl();
-    SmartInputQueryText: string = '';
+    SmartInputQueryText = '';
     _lastInterval: any;
     constructor(
         public dialog: MatDialog,
@@ -166,20 +175,34 @@ export class ProtosearchWidgetComponent implements IWidget, AfterViewInit {
     ngAfterViewInit() {
         this.initSliderSmartInput();
     }
-    private initSliderSmartInput() {
+    private initSliderSmartInput(onlyFieldsDoParse = false) {
+        this.cdr.detectChanges();
         if (this.onlySmartFieldElement) {
-            const fSmartinput = this._fields.find(i => i.field_name === 'smartinput');
-            if (fSmartinput && fSmartinput.value && fSmartinput.value !== '') {
-                this.onlySmartFieldTEXT = fSmartinput.value;
+            const configData = this.config && this.config.param && this.config.param.search;
+            if (onlyFieldsDoParse && configData) {
+                const [fields] = Object.values(configData) as any;
+                console.log({configData}, fields);
+                this.onlySmartFieldTEXT = fields.map(item => {
+                        if (item.name === 'smartinput') {
+                            return item.value;
+                        }
+                        return `${item.name}="${item.value}"`;
+                    }).join(' AND ');
             } else {
-                this.onlySmartFieldTEXT = this._fields.filter(i => i.value !== '')
-                    .map(item => `${item.name}="${item.value}"`).join(' AND ');
+                const fSmartinput = this._fields.find(i => i.field_name === 'smartinput');
+                if (fSmartinput && fSmartinput.value && fSmartinput.value !== '') {
+                    this.onlySmartFieldTEXT = fSmartinput.value;
+                } else {
+                    this.onlySmartFieldTEXT = this._fields.filter(i => i.value !== '')
+                        .map(item => `${item.name}="${item.value}"`).join(' AND ');
+                }
+
             }
-
-            console.log(this.onlySmartFieldTEXT);
-
-            this.onlySmartFieldElement.setQueryText(this.onlySmartFieldTEXT);
+            console.log(this.onlySmartFieldTEXT,this.onlySmartFieldElement);
             this.cdr.detectChanges();
+            this.onlySmartFieldElement.setQueryText(this.onlySmartFieldTEXT);
+        } else {
+            console.log('set fields:: element sf', this.onlySmartFieldElement);
         }
     }
     getFieldColumns() {
@@ -285,7 +308,9 @@ export class ProtosearchWidgetComponent implements IWidget, AfterViewInit {
 
         /* clone Object */
         this.fields = Functions.cloneObject(this.config.fields);
-
+        if (!(this.config && this.config.config && this.config.config.protocol_profile)) {
+            return;
+        }
         const m = this.mapping.data.find(i =>
             i.profile === this.config.config.protocol_profile.value &&
             i.hep_alias === this.config.config.protocol_id.name);
@@ -449,9 +474,12 @@ console.log('save-> searchQuer ', Functions.cloneObject(this.searchQuery));
             }
             if (item.form_type === 'multiselect' || item.value instanceof Array) {
                 item.value = [];
+            } else if (item.form_type === 'smart-input') {
+                item.value = '';
             } else {
                 item.value = '';
             }
+
         });
         this._sss.removeProtoSearchConfig(this.widgetId);
         this.cdr.detectChanges();
@@ -570,16 +598,6 @@ console.log('save-> searchQuer ', Functions.cloneObject(this.searchQuery));
         this.dosearch.emit({});
         this.cdr.detectChanges();
     }
-    handleEnterKeyPress(event) {
-        console.log('handleEnterKeyPress');
-        return;
-        // const tagName = event.target.tagName.toLowerCase();
-        // if (tagName !== 'textarea') {
-        //     setTimeout(this.doSearchResult.bind(this), 100);
-        //     return false;
-        // }
-        // this.cdr.detectChanges();
-    }
 
     compareResultListItem (a: any, b: any) {
         if (b === null || b === undefined) {
@@ -624,9 +642,10 @@ console.log('save-> searchQuer ', Functions.cloneObject(this.searchQuery));
                     i.value = event.text;
                 }
             });
+            this.saveState();
         }
         console.log('this.fields', (this.onlySmartField ? 'slider' : 'protosearch'), this.fields);
-        this.saveState();
+        // this.saveState();
         this.cdr.detectChanges();
     }
     private get isLoki(): boolean {

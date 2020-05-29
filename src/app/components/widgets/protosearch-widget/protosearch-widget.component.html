@@ -3,11 +3,12 @@
     <!-- smart-input -->          
     <app-code-style-smart-input-field
         apiLink="/smart/search/tag/1/call"
+        [simplefield]="true"
         (updateData)="onSmartInputCodeData($event)"
         (keyEnter)="doSearchResult()"
     #onlySmartFieldElement></app-code-style-smart-input-field>
 </div>
-<form *ngIf="isConfig && !onlySmartField">
+<div *ngIf="isConfig && !onlySmartField">
     <div class="inputs-container">
         <div class="example-container" [ngStyle]="{'grid-template-columns': getFieldColumns()}">
             <div *ngFor="let item of fields" style="display: block" >
@@ -38,6 +39,7 @@
                 <!-- smart-input -->
                 
                 <app-code-style-smart-input-field
+                    [id]="item.name"
                     *ngIf="item.form_type === 'smart-input'"
                     [apiLink]="item.full_api_link"
                     [queryText]="item.value"
@@ -105,7 +107,7 @@
         <button mat-raised-button (click)="onClearFields()">Clear</button>
         <button mat-raised-button color="primary" (click)="doSearchResult()">Search</button>
     </div>
-</form>
+</div>
 
 <div *ngIf="!isConfig && !onlySmartField">
     <button mat-raised-button color="primary" (click)="openDialog()">

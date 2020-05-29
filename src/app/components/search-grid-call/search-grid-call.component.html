@@ -43,8 +43,6 @@
 -->
 <div *ngIf="!isLokiQuery" class="search-slider-footer" [ngStyle]="{'bottom': !isSearchPanel ? '-20rem': null}">
   <div style="float: right; opacity: 0.7">
-		<!-- <button title="Clear fields" (click)="searchSlider.onClearFields()" mat-icon-button ><mat-icon>not_interested</mat-icon></button> -->
-		<!-- <button title="Search settings" (click)="searchSlider.openDialog()" mat-icon-button ><mat-icon>settings</mat-icon></button> -->
 		<button title="Close" (click)="isSearchPanel=false" mat-icon-button ><mat-icon>close</mat-icon></button>
   </div>
   <div class="content">
@@ -53,7 +51,7 @@
       [onlySmartField]="true"
       [targetResultId]="id"
       [fields]="searchSliderFields"
-      [config]="searchSliderConfig"
+      [config]="config"
       [autoline]="true"
       (dosearch)="isThisSelfQuery=true;update(true);"
       #searchSlider
@@ -101,7 +99,7 @@
 <div *ngIf="!isLokiQuery" style="position:absolute; bottom:0.4rem; left:0.2rem; opacity: 0.7;">
   <button title="column settings" mat-icon-button (click)="onSettingButtonClick()"><mat-icon>settings_applications</mat-icon></button>
   <button title="search config" mat-icon-button    
-    (click)="isSearchPanel=true">
+    (click)="isSearchPanel=!isSearchPanel">
     <mat-icon
       [matBadge]="getSearchSlider()"
       [matBadgeHidden]="getSearchSlider() === 0" matBadgeColor="accent"
