@@ -32,6 +32,10 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
     @Input() apiLink = '';
     @Input() hepid = 1;
     @Input() set queryText(val: string) {
+        console.log(`queryText(${val})`);
+        if (val === '' && this.editor) {
+            this.editor.innerText = this._queryText;
+        }
         this.setQueryText(val);
     }
     get queryText() {
@@ -50,7 +54,7 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
         private cdr: ChangeDetectorRef
     ) { }
     public setQueryText(value: string) {
-        if(this.isFocusOnField) {
+        if (this.isFocusOnField) {
             return;
         }
         console.log('[1]>>');
