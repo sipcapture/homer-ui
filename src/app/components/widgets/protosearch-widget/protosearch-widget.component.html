@@ -42,7 +42,7 @@
                     [apiLink]="item.full_api_link"
                     [queryText]="item.value"
                     (updateData)="onSmartInputCodeData($event, item)"
-                    (keyEnter)="doSearchResult()"
+                    
                 ></app-code-style-smart-input-field>
 
 
@@ -60,14 +60,12 @@
                         [(ngModel)]="item.value"
                         [ngModelOptions]="{standalone: true}"
                         (change)="onChangeField($event)"
-                        (keydown.enter)="handleEnterKeyPress($event)"
                     >
                     
 
                     <!-- Autocomplete Text Field -->
                     <input matInput *ngIf="item.form_default && item.form_type === 'input'"
-                        [formControl]="item.formControl" [matAutocomplete]="form_default"
-                        (keydown.enter)="handleEnterKeyPress($event)">
+                        [formControl]="item.formControl" [matAutocomplete]="form_default">
                     <mat-autocomplete #form_default="matAutocomplete">
                         <mat-option *ngFor="let option of item.filteredOptions | async" [value]="option.name ? option.name : option">
                             {{option.name ? option.name : option}}
@@ -114,3 +112,4 @@
         <mat-icon>settings</mat-icon> Widget Settings
     </button>
 </div> 
+<div class="info-label">Press CTRL+Enter for Search</div>

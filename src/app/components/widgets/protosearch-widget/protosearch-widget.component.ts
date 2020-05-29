@@ -571,12 +571,14 @@ console.log('save-> searchQuer ', Functions.cloneObject(this.searchQuery));
         this.cdr.detectChanges();
     }
     handleEnterKeyPress(event) {
-        const tagName = event.target.tagName.toLowerCase();
-        if (tagName !== 'textarea') {
-            setTimeout(this.doSearchResult.bind(this), 100);
-            return false;
-        }
-        this.cdr.detectChanges();
+        console.log('handleEnterKeyPress');
+        return;
+        // const tagName = event.target.tagName.toLowerCase();
+        // if (tagName !== 'textarea') {
+        //     setTimeout(this.doSearchResult.bind(this), 100);
+        //     return false;
+        // }
+        // this.cdr.detectChanges();
     }
 
     compareResultListItem (a: any, b: any) {
