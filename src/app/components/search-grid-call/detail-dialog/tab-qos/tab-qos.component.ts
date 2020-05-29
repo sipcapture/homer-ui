@@ -549,9 +549,9 @@ export class TabQosComponent implements OnInit {
         this.renderChartData(this.streams, this.chartData);
         this.isRTCP = true;
     }
-    private average(streems, labelData) {
+    private average(streams, labelData) {
         try {
-            const t = streems.map(i => i[labelData].reduce((a, b) => (a += b, a), 0) / i[labelData].filter(e => e > 0).length);
+            const t = streams.map(i => i[labelData].reduce((a, b) => (a += b, a), 0) / i[labelData].filter(e => e > 0).length);
             const out = t.reduce((a, b) => (a += b, a), 0) / t.filter(e => e > 0).length;
             return isNaN(out) ? 0 : Math.round(out * 100) / 100;
         } catch (err) {
