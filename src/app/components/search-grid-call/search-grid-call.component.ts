@@ -927,8 +927,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 return {name: i, value: val};
             }).filter(i => typeof i.value !== 'object' && i.name !== 'raw');
 
-            this.changeDetectorRefs.detectChanges();
             mData.loaded = true;
+            this.changeDetectorRefs.detectChanges();
         }
     }
 
