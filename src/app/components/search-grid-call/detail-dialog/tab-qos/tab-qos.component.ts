@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Chart, ChartType, ChartDataSets, ChartColor } from 'chart.js';
 import { Label, Color, BaseChartDirective } from 'ng2-charts';
 import * as moment from 'moment';
@@ -8,7 +8,8 @@ import { Functions } from '@app/helpers/functions';
 @Component({
     selector: 'app-tab-qos',
     templateUrl: './tab-qos.component.html',
-    styleUrls: ['./tab-qos.component.scss']
+    styleUrls: ['./tab-qos.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class TabQosComponent implements OnInit {
@@ -211,7 +212,7 @@ export class TabQosComponent implements OnInit {
     streams: Array<any> = [];
     streamsRTP: Array<any> = [];
 
-    constructor() { }
+     constructor(private cdr: ChangeDetectorRef) { }
 
     ngOnInit() {
         this.labels = this.dataItem.data.calldata.map(i => i.sid).reduce((a, b) => {
@@ -256,7 +257,7 @@ export class TabQosComponent implements OnInit {
                     srcIp: item.srcIp,
                     create_date: [],
                     _indeterminate: false,
-                    _chacked: true,
+                    _checked: true,
                     TOTAL_PKData: [],
                     TOTAL_PK: true,
                     EXPECTED_PKData: [],
@@ -396,7 +397,7 @@ export class TabQosComponent implements OnInit {
                     srcIp: item.srcIp,
                     create_date: [],
                     _indeterminate: false,
-                    _chacked: true,
+                    _checked: true,
                     packetsData: [],
                     packets: true,
                     octetsData: [],
@@ -525,30 +526,30 @@ export class TabQosComponent implements OnInit {
         });
 
         // avg packets
-        this.list[1].value = this.avarage(this.streams, 'packetsData');
+        this.list[1].value = this.average(this.streams, 'packetsData');
 
         // avg octets
-        this.list[4].value = this.avarage(this.streams, 'octetsData');
+        this.list[4].value = this.average(this.streams, 'octetsData');
 
         // avg highest_seq_no
-        this.list[7].value = this.avarage(this.streams, 'highest_seq_noData');
+        this.list[7].value = this.average(this.streams, 'highest_seq_noData');
 
         // avg ia_jitter
-        this.list[10].value = this.avarage(this.streams, 'ia_jitterData');
+        this.list[10].value = this.average(this.streams, 'ia_jitterData');
 
         // avg lsr
-        this.list[13].value = this.avarage(this.streams, 'lsrData');
+        this.list[13].value = this.average(this.streams, 'lsrData');
 
         // avg mos
-        this.list[16].value = this.avarage(this.streams, 'mosData');
+        this.list[16].value = this.average(this.streams, 'mosData');
 
          // avg packets_lost
-         this.list[19].value = this.avarage(this.streams, 'packets_lostData');
+         this.list[19].value = this.average(this.streams, 'packets_lostData');
 
         this.renderChartData(this.streams, this.chartData);
         this.isRTCP = true;
     }
-    private avarage(streems, labelData) {
+    private average(streems, labelData) {
         try {
             const t = streems.map(i => i[labelData].reduce((a, b) => (a += b, a), 0) / i[labelData].filter(e => e > 0).length);
             const out = t.reduce((a, b) => (a += b, a), 0) / t.filter(e => e > 0).length;
@@ -583,6 +584,7 @@ export class TabQosComponent implements OnInit {
             });
 
         });
+        this.cdr.detectChanges();
     }
 
     private setColor( str: string) {
@@ -608,15 +610,15 @@ export class TabQosComponent implements OnInit {
         return Array.from({ length: data.length }, i => 0);
     }
 
-    onChangeChackBox(item: any, type: any, base = false) {          
+    onChangeCheckBox(item: any, type: any, base = false) {          
         let _indeterminate = item._indeterminate;
         if (base) {
-            item.packets = item.octets = item.highest_seq_no = item.ia_jitter = item.lsr = item.mos = item.packets_lost = item._chacked;
+            item.packets = item.octets = item.highest_seq_no = item.ia_jitter = item.lsr = item.mos = item.packets_lost = item._checked;
             item._indeterminate = false;
         } else {
-            item._chacked = item.packets && item.octets && item.highest_seq_no &&
+            item._checked = item.packets && item.octets && item.highest_seq_no &&
                 item.ia_jitter && item.lsr && item.mos && item.packets_lost;
-            item._indeterminate = !item._chacked &&
+            item._indeterminate = !item._checked &&
                 !(!item.packets && !item.octets && !item.highest_seq_no && !item.ia_jitter && !item.lsr && !item.mos && !item.packets_lost);
         }
         let checkArray = [];   
@@ -632,23 +634,22 @@ export class TabQosComponent implements OnInit {
         }
         let streamsCopy = Functions.cloneObject(this.streams);
         //Removes disabled datastream
-        this.streams.forEach((stream) => {
-            if(base && !stream._chacked){
-                streamsCopy = streamsCopy.filter(lStream => lStream.dstIp != stream.dstIp && lStream.srcIp != stream.srcIp);
-                stream.create_date.forEach(create_date => this.chartLabelsRTP = this.chartLabelsRTP.filter(label=> label != moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
-            }else if(base && stream._chacked && !_indeterminate){  
-                stream.create_date.forEach(create_date => this.chartLabelsRTP = this.chartLabelsRTP.filter(label=> label != moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
-                stream.create_date.forEach(create_date => this.chartLabelsRTP.push(moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
+        streamsCopy = streamsCopy.filter(lStream =>  lStream._checked || lStream._indeterminate);
+        this.streams.forEach((stream) => {             
+            if(!stream._checked && !stream._indeterminate){
+                stream.create_date.forEach(create_date => this.chartLabels = this.chartLabels.filter(label=> label != moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
+            }else if(stream._checked || stream._indeterminate){  
+                stream.create_date.forEach(create_date => this.chartLabels = this.chartLabels.filter(label=> label != moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
+                stream.create_date.forEach(create_date => this.chartLabels.push(moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
             }
-
-        })     
+        })
         if(streamsCopy.length === 0){
             this.isNoDataRTCP = true;
         }else{
             this.isNoDataRTCP = false;
         };      
         //Hides disabled labels
-        if(!base){
+        if(!base && this.rtcpChart != undefined){
             if(checkArray.every(x => x == false)){
                 this.rtcpChart.hideDataset(index,true)
             }else{
@@ -658,14 +659,15 @@ export class TabQosComponent implements OnInit {
         this.renderChartData(streamsCopy, this.chartData);
     }
 
-    onChangeChackBoxRTP(item: any, type: any, base = false) {
+    onChangeCheckBoxRTP(item: any, type: any, base = false) {
+
         let _indeterminate = item._indeterminate;
         if (base) {
-            item.TOTAL_PK = item.EXPECTED_PK = item.JITTER = item.MOS = item.DELTA = item.PACKET_LOSS = item._chacked;
+            item.TOTAL_PK = item.EXPECTED_PK = item.JITTER = item.MOS = item.DELTA = item.PACKET_LOSS = item._checked;
             item._indeterminate = false;
         } else {
-            item._chacked = item.TOTAL_PK && item.EXPECTED_PK && item.JITTER && item.MOS && item.DELTA && item.PACKET_LOSS;
-            item._indeterminate = !item._chacked &&
+            item._checked = item.TOTAL_PK && item.EXPECTED_PK && item.JITTER && item.MOS && item.DELTA && item.PACKET_LOSS;
+            item._indeterminate = !item._checked &&
                 !(!item.TOTAL_PK && !item.EXPECTED_PK && !item.JITTER && !item.MOS && !item.DELTA && !item.PACKET_LOSS);
         }
         let checkArray = [];
@@ -679,20 +681,19 @@ export class TabQosComponent implements OnInit {
             }
         }
         let streamsCopy = Functions.cloneObject(this.streamsRTP);
-        //Removes disabled datastream
-        this.streamsRTP.forEach((stream) => {
-            if(base && !stream._chacked){
-                streamsCopy = streamsCopy.filter(lStream => lStream.dstIp != stream.dstIp && lStream.srcIp != stream.srcIp);
+        //Removes disabled datastream            
+        streamsCopy = streamsCopy.filter(lStream =>  lStream._checked || lStream._indeterminate);
+        this.streamsRTP.forEach((stream) => {  
+            if(!stream._checked && !stream._indeterminate){
                 stream.create_date.forEach(create_date => this.chartLabelsRTP = this.chartLabelsRTP.filter(label=> label != moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
-            }else if(base && stream._chacked && !_indeterminate){  
+            }else if(stream._checked || stream._indeterminate){  
                 stream.create_date.forEach(create_date => this.chartLabelsRTP = this.chartLabelsRTP.filter(label=> label != moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
                 stream.create_date.forEach(create_date => this.chartLabelsRTP.push(moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
             }
-
-        })                        
+        })                     
 
         //Hides disabled labels
-        if(!base){
+        if(!base && this.rtpChart != undefined){
             if(checkArray.every(x => x == false)){
                this.rtpChart.hideDataset(index,true)
             }else{
@@ -703,7 +704,7 @@ export class TabQosComponent implements OnInit {
             this.isNoDataRTP = true;
         }else{
             this.isNoDataRTP = false;
-        };        
+        };    
         this.renderChartData(streamsCopy, this.chartDataRTP);
 
     }

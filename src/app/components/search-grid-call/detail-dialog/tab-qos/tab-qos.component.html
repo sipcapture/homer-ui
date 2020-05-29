@@ -36,7 +36,7 @@
       </div>
     </div>
     <mat-card *ngFor="let item of streamsRTP" class="cardStreem">
-      <mat-checkbox [(ngModel)]="item._chacked" [(indeterminate)]="item._indeterminate" (change)="onChangeChackBoxRTP(item, null, true)">
+      <mat-checkbox [(ngModel)]="item._checked" [(indeterminate)]="item._indeterminate" (change)="onChangecheckBoxRTP(item, null, true)">
         <div style="display: flex; align-items: center; align-content: center;">
           <span>{{ item.srcIp }}</span>
           <mat-icon>trending_flat</mat-icon>
@@ -44,27 +44,27 @@
         </div>
       </mat-checkbox>
       <div style="padding-left: 2rem; display: flex; flex-direction: column;">
-        <mat-checkbox (change)="onChangeChackBoxRTP(item,'TOTAL_PK')" [(ngModel)]="item.TOTAL_PK">
+        <mat-checkbox (change)="onChangecheckBoxRTP(item,'TOTAL_PK')" [(ngModel)]="item.TOTAL_PK">
           <span class="color-bable" [ngStyle]="{'backgroundColor': item.TOTAL_PK_color }"></span>
           TOTAL_PK
         </mat-checkbox>
-        <mat-checkbox (change)="onChangeChackBoxRTP(item,'EXPECTED_PK')" [(ngModel)]="item.EXPECTED_PK">
+        <mat-checkbox (change)="onChangecheckBoxRTP(item,'EXPECTED_PK')" [(ngModel)]="item.EXPECTED_PK">
           <span class="color-bable" [ngStyle]="{'backgroundColor': item.EXPECTED_PK_color }"></span>
           EXPECTED_PK
         </mat-checkbox>
-        <mat-checkbox (change)="onChangeChackBoxRTP(item,'JITTER')" [(ngModel)]="item.JITTER">
+        <mat-checkbox (change)="onChangecheckBoxRTP(item,'JITTER')" [(ngModel)]="item.JITTER">
           <span class="color-bable" [ngStyle]="{'backgroundColor': item.JITTER_color }"></span>
           JITTER
         </mat-checkbox>
-        <mat-checkbox (change)="onChangeChackBoxRTP(item,'MOS')" [(ngModel)]="item.MOS">
+        <mat-checkbox (change)="onChangecheckBoxRTP(item,'MOS')" [(ngModel)]="item.MOS">
           <span class="color-bable" [ngStyle]="{'backgroundColor': item.MOS_color }"></span>
           MOS
         </mat-checkbox>
-        <mat-checkbox (change)="onChangeChackBoxRTP(item,'DELTA')" [(ngModel)]="item.DELTA">
+        <mat-checkbox (change)="onChangecheckBoxRTP(item,'DELTA')" [(ngModel)]="item.DELTA">
           <span class="color-bable" [ngStyle]="{'backgroundColor': item.DELTA_color }"></span>
           DELTA
         </mat-checkbox>
-        <mat-checkbox (change)="onChangeChackBoxRTP(item,'PACKET_LOSS')" [(ngModel)]="item.PACKET_LOSS">
+        <mat-checkbox (change)="onChangecheckBoxRTP(item,'PACKET_LOSS')" [(ngModel)]="item.PACKET_LOSS">
           <span class="color-bable" [ngStyle]="{'backgroundColor': item.PACKET_LOSS_color }"></span>
           PACKET_LOSS
         </mat-checkbox>
@@ -106,7 +106,7 @@
     </div>
       
     <mat-card *ngFor="let item of streams" class="cardStreem">
-      <mat-checkbox [(ngModel)]="item._chacked" [(indeterminate)]="item._indeterminate" (change)="onChangeChackBox(item, null, true)">
+      <mat-checkbox [(ngModel)]="item._checked" [(indeterminate)]="item._indeterminate" (change)="onChangecheckBox(item, null, true)">
         <div style="display: flex; align-items: center; align-content: center;">
           <span>{{ item.srcIp }}</span>
           <mat-icon>trending_flat</mat-icon>
@@ -114,31 +114,31 @@
         </div>
       </mat-checkbox>
       <div style="padding-left: 2rem; display: flex; flex-direction: column;">
-        <mat-checkbox (change)="onChangeChackBox(item, 'packets')" [(ngModel)]="item.packets">
+        <mat-checkbox (change)="onChangecheckBox(item, 'packets')" [(ngModel)]="item.packets">
           <span class="color-bable" [ngStyle]="{'background-color': item.packets_color}"></span>
           packets
         </mat-checkbox>
-        <mat-checkbox (change)="onChangeChackBox(item, 'octets')" [(ngModel)]="item.octets">
+        <mat-checkbox (change)="onChangecheckBox(item, 'octets')" [(ngModel)]="item.octets">
           <span class="color-bable" [ngStyle]="{'background-color': item.octets_color}"></span>
           octets
         </mat-checkbox>
-        <mat-checkbox (change)="onChangeChackBox(item, 'highest_seq_no')" [(ngModel)]="item.highest_seq_no">
+        <mat-checkbox (change)="onChangecheckBox(item, 'highest_seq_no')" [(ngModel)]="item.highest_seq_no">
           <span class="color-bable" [ngStyle]="{'background-color': item.highest_seq_no_color}"></span>
           highest_seq_no
         </mat-checkbox>
-        <mat-checkbox (change)="onChangeChackBox(item, 'mos')" [(ngModel)]="item.mos">
+        <mat-checkbox (change)="onChangecheckBox(item, 'mos')" [(ngModel)]="item.mos">
           <span class="color-bable" [ngStyle]="{'background-color': item.mos_color}"></span>
           mos
         </mat-checkbox>
-        <mat-checkbox (change)="onChangeChackBox(item, 'ia_jitter')" [(ngModel)]="item.ia_jitter">
+        <mat-checkbox (change)="onChangecheckBox(item, 'ia_jitter')" [(ngModel)]="item.ia_jitter">
           <span class="color-bable" [ngStyle]="{'background-color': item.ia_jitter_color}"></span>
           ia_jitter
         </mat-checkbox>
-        <mat-checkbox (change)="onChangeChackBox(item, 'lsr')" [(ngModel)]="item.lsr">
+        <mat-checkbox (change)="onChangecheckBox(item, 'lsr')" [(ngModel)]="item.lsr">
           <span class="color-bable" [ngStyle]="{'background-color': item.lsr_color}"></span>
           lsr
         </mat-checkbox>
-        <mat-checkbox (change)="onChangeChackBox(item, 'packets_lost')" [(ngModel)]="item.packets_lost">
+        <mat-checkbox (change)="onChangecheckBox(item, 'packets_lost')" [(ngModel)]="item.packets_lost">
           <span class="color-bable" [ngStyle]="{'background-color': item.packets_lost_color}"></span>
           packets_lost
         </mat-checkbox>
