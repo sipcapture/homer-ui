@@ -118,8 +118,8 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             const regex = RegExp('(.*(?!$))(?::)([0-9]+)?$');
             if(regex.exec(i) != null){
                 var IP    = regex.exec(i)[1] // gives IP
-                if(IP.indexOf(':') > 0 ) {
-                    //got an IPv6
+                if(IP.indexOf(':') > 0 && IP.indexOf(']') == -1 ) {
+                    //got an IPv6, not already wrapped in brackets '[ipv6]'
                     //pre+suffix [ IPv6 ] to make addr:port delineation clearer
                     IP = '[' + IP + ']'
                 }
