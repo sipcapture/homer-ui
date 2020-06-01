@@ -11,6 +11,7 @@ export interface DashboardConfig {
     columns: number;
     maxrows: number;
     pushing: boolean;
+    ignoreMinSize: string;
 }
 
 @Component({
