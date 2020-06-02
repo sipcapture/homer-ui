@@ -16,7 +16,7 @@
 			<div class="box-header drag-handler" 
 				(mouseenter)="hoverme=true" 
 				(mouseleave)="hoverme=false" 
-				[ngStyle]="{'background-color': this._ds.dbs.currentWidget != undefined && item.id === this._ds.dbs.currentWidget.id   ? '#f8f8f8' : '#ffffff'  }">
+				[ngStyle]="{'background-color': this._ds.dbs.currentWidget !== undefined && item.id === this._ds.dbs.currentWidget.id   ? '#f8f8f8' : '#ffffff'  }">
 				
 				<h3 *ngIf="item.name !== 'rsearch'" class="ng-binding" >
 					{{ item.config ? item.config.title: item.title || item.id }}
@@ -30,13 +30,13 @@
 					</div>
 				</div>
 			</div>
-			<div class="widget-warning" *ngIf="this.dashboardCollection.data.config.ignoreMinSize === 'warning' && item.isWarning && !item.isDismissed" >
+			<div class="widget-warning" *ngIf="this.dashboardCollection.data.config !== undefined && this.dashboardCollection.data.config.ignoreMinSize === 'warning' && item.isWarning && !item.isDismissed " >
 				<p>Widget is too small, we recommend increasing it's size to {{ getSize(item) }}</p>
 				<button mat-icon-button  class="warning-dismiss" matTooltip="Dismiss warning"  (click)="dismissWarning(item)">
 				    <mat-icon>close</mat-icon>
 				</button>
 			</div>
-			<div class="widget-block" *ngIf="this.dashboardCollection.data.config.ignoreMinSize != 'warning' || !item.isWarning || item.isDismissed">
+			<div class="widget-block" *ngIf="this.dashboardCollection.data.config !== undefined && this.dashboardCollection.data.config.ignoreMinSize != 'warning' || !item.isWarning || item.isDismissed">
 				<div class="shadow-polygon" style="display: none;"></div>
 				<ndc-dynamic class="no-drag"
 					[ndcDynamicComponent]="getComponentWidget(item)"

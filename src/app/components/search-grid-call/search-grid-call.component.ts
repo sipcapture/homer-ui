@@ -36,12 +36,14 @@ import {
 } from '@app/services';
 import { DialogSettingsGridDialog } from './grid-settings-dialog/grid-settings-dialog';
 import { MatDialog } from '@angular/material/dialog';
+import { ChangeDetectionStrategy } from '@angular/core';
 
 
 @Component({
     selector: 'app-search-grid-call',
     templateUrl: './search-grid-call.component.html',
-    styleUrls: ['./search-grid-call.component.scss']
+    styleUrls: ['./search-grid-call.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit {
     private gridApi;
@@ -215,6 +217,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                         this.update(true);
                     }
                 }
+                this.changeDetectorRefs.detectChanges();
             });
         } else {
             setTimeout(() => { /** <== fixing ExpressionChangedAfterItHasBeenCheckedError */
@@ -253,14 +256,15 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
             if (result && result.data) {
                 const _advanced = result.data.find(i => i.category === 'search' && i.param === 'transaction');
-                if (_advanced && _advanced.data && _advanced.data.lookup_range) {                    
+                if (_advanced && _advanced.data && _advanced.data.lookup_range) {
                     const [from, to, message_from, message_to] = _advanced.data.lookup_range;
                     this.limitRange.from = (from * 1000) || -300000;
                     this.limitRange.to = (to * 1000) || 600000;
                     this.limitRange.message_from = (message_from * 1000) || -2000;
-                    this.limitRange.message_to = (message_to *1000) || 2000;
+                    this.limitRange.message_to = (message_to * 1000) || 2000;
+                    this.changeDetectorRefs.detectChanges();
                 }
-            } 
+            }
         });
     }
     async initSearchSlider(isImportantClear = false) {
@@ -279,7 +283,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         const mapping = mappingItem && Functions.cloneObject(mappingItem.fields_mapping) || [];
 
         mapping.push({ id: ConstValue.LIMIT, name: 'Query Limit' });
-
+        this.changeDetectorRefs.detectChanges();
         setTimeout(() => {
             this.searchSliderFields = isImportantClear ? [] : this.searchSlider.getFields();
             if (query && query.fields && query.fields instanceof Array) {
@@ -315,6 +319,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             this.searchSliderConfig.fields = Functions.cloneObject(this.searchSliderFields);
             this.searchSliderFields = Functions.cloneObject(this.searchSliderFields);
             this.searchSliderConfig.countFieldColumns = this.searchSliderConfig.fields.filter(i => i.value !== '').length;
+            this.changeDetectorRefs.detectChanges();
         });
     }
 
@@ -322,7 +327,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     getSearchSlider() {
         return this.searchSliderConfig.fields.filter(i => i.value !== '').length;
     }
-    // get
 
     private getQueryData() {
         if (!this.id) {
@@ -572,12 +576,13 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     private isNewData(): boolean {
+        const json = JSON.stringify;
         const _md5 = Functions.md5(
-            JSON.stringify(this.queryBuilderForLoki()) +
-            JSON.stringify(this.isLokiQuery) +
-            JSON.stringify(this._dtrs.getDatesForQuery(true)) +
-            JSON.stringify(this.config) +
-            JSON.stringify(this.searchQueryLoki)
+            json(this.queryBuilderForLoki()) +
+            json(this.isLokiQuery) +
+            json(this._dtrs.getDatesForQuery(true)) +
+            json(this.config) +
+            json(this.searchQueryLoki)
         );
         const bool = this._latestQuery === _md5;
         if (!bool) {
@@ -607,9 +612,11 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     return ( a < b ) ? -1 : (( a > b ) ? 1 : 0);
                 });
                 this.sizeToFit();
+                this.changeDetectorRefs.detectChanges();
                 setTimeout(() => { /** for grid updated autoHeight and sizeToFit */
                     this.rowData = Functions.cloneObject(this.rowData);
                     this.dataReady.emit({});
+                    this.changeDetectorRefs.detectChanges();
                 }, 600);
             }, err => {
                 this.rowData = [];
@@ -620,15 +627,16 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 if (!result || !result.data) {
                     this.rowData = [];
                     this.dataReady.emit({});
+                    this.changeDetectorRefs.detectChanges();
                     return;
                 }
 
                 this.rowData = result.data;
-                for(let i = 0; i< this.rowData.length; i++){
-                    if(this.rowData[i].protocol != undefined && this.rowData[i].protocol === 17){
-                        this.rowData[i].protocol = 'UDP'
-                    }else if(this.rowData[i].protocol != undefined && this.rowData[i].protocol === 6){
-                        this.rowData[i].protocol = 'TCP'
+                for (let i = 0; i < this.rowData.length; i++) {
+                    if (this.rowData[i].protocol !== undefined && this.rowData[i].protocol === 17) {
+                        this.rowData[i].protocol = 'UDP';
+                    } else if (this.rowData[i].protocol !== undefined && this.rowData[i].protocol === 6) {
+                        this.rowData[i].protocol = 'TCP';
                     }
                 }
                 this.sizeToFit();
@@ -636,6 +644,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.openTransactionByAdvancedSettings();
                 this.dataReady.emit({});
                 this.initSearchSlider();
+                this.changeDetectorRefs.detectChanges();
             }, err => {
                 this.rowData = [];
                 this.dataReady.emit({});
@@ -671,31 +680,28 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     private getCallIDColor (params) {
         return (!params.hasOwnProperty('value') ||
             (typeof params.value === 'undefined')) ?  {} :
-                {'color': Functions.getColorByString(params.value,100,25,1,180)};
+                {'color': Functions.getColorByString(params.value, 100, 25, 1, 180)};
     }
 
     private getMethodColor (params) {
-        if(params.hasOwnProperty('value') && typeof params.value != undefined){
+        if (params.hasOwnProperty('value') && typeof params.value !== undefined) {
 
-            let color = Functions.getMethodColor(params.value); 
+            const color = Functions.getMethodColor(params.value);
 
             return {'color' : color};
-        }else{
-            return{}
+        } else {
+            return {};
         }
-        return (!params.hasOwnProperty('value') ||
-            (typeof params.value === 'undefined')) ?  {} :
-                {'color': Functions.getColorByString(params.value,100,30,1)};
     }
 
     private getBkgColorTable(params) {
         if (this.isLokiQuery) {
             return {
                 'background-color': '#fff'
-            }
+            };
         }
         return {
-            'background-color': Functions.getColorByString(params.data.callid,60,80,0.8)
+            'background-color': Functions.getColorByString(params.data.callid, 60, 80, 0.8)
         };
     }
 
@@ -750,7 +756,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             return a;
         }, []);
 
-        const color = Functions.getColorByString(sid,75,60,1);
+        const color = Functions.getColorByString(sid, 75, 60, 1);
 
         const request = {
             param: Functions.cloneObject(this.config.param || {} as any),
@@ -796,13 +802,22 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
         this._cts.getTransaction(request).toPromise().then(res => {
             const allCallIds = res.data.calldata.map(i => i.sid).sort().filter((i, k, a) => a[k - 1] !== i);
-            this._ers.postQOS(this.searchService.queryBuilderQOS(row, allCallIds)).toPromise().then(dataQOS => {
+            const timestampArray: Array<number> = [];
+            res.data.calldata.forEach(data => timestampArray.push(data.micro_ts));
+            const timestamp = {
+                from: Math.min(...timestampArray) + this.limitRange.from,
+                to: Math.max(...timestampArray) + this.limitRange.to
+            };
+            windowData.snapShotTimeRange = timestamp;
+            this._ers.postQOS(this.searchService.queryBuilderQOS(row, allCallIds, timestamp)).toPromise().then(dataQOS => {
                 localDataQOS = dataQOS;
                 readyToOpen(localData, localDataQOS);
+                this.changeDetectorRefs.detectChanges();
             });
 
             localData = res;
             readyToOpen(localData, localDataQOS);
+            this.changeDetectorRefs.detectChanges();
         });
     }
 
@@ -817,7 +832,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
         const _protocol_profile = row && row.data && row.data.profile ? row.data.profile : this.protocol_profile;
 
-        const color = Functions.getColorByString(row.data.method || 'LOG',100,40,1);
+        const color = Functions.getMethodColor(row.data.method);
         const mData = {
             loaded: false,
             data: {} as any,
@@ -915,8 +930,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 return {name: i, value: val};
             }).filter(i => typeof i.value !== 'object' && i.name !== 'raw');
 
-            this.changeDetectorRefs.detectChanges();
             mData.loaded = true;
+            this.changeDetectorRefs.detectChanges();
         }
     }
 

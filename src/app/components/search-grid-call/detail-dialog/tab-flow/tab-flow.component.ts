@@ -59,12 +59,12 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     _qosData: any;
     @Input() set qosData(value) {
         this._qosData = value;
-        
+
         const {rtcp, rtp} = this._qosData;
         const arrRTCP = rtcp.data.map((i, key) => this.formattingQosItemAsFlowElement(i, key));
         const arrRTP = rtp.data.map((i, key) => this.formattingQosItemAsFlowElement(i, key));
         this.arrayItemsRTP_AGENT = [].concat(arrRTP);
-        
+
         setTimeout(this.initData.bind(this));
         this.cdr.detectChanges();
     }

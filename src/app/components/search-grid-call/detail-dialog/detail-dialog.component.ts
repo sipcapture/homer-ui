@@ -1,16 +1,28 @@
-import { Component, Input, Output, EventEmitter, OnInit, HostListener, ElementRef, ViewChild } from '@angular/core';
+import {
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    HostListener,
+    ElementRef,
+    ViewChild,
+    ChangeDetectionStrategy
+} from '@angular/core';
 import { Functions } from '../../../helpers/functions';
 import { PreferenceAdvancedService } from '@app/services';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
     selector: 'app-detail-dialog',
     templateUrl: './detail-dialog.component.html',
-    styleUrls: ['./detail-dialog.component.scss']
+    styleUrls: ['./detail-dialog.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DetailDialogComponent implements OnInit {
     @Input() titleId: string;
     @Input() sipDataItem: any;
-   
+
     @Input() headerColor: any;
     @Input() mouseEventData: any;
     @Input() snapShotTimeRange: any;
@@ -80,6 +92,7 @@ export class DetailDialogComponent implements OnInit {
                 }));
 
             this.checkboxListFilterCallId = filterByParam('sid');
+            this.changeDetectorRefs.detectChanges();
         }
     }
 
@@ -87,7 +100,7 @@ export class DetailDialogComponent implements OnInit {
 
     @Input() set qosData(value) {
         this._qosData = value;
-        console.log('_qosData', {value});
+        this.changeDetectorRefs.detectChanges();
     }
     get qosData() {
         return this._qosData;
@@ -98,7 +111,10 @@ export class DetailDialogComponent implements OnInit {
     @ViewChild('filterContainer', {static: false}) filterContainer: ElementRef;
     dataLogs: Array<any>;
 
-    constructor( private _pas: PreferenceAdvancedService ) { }
+    constructor(
+        private _pas: PreferenceAdvancedService,
+        private changeDetectorRefs: ChangeDetectorRef
+    ) { }
 
     ngOnInit () {
         this.setTabByAdvanced();
@@ -111,20 +127,21 @@ export class DetailDialogComponent implements OnInit {
         this.tabs.logs = true; // this.dataLogs.length > 0;
         this.tabs.messages = this.tabs.flow = this.sipDataItem.data.messages.length > 0;
         this.tabs.export = this.sipDataItem.data.messages && !!this.IdFromCallID;
+        this.changeDetectorRefs.detectChanges();
     }
     onTabQos(isVisible: boolean) {
         setTimeout(() => {
             this.tabs.qos = isVisible;
-            if(isVisible) {
+            if (isVisible) {
                 const isRTP = this._qosData && this._qosData.rtp && this._qosData.rtp.data && this._qosData.rtp.data.length > 0;
-                if(isRTP) {
+                if (isRTP) {
                     this.checkboxListFilterPayloadType.push({
                         payloadType: '5',
                         selected: true,
                         title: 'RTP'
                     });
+                    this.changeDetectorRefs.detectChanges();
                 }
-                console.log('onTabQos', this._qosData, this.checkboxListFilterPayloadType);
             }
         });
     }
@@ -164,6 +181,7 @@ export class DetailDialogComponent implements OnInit {
                         if (tabpositon && typeof tabpositon === 'string' && tabpositon !== '') {
                             this.tabIndexByDefault = Object.keys(this.tabs).indexOf(tabpositon);
                             this.activeTab = this.tabIndexByDefault;
+                            this.changeDetectorRefs.detectChanges();
                         }
                     }
                 } catch (err) { }
@@ -173,7 +191,10 @@ export class DetailDialogComponent implements OnInit {
 
     onExportFlowAsPNG() {
         this.exportAsPNG = true;
-        setTimeout(() => { this.exportAsPNG = false; });
+        setTimeout(() => {
+            this.exportAsPNG = false;
+            this.changeDetectorRefs.detectChanges();
+        });
     }
     doFilterMessages() {
         setTimeout(() => {
@@ -199,12 +220,14 @@ export class DetailDialogComponent implements OnInit {
 
             this.sipDataItem.data.calldata = fc(this._messagesBuffer).calldata.filter(i => selectedId.includes(i.id));
             this.sipDataItem = Functions.cloneObject(this.sipDataItem); // refresh data
+            this.changeDetectorRefs.detectChanges();
         }, 100);
     }
 
     doOpenFilter() {
         setTimeout(() => {
             this.isFilterOpened = true;
+            this.changeDetectorRefs.detectChanges();
         }, 10);
     }
 
@@ -214,6 +237,7 @@ export class DetailDialogComponent implements OnInit {
             const clickedInside = this.filterContainer.nativeElement.contains(targetElement);
             if (!clickedInside && this.isFilterOpened) {
                 this.isFilterOpened = false;
+                this.changeDetectorRefs.detectChanges();
             }
         }
     }
