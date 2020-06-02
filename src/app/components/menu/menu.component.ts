@@ -184,7 +184,12 @@ export class MenuComponent implements OnInit, OnDestroy {
                     param: data.param || data.nameNewPanel.toLowerCase(),
                     shared: 0,
                     weight: 10,
-                    widgets: []
+                    widgets: [],
+                    config: {
+                        ignoreMinSize: 'warning',
+                        maxrows:5,
+                        columns: 5
+                    }
                 };
                 if (data.dashboard) {
                     dashboardData = data.dashboard;

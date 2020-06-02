@@ -177,7 +177,7 @@ export class ProtosearchWidgetComponent implements IWidget, AfterViewInit {
         if (this.onlySmartFieldElement) {
             const configData = this.config && this.config.param && this.config.param.search;
             if (onlyFieldsDoParse && configData) {
-                const [fields] = Object.values(configData) as any;
+                const fields = Object.values(configData) as any;
                 this.onlySmartFieldTEXT = fields.map(item => {
                     if (item.name === 'smartinput') {
                         return item.value;

@@ -11,6 +11,7 @@ export interface DashboardConfig {
     columns: number;
     maxrows: number;
     pushing: boolean;
+    ignoreMinSize: string;
 }
 
 @Component({
@@ -30,7 +31,7 @@ export class EditDialogComponent {
     isHomeOrSearch = false;
     isSEARCH = false;
     ignoreMinSizeList: { [key: string]: string } = {
-        'Limit': 'limit',
+        /*'Limit': 'limit', */
         'Warning': 'warning',
         'Ignore': 'Ignore'
     };
