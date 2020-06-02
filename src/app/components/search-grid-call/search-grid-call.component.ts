@@ -632,7 +632,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 }
 
                 this.rowData = result.data;
-                for (let i = 0; i < this.rowData.length; i++){
+                for (let i = 0; i < this.rowData.length; i++) {
                     if (this.rowData[i].protocol !== undefined && this.rowData[i].protocol === 17) {
                         this.rowData[i].protocol = 'UDP';
                     } else if (this.rowData[i].protocol !== undefined && this.rowData[i].protocol === 6) {
@@ -680,7 +680,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     private getCallIDColor (params) {
         return (!params.hasOwnProperty('value') ||
             (typeof params.value === 'undefined')) ?  {} :
-                {'color': Functions.getColorByString(params.value,100,25,1,180)};
+                {'color': Functions.getColorByString(params.value, 100, 25, 1, 180)};
     }
 
     private getMethodColor (params) {
@@ -698,10 +698,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         if (this.isLokiQuery) {
             return {
                 'background-color': '#fff'
-            }
+            };
         }
         return {
-            'background-color': Functions.getColorByString(params.data.callid,60,80,0.8)
+            'background-color': Functions.getColorByString(params.data.callid, 60, 80, 0.8)
         };
     }
 
@@ -756,7 +756,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             return a;
         }, []);
 
-        const color = Functions.getColorByString(sid,75,60,1);
+        const color = Functions.getColorByString(sid, 75, 60, 1);
 
         const request = {
             param: Functions.cloneObject(this.config.param || {} as any),
@@ -802,13 +802,13 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
         this._cts.getTransaction(request).toPromise().then(res => {
             const allCallIds = res.data.calldata.map(i => i.sid).sort().filter((i, k, a) => a[k - 1] !== i);
-            let timestampArray:Array<number> = [];
+            const timestampArray: Array<number> = [];
             res.data.calldata.forEach(data => timestampArray.push(data.micro_ts));
-            let timestamp = {
+            const timestamp = {
                 from: Math.min(...timestampArray) + this.limitRange.from,
                 to: Math.max(...timestampArray) + this.limitRange.to
-            }
-            windowData.snapShotTimeRange = timestamp; 
+            };
+            windowData.snapShotTimeRange = timestamp;
             this._ers.postQOS(this.searchService.queryBuilderQOS(row, allCallIds, timestamp)).toPromise().then(dataQOS => {
                 localDataQOS = dataQOS;
                 readyToOpen(localData, localDataQOS);
@@ -832,7 +832,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
         const _protocol_profile = row && row.data && row.data.profile ? row.data.profile : this.protocol_profile;
 
-        const color = Functions.getColorByString(row.data.method || 'LOG',100,40,1);
+        const color = Functions.getMethodColor(row.data.method);
         const mData = {
             loaded: false,
             data: {} as any,
