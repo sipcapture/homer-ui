@@ -1,12 +1,10 @@
 .loki-search {
-
 	padding: 5px;
 }
 .loki-container {
 	display: table;
 	height: 100%;
 	overflow-y: auto;
-	
 }
 .loki-body {
 	padding: 1rem;
@@ -16,8 +14,8 @@
 		display: table-cell;
 	}
 }
-mat-tab-group{
-	font-family: 'Roboto',Helvetica,Arial,sans-serif;
+mat-tab-group {
+	font-family: "Roboto", Helvetica, Arial, sans-serif;
 }
 .header-loki {
 	padding: 1rem;
@@ -25,7 +23,7 @@ mat-tab-group{
 	width: 100%;
 	display: table-row;
 	font-weight: bold;
-	color:grey;
+	color: grey;
 	& > div {
 		display: table-cell;
 	}
@@ -59,32 +57,34 @@ mat-tab-group{
 		align-items: center;
 	}
 }
-.lokitimeheader{
-	width: 155px !important;
+.lokitimeheader {
+	width: 180px !important;
 	padding: 5px;
-	color:grey;
+	color: grey;
 }
+
 .lokitime {
-	width:155px;
+	width: 180px;
 	padding: 5px;
-	border-left:5px solid  #DFF1FF;
-	border-bottom:5px solid transparent;
+	border-left: 5px solid #dff1ff;
+	border-bottom: 5px solid transparent;
 }
+
 .lokitags {
 	width: 160px;
 	padding: 5px;
 }
+
 .lokimessage {
 	padding: 5px;
 	max-width: 60%;
 }
+
 .timeseconds {
 	margin-top: 10px;
 	color: #585858;
-	opacity: .75;
+	opacity: 0.75;
 	&:hover {
 		opacity: 1;
 	}
 }
-
-

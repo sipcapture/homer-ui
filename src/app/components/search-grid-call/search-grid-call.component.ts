@@ -109,6 +109,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     };
     protocol_profile: string;
     config: any = {
+        config:{},
         param: {
             transaction: {},
             limit: 200,
@@ -319,6 +320,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             this.searchSliderConfig.fields = Functions.cloneObject(this.searchSliderFields);
             this.searchSliderFields = Functions.cloneObject(this.searchSliderFields);
             this.searchSliderConfig.countFieldColumns = this.searchSliderConfig.fields.filter(i => i.value !== '').length;
+         this.config.config = this.searchSliderConfig.config
+         this.config.fields = this.searchSliderFields
             this.changeDetectorRefs.detectChanges();
         });
     }
@@ -716,7 +719,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }, 300);
     }
 
-    private setQuickFilter() {
+      setQuickFilter() {
       this.gridOptions.api.setQuickFilter(this.filterGridValue);
      }
 

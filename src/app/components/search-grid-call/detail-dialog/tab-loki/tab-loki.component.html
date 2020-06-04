@@ -35,7 +35,7 @@
 
         <div class="loki-container">
              <div *ngFor="let i of resultData trackBy : identify" class="loki-body item">
-            <div class="item-tex-loki hover lokitime">{{i.micro_ts | moment:'YYYY-MM-DD HH:mm:ss'}} <p *ngIf="showTs" class="timeseconds">{{i.micro_ts}}</p></div>
+            <div class="item-tex-loki hover lokitime">{{i.micro_ts | moment:'YYYY-MM-DD HH:mm:ss.SSS'}} <p *ngIf="showTs" class="timeseconds">{{i.micro_ts}}</p></div>
             <div class="item-tex-loki hover lokitags" *ngIf="showTags">
                  job: {{i.custom_2.job}}, method: {{i.custom_2.method}}, node: {{i.custom_2.node}}, response: {{i.custom_2.response}}, type: {{i.custom_2.type}} 
             </div>
