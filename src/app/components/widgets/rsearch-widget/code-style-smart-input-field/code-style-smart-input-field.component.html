@@ -1,4 +1,5 @@
-<mat-label style="color: rgba(0, 0, 0, 0.54); font-size: 0.8em;">Smart Input</mat-label>
+<mat-label style="color: rgba(0, 0, 0, 0.54); font-size: 0.8em;">Smart Input </mat-label>
+
 
 <div
     spellcheck="false"
@@ -8,7 +9,6 @@
 
 
 <div [matMenuTriggerFor]="trigger" style="position: absolute;"></div>
-
 <mat-menu #trigger="matMenu">
     <p class="menu-title">{{menuTitle}}</p>
     <button mat-menu-item *ngFor="let item of popupList" (click)="onMenuMessage(item)" (keyup)="onMenuMessage(item, $event)">

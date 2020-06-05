@@ -56,6 +56,10 @@
       (dosearch)="isThisSelfQuery=true;update(true);"
       #searchSlider
     ></app-protosearch-widget>
+    <mat-label *ngIf="searchSliderFields.length > 0" style="color: rgba(0, 0, 0, 0.54); font-size: 0.8em;padding-left:20px;">Press CTRL+ENTER to Search</mat-label>
+    <div *ngIf="searchSliderFields.length === 0" class="no-smart-warn">
+      Please do a <strong>Search</strong> from a <strong>Proto Search widget,</strong> selecting this widget on the <strong>Results Container selector.</strong>
+    </div>
       <!-- (changeSettings)="initSearchSlider()" -->
     
     <!-- <button mat-raised-button color="primary" (click)="update(true)">Refresh Search</button> -->
