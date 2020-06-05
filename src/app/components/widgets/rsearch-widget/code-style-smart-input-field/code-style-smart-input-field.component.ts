@@ -144,6 +144,7 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
                 this.trigger.menu.focusFirstItem();
                 break;
             case 'Enter':
+                event.preventDefault();
                 if (!this.trigger.menuOpen) {
                     this.keyEnter.emit();
                 }
