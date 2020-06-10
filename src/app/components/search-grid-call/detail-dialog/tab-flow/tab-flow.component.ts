@@ -190,8 +190,6 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         /* sort it */
         hosts = this.sortProperties(hosts, 'position', true, false);
 
-        
-
         let increment = 0;
         Object.keys(hosts).map(i => {
             if (!IpList.includes(i)) {
@@ -274,16 +272,19 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 color_method = Functions.getMethodColor(item.method_text);
 
             const a = srcPosition;
-            const b = dstPosition;
+            const b = dstPosition === a ? a + 1 : dstPosition;
             const mosColor = '';
+            const isRedialArrow = srcPosition === dstPosition;
+            const middle = abs(a - b);
             const options = {
                 mosColor,
                 color: Functions.getColorByString(item.sid, 100, 40, 1),
                 start: min(a, b),
-                middle: abs(a - b) || 1,
+                middle,
                 direction: a > b,
                 rightEnd: Object.keys(hosts).length - 1 - max(a, b),
                 shortdata: '',
+                isRedialArrow,
                 arrowStyleSolid: item.method_text === 'RTCP' || item.method_text === 'RTP'
             };
             return {

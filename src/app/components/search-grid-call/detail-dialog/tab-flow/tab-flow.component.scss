@@ -111,6 +111,27 @@
                 border-radius: 4px;
                 cursor: pointer;
             }
+            .redial-arrow {
+                position: relative;
+                margin-left: 0;
+                width: 25px;
+                height: 30px;
+                border: 2px solid;
+                border-left: 0px;
+                border-top-right-radius: 5rem;
+                border-bottom-right-radius: 5rem;
+            }
+            .redial-arrow.rtp {
+                border-style: dotted;
+            }
+            .redial-arrow::before {
+                content: "";
+                border: 7px solid transparent;
+                border-right: 14px solid;
+                position: absolute;
+                left: -9px;
+                top: 20px;
+            }            
             .blinkLamp {
                 display: inline-block;
                 padding: 6px;

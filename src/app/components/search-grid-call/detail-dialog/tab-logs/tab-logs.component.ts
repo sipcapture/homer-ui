@@ -8,7 +8,7 @@ export interface HepLog {
   templateUrl: './tab-logs.component.html',
   styleUrls: ['./tab-logs.component.scss']
 })
-export class TabLogsComponent implements OnInit {
+export class TabLogsComponent {
     showTs = false;
     _data: any;
     _d: any;
@@ -44,11 +44,4 @@ export class TabLogsComponent implements OnInit {
     filterPayload(arr) {
         return arr.filter(f => f.payload.payloadType === 100);
     }
-
-    constructor() { }
-
-    ngOnInit() {
-        console.log(this.dataSource);
-    }
-
 }

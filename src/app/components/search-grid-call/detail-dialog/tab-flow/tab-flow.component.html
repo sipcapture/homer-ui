@@ -48,11 +48,22 @@
                 }} </div>
                 <div class="call_text-mini" [ngStyle]="{'height.px': !isSimplify ? 15 : 0}">{{item.ruri_user}}</div>
                 <div [ngClass]="'port-label-' + (!item.options.direction ? 'left' : 'right')">{{ item.srcPort }}</div>
+                <!-- ARROW line -->
                 <div
+                    *ngIf="!item.options.isRedialArrow"
                     [ngClass]="'arrow' + (item.options.direction ? ' left': '') + (!item.options.arrowStyleSolid ? ' arrow-solid' : ' arrow-dotted')"
                     [ngStyle]="{'color': item.options.color }" 
                 ></div>
-                <div [ngClass]="'port-label-' + (item.options.direction ? 'left' : 'right')">{{ item.dstPort }}</div>
+                <!-- ARROW redial -->
+                <div
+                    *ngIf="item.options.isRedialArrow"
+                    [ngClass]="'redial-arrow' + (item.options.arrowStyleSolid ? ' rtp' : '')"
+                    [ngStyle]="{'color': item.options.color }" 
+                ></div>
+                
+                <div [ngClass]="'port-label-' + (item.options.direction ? 'left' : 'right')"
+                    [ngStyle]="item.options.isRedialArrow && {'left.px' : -47 }"
+                >{{ item.dstPort }}</div>
                 <div class="call-text-date" [ngStyle]="{'maxHeight.px': !isSimplify ? 50 : 0}">[{{ idx + 1 }}][{{ item.proto | uppercase }}] {{ item.micro_ts }}</div>
                 <div class="call-text-date">+ {{ item.diffTs }} s</div>
             </div>
