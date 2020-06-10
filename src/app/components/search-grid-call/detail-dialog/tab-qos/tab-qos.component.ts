@@ -17,7 +17,7 @@ export class TabQosComponent implements OnInit {
     @Input() dataItem: any;
     @Input() qosData: any;
     @Input() id;
-   
+
     @Output() haveData = new EventEmitter();
     isError = false;
     errorMessage: any;
@@ -228,7 +228,7 @@ export class TabQosComponent implements OnInit {
         } catch (err) {
             this.onErrorMessage(err);
         }
-        this.color = Functions.getColorByString(this.callid,75,60,1);
+        this.color = Functions.getColorByString(this.callid, 75, 60, 1);
     }
     onErrorMessage(err: any) {
         this.isError = true;
@@ -610,8 +610,7 @@ export class TabQosComponent implements OnInit {
         return Array.from({ length: data.length }, i => 0);
     }
 
-    onChangeCheckBox(item: any, type: any, base = false) {          
-        let _indeterminate = item._indeterminate;
+    onChangeCheckBox(item: any, type: any, base = false) {
         if (base) {
             item.packets = item.octets = item.highest_seq_no = item.ia_jitter = item.lsr = item.mos = item.packets_lost = item._checked;
             item._indeterminate = false;
@@ -625,9 +624,9 @@ export class TabQosComponent implements OnInit {
             this.streams.forEach(stream => checkArray.push(stream[type]));
 
         let index: number;
-        if(typeof this.rtcpChart !== undefined){
-            for(let i = 0; i < this.rtcpChart.datasets.length;i++){
-                if(this.rtcpChart.datasets[i].label === type){
+        if (typeof this.rtcpChart !== 'undefined') {
+            for (let i = 0; i < this.rtcpChart.datasets.length; i++) {
+                if (this.rtcpChart.datasets[i].label === type) {
                     index = i;
                 }
             }
@@ -636,32 +635,32 @@ export class TabQosComponent implements OnInit {
         // Removes disabled datastream
         streamsCopy = streamsCopy.filter(lStream =>  lStream._checked || lStream._indeterminate);
         this.streams.forEach((stream) => {
-            if(!stream._checked && !stream._indeterminate){
-                stream.create_date.forEach(create_date => this.chartLabels = this.chartLabels.filter(label=> label != moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
-            }else if(stream._checked || stream._indeterminate){  
-                stream.create_date.forEach(create_date => this.chartLabels = this.chartLabels.filter(label=> label != moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
-                stream.create_date.forEach(create_date => this.chartLabels.push(moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
+            if (!stream._checked && !stream._indeterminate) {
+                stream.create_date.forEach (create_date => this.chartLabels =
+                    this.chartLabels.filter(label => label !== moment( create_date ).format('YYYY-MM-DD HH:mm:ss')));
+            } else if (stream._checked || stream._indeterminate) {
+                stream.create_date.forEach (create_date => this.chartLabels =
+                    this.chartLabels.filter(label => label !== moment( create_date ).format('YYYY-MM-DD HH:mm:ss')));
+                stream.create_date.forEach (create_date => this.chartLabels.push(moment( create_date ).format('YYYY-MM-DD HH:mm:ss')));
             }
         });
-        if (streamsCopy.length === 0){
+        if (streamsCopy.length === 0) {
             this.isNoDataRTCP = true;
         } else {
             this.isNoDataRTCP = false;
-        };
+        }
         // Hides disabled labels
-        if (!base && typeof this.rtcpChart !== undefined){
-            if (checkArray.every(x => x === false)){
-                this.rtcpChart.hideDataset(index, true)
+        if (!base && typeof this.rtcpChart !== 'undefined') {
+            if (checkArray.every(x => x === false)) {
+                this.rtcpChart.hideDataset(index, true);
             } else {
-                this.rtcpChart.hideDataset(index, false)
+                this.rtcpChart.hideDataset(index, false);
           }
         }
         this.renderChartData(streamsCopy, this.chartData);
     }
 
     onChangeCheckBoxRTP(item: any, type: any, base = false) {
-
-        let _indeterminate = item._indeterminate;
         if (base) {
             item.TOTAL_PK = item.EXPECTED_PK = item.JITTER = item.MOS = item.DELTA = item.PACKET_LOSS = item._checked;
             item._indeterminate = false;
@@ -673,37 +672,41 @@ export class TabQosComponent implements OnInit {
         const checkArray = [];
         this.streamsRTP.forEach(stream => checkArray.push(stream[type]));
         let index: number;
-        if(typeof this.rtpChart !== undefined){
-            for(let i = 0; i < this.rtpChart.datasets.length;i++){
-                if(this.rtpChart.datasets[i].label === type){
+        if (typeof this.rtpChart !== 'undefined') {
+            for (let i = 0; i < this.rtpChart.datasets.length; i++) {
+                if (this.rtpChart.datasets[i].label === type) {
                     index = i;
                 }
             }
         }
         let streamsCopy = Functions.cloneObject(this.streamsRTP);
-        // Removes disabled datastream            
+        // Removes disabled datastream
         streamsCopy = streamsCopy.filter(lStream =>  lStream._checked || lStream._indeterminate);
-        this.streamsRTP.forEach((stream) => {  
-            if(!stream._checked && !stream._indeterminate){
-                stream.create_date.forEach(create_date => this.chartLabelsRTP = this.chartLabelsRTP.filter(label=> label != moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
-            }else if(stream._checked || stream._indeterminate){  
-                stream.create_date.forEach(create_date => this.chartLabelsRTP = this.chartLabelsRTP.filter(label=> label != moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
-                stream.create_date.forEach(create_date => this.chartLabelsRTP.push(moment( create_date ).format('YYYY-MM-DD HH:mm:ss')))
+        this.streamsRTP.forEach((stream) => {
+            if (!stream._checked && !stream._indeterminate) {
+                stream.create_date.forEach (create_date => this.chartLabelsRTP =
+                     this.chartLabelsRTP.filter(label => label !== moment( create_date ).format('YYYY-MM-DD HH:mm:ss')));
+            } else if (stream._checked || stream._indeterminate) {
+                stream.create_date.forEach (create_date => this.chartLabelsRTP =
+                    this.chartLabelsRTP.filter(label => label !== moment( create_date ).format('YYYY-MM-DD HH:mm:ss')));
+                stream.create_date.forEach (create_date => this.chartLabelsRTP.push(moment( create_date ).format('YYYY-MM-DD HH:mm:ss')));
             }
         });
         // Hides disabled labels
-        if(!base && typeof this.rtpChart !== undefined){
-            if(checkArray.every(x => x == false)){
-               this.rtpChart.hideDataset(index,true)
-            }else{
-               this.rtpChart.hideDataset(index,false)   
+        if (!base && typeof this.rtpChart !== 'undefined') {
+            if (checkArray.every(x => x === false)) {
+               this.rtpChart.hideDataset(index, true);
+            } else {
+               this.rtpChart.hideDataset(index, false);
             }
-        }       
-        if(streamsCopy.length === 0){
+        }
+        if (streamsCopy.length === 0) {
+            console.log('No data')
             this.isNoDataRTP = true;
-        }else{
+        } else {
+            console.log('Yes data')
             this.isNoDataRTP = false;
-        };    
+        }
         this.renderChartData(streamsCopy, this.chartDataRTP);
 
     }
