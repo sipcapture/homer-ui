@@ -394,12 +394,14 @@ export class ProtosearchWidgetComponent implements IWidget, AfterViewInit {
             this._sss.saveProtoSearchConfig(this.widgetId, this.searchQuery);
             return;
         }
-
+ /*if(this.onlySmartField){
+  this.config = this._config
+ } */
         this.searchQuery = {
             fields: this.fields
-                .filter((item: any) => {
+            .filter((item: any) => {
                     let b;
-                    if (typeof item.value === 'string') {
+                    if (typeof item.value === 'string') {   
                         b = item.value !== '';
                     } else if (item.form_type === 'select') {
                         b = true;
@@ -408,10 +410,10 @@ export class ProtosearchWidgetComponent implements IWidget, AfterViewInit {
                         b = true;
                     } else if (['number', 'integer'].includes(item.type)) {
                         b = item.value !== null && item.value !== undefined && !isNaN(item.value * 1);
-                    } else if (item.value instanceof Array) {
+                   } else if (item.value instanceof Array) {
                         b = item.value.length > 0;
                     } else if (item.field_name === ConstValue.CONTAINER) {
-                        b = true;
+                        b = true;   
                     } else {
                         b = false;
                     }
@@ -432,8 +434,8 @@ export class ProtosearchWidgetComponent implements IWidget, AfterViewInit {
             if (
                 item.value &&
                 item.value !== '' &&
-                item.hasOwnProperty('system_param') &&
-                item.mapping !== ''
+               item.hasOwnProperty('system_param') &&
+               item.mapping !== ''
             ) {
                 const [constParam, collectionName, propertyName] = item.mapping.split('.');
                 if (constParam === 'param' && collectionName) {
@@ -570,9 +572,19 @@ export class ProtosearchWidgetComponent implements IWidget, AfterViewInit {
             title: '',
             type: this.targetResultId ? 'widget' : 'page'
         };
-
+        const targetResultSmart = {
+            id: this.targetResultId,
+            title: this.targetResultId,
+            type: this.targetResultId ? 'widget' : 'page'
+        }
         const isResultContainer = this.fields.filter(i => i.field_name === ConstValue.CONTAINER).length > 0;
-        const targetResult = this.targetResultId ? targetResultSelf : this.targetResultsContainerValue.value;
+        let targetResult = {}
+        if(this.onlySmartField) {
+            targetResult = targetResultSmart
+        }else{
+            targetResult = this.targetResultId ? targetResultSelf : this.targetResultsContainerValue.value;
+        }
+        
         let _targetResult: any;
         this.saveState();
         if (this.targetResultId || (targetResult && isResultContainer)) {
@@ -634,7 +646,6 @@ export class ProtosearchWidgetComponent implements IWidget, AfterViewInit {
             });
             this.saveState();
         }
-        // this.saveState();
         this.cdr.detectChanges();
     }
     private get isLoki(): boolean {
