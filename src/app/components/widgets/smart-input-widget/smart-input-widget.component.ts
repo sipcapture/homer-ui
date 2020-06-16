@@ -34,19 +34,6 @@ import { ConstValue } from '@app/models';
 import { FormControl } from '@angular/forms';
 import { CodeStyleSmartInputFieldComponent } from '../rsearch-widget/code-style-smart-input-field/code-style-smart-input-field.component';
 
-
-
-interface SearchFieldItem {
-    field_name: string;
-    form_type: string;
-    hepid: number;
-    name: string;
-    profile: string;
-    selection: string;
-    type: string;
-    value?: string;
-}
-
 @Component({
     selector: 'app-smart-input-widget',
     templateUrl: './smart-input-widget.component.html',
