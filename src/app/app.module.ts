@@ -50,6 +50,7 @@ import {
     ResultWidgetComponent,
     RsearchWidgetComponent,
     AlertWidgetComponent,
+    SmartInputWidgetComponent,
     SettingClockWidgetComponent,
     SettingGeneralIframeWidgetComponent,
     SettingIframeWidgetComponent,
@@ -60,7 +61,7 @@ import {
     SettingResultWidgetComponent,
     SettingsAceEditorWidgetComponent,
     SettingAlertWidgetComponent,
-   
+    SettingSmartInputWidgetComponent,
 
 } from '@app/components/widgets';
 
@@ -97,7 +98,7 @@ import {
     TabLogsComponent,
     TabLokiComponent,
     TabMessagesComponent,
-    TabQosComponent
+    TabQosComponent,
 } from '@app/components/search-grid-call';
 
 import { MenuComponent } from '@app/components/menu/menu.component';
@@ -178,6 +179,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         AlertWidgetComponent,
         ResultWidgetComponent,
         RsearchWidgetComponent,
+        SmartInputWidgetComponent,
         SettingClockWidgetComponent,
         SettingGeneralIframeWidgetComponent,
         SettingIframeWidgetComponent,
@@ -188,7 +190,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingResultWidgetComponent,
         SettingsAceEditorWidgetComponent,
         SettingAlertWidgetComponent,
-        
+        SettingSmartInputWidgetComponent,
         /** dialogs */
         DialogAdvancedComponent,
         DialogAgentsubComponent,
@@ -230,7 +232,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         AceEditorModule,
         MarkdownModule.forRoot(),
         ColorChromeModule,
-        ColorCircleModule
+        ColorCircleModule,
     ],
     entryComponents: [
         MenuComponent,
@@ -264,6 +266,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         ResultWidgetComponent,
         RsearchWidgetComponent,
         AlertWidgetComponent,
+        SmartInputWidgetComponent,
         SettingClockWidgetComponent,
         SettingGeneralIframeWidgetComponent,
         SettingIframeWidgetComponent,
@@ -274,7 +277,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingResultWidgetComponent,
         SettingsAceEditorWidgetComponent,
         SettingAlertWidgetComponent,
-
+        SettingSmartInputWidgetComponent,
         /** dashboard */
         AddDashboardDialogComponent,
         AddDialogComponent,

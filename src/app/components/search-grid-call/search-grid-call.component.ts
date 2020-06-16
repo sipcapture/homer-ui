@@ -285,45 +285,47 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
         mapping.push({ id: ConstValue.LIMIT, name: 'Query Limit' });
         this.changeDetectorRefs.detectChanges();
-        setTimeout(() => {
-            this.searchSliderFields = isImportantClear ? [] : this.searchSlider.getFields();
-            if (query && query.fields && query.fields instanceof Array) {
-                query.fields.forEach(i => {
-                    if (!this.searchSliderFields.map(j => j.field_name).includes(i.name)) {
-                        const [itemname] = mapping.filter(j => j.id === i.name);
-                        const itemField: any = {
-                            field_name: i.name,
-                            hepid: query_hepid * 1,
-                            name: i.name,
-                            selection: itemname && itemname.name || i.name, // test
-                            type: i.type,
-                            value: ['intager', 'number'].includes(i.type) ? parseInt(i.value, 10) : String(i.value)
-                        };
-                        this.searchSliderFields.push(itemField);
-                    } else {
-                        const [_searchSliderField] = this.searchSliderFields.filter(j => j.field_name === i.name);
-                        if (_searchSliderField) {
-                            _searchSliderField.value = i.value;
+        if (!this.inContainer) {
+            setTimeout(() => {
+                this.searchSliderFields = isImportantClear ? [] : this.searchSlider.getFields();
+                if (query && query.fields && query.fields instanceof Array) {
+                    query.fields.forEach(i => {
+                        if (!this.searchSliderFields.map(j => j.field_name).includes(i.name)) {
+                            const [itemname] = mapping.filter(j => j.id === i.name);
+                            const itemField: any = {
+                                field_name: i.name,
+                                hepid: query_hepid * 1,
+                                name: i.name,
+                                selection: itemname && itemname.name || i.name, // test
+                                type: i.type,
+                                value: ['intager', 'number'].includes(i.type) ? parseInt(i.value, 10) : String(i.value)
+                            };
+                            this.searchSliderFields.push(itemField);
+                        } else {
+                            const [_searchSliderField] = this.searchSliderFields.filter(j => j.field_name === i.name);
+                            if (_searchSliderField) {
+                                _searchSliderField.value = i.value;
+                            }
                         }
-                    }
-                });
-            }
-            this.searchSliderConfig.config.protocol_id = {
-                name: mappingItem && mappingItem.hep_alias,
-                value: query_hepid * 1
-            };
-            this.searchSliderConfig.config.protocol_profile = {
-                name: query_protocol_id,
-                value: query_protocol_id
-            };
+                    });
+                }
+                this.searchSliderConfig.config.protocol_id = {
+                    name: mappingItem && mappingItem.hep_alias,
+                    value: query_hepid * 1
+                };
+                this.searchSliderConfig.config.protocol_profile = {
+                    name: query_protocol_id,
+                    value: query_protocol_id
+                };
 
-            this.searchSliderConfig.fields = Functions.cloneObject(this.searchSliderFields);
-            this.searchSliderFields = Functions.cloneObject(this.searchSliderFields);
-            this.searchSliderConfig.countFieldColumns = this.searchSliderConfig.fields.filter(i => i.value !== '').length;
-         this.config.config = this.searchSliderConfig.config
-         this.config.fields = this.searchSliderFields
-            this.changeDetectorRefs.detectChanges();
-        });
+                this.searchSliderConfig.fields = Functions.cloneObject(this.searchSliderFields);
+                this.searchSliderFields = Functions.cloneObject(this.searchSliderFields);
+                this.searchSliderConfig.countFieldColumns = this.searchSliderConfig.fields.filter(i => i.value !== '').length;
+                this.config.config = this.searchSliderConfig.config;
+                this.config.fields = this.searchSliderFields;
+                this.changeDetectorRefs.detectChanges();
+            });
+        }
     }
 
 
