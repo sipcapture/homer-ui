@@ -86,7 +86,10 @@
         <button mat-raised-button (click)="onClearFields()">Clear</button>
         <button mat-raised-button color="primary" (click)="doSearchResult()">Search</button>
     </div>
-
-
-
+</div>
+<div *ngIf="!isConfig">
+    <button mat-raised-button color="primary" (click)="openDialog()">
+        <mat-icon>settings</mat-icon> Widget Settings
+    </button>
+</div> 
 <div class="info-label">Press CTRL+Enter for Search</div>
