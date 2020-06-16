@@ -75,6 +75,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     lastTimestamp: number;
     localData: any;
     queryTextLoki: string;
+    lokiSort = "";
+    lokiSorted = "";
     searchSliderConfig = {
         countFieldColumns: 4,
         config: {
@@ -612,12 +614,22 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.rowData = result.data.sort(( a, b ) => {
                     a = new Date(a.micro_ts).getTime();
                     b = new Date(b.micro_ts).getTime();
-                    return ( a < b ) ? -1 : (( a > b ) ? 1 : 0);
+                    if(this.lokiSort === "desc"){
+                        console.log(this.lokiSort)
+                        return ( a < b ) ? 1 : (( a > b ) ? -1 : 0);
+                    }
+                    else if(this.lokiSort === "asc") {
+                        return ( a < b ) ? -1 : (( a > b ) ? 1 : 0);
+                        console.log(this.lokiSort)
+                    }
+                   
+                   
                 });
                 this.sizeToFit();
                 this.changeDetectorRefs.detectChanges();
                 setTimeout(() => { /** for grid updated autoHeight and sizeToFit */
                     this.rowData = Functions.cloneObject(this.rowData);
+                    console.log(this.rowData)
                     this.dataReady.emit({});
                     this.changeDetectorRefs.detectChanges();
                 }, 600);
@@ -940,6 +952,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
     public closeWindowMessage(id: number) {
         this.arrMessageDetail.splice(id, 1);
+    }
+    onLokiSort(){
+      
+        this.lokiSort = this.lokiSorted;
+        console.log('loki sorted!')
+      
     }
     onSettingButtonClick() {
         const params = {
