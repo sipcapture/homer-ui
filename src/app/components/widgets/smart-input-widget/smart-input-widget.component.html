@@ -1,6 +1,14 @@
 <span style="display: none;" [id]="id"></span>
-
-<div *ngIf="isConfig">
+<div style="padding: 0 2rem 0 1rem" *ngIf="onlySmartField">
+    <!-- smart-input -->          
+    <app-code-style-smart-input-field
+        apiLink="/smart/search/tag/1/call"
+        [simplefield]="true"
+        (updateData)="onSmartInputCodeData($event)"
+        (keyEnter)="doSearchResult()"
+    #onlySmartFieldElement></app-code-style-smart-input-field>
+</div>
+<div *ngIf="!onlySmartField">
     <div class="inputs-container">
         <div class="example-container" [ngStyle]="{'grid-template-columns': getFieldColumns()}">
             <div *ngFor="let item of fields" style="display: block" >
@@ -26,6 +34,19 @@
                     [queryText]="lokiQueryText"
                     (updateData)="onLokiCodeData($event)"
                 ></app-code-style-field>
+                
+                
+                <!-- smart-input -->
+                
+                <app-code-style-smart-input-field
+                    [id]="item.name"
+                    *ngIf="item.form_type === 'smart-input'"
+                    [apiLink]="item.full_api_link"
+                    [queryText]="item.value"
+                    (updateData)="onSmartInputCodeData($event, item)"
+                    
+                ></app-code-style-smart-input-field>
+
 
                 <!-- if other Fields -->
 
@@ -87,9 +108,6 @@
         <button mat-raised-button color="primary" (click)="doSearchResult()">Search</button>
     </div>
 </div>
-<div *ngIf="!isConfig">
-    <button mat-raised-button color="primary" (click)="openDialog()">
-        <mat-icon>settings</mat-icon> Widget Settings
-    </button>
-</div> 
+
+ 
 <div class="info-label">Press CTRL+Enter for Search</div>
