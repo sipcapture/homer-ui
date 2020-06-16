@@ -126,7 +126,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         timestamp: { from: 0, to: 0 },
         lokiSort: ''
     };
-    lokiSort = '';
+    lokiSort = 'desc';
     private limitRange: any = {
         from: -300000, // - 5min
         to: 600000, // + 10min
@@ -192,6 +192,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
     ngOnInit() {
      this.lokiSort = this.getLokiSort()
+    if(this.isLokiQuery){
+        this.update(true)
+    }
         if (this.inContainer) {
             this.subscriptionDashboardEvent = this._ds.dashboardEvent.subscribe(data => {
                 const dataId = data.resultWidget[this.id];
@@ -206,6 +209,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                         this.queryTextLoki = dataId.query.text;
                         this.lokiSort = this.localData.lokiSort || this.config.lokiSort
                         this.isLokiQuery = true;
+                        this.update(true)
                        
                     } else {
                         this.isLokiQuery = false;
@@ -278,6 +282,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             }
         });
     }
+ 
     async initSearchSlider(isImportantClear = false) {
         this.isThisSelfQuery = false;
 
@@ -672,10 +677,13 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     this.rowData = [];
                     this.dataReady.emit({});
                     this.changeDetectorRefs.detectChanges();
+                  
                     return;
                 }
+               
 
-                this.rowData = result.data;
+               this.rowData = result.data;
+               console.log('default data comming')
                 for (let i = 0; i < this.rowData.length; i++) {
                     if (this.rowData[i].protocol !== undefined && this.rowData[i].protocol === 17) {
                         this.rowData[i].protocol = 'UDP';
@@ -688,6 +696,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.openTransactionByAdvancedSettings();
                 this.dataReady.emit({});
                 this.initSearchSlider();
+                
                 this.changeDetectorRefs.detectChanges();
             }, err => {
                 this.rowData = [];

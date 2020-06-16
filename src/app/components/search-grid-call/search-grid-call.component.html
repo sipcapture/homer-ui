@@ -22,7 +22,7 @@
       <mat-select
       (valueChange)="onUpdateLokiSort($event)"
      [(value)]="lokiSort"
-       placeholder="Sorting">
+       placeholder="{{lokiSort || 'desc'}}">
         <mat-option value="asc">
          asc
         </mat-option>
