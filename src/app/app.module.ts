@@ -61,7 +61,6 @@ import {
     SettingResultWidgetComponent,
     SettingsAceEditorWidgetComponent,
     SettingAlertWidgetComponent,
-    SettingSmartInputWidgetComponent,
 
 } from '@app/components/widgets';
 
@@ -128,7 +127,6 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SafePipe,
         HtmlPipe,
         MomentPipe,
-        
         /** components */
         AlertComponent,
         DashboardComponent,
@@ -190,7 +188,6 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingResultWidgetComponent,
         SettingsAceEditorWidgetComponent,
         SettingAlertWidgetComponent,
-        SettingSmartInputWidgetComponent,
         /** dialogs */
         DialogAdvancedComponent,
         DialogAgentsubComponent,
@@ -277,7 +274,6 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingResultWidgetComponent,
         SettingsAceEditorWidgetComponent,
         SettingAlertWidgetComponent,
-        SettingSmartInputWidgetComponent,
         /** dashboard */
         AddDashboardDialogComponent,
         AddDialogComponent,
