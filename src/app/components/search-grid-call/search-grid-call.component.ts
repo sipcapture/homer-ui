@@ -110,6 +110,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         getRowStyle: this.getBkgColorTable.bind(this),
         suppressCellSelection: true
     };
+
     protocol_profile: string;
     config: any = {
         config:{},
@@ -193,7 +194,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     ngOnInit() {
      this.lokiSort = this.getLokiSort()
     if(this.isLokiQuery){
+     
         this.update(true)
+        
     }
         if (this.inContainer) {
             this.subscriptionDashboardEvent = this._ds.dashboardEvent.subscribe(data => {
@@ -209,6 +212,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                         this.queryTextLoki = dataId.query.text;
                         this.lokiSort = this.localData.lokiSort || this.config.lokiSort
                         this.isLokiQuery = true;
+                       
                         this.update(true)
                        
                     } else {
@@ -562,10 +566,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 if (h.hasOwnProperty('autoheight') && h.autoheight === true) {
                     vaColumn.cellStyle = {
                         'white-space': 'normal',
-                        'line-height': '1.2rem'
+                        'line-height': '1.1rem',
+                        'padding-bottom': '5px'
                     };
                     vaColumn.autoHeight = true;
                 }
+              
                 myRemoteColumns.push(vaColumn);
             }
             const restoreColumns = this.localStateHeaders(myRemoteColumns);
