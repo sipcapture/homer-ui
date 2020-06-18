@@ -28,6 +28,7 @@ export class DetailDialogComponent implements OnInit {
     @Input() snapShotTimeRange: any;
     isSimplify = true;
     isSimplifyPort = true;
+    isCombineByAlias = true;
     IdFromCallID;
     RTPFilterForFLOW = true;
     activeTab = 0;
@@ -40,6 +41,7 @@ export class DetailDialogComponent implements OnInit {
         logs: true,
         export: false
     };
+    public flowFilters: any;
     exportAsPNG = false;
     isBrowserWindow = false;
     _isLoaded = false;
@@ -220,6 +222,13 @@ export class DetailDialogComponent implements OnInit {
 
             this.sipDataItem.data.calldata = fc(this._messagesBuffer).calldata.filter(i => selectedId.includes(i.id));
             this.sipDataItem = Functions.cloneObject(this.sipDataItem); // refresh data
+            this.flowFilters = {
+                isSimplify: this.isSimplify,
+                isSimplifyPort: this.isSimplifyPort,
+                isCombineByAlias: this.isCombineByAlias,
+                PayloadType: this.checkboxListFilterPayloadType,
+                CallId: this.checkboxListFilterCallId
+            };
             this.changeDetectorRefs.detectChanges();
         }, 100);
     }

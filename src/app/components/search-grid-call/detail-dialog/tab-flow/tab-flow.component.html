@@ -8,14 +8,25 @@
     <div class="hosts" [ngStyle]="{'min-width.px': (isSimplify ? 150 : 200) * (flowGridLines.length)}">
         <!-- host titles -->
         <ng-template ngFor let-itemhost [ngForOf]="aliasTitle">
-            <div *ngIf="!itemhost.hidden"
-            [matTooltip]="itemhost.IP"
+            <div *ngIf="itemhost && !itemhost.hidden"
+            [matTooltip]="_isCombineByAlias ? 
+                pipeToString(itemhost) :
+                itemhost.IP + (itemhost.PORT ? ':' + itemhost.PORT : '')"
             [ngClass]="'item-wrapper' + (isSimplify ? ' big' : '')"> <!-- wrapper -->
                 <div class="item"> <!-- container -->
-                    <div> {{ itemhost.alias !== itemhost.ip && itemhost.alias !== '' ? itemhost.shortIPtext2 : '' }} </div>
-                    <div style="text-align: center; font-size: 14px;">
-                    {{itemhost.alias === itemhost.ip || itemhost.alias === '' ? itemhost.shortIPtext2 : itemhost.alias}}
+                    <div style="font-size: 0.9em;color: #999">{{(!_isSimplifyPort ? 'PORT:' + itemhost.PORT : '')}}</div>
+                    <div *ngIf="!itemhost.arrip"> {{ itemhost.shortIPtext2 }} </div>
+                    <div *ngIf="itemhost.arrip"> 
+                        <div *ngFor="let ip of itemhost.arrip"
+                        style="text-align: center;">{{ ip }}</div>
                     </div>
+                    <div
+                    *ngIf="itemhost.alias !== itemhost.ip && itemhost.alias !== ''"
+                    style="text-align: center; font-size: 14px;"> {{
+                        itemhost.alias === itemhost.ip || itemhost.alias === '' ?
+                            itemhost.shortIPtext2 :
+                            itemhost.alias
+                    }} </div>
                 </div>
             </div>
         </ng-template>

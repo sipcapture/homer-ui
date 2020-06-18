@@ -60,13 +60,13 @@
 <!-- 
   search slider
 -->
-<div *ngIf="!isLokiQuery" class="search-slider-footer" [ngStyle]="{'bottom': !isSearchPanel ? '-20rem': null}">
+<div *ngIf="!isLokiQuery && !inContainer" class="search-slider-footer" [ngStyle]="{'bottom': !isSearchPanel ? '-20rem': null}">
   <div style="float: right; opacity: 0.7">
 		<button title="Close" (click)="isSearchPanel=false" mat-icon-button ><mat-icon>close</mat-icon></button>
   </div>
   <div class="content">
     <!-- search slider container -->
-    <app-protosearch-widget
+    <app-smart-input-widget
       [onlySmartField]="true"
       [targetResultId]="id"
       [fields]="searchSliderFields"
@@ -74,10 +74,10 @@
       [autoline]="true"
       (dosearch)="isThisSelfQuery=true;update(true);"
       #searchSlider
-    ></app-protosearch-widget>
+    ></app-smart-input-widget>
     <mat-label *ngIf="searchSliderFields.length > 0" style="color: rgba(0, 0, 0, 0.54); font-size: 0.8em;padding-left:20px;">Press CTRL+ENTER to Search</mat-label>
     <div *ngIf="searchSliderFields.length === 0" class="no-smart-warn">
-      Please do a <strong>Search</strong> from a <strong>Proto Search widget,</strong> selecting this widget on the <strong>Results Container selector.</strong>
+      Please do a <strong>Search</strong> from a <strong>Smart input search widget</strong>
     </div>
       <!-- (changeSettings)="initSearchSlider()" -->
     
@@ -120,8 +120,8 @@
     <mat-spinner></mat-spinner>
 </div>
 <div *ngIf="!isLokiQuery" style="position:absolute; bottom:0.4rem; left:0.2rem; opacity: 0.7;">
-  <button title="column settings" mat-icon-button (click)="onSettingButtonClick()"><mat-icon>settings_applications</mat-icon></button>
-  <button title="search config" mat-icon-button    
+  <button matTooltip="Column settings" mat-icon-button (click)="onSettingButtonClick()"><mat-icon>settings_applications</mat-icon></button>
+  <button *ngIf="!inContainer"  mat-icon-button matTooltip="Search config"  
     (click)="isSearchPanel=!isSearchPanel">
     <mat-icon
       [matBadge]="getSearchSlider()"
