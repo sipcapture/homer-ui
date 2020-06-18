@@ -37,7 +37,7 @@
     "add": "^2.0.6",
     "ag-grid-angular": "^22.1.1",
     "ag-grid-community": "^22.1.1",
-    "angular": "^1.7.9",
+    "angular": "^1.8.0",
     "angular-gridster2": "^8.2.0",
     "angular2-uuid": "^1.1.1",
     "bootstrap": "^4.3.1",
