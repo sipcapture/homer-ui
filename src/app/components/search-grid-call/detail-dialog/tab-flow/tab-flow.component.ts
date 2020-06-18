@@ -44,7 +44,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     _flagAfterViewInit = false;
     _isSimplify = false;
     public _isSimplifyPort = true;
-    private _isCombineByAlias = false;
+    public _isCombineByAlias = true;
     private _dataItem: any;
     flowGridLines = [];
     isExport = false;
@@ -259,7 +259,6 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             };
         });
 
-        const colCount = this.aliasTitle.length;
 
         let diffTs = 0;
         this.labels = data.calldata.map(i => i.sid).reduce((a, b) => {
@@ -274,43 +273,43 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             };
         });
 
-        this.flowGridLines = Array.from({length: Object.keys(hosts).length - 1});
-
         /** maping hosts Combinad aliases OR IPs */
-        const objectMap =  this.aliasTitle.map(i => i.ip || i.alias).reduce((a, b) => {
-            const _ip = this._isSimplifyPort ? b.split(':')[0] : b;
-            if (!a[_ip]) {
-                a[_ip] = 0;
-            }
-            return a;
-        }, {});
-
         const positionIPs = sortedArray.map(i => this._isSimplifyPort ?
-            [i.srcIp, i.dstIp] :
-                [`${i.srcIp}:${i.srcPort}`, `${i.dstIp}:${i.dstPort}`]
-            ).join(',').split(',').reduce((a, b) => {
-                if (a[b] === undefined) {
+            [i.srcIp, i.dstIp] : [`${i.srcIp}:${i.srcPort}`, `${i.dstIp}:${i.dstPort}`]
+        ).join(',').split(',').reduce((a, b) => {
+            if (a[b] === undefined) {
                 a[b] = Object.keys(a).length;
             }
             return a;
         }, {});
-
         /** sort hosts */
         this.aliasTitle = Object.keys(positionIPs).reduce((a, ip) => {
             a[positionIPs[ip]] = this.aliasTitle.find(i => i.ip === ip);
             return a;
         }, []);
-
-
+        if (this._isCombineByAlias && this._isSimplifyPort) {
+            this.aliasTitle = this.aliasTitle.reduce((a, b) => {
+                if (b.arrip === undefined) {
+                    b.arrip = [b.ip];
+                }
+                const el = a.find(k => k.alias === b.alias || k.ip === b.ip);
+                if (el) {
+                    el.arrip.push(b.ip);
+                } else {
+                    a.push(b);
+                }
+                return a;
+            }, []);
+        }
         const getHostPosition = (ip, port) => {
-            if (this._isSimplifyPort) {
-                // return positionIPs[ip];
+            if (this._isCombineByAlias && this._isSimplifyPort) {
+                return this.aliasTitle.findIndex(i => i.arrip.includes(ip));
+            } else if (this._isSimplifyPort) {
                 return this.aliasTitle.findIndex(i => i.IP === ip);
             }
-            // return positionIPs[ip + ':' + port];
             return this.aliasTitle.findIndex(i => i.IP === ip && i.PORT === port + '');
-        }
-
+        };
+        this.flowGridLines = Array.from({length: this.aliasTitle.length - 1});
         this.arrayItems = sortedArray.map((item, key, arr) => {
             diffTs = key - 1 >= 0 && arr[key - 1] !== null ? (item.micro_ts - arr[key - 1].micro_ts) / 1000 : 0;
             const {min, max, abs} = Math;
@@ -332,7 +331,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 start: min(a, b),
                 middle,
                 direction: a > b,
-                rightEnd: Object.keys(hosts).length - 1 - max(a, b),
+                rightEnd: this.aliasTitle.length - 1 - max(a, b),
                 shortdata: '',
                 isRedialArrow,
                 arrowStyleSolid: item.method_text === 'RTCP' || item.method_text === 'RTP'
@@ -355,8 +354,8 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 proto: Functions.protoCheck(item.protocol),
                 typeItem,
                 style: {
-                    left: position_from / colCount * 100,
-                    width: position_width / colCount * 100
+                    left: position_from / this.aliasTitle.length * 100,
+                    width: position_width / this.aliasTitle.length * 100
                 }
             };
         });
@@ -421,7 +420,9 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             return target;
         }, {});
     }
-
+    pipeToString(arr) {
+        return arr.join(' | ');
+    }
     onSavePng() {
         if (!this._flagAfterViewInit) {
             setTimeout(this.onSavePng.bind(this), 1000);
