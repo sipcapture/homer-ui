@@ -50,6 +50,7 @@ import {
     ResultWidgetComponent,
     RsearchWidgetComponent,
     AlertWidgetComponent,
+    SmartInputWidgetComponent,
     SettingClockWidgetComponent,
     SettingGeneralIframeWidgetComponent,
     SettingIframeWidgetComponent,
@@ -60,7 +61,6 @@ import {
     SettingResultWidgetComponent,
     SettingsAceEditorWidgetComponent,
     SettingAlertWidgetComponent,
-   
 
 } from '@app/components/widgets';
 
@@ -97,7 +97,7 @@ import {
     TabLogsComponent,
     TabLokiComponent,
     TabMessagesComponent,
-    TabQosComponent
+    TabQosComponent,
 } from '@app/components/search-grid-call';
 
 import { MenuComponent } from '@app/components/menu/menu.component';
@@ -127,7 +127,6 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SafePipe,
         HtmlPipe,
         MomentPipe,
-        
         /** components */
         AlertComponent,
         DashboardComponent,
@@ -178,6 +177,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         AlertWidgetComponent,
         ResultWidgetComponent,
         RsearchWidgetComponent,
+        SmartInputWidgetComponent,
         SettingClockWidgetComponent,
         SettingGeneralIframeWidgetComponent,
         SettingIframeWidgetComponent,
@@ -188,7 +188,6 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingResultWidgetComponent,
         SettingsAceEditorWidgetComponent,
         SettingAlertWidgetComponent,
-        
         /** dialogs */
         DialogAdvancedComponent,
         DialogAgentsubComponent,
@@ -230,7 +229,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         AceEditorModule,
         MarkdownModule.forRoot(),
         ColorChromeModule,
-        ColorCircleModule
+        ColorCircleModule,
     ],
     entryComponents: [
         MenuComponent,
@@ -264,6 +263,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         ResultWidgetComponent,
         RsearchWidgetComponent,
         AlertWidgetComponent,
+        SmartInputWidgetComponent,
         SettingClockWidgetComponent,
         SettingGeneralIframeWidgetComponent,
         SettingIframeWidgetComponent,
@@ -274,7 +274,6 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingResultWidgetComponent,
         SettingsAceEditorWidgetComponent,
         SettingAlertWidgetComponent,
-
         /** dashboard */
         AddDashboardDialogComponent,
         AddDialogComponent,

@@ -96,11 +96,11 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
                 const mapping = this.mappingSortedData.find(i =>
                     i.hep_alias === data.config.config.protocol_id.name &&
                     i.profile === data.config.config.protocol_profile.value);
-
                 this.proto.fields_mapping = mapping.fields_mapping.filter(i => !(i.skip === true)).map(i => {
                     i.selected = data.config.fields.map(j => j.field_name).includes(i.id);
                     return i;
                 });
+                this.proto.fields_mapping = this.proto.fields_mapping.filter(i => i.id !== 'smartinput');
             }
             /* sorting this.proto.fields_mapping by data.config.fields */
             const pm = Functions.cloneObject(this.proto.fields_mapping);

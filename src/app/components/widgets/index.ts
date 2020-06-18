@@ -1,3 +1,5 @@
+import { from } from 'rxjs';
+
 export * from './clock-widget/clock-widget.component';
 export * from './influxdbchart-widget/influxdbchart-widget.component';
 export * from './prometheus-widget/prometheus-widget.component';
@@ -13,7 +15,7 @@ export * from './rsearch-widget/code-style-smart-input-field/code-style-smart-in
 export * from './protosearch-widget/drag-drop-list/drag-drop-list.component';
 export * from './result-chart-widget/result-chart-widget.component';
 export * from './alert-widget/alert-widget.component';
-
+export * from './smart-input-widget/smart-input-widget.component';
 
 
 /** setting window */
@@ -29,4 +31,3 @@ export * from './result-chart-widget/setting-result-chart-widget.component';
 
 export * from './result-widget/setting-result-widget.component';
 export * from './alert-widget/setting-alert-widget.component';
-
