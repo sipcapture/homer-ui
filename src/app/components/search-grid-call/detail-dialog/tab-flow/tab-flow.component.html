@@ -10,13 +10,13 @@
         <ng-template ngFor let-itemhost [ngForOf]="aliasTitle">
             <div *ngIf="itemhost && !itemhost.hidden"
             [matTooltip]="_isCombineByAlias ? 
-                pipeToString(itemhost.arrip) :
+                pipeToString(itemhost) :
                 itemhost.IP + (itemhost.PORT ? ':' + itemhost.PORT : '')"
             [ngClass]="'item-wrapper' + (isSimplify ? ' big' : '')"> <!-- wrapper -->
                 <div class="item"> <!-- container -->
                     <div style="font-size: 0.9em;color: #999">{{(!_isSimplifyPort ? 'PORT:' + itemhost.PORT : '')}}</div>
-                    <div *ngIf="!_isCombineByAlias"> {{ itemhost.shortIPtext2 }} </div>
-                    <div *ngIf="_isCombineByAlias"> 
+                    <div *ngIf="!itemhost.arrip"> {{ itemhost.shortIPtext2 }} </div>
+                    <div *ngIf="itemhost.arrip"> 
                         <div *ngFor="let ip of itemhost.arrip"
                         style="text-align: center;">{{ ip }}</div>
                     </div>

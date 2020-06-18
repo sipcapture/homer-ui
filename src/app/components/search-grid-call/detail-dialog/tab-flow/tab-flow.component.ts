@@ -420,7 +420,8 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             return target;
         }, {});
     }
-    pipeToString(arr) {
+    pipeToString(itemhost) {
+        const arr = itemhost.arrip || [itemhost.IP];
         return arr.join(' | ');
     }
     onSavePng() {
