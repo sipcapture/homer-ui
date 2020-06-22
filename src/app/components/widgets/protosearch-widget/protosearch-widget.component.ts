@@ -259,10 +259,9 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, AfterViewIni
                     } else {
                         item.value = Functions.cloneObject(this.widgetResultList[0]);
                         if (!Array.isArray(item.value)) {
-                            console.log('test');
                             this.targetResultsContainerValue.setValue([item.value]);
                         } else {
-                            this.targetResultsContainerValue.setValue([item.value]);
+                            this.targetResultsContainerValue.setValue(item.value);
                         }
                     }
                 }
@@ -421,7 +420,6 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, AfterViewIni
                 }
             }
         });
-
         this.searchService.setLocalStorageQuery(Functions.cloneObject(this.searchQuery));
         this._sss.saveProtoSearchConfig(this.widgetId, Functions.cloneObject(this.searchQuery));
 
