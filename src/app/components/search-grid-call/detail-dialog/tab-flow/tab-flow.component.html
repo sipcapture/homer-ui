@@ -18,10 +18,10 @@
                     <div *ngIf="!itemhost.arrip"> {{ itemhost.shortIPtext2 }} </div>
                     <div *ngIf="itemhost.arrip"> 
                         <div *ngFor="let ip of itemhost.arrip"
-                        style="text-align: center;">{{ ip }}</div>
+                        style="text-align: center;">{{ shortcutIPv6String(ip) }}</div>
                     </div>
                     <div
-                    *ngIf="itemhost.alias !== itemhost.ip && itemhost.alias !== ''"
+                    *ngIf="itemhost.alias !== itemhost.ip && itemhost.alias !== itemhost.IP && itemhost.alias !== ''"
                     style="text-align: center; font-size: 14px;"> {{
                         itemhost.alias === itemhost.ip || itemhost.alias === '' ?
                             itemhost.shortIPtext2 :

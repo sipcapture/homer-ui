@@ -137,8 +137,8 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             diff: `+${diffTs.toFixed(2)}ms`,
             source_ip : sIP,
             source_port : sPORT,
-            srcId: `${sIP}:${sPORT}`,
-            dstId: `${dIP}:${dPORT}`,
+            srcId: item.srcId || `${sIP}:${sPORT}`,
+            dstId: item.dstId || `${dIP}:${dPORT}`,
             srcIp: item.srcIp,
             srcPort: item.srcPort,
             dstIp: item.dstIp,
@@ -197,21 +197,21 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         });
 
         const IpList = [].concat(...sortedArray.map(i => [i.srcId, i.dstId])).reduce((a, b) => {
-            const _ip = this._isSimplifyPort ? b.split(':')[0] : b;
+            const _ip = this._isSimplifyPort ? b.match(/\d+$|(\[.*\]|\d+\.\d+\.\d+\.\d+)/g)[0] : b;
             if (!a.includes(_ip)) {
                 a.push(_ip);
             }
             return a;
         }, []);
         if (this._isSimplifyPort ) {
-            const hostNoPortsArray = Object.keys(hosts).sort().map(i => i.split(':')).filter((i, k, a) => {
+            const hostNoPortsArray = Object.keys(hosts).sort().map(i => i.match(/\d+$|(\[.*\]|\d+\.\d+\.\d+\.\d+)/g)).filter((i, k, a) => {
                 if (a[k - 1]) {
                     return a[k - 1][0] !== i[0];
                 }
                 return true;
             }).map(i => i.join(':'));
             const filterdHostd = hostNoPortsArray.reduce((a, b) => {
-                const _ip = this._isSimplifyPort ? b.split(':')[0] : b;
+                const _ip = this._isSimplifyPort ? b.match(/\d+$|(\[.*\]|\d+\.\d+\.\d+\.\d+)/g)[0] : b;
                 a[_ip] = hosts[b];
                 return a;
             }, {});
@@ -240,25 +240,25 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             const regex = RegExp('(.*(?!$))(?::)([0-9]+)?$');
             let IP, PORT;
             if (regex.exec(i) != null) {
-                IP    = regex.exec(i)[1].replace(/\[|\]/g, ''); // gives IP
+                IP    = regex.exec(i)[1]; // gives IP
                 PORT  = regex.exec(i)[2]; // gives port
             } else {
                 // fall back to the old method if things don't work out.
-                const al = i.split(':');
-                IP    = al[0].replace(/\[|\]/g, '');
+                const al = i.match(/\d+$|(\[.*\]|\d+\.\d+\.\d+\.\d+)/g);
+                IP    = al[0];
                 PORT  = al[1] ? ':' + al[1] : '';
             }
             return {
                 ip: i,
                 isIPv6: IP.match(/\:/g) && IP.match(/\:/g).length > 1,
-                shortIPtext1: this.compIPV6(IP),
+                shortIPtext1: this.compIPV6(IP).replace(/\[|\]/g, ''),
                 shortIPtext2: this.shortcutIPv6String(IP),
                 alias: alias && alias.includes(i) ? i : alias,
                 IP,
+                arrip: [IP.replace(/\[|\]/g, '')],
                 PORT
             };
         });
-
 
         let diffTs = 0;
         this.labels = data.calldata.map(i => i.sid).reduce((a, b) => {
@@ -274,47 +274,53 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         });
 
         /** maping hosts Combinad aliases OR IPs */
-        const positionIPs = sortedArray.map(i => this._isSimplifyPort ?
-            [i.srcIp, i.dstIp] : [`${i.srcIp}:${i.srcPort}`, `${i.dstIp}:${i.dstPort}`]
-        ).join(',').split(',').reduce((a, b) => {
+        const positionIPs = sortedArray.map(i => this._isSimplifyPort ? [i.srcIp, i.dstIp] : [i.srcId, i.dstId])
+        .join(',').split(',').reduce((a, b) => {
             if (a[b] === undefined) {
                 a[b] = Object.keys(a).length;
             }
             return a;
         }, {});
+
         /** sort hosts */
         this.aliasTitle = Object.keys(positionIPs).reduce((a, ip) => {
-            a[positionIPs[ip]] = this.aliasTitle.find(i => i.ip === ip);
+            a[positionIPs[ip]] = this.aliasTitle.find(i => i.ip === ip || i.shortIPtext1 === ip);
             return a;
         }, []);
         if (this._isCombineByAlias && this._isSimplifyPort) {
             this.aliasTitle = this.aliasTitle.reduce((a, b) => {
                 if (b.arrip === undefined) {
-                    b.arrip = [b.ip];
+                    b.arrip = [b.ip.replace(/\[|\]/g, '')];
                 }
                 const el = a.find(k => k.alias === b.alias || k.ip === b.ip);
                 if (el) {
-                    el.arrip.push(b.ip);
+                    el.arrip.push(b.ip.replace(/\[|\]/g, ''));
                 } else {
                     a.push(b);
                 }
                 return a;
             }, []);
         }
-        const getHostPosition = (ip, port) => {
-            if (this._isCombineByAlias && this._isSimplifyPort) {
-                return this.aliasTitle.findIndex(i => i.arrip.includes(ip));
-            } else if (this._isSimplifyPort) {
-                return this.aliasTitle.findIndex(i => i.IP === ip);
+        const getHostPosition = (ip, port, ipId) => {
+            const [isC, isS] = [this._isCombineByAlias, this._isSimplifyPort];
+            let num = 0;
+            if (isC && isS) { // 1 1
+                num = this.aliasTitle.findIndex(i => i.arrip.includes(ip));
+            } else
+            if (!isC && isS) { // 0 1
+                num = this.aliasTitle.findIndex(i => i.IP.includes(ip));
+            } else
+            if (!isS) { // 1 0
+                num = this.aliasTitle.findIndex(i => (i.IP.includes(ip) && i.PORT === port + '') || i.ip === ipId);
             }
-            return this.aliasTitle.findIndex(i => i.IP === ip && i.PORT === port + '');
+            return num;
         };
         this.flowGridLines = Array.from({length: this.aliasTitle.length - 1});
         this.arrayItems = sortedArray.map((item, key, arr) => {
             diffTs = key - 1 >= 0 && arr[key - 1] !== null ? (item.micro_ts - arr[key - 1].micro_ts) / 1000 : 0;
             const {min, max, abs} = Math;
-            const srcPosition = getHostPosition(item.srcIp , item.srcPort),
-                dstPosition = getHostPosition(item.dstIp , item.dstPort),
+            const srcPosition = getHostPosition(item.srcIp , item.srcPort, item.srcId),
+                dstPosition = getHostPosition(item.dstIp , item.dstPort, item.dstId),
                 course = srcPosition < dstPosition ? 'right' : 'left',
                 position_from = min(srcPosition, dstPosition),
                 position_width = abs(srcPosition - dstPosition),
