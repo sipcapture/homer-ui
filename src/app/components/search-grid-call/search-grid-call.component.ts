@@ -32,16 +32,19 @@ import {
     PreferenceUserSettingsService,
     CallReportService,
     SearchService,
-    PreferenceAdvancedService
+    PreferenceAdvancedService,
+    ShareLinkService
 } from '@app/services';
 import { DialogSettingsGridDialog } from './grid-settings-dialog/grid-settings-dialog';
 import { MatDialog } from '@angular/material/dialog';
+import { ChangeDetectionStrategy } from '@angular/core';
 
 
 @Component({
     selector: 'app-search-grid-call',
     templateUrl: './search-grid-call.component.html',
-    styleUrls: ['./search-grid-call.component.css']
+    styleUrls: ['./search-grid-call.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit {
     private gridApi;
@@ -58,7 +61,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     defaultColDef: Object;
     columnDefs: Array<Object>;
     myPredefColumns: Array<Object>;
-    rowData: Object;
+    rowData: any = [];
     showPortal = false;
     private isOpenDialog = false;
     title = 'Call Result';
@@ -73,6 +76,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     lastTimestamp: number;
     localData: any;
     queryTextLoki: string;
+
+    lokiSorted = '';
     searchSliderConfig = {
         countFieldColumns: 4,
         config: {
@@ -105,8 +110,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         getRowStyle: this.getBkgColorTable.bind(this),
         suppressCellSelection: true
     };
+
     protocol_profile: string;
     config: any = {
+        config: {},
         param: {
             transaction: {},
             limit: 200,
@@ -117,9 +124,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 name: 'Local'
             }
         },
-        timestamp: { from: 0, to: 0 }
+        timestamp: { from: 0, to: 0 },
+        lokiSort: ''
     };
-
+    lokiSort = 'desc';
     private limitRange: any = {
         from: -300000, // - 5min
         to: 600000, // + 10min
@@ -149,15 +157,17 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         private searchService: SearchService
     ) {
         this.myPredefColumns = [{
-            headerName: 'Checkboxes',
+            headerName: '',
             field: 'checkbox',
-            minWidth: 60,
-            maxWidth: 60,
+            minWidth: 34,
+            maxWidth: 34,
+            resizable: false,
             checkboxSelection: true,
             lockPosition: true,
             cellRendererParams: { checkbox: true },
             pinned: 'left',
             cellClass: 'no-border',
+            headerClass: 'no-border',
             headerCheckboxSelection: true
         }];
 
@@ -182,23 +192,34 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     ngOnInit() {
+     this.lokiSort = this.getLokiSort();
+    if (this.isLokiQuery) {
+
+        this.update(true);
+
+    }
         if (this.inContainer) {
             this.subscriptionDashboardEvent = this._ds.dashboardEvent.subscribe(data => {
                 const dataId = data.resultWidget[this.id];
                 if (dataId && dataId.query && this.lastTimestamp !== dataId.timestamp) {
                     this.localData = dataId.query;
+
                     this.protocol_profile = this.localData.protocol_id;
 
                     this.lastTimestamp = dataId.timestamp;
 
                     if (this.protocol_profile === ConstValue.LOKI_PREFIX || (this.localData && this.localData.serverLoki)) {
                         this.queryTextLoki = dataId.query.text;
+                        this.lokiSort = this.localData.lokiSort || this.config.lokiSort;
                         this.isLokiQuery = true;
+
+                        this.update(true);
                     } else {
                         this.isLokiQuery = false;
                     }
                     this.config.param.search = {};
                     this.config.param.search[this.protocol_profile] = this.localData.fields;
+
 
                     if (this.localData.location && this.localData.location.value !== '' && this.localData.location.mapping !== '') {
                         this.config.param.location[this.localData.location.mapping] = this.localData.location.value;
@@ -208,10 +229,13 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                         this.subscriptionRangeUpdateTimeout = this._dtrs.castRangeUpdateTimeout.subscribe(() => {
                             this.update();
                         });
+                    this.config.lokiSort = this.lokiSort;
                     } else {
                         this.update(true);
                     }
                 }
+
+                this.changeDetectorRefs.detectChanges();
             });
         } else {
             setTimeout(() => { /** <== fixing ExpressionChangedAfterItHasBeenCheckedError */
@@ -250,16 +274,18 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
             if (result && result.data) {
                 const _advanced = result.data.find(i => i.category === 'search' && i.param === 'transaction');
-                if (_advanced && _advanced.data && _advanced.data.lookup_range) {                    
+                if (_advanced && _advanced.data && _advanced.data.lookup_range) {
                     const [from, to, message_from, message_to] = _advanced.data.lookup_range;
                     this.limitRange.from = (from * 1000) || -300000;
                     this.limitRange.to = (to * 1000) || 600000;
                     this.limitRange.message_from = (message_from * 1000) || -2000;
-                    this.limitRange.message_to = (message_to *1000) || 2000;
+                    this.limitRange.message_to = (message_to * 1000) || 2000;
+                    this.changeDetectorRefs.detectChanges();
                 }
-            } 
+            }
         });
     }
+
     async initSearchSlider(isImportantClear = false) {
         this.isThisSelfQuery = false;
 
@@ -276,63 +302,69 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         const mapping = mappingItem && Functions.cloneObject(mappingItem.fields_mapping) || [];
 
         mapping.push({ id: ConstValue.LIMIT, name: 'Query Limit' });
-
-        setTimeout(() => {
-            this.searchSliderFields = isImportantClear ? [] : this.searchSlider.getFields();
-            if (query && query.fields && query.fields instanceof Array) {
-                query.fields.forEach(i => {
-                    if (!this.searchSliderFields.map(j => j.field_name).includes(i.name)) {
-                        const [itemname] = mapping.filter(j => j.id === i.name);
-                        const itemField: any = {
-                            field_name: i.name,
-                            hepid: query_hepid * 1,
-                            name: i.name,
-                            selection: itemname && itemname.name || i.name, // test
-                            type: i.type,
-                            value: ['intager', 'number'].includes(i.type) ? parseInt(i.value, 10) : String(i.value)
-                        };
-                        this.searchSliderFields.push(itemField);
-                    } else {
-                        const [_searchSliderField] = this.searchSliderFields.filter(j => j.field_name === i.name);
-                        if (_searchSliderField) {
-                            _searchSliderField.value = i.value;
+        this.changeDetectorRefs.detectChanges();
+        if (!this.inContainer) {
+            setTimeout(() => {
+                this.searchSliderFields = isImportantClear ? [] : this.searchSlider.getFields();
+                if (query && query.fields && query.fields instanceof Array) {
+                    query.fields.forEach(i => {
+                        if (!this.searchSliderFields.map(j => j.field_name).includes(i.name)) {
+                            const [itemname] = mapping.filter(j => j.id === i.name);
+                            const itemField: any = {
+                                field_name: i.name,
+                                hepid: query_hepid * 1,
+                                name: i.name,
+                                selection: itemname && itemname.name || i.name, // test
+                                type: i.type,
+                                value: ['intager', 'number'].includes(i.type) ? parseInt(i.value, 10) : String(i.value)
+                            };
+                            this.searchSliderFields.push(itemField);
+                        } else {
+                            const [_searchSliderField] = this.searchSliderFields.filter(j => j.field_name === i.name);
+                            if (_searchSliderField) {
+                                _searchSliderField.value = i.value;
+                            }
                         }
-                    }
-                });
-            }
-            this.searchSliderConfig.config.protocol_id = {
-                name: mappingItem && mappingItem.hep_alias,
-                value: query_hepid * 1
-            };
-            this.searchSliderConfig.config.protocol_profile = {
-                name: query_protocol_id,
-                value: query_protocol_id
-            };
+                    });
+                }
+                this.searchSliderConfig.config.protocol_id = {
+                    name: mappingItem && mappingItem.hep_alias,
+                    value: query_hepid * 1
+                };
+                this.searchSliderConfig.config.protocol_profile = {
+                    name: query_protocol_id,
+                    value: query_protocol_id
+                };
 
-            this.searchSliderConfig.fields = Functions.cloneObject(this.searchSliderFields);
-            this.searchSliderFields = Functions.cloneObject(this.searchSliderFields);
-            this.searchSliderConfig.countFieldColumns = this.searchSliderConfig.fields.filter(i => i.value !== '').length;
-        });
+                this.searchSliderConfig.fields = Functions.cloneObject(this.searchSliderFields);
+                this.searchSliderFields = Functions.cloneObject(this.searchSliderFields);
+                this.searchSliderConfig.countFieldColumns = this.searchSliderConfig.fields.filter(i => i.value !== '').length;
+                this.config.config = this.searchSliderConfig.config;
+                this.config.fields = this.searchSliderFields;
+                this.changeDetectorRefs.detectChanges();
+            });
+        }
     }
 
 
     getSearchSlider() {
         return this.searchSliderConfig.fields.filter(i => i.value !== '').length;
     }
-    // get
 
     private getQueryData() {
         if (!this.id) {
+
             const params = Functions.getUriJson();
 
             if (params && params.param) {
                 /**
                  * query configuration from GET params
                  */
+
                 this.localData = params.param;
+
                 this.protocol_profile = Object.keys(params.param.search)[0];
                 this.config.param = Functions.cloneObject(params.param);
-
                 if (params.param.search &&
                     params.param.search[this.protocol_profile] &&
                     params.param.search[this.protocol_profile].callid
@@ -355,12 +387,17 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.isLokiQuery = false;
             } else {
                 this.localData = this.searchService.getLocalStorageQuery();
+                if (this.lokiSort) {
+                    this.localData.lokiSort = this.lokiSort;
+                }
 
                 this.protocol_profile = this.localData.protocol_id;
 
                 if (this.protocol_profile === ConstValue.LOKI_PREFIX || (this.localData && this.localData.serverLoki)) {
                     this.isLokiQuery = true;
                     this.queryTextLoki = this.localData.text;
+
+
                 } else {
                     this.isLokiQuery = false;
                 }
@@ -385,12 +422,22 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     public onUpdateQueryLoki(event) {
+
         this.searchQueryLoki = event;
+        this.searchQueryLoki.lokiSort = this.lokiSort;
         this.searchQueryLoki.limit = this.localData.limit * 1 || 100;
         this.searchQueryLoki.protocol_id = ConstValue.LOKI_PREFIX;
         this.searchQueryLoki.fields = [];
-
         this.searchService.setLocalStorageQuery(this.searchQueryLoki);
+    }
+    public onUpdateLokiSort(event) {
+
+        this.searchQueryLoki.lokiSort = event;
+        localStorage.setItem('lokiSort', event);
+        this.searchService.setLocalStorageQuery(this.searchQueryLoki);
+    }
+    public getLokiSort() {
+        return localStorage.getItem('lokiSort');
     }
     private queryBuilderForLoki() {
         if (!this.localData) {
@@ -519,7 +566,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 if (h.hasOwnProperty('autoheight') && h.autoheight === true) {
                     vaColumn.cellStyle = {
                         'white-space': 'normal',
-                        'line-height': '1.2rem'
+                        'line-height': '1.1rem',
+                        'padding-bottom': '5px'
                     };
                     vaColumn.autoHeight = true;
                 }
@@ -569,12 +617,13 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     private isNewData(): boolean {
+        const json = JSON.stringify;
         const _md5 = Functions.md5(
-            JSON.stringify(this.queryBuilderForLoki()) +
-            JSON.stringify(this.isLokiQuery) +
-            JSON.stringify(this._dtrs.getDatesForQuery(true)) +
-            JSON.stringify(this.config) +
-            JSON.stringify(this.searchQueryLoki)
+            json(this.queryBuilderForLoki()) +
+            json(this.isLokiQuery) +
+            json(this._dtrs.getDatesForQuery(true)) +
+            json(this.config) +
+            json(this.searchQueryLoki)
         );
         const bool = this._latestQuery === _md5;
         if (!bool) {
@@ -585,28 +634,39 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     public update(isImportant = false) {
+
         if (this.isNewData() && !isImportant) {
             return;
         }
         this.config.timestamp = this._dtrs.getDatesForQuery(true);
+       this.config.lokiSort = this.lokiSort;
+       if (this.localData) {
+        this.localData.lokiSort = this.config.lokiSort;
+       }
 
         if (this.inContainer) { /* if ag-grid in result widget */
             this.getHeaders();
         } else {
             this.getQueryData();
         }
-
+        this.rowData = null;
         if ( this.isLokiQuery ) {
             this._srs.getData(this.queryBuilderForLoki()).toPromise().then(result => {
                 this.rowData = result.data.sort(( a, b ) => {
                     a = new Date(a.micro_ts).getTime();
                     b = new Date(b.micro_ts).getTime();
-                    return ( a < b ) ? -1 : (( a > b ) ? 1 : 0);
+                    if (this.lokiSort === 'desc') {
+                        return ( a < b ) ? 1 : (( a > b ) ? -1 : 0);
+                    } else if (this.lokiSort === 'asc') {
+                        return ( a < b ) ? -1 : (( a > b ) ? 1 : 0);
+                    }
                 });
                 this.sizeToFit();
+                this.changeDetectorRefs.detectChanges();
                 setTimeout(() => { /** for grid updated autoHeight and sizeToFit */
                     this.rowData = Functions.cloneObject(this.rowData);
                     this.dataReady.emit({});
+                    this.changeDetectorRefs.detectChanges();
                 }, 600);
             }, err => {
                 this.rowData = [];
@@ -614,12 +674,30 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             });
         } else {
             this._scs.getData(this.config).toPromise().then(result => {
-                this.rowData = result.data;
+                if (!result || !result.data) {
+                    this.rowData = [];
+                    this.dataReady.emit({});
+                    this.changeDetectorRefs.detectChanges();
+
+                    return;
+                }
+
+
+               this.rowData = result.data;
+                for (let i = 0; i < this.rowData.length; i++) {
+                    if (this.rowData[i].protocol !== undefined && this.rowData[i].protocol === 17) {
+                        this.rowData[i].protocol = 'UDP';
+                    } else if (this.rowData[i].protocol !== undefined && this.rowData[i].protocol === 6) {
+                        this.rowData[i].protocol = 'TCP';
+                    }
+                }
                 this.sizeToFit();
                 this.selectCallIdFromGetParams();
                 this.openTransactionByAdvancedSettings();
                 this.dataReady.emit({});
                 this.initSearchSlider();
+
+                this.changeDetectorRefs.detectChanges();
             }, err => {
                 this.rowData = [];
                 this.dataReady.emit({});
@@ -655,26 +733,28 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     private getCallIDColor (params) {
         return (!params.hasOwnProperty('value') ||
             (typeof params.value === 'undefined')) ?  {} :
-                {'color': Functions.getColorByString(params.value)};
+                {'color': Functions.getColorByString(params.value, 100, 25, 1, 180)};
     }
 
     private getMethodColor (params) {
-        return (!params.hasOwnProperty('value') ||
-            (typeof params.value === 'undefined')) ?  {} :
-                {'color': Functions.getColorByString(params.value)};
+        if (params.hasOwnProperty('value') && typeof params.value !== undefined) {
+
+            const color = Functions.getMethodColor(params.value);
+
+            return {'color' : color};
+        } else {
+            return {};
+        }
     }
 
     private getBkgColorTable(params) {
         if (this.isLokiQuery) {
             return {
                 'background-color': '#fff'
-            }
+            };
         }
-        const sid = params.data.sid;
-        const his = this.hashCode(sid);
-        const color = 'hsla(' + this.intToARGB(his) + ', 75%, 85%, 0.3)';
         return {
-            'background-color': color
+            'background-color': Functions.getColorByString(params.data.callid, 60, 80, 0.8)
         };
     }
 
@@ -689,7 +769,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }, 300);
     }
 
-    private setQuickFilter() {
+      setQuickFilter() {
       this.gridOptions.api.setQuickFilter(this.filterGridValue);
      }
 
@@ -729,15 +809,20 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             return a;
         }, []);
 
-        const color = Functions.getColorByString(sid);
+        const timeArray = selectedRows.map( i => i.create_date || i.update_ts);
+        const timeArray_from = selectedRows.length ? Math.min.apply(this, timeArray) : row.data.create_date;
+        const timeArray_to = selectedRows.length ? Math.max.apply(this, timeArray) : row.data.create_date;
+
+        const color = Functions.getColorByString(sid, 75, 60, 1);
 
         const request = {
             param: Functions.cloneObject(this.config.param || {} as any),
             timestamp: {
-                from: row.data.create_date + this.limitRange.from,
-                to: row.data.create_date + this.limitRange.to
+                from: timeArray_from + this.limitRange.from,
+                to: timeArray_to + this.limitRange.to
             }
         };
+
         request.param.search = {};
         request.param.search[_protocol_profile] = {
             id: row.data.id,
@@ -773,14 +858,24 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         };
         let localDataQOS: any = null, localData: any = null;
 
-        this._ers.postQOS(this.searchService.queryBuilderQOS(row, selectedCallId)).toPromise().then(dataQOS => {
-            localDataQOS = dataQOS;
-            readyToOpen(localData, localDataQOS);
-        });
+        this._cts.getTransaction(request).toPromise().then(res => {
+            const allCallIds = res.data.calldata.map(i => i.sid).sort().filter((i, k, a) => a[k - 1] !== i);
+            const timestampArray: Array<number> = [];
+            res.data.calldata.forEach(data => timestampArray.push(data.micro_ts));
+            const timestamp = {
+                from: Math.min(...timestampArray) + this.limitRange.from,
+                to: Math.max(...timestampArray) + this.limitRange.to
+            };
+            windowData.snapShotTimeRange = timestamp;
+            this._ers.postQOS(this.searchService.queryBuilderQOS(row, allCallIds, timestamp)).toPromise().then(dataQOS => {
+                localDataQOS = dataQOS;
+                readyToOpen(localData, localDataQOS);
+                this.changeDetectorRefs.detectChanges();
+            });
 
-        this._cts.getTransaction(request).toPromise().then(data => {
-            localData = data;
+            localData = res;
             readyToOpen(localData, localDataQOS);
+            this.changeDetectorRefs.detectChanges();
         });
     }
 
@@ -795,7 +890,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
         const _protocol_profile = row && row.data && row.data.profile ? row.data.profile : this.protocol_profile;
 
-        const color = Functions.getColorByString(row.data.method || 'LOG');
+        const color = Functions.getMethodColor(row.data.method);
         const mData = {
             loaded: false,
             data: {} as any,
@@ -893,25 +988,30 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 return {name: i, value: val};
             }).filter(i => typeof i.value !== 'object' && i.name !== 'raw');
 
-            this.changeDetectorRefs.detectChanges();
             mData.loaded = true;
+            this.changeDetectorRefs.detectChanges();
         }
     }
 
     public closeWindowMessage(id: number) {
         this.arrMessageDetail.splice(id, 1);
     }
+    onLokiSort() {
+        this.lokiSort = this.lokiSorted;
+    }
     onSettingButtonClick() {
         const params = {
             api: this.gridApi,
             columnApi: this.gridColumnApi,
-            context: this.context
+            context: this.context,
+            lokiSort: this.lokiSort
         } as any;
 
         this.dialog.open(DialogSettingsGridDialog, {
             width:  '500px', data: {
                 apicol: params.columnApi,
                 apipoint: params.api,
+                lokisort: params.lokiSort,
                 columns: params.context.componentParent.columnDefs,
                 idParent: params.context.componentParent.id
             }

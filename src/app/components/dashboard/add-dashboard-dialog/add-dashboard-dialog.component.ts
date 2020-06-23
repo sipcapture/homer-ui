@@ -5,7 +5,7 @@ import { DashboardService } from '@app/services';
 @Component({
     selector: 'app-add-dashboard-dialog',
     templateUrl: './add-dashboard-dialog.component.html',
-    styleUrls: ['./add-dashboard-dialog.component.css']
+    styleUrls: ['./add-dashboard-dialog.component.scss']
 })
 export class AddDashboardDialogComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('fileSelect', {static: true}) fileSelect;

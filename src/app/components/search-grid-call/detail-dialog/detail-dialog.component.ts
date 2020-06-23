@@ -1,22 +1,36 @@
-import { Component, Input, Output, EventEmitter, OnInit, HostListener, ElementRef, ViewChild } from '@angular/core';
+import {
+    Component,
+    Input,
+    Output,
+    EventEmitter,
+    OnInit,
+    HostListener,
+    ElementRef,
+    ViewChild,
+    ChangeDetectionStrategy
+} from '@angular/core';
 import { Functions } from '../../../helpers/functions';
 import { PreferenceAdvancedService } from '@app/services';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
     selector: 'app-detail-dialog',
     templateUrl: './detail-dialog.component.html',
-    styleUrls: ['./detail-dialog.component.css']
+    styleUrls: ['./detail-dialog.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DetailDialogComponent implements OnInit {
     @Input() titleId: string;
     @Input() sipDataItem: any;
-    @Input() qosData: any;
+
     @Input() headerColor: any;
     @Input() mouseEventData: any;
     @Input() snapShotTimeRange: any;
     isSimplify = true;
-    isSimplifyPort = true;
+    isSimplifyPort = false;
+    isCombineByAlias = true;
     IdFromCallID;
+    RTPFilterForFLOW = true;
     activeTab = 0;
     isFilterOpened = false;
     isFilterOpenedOutside = false;
@@ -27,6 +41,7 @@ export class DetailDialogComponent implements OnInit {
         logs: true,
         export: false
     };
+    public flowFilters: any;
     exportAsPNG = false;
     isBrowserWindow = false;
     _isLoaded = false;
@@ -79,16 +94,28 @@ export class DetailDialogComponent implements OnInit {
                 }));
 
             this.checkboxListFilterCallId = filterByParam('sid');
+            this.changeDetectorRefs.detectChanges();
         }
+    }
+
+    _qosData: any;
+
+    @Input() set qosData(value) {
+        this._qosData = value;
+        this.changeDetectorRefs.detectChanges();
+    }
+    get qosData() {
+        return this._qosData;
     }
 
     @Output() openMessage: EventEmitter<any> = new EventEmitter();
     @Output() close: EventEmitter<any> = new EventEmitter();
     @ViewChild('filterContainer', {static: false}) filterContainer: ElementRef;
     dataLogs: Array<any>;
-    
+
     constructor(
-        private _pas: PreferenceAdvancedService
+        private _pas: PreferenceAdvancedService,
+        private changeDetectorRefs: ChangeDetectorRef
     ) { }
 
     ngOnInit () {
@@ -102,10 +129,22 @@ export class DetailDialogComponent implements OnInit {
         this.tabs.logs = true; // this.dataLogs.length > 0;
         this.tabs.messages = this.tabs.flow = this.sipDataItem.data.messages.length > 0;
         this.tabs.export = this.sipDataItem.data.messages && !!this.IdFromCallID;
+        this.changeDetectorRefs.detectChanges();
     }
     onTabQos(isVisible: boolean) {
         setTimeout(() => {
             this.tabs.qos = isVisible;
+            if (isVisible) {
+                const isRTP = this._qosData && this._qosData.rtp && this._qosData.rtp.data && this._qosData.rtp.data.length > 0;
+                if (isRTP) {
+                    this.checkboxListFilterPayloadType.push({
+                        payloadType: '5',
+                        selected: true,
+                        title: 'RTP'
+                    });
+                    this.changeDetectorRefs.detectChanges();
+                }
+            }
         });
     }
     onClose () {
@@ -113,7 +152,7 @@ export class DetailDialogComponent implements OnInit {
     }
 
     addWindow(data: any) {
-        if (data.method === 'LOG') {
+        if (data.method === 'LOG' || data.typeItem === 'RTP') {
             this.openMessage.emit({
                 data: data,
                 isLog: true,
@@ -144,6 +183,7 @@ export class DetailDialogComponent implements OnInit {
                         if (tabpositon && typeof tabpositon === 'string' && tabpositon !== '') {
                             this.tabIndexByDefault = Object.keys(this.tabs).indexOf(tabpositon);
                             this.activeTab = this.tabIndexByDefault;
+                            this.changeDetectorRefs.detectChanges();
                         }
                     }
                 } catch (err) { }
@@ -153,7 +193,10 @@ export class DetailDialogComponent implements OnInit {
 
     onExportFlowAsPNG() {
         this.exportAsPNG = true;
-        setTimeout(() => { this.exportAsPNG = false; });
+        setTimeout(() => {
+            this.exportAsPNG = false;
+            this.changeDetectorRefs.detectChanges();
+        });
     }
     doFilterMessages() {
         setTimeout(() => {
@@ -171,16 +214,29 @@ export class DetailDialogComponent implements OnInit {
 
                 return boolPayloadType && boolPort && boolCallId;
             });
+
+            const RTPFilter = this.checkboxListFilterPayloadType.find(i => i.title === 'RTP');
+            this.RTPFilterForFLOW = RTPFilter ? RTPFilter.selected : true;
+
             const selectedId = this.sipDataItem.data.messages.map(i => i.id);
 
             this.sipDataItem.data.calldata = fc(this._messagesBuffer).calldata.filter(i => selectedId.includes(i.id));
             this.sipDataItem = Functions.cloneObject(this.sipDataItem); // refresh data
+            this.flowFilters = {
+                isSimplify: this.isSimplify,
+                isSimplifyPort: !this.isSimplifyPort,
+                isCombineByAlias: this.isCombineByAlias,
+                PayloadType: this.checkboxListFilterPayloadType,
+                CallId: this.checkboxListFilterCallId
+            };
+            this.changeDetectorRefs.detectChanges();
         }, 100);
     }
 
     doOpenFilter() {
         setTimeout(() => {
             this.isFilterOpened = true;
+            this.changeDetectorRefs.detectChanges();
         }, 10);
     }
 
@@ -190,6 +246,7 @@ export class DetailDialogComponent implements OnInit {
             const clickedInside = this.filterContainer.nativeElement.contains(targetElement);
             if (!clickedInside && this.isFilterOpened) {
                 this.isFilterOpened = false;
+                this.changeDetectorRefs.detectChanges();
             }
         }
     }

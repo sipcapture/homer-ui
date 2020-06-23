@@ -6,7 +6,7 @@ import { SelectList } from '../influxdbchart-widget/setting-influxdbchart-widget
 @Component({
     selector: 'app-grafana-rsearch-widget-component',
     templateUrl: 'setting-grafana-widget.component.html',
-    styleUrls: ['./setting-grafana-widget.component.css']
+    styleUrls: ['./setting-grafana-widget.component.scss']
 })
 
 export class SettingIframeWidgetComponent {

@@ -12,9 +12,10 @@ import { AppRoutingModule } from '@app/app-routing.module';
 import { FilterPipe } from '@app/filter.pipe';
 import { SafePipe } from '@app/safe.pipe';
 import { HtmlPipe } from '@app/html.pipe';
+import { MomentPipe } from './moment.pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HepicMaterialModule } from '@app/app.material-module';
-
+import {MatIconModule} from '@angular/material/icon';
 /* @app/components */
 // import * as components from '@app/components';
 // import * as widgets from '@app/components/widgets';
@@ -49,6 +50,7 @@ import {
     ResultWidgetComponent,
     RsearchWidgetComponent,
     AlertWidgetComponent,
+    SmartInputWidgetComponent,
     SettingClockWidgetComponent,
     SettingGeneralIframeWidgetComponent,
     SettingIframeWidgetComponent,
@@ -59,7 +61,6 @@ import {
     SettingResultWidgetComponent,
     SettingsAceEditorWidgetComponent,
     SettingAlertWidgetComponent,
-   
 
 } from '@app/components/widgets';
 
@@ -96,7 +97,7 @@ import {
     TabLogsComponent,
     TabLokiComponent,
     TabMessagesComponent,
-    TabQosComponent
+    TabQosComponent,
 } from '@app/components/search-grid-call';
 
 import { MenuComponent } from '@app/components/menu/menu.component';
@@ -114,6 +115,7 @@ import { MarkdownModule } from 'ngx-markdown';
 import { ColorChromeModule } from 'ngx-color/chrome';
 import { ColorCircleModule } from 'ngx-color/circle';
 
+
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {
 };
 
@@ -124,7 +126,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         FilterPipe,
         SafePipe,
         HtmlPipe,
-        
+        MomentPipe,
         /** components */
         AlertComponent,
         DashboardComponent,
@@ -175,6 +177,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         AlertWidgetComponent,
         ResultWidgetComponent,
         RsearchWidgetComponent,
+        SmartInputWidgetComponent,
         SettingClockWidgetComponent,
         SettingGeneralIframeWidgetComponent,
         SettingIframeWidgetComponent,
@@ -185,7 +188,6 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingResultWidgetComponent,
         SettingsAceEditorWidgetComponent,
         SettingAlertWidgetComponent,
-        
         /** dialogs */
         DialogAdvancedComponent,
         DialogAgentsubComponent,
@@ -219,6 +221,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         routing,
         AppRoutingModule,
         HepicMaterialModule,
+        MatIconModule,
         AgGridModule.withComponents([]),
         NgxDaterangepickerMd.forRoot(),
         NgxJsonViewerModule,
@@ -226,7 +229,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         AceEditorModule,
         MarkdownModule.forRoot(),
         ColorChromeModule,
-        ColorCircleModule
+        ColorCircleModule,
     ],
     entryComponents: [
         MenuComponent,
@@ -260,6 +263,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         ResultWidgetComponent,
         RsearchWidgetComponent,
         AlertWidgetComponent,
+        SmartInputWidgetComponent,
         SettingClockWidgetComponent,
         SettingGeneralIframeWidgetComponent,
         SettingIframeWidgetComponent,
@@ -270,7 +274,6 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingResultWidgetComponent,
         SettingsAceEditorWidgetComponent,
         SettingAlertWidgetComponent,
-
         /** dashboard */
         AddDashboardDialogComponent,
         AddDialogComponent,

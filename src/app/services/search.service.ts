@@ -57,8 +57,8 @@ export class SearchService {
         } else {
             SearchService.currentQuery.location = this.location || SearchService.currentQuery.location;
         }
-        if (query.protocol) {
-            this.protocol = query.protocol;
+        if (query.protocol_id) {
+            this.protocol = query.protocol_id;
         } else {
             SearchService.currentQuery.protocol_id = this.protocol || SearchService.currentQuery.protocol_id;
             if (!SearchService.currentQuery.protocol_id) {
@@ -137,7 +137,7 @@ export class SearchService {
         return locationArray;
     }
 
-    public queryBuilderQOS (row: any, selectedCallId: any) { /** search-grid-call */
+    public queryBuilderQOS (row: any, selectedCallId: any, timestamp: any) { /** search-grid-call */
 
         const labels = selectedCallId;
 
@@ -155,7 +155,7 @@ export class SearchService {
             dbnode.node = [row.data.dbnode];
         }
         return {
-            timestamp: this.dateTimeRangeService.getDatesForQuery(true),
+            timestamp: timestamp,
             param: {
                 search: search,
                 location: dbnode,

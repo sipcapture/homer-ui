@@ -14,14 +14,16 @@ import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 @Component({
     selector: 'app-influxdbchart-widget',
     templateUrl: './influxdbchart-widget.component.html',
-    styleUrls: ['./influxdbchart-widget.component.css']
+    styleUrls: ['./influxdbchart-widget.component.scss']
 })
 @Widget({
     title: 'InfluxDB',
     description: 'Display InfluxDB Metrics',
     category: 'Metrics',
     indexName: 'influxdbchart',
-    className: 'InfluxdbchartWidgetComponent'
+    className: 'InfluxdbchartWidgetComponent',
+    minHeight:300,
+    minWidth:300
 })
 export class InfluxdbchartWidgetComponent implements IWidget {
     @Input() id: string;

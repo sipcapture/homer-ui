@@ -31,7 +31,7 @@ export interface IframeConfig {
 @Component({
     selector: 'app-iframe-widget',
     templateUrl: './grafana-widget.component.html',
-    styleUrls: ['./grafana-widget.component.css']
+    styleUrls: ['./grafana-widget.component.scss']
 })
 @Widget({
     title: 'Grafana',
@@ -39,7 +39,9 @@ export interface IframeConfig {
     category: 'Metrics',
     indexName: 'iframe',
     advancedName: 'grafana',
-    className: 'IframeWidgetComponent'
+    className: 'IframeWidgetComponent',
+    minHeight: 300,
+    minWidth: 300
 })
 export class IframeWidgetComponent implements IWidget {
     @Input() config: IframeConfig;

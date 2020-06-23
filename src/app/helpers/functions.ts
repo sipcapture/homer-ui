@@ -97,10 +97,39 @@ export class Functions {
         }
     }
 
-    static getColorByString(str: string) {
+    static getColorByString(
+        str: string,
+        saturation: number,
+        lightness: number,
+        alpha: number = 1,
+        offset: number = 0
+    ) {
         const col = Functions.getColorByStringHEX(str);
-        const num = parseInt(col, 16) % 360;
-        return `hsl(${num}, 100%, 25%)`;
+        /* const num = parseInt(col, 16) % 360; */
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(col);
+
+        let r = parseInt(result[1], 16);
+        let g = parseInt(result[2], 16);
+        let b = parseInt(result[3], 16);
+        r /= 255, g /= 255, b /= 255;
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+        if (max === min) {
+            h = s = 0; // achromatic
+        } else {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch(max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+        h = Math.round(h * 360);
+        saturation = saturation || Math.round(s * 100);
+        lightness = lightness || Math.round(l * 100);
+        return `hsl(${h - offset}, ${saturation}%, ${lightness}%,${alpha})`;
     }
     static getColorByStringHEX(str: string) {
         if (str === 'LOG') {
@@ -122,6 +151,27 @@ export class Functions {
             col = col.substring(0, 6);
         }
         return col;
+    }
+    static getMethodColor (str){
+        let color:string = 'hsl(0,0%,0%)'
+        if(str === 'INVITE'){
+            color = 'hsl(227.5,82.4%,51%)'
+        }else if(str === "BYE" || str === "CANCEL"){
+            color = 'hsl(120,100%,25%)'
+        }else if(str >= 100 && str < 200){
+            color = 'hsl(0,0%,0%)'
+        }else if(str >= 200 && str < 300){
+            color = 'hsl(120,70%,50%)'
+        }else if(str >= 300 && str < 400){
+            color = 'hsl(280,100%,50%)'
+        }else if(str >= 400 && str < 500){
+            color = 'hsl(15,100%,45%)'
+        }else if(str >= 500 && str < 700){
+            color = 'hsl(0,100%,45%)'
+        }else {
+            color = 'hsl(0,0%,0%)'
+        }
+        return color
     }
     static messageFormatter(dist: Array<any>) {
         const dataSource: Array<any> = [];
@@ -195,5 +245,23 @@ export class Functions {
                 window.URL.revokeObjectURL(url);
             }, 0);
         }
+    }
+
+     static getTimeStamp(v: number,p: string):number {
+        let vlength = v.toString().length
+        let tlength = 0
+        let s = 10
+        let ms = 13
+        let usec = 16
+        switch(p){
+          case 'sec' : tlength = s ;
+          break;
+          case 'msec' : tlength = ms;
+          break;
+          case 'usec' : tlength = usec;
+          break;
+          default: tlength = ms
+        }
+      return Math.floor(v * Math.pow(10, (tlength - vlength)))
     }
 }

@@ -11,12 +11,13 @@ export interface DashboardConfig {
     columns: number;
     maxrows: number;
     pushing: boolean;
+    ignoreMinSize: string;
 }
 
 @Component({
     selector: 'app-edit-dialog',
     templateUrl: './edit-dialog.component.html',
-    styleUrls: ['./edit-dialog.component.css']
+    styleUrls: ['./edit-dialog.component.scss']
 })
 export class EditDialogComponent {
     typeList = [];
@@ -29,7 +30,11 @@ export class EditDialogComponent {
     };
     isHomeOrSearch = false;
     isSEARCH = false;
-
+    ignoreMinSizeList: { [key: string]: string } = {
+        /*'Limit': 'limit', */
+        'Warning': 'warning',
+        'Ignore': 'Ignore'
+    };
     callBackExport: Function = null;
 
     constructor(

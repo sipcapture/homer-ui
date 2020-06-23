@@ -1,4 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, OnDestroy } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Input,
+    Output,
+    EventEmitter,
+    ViewChild,
+    OnDestroy,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef
+} from '@angular/core';
 import { AgentsubService, SearchService } from '@app/services';
 import { Functions } from '@app/helpers/functions';
 import { MatTabGroup } from '@angular/material/tabs';
@@ -6,7 +16,8 @@ import { MatTabGroup } from '@angular/material/tabs';
 @Component({
     selector: 'app-tab-hepsub',
     templateUrl: './tab-hepsub.component.html',
-    styleUrls: ['./tab-hepsub.component.css']
+    styleUrls: ['./tab-hepsub.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TabHepsubComponent implements OnInit, OnDestroy {
     @Input() id: any;
@@ -18,14 +29,15 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
 
     @ViewChild('matTabGroup', {static: false}) matTabGroup: MatTabGroup;
     indexTabPosition = 0;
-    
+
     isLogs = true;
     subTabList = [];
     jsonData: any;
     _interval: any;
     constructor(
         private agentsubService: AgentsubService,
-        private searchService: SearchService
+        private searchService: SearchService,
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit() {
@@ -41,28 +53,31 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
                 this.haveData.emit(true);
             } else {
                 this.haveData.emit(false);
-                console.error('error', res);
             }
-        })
+            this.cdr.detectChanges();
+        });
         setTimeout(() => {
             this.isLogs = this.dataLogs.length > 0;
-        })
+            this.cdr.detectChanges();
+        });
         this._interval = setInterval(() => {
             this.matTabGroup.realignInkBar();
-        }, 350)
+            this.cdr.detectChanges();
+        }, 350);
     }
     async onTabClick(uuid, type) {
         const res2 = await this.agentsubService.getHepsubElements({uuid, type, data: this.getQuery()}).toPromise();
         if (res2 && res2.data) {
             this.jsonData = res2.data;
             this.indexTabPosition = 0;
+            this.cdr.detectChanges();
         }
     }
     getProfile() {
         return this.dataItem &&
             this.dataItem.data &&
             this.dataItem.data.messages &&
-            this.dataItem.data.messages[0] && 
+            this.dataItem.data.messages[0] &&
             this.dataItem.data.messages[0].profile ?
                 this.dataItem.data.messages[0].profile : null;
     }
@@ -77,19 +92,19 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
         return callidArray;
     }
     private getDBNode() {
-        const data = 
-            this.dataItem && 
-            this.dataItem.data && 
-            this.dataItem.data.messages && 
-            this.dataItem.data.messages[0] && 
-            this.dataItem.data.messages[0].dbnode ? 
+        const data =
+            this.dataItem &&
+            this.dataItem.data &&
+            this.dataItem.data.messages &&
+            this.dataItem.data.messages[0] &&
+            this.dataItem.data.messages[0].dbnode ?
             this.dataItem.data.messages[0].dbnode : null;
         return data;
     }
     private getQuery(): any {
         const query = this.searchService.queryBuilder_EXPORT(this.id, this.getCallIdArray(), this.getProfile());
         query.timestamp = Functions.cloneObject(this.snapShotTimeRange);
-        if( this.getDBNode() && query.param && query.param.location && query.param.location.node ) {
+        if (this.getDBNode() && query.param && query.param.location && query.param.location.node ) {
             query.param.location.node = [this.getDBNode()];
         }
         return query;

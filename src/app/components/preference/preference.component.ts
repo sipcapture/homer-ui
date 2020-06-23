@@ -46,7 +46,7 @@ import { SessionStorageService } from '../../services/session-storage.service';
 @Component({
     selector: 'app-preference',
     templateUrl: './preference.component.html',
-    styleUrls: ['./preference.component.css']
+    styleUrls: ['./preference.component.scss']
 })
 export class PreferenceComponent implements OnInit, OnDestroy {
     isLoading = false;
@@ -174,8 +174,8 @@ export class PreferenceComponent implements OnInit, OnDestroy {
         } else {
             this.pagesStructure = {
                 users: ['Firstname', 'Lastname', 'Username', 'Email', 'tools'],
-                'user settings': ['Username', 'Partid', 'Category', 'Param', 'Data', 'tools'],
-                advanced: ['Partid', 'Category', 'Param', 'Data'],
+                'user settings': ['Username', /*'Partid',*/ 'Category', 'Param', 'Data', 'tools'],
+                advanced: [/*'Partid',*/ 'Category', 'Param', 'Data'],
             };
 
             this.service = {

@@ -6,18 +6,20 @@ export interface DialogData {
     apicol: any;
     apipoint: any;
     columns: any;
+    lokisort: any;
     idParent?: string;
 }
 
 @Component({
     selector: 'app-grid-setting-dialog',
     templateUrl: 'grid-settings-dialog.html',
-    styleUrls: ['./grid-settings-dialog.css']
+    styleUrls: ['./grid-settings-dialog.scss']
 })
 export class DialogSettingsGridDialog {
 
     public apiColumn: any;
     apiPoint: any;
+    lokiSort: any;
     id: string;
     _interval: any;
     allColumnIds: Array<any> = [];
@@ -28,6 +30,7 @@ export class DialogSettingsGridDialog {
     ) {
         this.apiColumn = data.apicol;
         this.apiPoint = data.apipoint;
+        this.lokiSort = data.lokisort
         this.id = data.idParent;
 
         Object.values(this.apiColumn.getAllColumns() as Object)
@@ -38,10 +41,12 @@ export class DialogSettingsGridDialog {
             selected: column.visible
         }));
         this.allColumnIds = this.allColumnIds
-            .map(i => JSON.stringify(i))
+            .map( i => JSON.stringify(i))
             .sort()
             .filter((i, k, arr) => i !== arr[k - 1])
             .map(i => JSON.parse(i));
+        let ic = this.allColumnIds.findIndex(column => column.field === 'checkbox');
+        this.allColumnIds.splice(ic,1);
         let lsIndex = 'result-state';
         if ( this.id ) {
             lsIndex += `-${this.id}`;
@@ -49,6 +54,8 @@ export class DialogSettingsGridDialog {
         if(localStorage.getItem(lsIndex)){
             this.allColumnIds = Functions.cloneObject(JSON.parse(localStorage.getItem(lsIndex)))
         }
+        let i = this.allColumnIds.findIndex(column => column.field === 'checkbox');
+        this.allColumnIds.splice(i,1);
         this._bufferData = Functions.cloneObject(this.allColumnIds);
         
     }

@@ -1,4 +1,4 @@
-import { Component,  Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 import { IWidget } from '../IWidget';
 import { DashboardService } from '@app/services';
@@ -9,7 +9,8 @@ import { Functions } from '@app/helpers/functions';
 @Component({
     selector: 'app-result-widget',
     templateUrl: './result-widget.component.html',
-    styleUrls: ['./result-widget.component.css']
+    styleUrls: ['./result-widget.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Default
 })
 @Widget({
     title: 'Display Results',
@@ -17,7 +18,9 @@ import { Functions } from '@app/helpers/functions';
     category: 'Visualize',
     indexName: 'result',
     settingWindow: true,
-    className: 'ResultWidgetComponent'
+    className: 'ResultWidgetComponent',
+    minWidth: 400,
+    minHeight: 600
 })
 export class ResultWidgetComponent implements IWidget {
     @Input() id: string;
@@ -26,12 +29,12 @@ export class ResultWidgetComponent implements IWidget {
 
     lastTimestamp: number;
     title: string;
-    isData:boolean;
     isLoaded = false;
     _interval: any;
     constructor(
         public dialog: MatDialog,
-        private _ds: DashboardService
+        private _ds: DashboardService,
+        private cdr: ChangeDetectorRef
     ) {
         this._ds.dashboardEvent.subscribe(data => {
             const dataId = data.resultWidget[this.id];
@@ -53,26 +56,16 @@ export class ResultWidgetComponent implements IWidget {
         this.isLoaded = false;
         setTimeout(() => {
             this.isLoaded = true;
+            this.cdr.detectChanges();
         }, 1000);
     }
 
     ngOnInit() {
         WidgetArrayInstance[this.id] = this as IWidget;
-        this._interval = setInterval(() => {
-            var ls = JSON.parse(localStorage.getItem('searchQueryWidgetsResult'));
-            if (Object.keys(ls.resultWidget).length != 0){
-                this.isData=true;
-                clearInterval(this._interval);
-            }else{
-                this.isData=false;
-            }
-            console.log('test');
-        }, 1000);
-
-    
     }
     onDataReady() {
         this.isLoaded = true;
+        this.cdr.detectChanges();
     }
     async openDialog() {
         const dialogRef = this.dialog.open(SettingResultWidgetComponent, {
@@ -82,6 +75,7 @@ export class ResultWidgetComponent implements IWidget {
         if (result) {
             this.title = result.title;
             this.saveConfig();
+            this.cdr.detectChanges();
         }
     }
     private saveConfig() {

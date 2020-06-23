@@ -5,7 +5,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dial
 @Component({
     selector: 'app-settings-ace-editor-widget-component',
     templateUrl: 'settings-ace-editor-widget.component.html',
-    styleUrls: ['./settings-ace-editor-widget.component.css']
+    styleUrls: ['./settings-ace-editor-widget.component.scss']
 })
 export class SettingsAceEditorWidgetComponent {
     @ViewChild('editor', {static: false}) editor;
@@ -23,7 +23,9 @@ export class SettingsAceEditorWidgetComponent {
     ngAfterViewInit() {
         this.editor.getEditor().setOptions({
             showLineNumbers: true,
-            tabSize: 2
+            tabSize: 2,
+            fontFamily: "Menlo,Monaco,Consolas,Courier New,monospace",
+            
         });
     }
 
