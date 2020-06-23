@@ -305,10 +305,10 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             const [isC, isS] = [this._isCombineByAlias, this._isSimplifyPort];
             let num = 0;
             if (isC && isS) { // 1 1
-                num = this.aliasTitle.findIndex(i => i.arrip.includes(ip));
+                num = this.aliasTitle.findIndex(i =>  i.arrip.includes(ip));
             } else
             if (!isC && isS) { // 0 1
-                num = this.aliasTitle.findIndex(i => i.IP.includes(ip));
+                num = this.aliasTitle.findIndex(i =>  i.IP.includes(ip));
             } else
             if (!isS) { // 1 0
                 num = this.aliasTitle.findIndex(i => (i.IP.includes(ip) && i.PORT === port + '') || i.ip === ipId);
