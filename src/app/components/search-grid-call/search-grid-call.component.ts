@@ -76,8 +76,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     lastTimestamp: number;
     localData: any;
     queryTextLoki: string;
-   
-    lokiSorted = "";
+
+    lokiSorted = '';
     searchSliderConfig = {
         countFieldColumns: 4,
         config: {
@@ -113,7 +113,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
     protocol_profile: string;
     config: any = {
-        config:{},
+        config: {},
         param: {
             transaction: {},
             limit: 200,
@@ -192,29 +192,28 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     ngOnInit() {
-     this.lokiSort = this.getLokiSort()
-    if(this.isLokiQuery){
-     
-        this.update(true)
-        
+     this.lokiSort = this.getLokiSort();
+    if (this.isLokiQuery) {
+
+        this.update(true);
+
     }
         if (this.inContainer) {
             this.subscriptionDashboardEvent = this._ds.dashboardEvent.subscribe(data => {
                 const dataId = data.resultWidget[this.id];
                 if (dataId && dataId.query && this.lastTimestamp !== dataId.timestamp) {
                     this.localData = dataId.query;
-                    
+
                     this.protocol_profile = this.localData.protocol_id;
 
                     this.lastTimestamp = dataId.timestamp;
 
                     if (this.protocol_profile === ConstValue.LOKI_PREFIX || (this.localData && this.localData.serverLoki)) {
                         this.queryTextLoki = dataId.query.text;
-                        this.lokiSort = this.localData.lokiSort || this.config.lokiSort
+                        this.lokiSort = this.localData.lokiSort || this.config.lokiSort;
                         this.isLokiQuery = true;
-                       
-                        this.update(true)
-                       
+
+                        this.update(true);
                     } else {
                         this.isLokiQuery = false;
                     }
@@ -235,7 +234,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                         this.update(true);
                     }
                 }
-                
+
                 this.changeDetectorRefs.detectChanges();
             });
         } else {
@@ -286,7 +285,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             }
         });
     }
- 
+
     async initSearchSlider(isImportantClear = false) {
         this.isThisSelfQuery = false;
 
@@ -354,16 +353,16 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
     private getQueryData() {
         if (!this.id) {
-        
+
             const params = Functions.getUriJson();
-           
+
             if (params && params.param) {
                 /**
                  * query configuration from GET params
                  */
-             
+
                 this.localData = params.param;
-        
+
                 this.protocol_profile = Object.keys(params.param.search)[0];
                 this.config.param = Functions.cloneObject(params.param);
                 if (params.param.search &&
@@ -388,17 +387,17 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.isLokiQuery = false;
             } else {
                 this.localData = this.searchService.getLocalStorageQuery();
-                if(this.lokiSort){
-                    this.localData.lokiSort = this.lokiSort
+                if (this.lokiSort) {
+                    this.localData.lokiSort = this.lokiSort;
                 }
-         
+
                 this.protocol_profile = this.localData.protocol_id;
 
                 if (this.protocol_profile === ConstValue.LOKI_PREFIX || (this.localData && this.localData.serverLoki)) {
                     this.isLokiQuery = true;
                     this.queryTextLoki = this.localData.text;
-                    
-      
+
+
                 } else {
                     this.isLokiQuery = false;
                 }
@@ -423,22 +422,22 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     public onUpdateQueryLoki(event) {
-        
+
         this.searchQueryLoki = event;
-        this.searchQueryLoki.lokiSort = this.lokiSort
+        this.searchQueryLoki.lokiSort = this.lokiSort;
         this.searchQueryLoki.limit = this.localData.limit * 1 || 100;
         this.searchQueryLoki.protocol_id = ConstValue.LOKI_PREFIX;
         this.searchQueryLoki.fields = [];
         this.searchService.setLocalStorageQuery(this.searchQueryLoki);
     }
-    public onUpdateLokiSort(event){
+    public onUpdateLokiSort(event) {
 
-        this.searchQueryLoki.lokiSort = event
-        localStorage.setItem("lokiSort",event)
-        this.searchService.setLocalStorageQuery(this.searchQueryLoki)
+        this.searchQueryLoki.lokiSort = event;
+        localStorage.setItem('lokiSort', event);
+        this.searchService.setLocalStorageQuery(this.searchQueryLoki);
     }
-    public getLokiSort(){
-        return localStorage.getItem("lokiSort")
+    public getLokiSort() {
+        return localStorage.getItem('lokiSort');
     }
     private queryBuilderForLoki() {
         if (!this.localData) {
@@ -572,7 +571,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     };
                     vaColumn.autoHeight = true;
                 }
-              
                 myRemoteColumns.push(vaColumn);
             }
             const restoreColumns = this.localStateHeaders(myRemoteColumns);
@@ -642,10 +640,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }
         this.config.timestamp = this._dtrs.getDatesForQuery(true);
        this.config.lokiSort = this.lokiSort;
-       if(this.localData){
+       if (this.localData) {
         this.localData.lokiSort = this.config.lokiSort;
        }
- 
+
         if (this.inContainer) { /* if ag-grid in result widget */
             this.getHeaders();
         } else {
@@ -657,20 +655,16 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.rowData = result.data.sort(( a, b ) => {
                     a = new Date(a.micro_ts).getTime();
                     b = new Date(b.micro_ts).getTime();
-                    if(this.lokiSort === "desc"){
-                     
+                    if (this.lokiSort === 'desc') {
                         return ( a < b ) ? 1 : (( a > b ) ? -1 : 0);
-                    }
-                    else if(this.lokiSort === "asc") {
+                    } else if (this.lokiSort === 'asc') {
                         return ( a < b ) ? -1 : (( a > b ) ? 1 : 0);
-                
                     }
                 });
                 this.sizeToFit();
                 this.changeDetectorRefs.detectChanges();
                 setTimeout(() => { /** for grid updated autoHeight and sizeToFit */
                     this.rowData = Functions.cloneObject(this.rowData);
-                    
                     this.dataReady.emit({});
                     this.changeDetectorRefs.detectChanges();
                 }, 600);
@@ -684,13 +678,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     this.rowData = [];
                     this.dataReady.emit({});
                     this.changeDetectorRefs.detectChanges();
-                  
+
                     return;
                 }
-               
+
 
                this.rowData = result.data;
-               console.log('default data comming')
                 for (let i = 0; i < this.rowData.length; i++) {
                     if (this.rowData[i].protocol !== undefined && this.rowData[i].protocol === 17) {
                         this.rowData[i].protocol = 'UDP';
@@ -703,7 +696,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.openTransactionByAdvancedSettings();
                 this.dataReady.emit({});
                 this.initSearchSlider();
-                
+
                 this.changeDetectorRefs.detectChanges();
             }, err => {
                 this.rowData = [];
@@ -1003,11 +996,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     public closeWindowMessage(id: number) {
         this.arrMessageDetail.splice(id, 1);
     }
-    onLokiSort(){
-      
+    onLokiSort() {
         this.lokiSort = this.lokiSorted;
-    
-      
     }
     onSettingButtonClick() {
         const params = {
