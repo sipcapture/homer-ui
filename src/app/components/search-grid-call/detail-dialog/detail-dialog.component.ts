@@ -27,7 +27,7 @@ export class DetailDialogComponent implements OnInit {
     @Input() mouseEventData: any;
     @Input() snapShotTimeRange: any;
     isSimplify = true;
-    isSimplifyPort = true;
+    isSimplifyPort = false;
     isCombineByAlias = true;
     IdFromCallID;
     RTPFilterForFLOW = true;
@@ -224,7 +224,7 @@ export class DetailDialogComponent implements OnInit {
             this.sipDataItem = Functions.cloneObject(this.sipDataItem); // refresh data
             this.flowFilters = {
                 isSimplify: this.isSimplify,
-                isSimplifyPort: this.isSimplifyPort,
+                isSimplifyPort: !this.isSimplifyPort,
                 isCombineByAlias: this.isCombineByAlias,
                 PayloadType: this.checkboxListFilterPayloadType,
                 CallId: this.checkboxListFilterCallId
