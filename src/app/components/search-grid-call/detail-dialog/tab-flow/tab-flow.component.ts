@@ -315,7 +315,6 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             }
             return num;
         };
-        console.log('this.aliasTitle', this.aliasTitle);
         const at = this.aliasTitle;
         if (at.length === 2 && at[1].arrip.length) {
             at.push({
