@@ -7,7 +7,8 @@ import {
     EventEmitter,
     Input,
     ChangeDetectionStrategy,
-    ChangeDetectorRef
+    ChangeDetectorRef,
+    HostListener
 } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { SmartService } from '@app/services';
@@ -90,6 +91,11 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
         }
         this.cdr.detectChanges();
     }
+    @HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+        if (event.key === 'Enter' && !this.trigger.menuOpen) {
+            event.preventDefault();
+        }
+    }
     async getLabels() {
         try {
             this.menuTitle = 'Labels';
@@ -107,7 +113,7 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
             const readyAdded: any = this.getObject(this.editor.innerText);
 
             this.popupList = labels;
-            
+
 
             if ( this.popupList.length > 0) {
                 this.trigger.openMenu();
@@ -145,6 +151,7 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
                 break;
             case 'Enter':
                 event.preventDefault();
+
                 if (!this.trigger.menuOpen) {
                     this.keyEnter.emit();
                 }
@@ -204,7 +211,7 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
         }, {});
         return out;
     }
-    getfieldCollectionFromQuery(obj: any){
+    getfieldCollectionFromQuery(obj: any) {
         const out: any = Object.entries(obj).map(item => {
             const [name, value] = item;
             return {

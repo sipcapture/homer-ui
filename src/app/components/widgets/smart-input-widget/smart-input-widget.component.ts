@@ -310,7 +310,7 @@ export class SmartInputWidgetComponent implements IWidget, OnInit, AfterViewInit
                         if (!Array.isArray(item.value)) {
                             this.targetResultsContainerValue.setValue([item.value]);
                         } else {
-                            this.targetResultsContainerValue.setValue([item.value]);
+                            this.targetResultsContainerValue.setValue(item.value);
                         }
                     }
                 }

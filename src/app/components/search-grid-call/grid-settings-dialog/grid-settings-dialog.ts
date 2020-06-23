@@ -6,6 +6,7 @@ export interface DialogData {
     apicol: any;
     apipoint: any;
     columns: any;
+    lokisort: any;
     idParent?: string;
 }
 
@@ -18,6 +19,7 @@ export class DialogSettingsGridDialog {
 
     public apiColumn: any;
     apiPoint: any;
+    lokiSort: any;
     id: string;
     _interval: any;
     allColumnIds: Array<any> = [];
@@ -28,6 +30,7 @@ export class DialogSettingsGridDialog {
     ) {
         this.apiColumn = data.apicol;
         this.apiPoint = data.apipoint;
+        this.lokiSort = data.lokisort
         this.id = data.idParent;
 
         Object.values(this.apiColumn.getAllColumns() as Object)
