@@ -96,17 +96,40 @@ export class Functions {
             }
         }
     }
-    // Functions.getColorByString(i, 100, 40, 1)
+
     static getColorByString(
         str: string,
-        saturation: number=  100,
-        lightness: number = 40,
+        saturation: number,
+        lightness: number,
         alpha: number = 1,
         offset: number = 0
     ) {
         const col = Functions.getColorByStringHEX(str);
-        const num = parseInt(col, 16) % 360;
-        return `hsl(${num - offset}, ${saturation}%, ${lightness}%,${alpha})`;
+        /* const num = parseInt(col, 16) % 360; */
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(col);
+
+        let r = parseInt(result[1], 16);
+        let g = parseInt(result[2], 16);
+        let b = parseInt(result[3], 16);
+        r /= 255, g /= 255, b /= 255;
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+        if (max === min) {
+            h = s = 0; // achromatic
+        } else {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch(max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+        h = Math.round(h * 360);
+        saturation = saturation || Math.round(s * 100);
+        lightness = lightness || Math.round(l * 100);
+        return `hsl(${h - offset}, ${saturation}%, ${lightness}%,${alpha})`;
     }
     static getColorByStringHEX(str: string) {
         if (str === 'LOG') {
