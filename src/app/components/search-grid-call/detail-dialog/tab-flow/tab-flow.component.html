@@ -8,7 +8,8 @@
     <div class="hosts" [ngStyle]="{'min-width.px': (isSimplify ? 150 : 200) * (flowGridLines.length)}">
         <!-- host titles -->
         <ng-template ngFor let-itemhost [ngForOf]="aliasTitle">
-            <div *ngIf="itemhost && !itemhost.hidden"
+            <div *ngIf="itemhost.empty" style="min-width: 100px;"></div>
+            <div *ngIf="!itemhost.empty && itemhost && !itemhost.hidden"
             [matTooltip]="_isCombineByAlias ? 
                 pipeToString(itemhost) :
                 itemhost.IP + (itemhost.PORT ? ':' + itemhost.PORT : '')"
