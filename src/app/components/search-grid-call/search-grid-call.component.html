@@ -6,6 +6,8 @@
 >
 <div *ngIf="isLokiQuery" style="display: flex; justify-content: center; align-items: center;">
     <strong  style="flex: 1;padding-left: 1.5rem;">LOKI Search</strong>
+
+
     <div style="flex: 5">
       <app-code-style-field
         [queryText]="queryTextLoki"
@@ -13,6 +15,23 @@
         (keyEnter)="update(true)"
       ></app-code-style-field>
     </div>
+    <div id="loki-selector">
+    <mat-form-field
+    style="margin-left:10px; padding-top:0px; position:relative; bottom:-5px"
+    >
+      <mat-select
+      (valueChange)="onUpdateLokiSort($event)"
+     [(value)]="lokiSort"
+       placeholder="{{lokiSort || 'desc'}}">
+        <mat-option value="asc">
+         asc
+        </mat-option>
+        <mat-option value="desc">
+          desc
+         </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
     <button mat-button style="flex: 1"
     (click)="update(true)">Refresh search</button>
 </div>

@@ -96,11 +96,16 @@ export class Functions {
             }
         }
     }
-
-    static getColorByString(str: string, saturation:number, lightness:number, alpha:number, offset?: number) {
+    // Functions.getColorByString(i, 100, 40, 1)
+    static getColorByString(
+        str: string,
+        saturation: number=  100,
+        lightness: number = 40,
+        alpha: number = 1,
+        offset: number = 0
+    ) {
         const col = Functions.getColorByStringHEX(str);
         const num = parseInt(col, 16) % 360;
-        offset = offset || 0;
         return `hsl(${num - offset}, ${saturation}%, ${lightness}%,${alpha})`;
     }
     static getColorByStringHEX(str: string) {
