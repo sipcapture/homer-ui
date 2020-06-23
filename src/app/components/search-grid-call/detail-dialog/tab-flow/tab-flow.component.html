@@ -15,7 +15,7 @@
                 itemhost.IP + (itemhost.PORT ? ':' + itemhost.PORT : '')"
             [ngClass]="'item-wrapper' + (isSimplify ? ' big' : '')"> <!-- wrapper -->
                 <div class="item"> <!-- container -->
-                    <div style="font-size: 0.9em;color: #999">{{(!_isSimplifyPort ? 'PORT:' + itemhost.PORT : '')}}</div>
+                    <div style="font-size: 0.9em;color: #999">{{(_isSimplifyPort ? 'PORT:' + itemhost.PORT : '')}}</div>
                     <div *ngIf="!itemhost.arrip"> {{ itemhost.shortIPtext2 }} </div>
                     <div *ngIf="itemhost.arrip"> 
                         <div *ngFor="let ip of itemhost.arrip"
