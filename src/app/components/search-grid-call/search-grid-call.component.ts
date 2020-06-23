@@ -808,12 +808,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             }
             return a;
         }, []);
-        
-        const timeArray = selectedRows.map( i => i.create_date || i.update_ts); 
-        const timeArray_from = selectedRows.length ? Math.min.apply(this, timeArray) : row.data.create_date;
-        const timeArray_to = selectedRows.length ? Math.max.apply(this, timeArray) : row.data.create_date;
 
-        const timeArray = selectedRows.map( i => i.create_date || i.update_ts); 
+        const timeArray = selectedRows.map( i => i.create_date || i.update_ts);
         const timeArray_from = selectedRows.length ? Math.min.apply(this, timeArray) : row.data.create_date;
         const timeArray_to = selectedRows.length ? Math.max.apply(this, timeArray) : row.data.create_date;
 
