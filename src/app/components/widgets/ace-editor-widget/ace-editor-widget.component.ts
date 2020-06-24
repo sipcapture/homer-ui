@@ -16,14 +16,16 @@ export interface AceEditorConfig {
 @Component({
     selector: 'app-ace-editor-widget-component',
     templateUrl: 'ace-editor-widget.component.html',
-    styleUrls: ['./ace-editor-widget.component.css']
+    styleUrls: ['./ace-editor-widget.component.scss']
 })
 @Widget({
     title: 'Embed Markdown',
     description: 'Display Custom Markdown content',
     category: 'Visualize',
     indexName: 'embed-markdown',
-    className: 'AceEditorWidgetComponent'
+    className: 'AceEditorWidgetComponent',
+    minHeight: 300,
+    minWidth: 300
 })
 export class AceEditorWidgetComponent implements IWidget {
     @Input() config: AceEditorConfig;

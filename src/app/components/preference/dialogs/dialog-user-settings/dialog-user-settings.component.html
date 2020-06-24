@@ -1,12 +1,11 @@
 <mat-toolbar class="title" color="primary">
-  <div>Account of</div>
+  <div>{{data.data.username}} Settings</div>
   <button mat-icon-button (click)="onNoClick()">
     <mat-icon>close</mat-icon>
   </button>
 </mat-toolbar>
 <div mat-dialog-content>
-  
-    <strong>User Settings</strong><hr />
+
     <div>
       <mat-form-field style="padding-right: 1rem;">
         <mat-label>Username</mat-label>

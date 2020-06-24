@@ -1,0 +1,113 @@
+<span style="display: none;" [id]="id"></span>
+<div style="padding: 0 2rem 0 1rem" *ngIf="onlySmartField">
+    <!-- smart-input -->          
+    <app-code-style-smart-input-field
+        apiLink="/smart/search/tag/1/call"
+        [simplefield]="true"
+        (updateData)="onSmartInputCodeData($event)"
+        (keyEnter)="doSearchResult()"
+    #onlySmartFieldElement></app-code-style-smart-input-field>
+</div>
+<div *ngIf="!onlySmartField">
+    <div class="inputs-container">
+        <div class="example-container" [ngStyle]="{'grid-template-columns': getFieldColumns()}">
+            <div *ngFor="let item of fields" style="display: block" >
+                <!-- if item is targetResultsContainer -->
+                <mat-form-field style="display: block" *ngIf="item.field_name !== 'loki' && item.field_name === 'targetResultsContainer'">
+                    <mat-label>{{item.selection}}</mat-label>
+                    <mat-select multiple
+                        [formControl]="targetResultsContainerValue"
+                        [compareWith]="compareResultListItem"
+                        (selectionChange)="onChangeTargetResultsContainer()"
+                        name="targetResultsContainer"
+                        ngDefaultControl>
+                        <mat-option *ngFor="let listItem of widgetResultList" [value]="listItem">
+                            {{listItem.type === 'widget' ? 'widget: ' : ''}} {{listItem.title}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                
+                <!-- if LOKI Field -->
+                
+                <app-code-style-field *ngIf="item.field_name === 'loki' && item.field_name !== 'targetResultsContainer'"
+                    style="display: block"
+                    [queryText]="lokiQueryText"
+                    (updateData)="onLokiCodeData($event)"
+                ></app-code-style-field>
+                
+                
+                <!-- smart-input -->
+                
+                <app-code-style-smart-input-field
+                    [id]="item.name"
+                    *ngIf="item.form_type === 'smart-input'"
+                    [apiLink]="item.full_api_link"
+                    [queryText]="item.value"
+                    (updateData)="onSmartInputCodeData($event, item)"
+                    
+                ></app-code-style-smart-input-field>
+
+
+                <!-- if other Fields -->
+
+                <mat-form-field style="display: block" *ngIf="
+                    item.field_name !== 'loki' &&
+                    item.field_name !== 'targetResultsContainer' &&
+                    item.form_type !== 'smart-input'
+                ">
+                    <mat-label>{{item.selection}}</mat-label>
+                    
+                    <!-- Text Field (by Default) -->
+                    <input matInput *ngIf="!item.form_default"
+                        [(ngModel)]="item.value"
+                        [ngModelOptions]="{standalone: true}"
+                        (change)="onChangeField($event)"
+                    >
+                    
+
+                    <!-- Autocomplete Text Field -->
+                    <input matInput *ngIf="item.form_default && item.form_type === 'input'"
+                        [formControl]="item.formControl" [matAutocomplete]="form_default">
+                    <mat-autocomplete #form_default="matAutocomplete">
+                        <mat-option *ngFor="let option of item.filteredOptions | async" [value]="option.name ? option.name : option">
+                            {{option.name ? option.name : option}}
+                        </mat-option>
+                    </mat-autocomplete>
+
+                    <!-- SELECT FIELD -->
+                    <mat-select
+                        *ngIf="item.form_type === 'select' && item.form_default"
+                        [(ngModel)]="item.value"
+                        (selectionChange)="onChangeField($event)"
+                        name="select_field"
+                        ngDefaultControl>
+                        <mat-option *ngFor="let option of item.form_default" [value]="option.name ? option.name : option">
+                            {{option.name ? option.name : option}}
+                        </mat-option>
+                    </mat-select>
+                    
+                    <!-- MULTISELECT FIELD -->
+                    <mat-select multiple
+                        *ngIf="item.form_type === 'multiselect' && item.form_default"
+                        [(ngModel)]="item.value"
+                        (selectionChange)="onChangeField($event, item)"
+                        name="multiple_select_field"
+                        ngDefaultControl>
+                        <mat-option *ngFor="let option of item.form_default" [value]="option.name ? option.name : option">
+                            {{option.name ? option.name : option}}
+                        </mat-option>
+                    </mat-select>
+                    
+                </mat-form-field>
+                
+            </div>
+        </div>
+    </div>
+    <div class="action-buttons" [className]="buttonState ? 'show' : 'hide'">
+        <button mat-raised-button (click)="onClearFields()">Clear</button>
+        <button mat-raised-button color="primary" (click)="doSearchResult()">Search</button>
+    </div>
+</div>
+
+ 
+<div class="info-label">Press CTRL+Enter for Search</div>

@@ -6,6 +6,8 @@
 >
 <div *ngIf="isLokiQuery" style="display: flex; justify-content: center; align-items: center;">
     <strong  style="flex: 1;padding-left: 1.5rem;">LOKI Search</strong>
+
+
     <div style="flex: 5">
       <app-code-style-field
         [queryText]="queryTextLoki"
@@ -13,6 +15,23 @@
         (keyEnter)="update(true)"
       ></app-code-style-field>
     </div>
+    <div id="loki-selector">
+    <mat-form-field
+    style="margin-left:10px; padding-top:0px; position:relative; bottom:-5px"
+    >
+      <mat-select
+      (valueChange)="onUpdateLokiSort($event)"
+     [(value)]="lokiSort"
+       placeholder="{{lokiSort || 'desc'}}">
+        <mat-option value="asc">
+         asc
+        </mat-option>
+        <mat-option value="desc">
+          desc
+         </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
     <button mat-button style="flex: 1"
     (click)="update(true)">Refresh search</button>
 </div>
@@ -41,23 +60,25 @@
 <!-- 
   search slider
 -->
-<div *ngIf="!isLokiQuery" class="search-slider-footer" [ngStyle]="{'bottom': !isSearchPanel ? '-20rem': null}">
+<div *ngIf="!isLokiQuery && !inContainer" class="search-slider-footer" [ngStyle]="{'bottom': !isSearchPanel ? '-20rem': null}">
   <div style="float: right; opacity: 0.7">
-		<button title="Clear fields" (click)="searchSlider.onClearFields()" mat-icon-button ><mat-icon>not_interested</mat-icon></button>
-		<button title="Search settings" (click)="searchSlider.openDialog()" mat-icon-button ><mat-icon>settings</mat-icon></button>
 		<button title="Close" (click)="isSearchPanel=false" mat-icon-button ><mat-icon>close</mat-icon></button>
   </div>
   <div class="content">
     <!-- search slider container -->
-    <div style="height: 1rem;"></div>
-    <app-protosearch-widget 
+    <app-smart-input-widget
+      [onlySmartField]="true"
       [targetResultId]="id"
       [fields]="searchSliderFields"
-      [config]="searchSliderConfig"
+      [config]="config"
       [autoline]="true"
       (dosearch)="isThisSelfQuery=true;update(true);"
       #searchSlider
-      ></app-protosearch-widget>
+    ></app-smart-input-widget>
+    <mat-label *ngIf="searchSliderFields.length > 0" style="color: rgba(0, 0, 0, 0.54); font-size: 0.8em;padding-left:20px;">Press CTRL+ENTER to Search</mat-label>
+    <div *ngIf="searchSliderFields.length === 0" class="no-smart-warn">
+      Please do a <strong>Search</strong> from a <strong>Smart input search widget</strong>
+    </div>
       <!-- (changeSettings)="initSearchSlider()" -->
     
     <!-- <button mat-raised-button color="primary" (click)="update(true)">Refresh Search</button> -->
@@ -99,9 +120,9 @@
     <mat-spinner></mat-spinner>
 </div>
 <div *ngIf="!isLokiQuery" style="position:absolute; bottom:0.4rem; left:0.2rem; opacity: 0.7;">
-  <button title="column settings" mat-icon-button (click)="onSettingButtonClick()"><mat-icon>settings_applications</mat-icon></button>
-  <button title="search config" mat-icon-button    
-    (click)="isSearchPanel=true">
+  <button matTooltip="Column settings" mat-icon-button (click)="onSettingButtonClick()"><mat-icon>settings_applications</mat-icon></button>
+  <button *ngIf="!inContainer"  mat-icon-button matTooltip="Search config"  
+    (click)="isSearchPanel=!isSearchPanel">
     <mat-icon
       [matBadge]="getSearchSlider()"
       [matBadgeHidden]="getSearchSlider() === 0" matBadgeColor="accent"

@@ -1,12 +1,13 @@
 
-import { Component, OnInit, ViewChild, AfterViewInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, Output, EventEmitter, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { SearchRemoteService, PreferenceAdvancedService } from '@app/services';
 
 @Component({
     selector: 'app-code-style-field',
     templateUrl: './code-style-field.component.html',
-    styleUrls: ['./code-style-field.component.css']
+    styleUrls: ['./code-style-field.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
     divHTML: string;
@@ -38,13 +39,15 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
 
     constructor(
         private _pas: PreferenceAdvancedService,
-        private _srs: SearchRemoteService
+        private _srs: SearchRemoteService,
+        private cdr: ChangeDetectorRef
     ) {
         this._pas.getAll().toPromise().then((data: any) => {
             this.serverLoki = data.data
                 .filter(i => i.category === 'search' && i.param === 'lokiserver')
                 .map(i => i.data.host)[0];
             this.updateEditor();
+            this.cdr.detectChanges();
         });
     }
 
@@ -53,10 +56,11 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
     ngAfterViewInit () {
         this.editor = this.divContainer.nativeElement;
         this.editor.addEventListener('input', this.updateEditor.bind(this));
-        if (this.queryText) {
+        if (this.queryText && this.editor !== undefined) {
             this.editor.innerText = this.queryText;
             this.updateEditor();
         }
+        this.cdr.detectChanges();
     }
     async getLabels() {
         try {
@@ -87,6 +91,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
             } else {
                 this.trigger.closeMenu();
             }
+            this.cdr.detectChanges();
         } catch (error) {
             console.error({error});
         }
@@ -170,8 +175,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
             event.preventDefault();
             return;
         }
-
-        if ([221].indexOf(event.keyCode) !== -1) {
+        if (['}', ']', ')'].indexOf(event.key) !== -1) {
             if (')}]'.indexOf(this.editor.innerText[0]) !== -1) {
                 this.editor.innerText = this.editor.innerText.slice(1);
             }
@@ -182,7 +186,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
             event.preventDefault();
             return false;
         }
-        if ([219, 222, 188, 187, 192].indexOf(event.keyCode) !== -1) {
+        if (['{', '[', '"', "'", ',', '=', '`'].indexOf(event.key) !== -1) {
         // if (['[', '"', ',', '=', '`'].includes(event.key)) {
 
             const getLastLetter = window.getSelection().anchorNode.textContent.split('')[0];
@@ -280,6 +284,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
         if (event && event.keyCode === 27) {
             this.trigger.closeMenu();
         }
+        this.cdr.detectChanges();
     }
 
     private setStyleCodeColors(str) {
@@ -364,7 +369,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
     }
 
     private restoreSelection(absoluteAnchorIndex, absoluteFocusIndex) {
-        
+
         // if (!absoluteAnchorIndex || absoluteFocusIndex) {
         //     return;
         // }

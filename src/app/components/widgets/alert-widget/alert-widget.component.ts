@@ -35,7 +35,7 @@ export interface AlertConfig {
 @Component({
     selector: 'app-alert-widget',
     templateUrl: './alert-widget.component.html',
-    styleUrls: ['./alert-widget.component.css']
+    styleUrls: ['./alert-widget.component.scss']
 })
 @Widget({
     title: 'Alert',

@@ -21,18 +21,20 @@
     margin-bottom: 15px;
     .info {
       width: calc(100% - 40px); //40px is $size
-      p.style {
-        color: #000;
-        margin-bottom: 5px;
-        font-size: 0.8rem;
+      & p {
+        & .style {
+          color: #000;
+          margin-bottom: 5px;
+          font-size: 0.8rem;
+        }
+        & .style-value {
+          color: #595b65;
+          text-transform: uppercase;
+          letter-spacing: 1.5px;
+          font-size: 10px;
+        }
       }
-      p.style-value {
-        color: #595b65;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        font-size: 10px;
-      }
-    }
+      
   }
 
   .circle {
@@ -58,13 +60,12 @@
     .colors {
       display: flex;
       flex-wrap: wrap;
-
-      .circle {
+      & .circle {
         flex: 40px 0 0;
         margin-right: 10px;
         margin-bottom: 10px;
 
-        &:nth-child(5n) {
+        & :nth-child(5n) {
           margin-right: 0;
         }
       }
@@ -74,19 +75,18 @@
       $height: 45px;
       display: flex;
       margin-top: 20px;
-
-      p {
+      & p {
         width: 50%;
         text-align: center;
         font-size: 10px;
         text-transform: uppercase;
       }
-      .color-chrome{
+      & .color-chrome{
         position: absolute;
         z-index: 4;
         top:-150px;
         left: 0px;
-        .pickerOverlay{
+        & .pickerOverlay{
           position: fixed;
           top: 0;
           left: 0;
@@ -99,5 +99,6 @@
       }
 
     }
+  }
   }
 }

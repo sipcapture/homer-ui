@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import * as moment from 'moment';
-import { Functions } from '../../../../helpers/functions';
+import { Functions } from '@app/helpers/functions';
 
 export interface MesagesData {
     id: string;
@@ -21,7 +21,8 @@ export interface MesagesData {
 @Component({
     selector: 'app-tab-messages',
     templateUrl: './tab-messages.component.html',
-    styleUrls: ['./tab-messages.component.css']
+    styleUrls: ['./tab-messages.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class TabMessagesComponent implements OnInit {
@@ -46,10 +47,13 @@ export class TabMessagesComponent implements OnInit {
         'dstPort', 'proto', 'type',
     ];
 
-    constructor() { }
+    constructor(private cdr: ChangeDetectorRef) { }
     getAliasByIP (ip) {
         const alias = this.dataItem.data.alias;
         return alias[ip] || ip;
+    }
+    getMethodColor(method){
+        return Functions.getMethodColor(method);
     }
     ngOnInit() {
         this.dataSource = Functions.messageFormatter(this.dataItem.data.messages);
@@ -57,6 +61,7 @@ export class TabMessagesComponent implements OnInit {
     onClickMessageRow(row: any, event = null) {
         row.mouseEventData = event;
         this.messageWindow.emit(row);
+        this.cdr.detectChanges();
     }
 
 }

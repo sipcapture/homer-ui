@@ -13,7 +13,7 @@ import * as moment from 'moment';
 @Component({
     selector: 'app-prometheus-widget',
     templateUrl: './prometheus-widget.component.html',
-    styleUrls: ['./prometheus-widget.component.css']
+    styleUrls: ['./prometheus-widget.component.scss']
 })
 @Widget({
     title: 'Prometheus',
@@ -21,7 +21,9 @@ import * as moment from 'moment';
     category: 'Metrics',
     indexName: 'prometheuschart',
     advancedName: 'promserver',
-    className: 'PrometheusWidgetComponent'
+    className: 'PrometheusWidgetComponent',
+    minHeight: 300,
+    minWidth: 300
 })
 export class PrometheusWidgetComponent implements IWidget {
     @Input() id: string;

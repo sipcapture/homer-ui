@@ -35,14 +35,16 @@ type SortType = 'SUM' | 'COUNT' | 'MIN' | 'MAX';
 @Component({
     selector: 'app-result-chart-widget',
     templateUrl: './result-chart-widget.component.html',
-    styleUrls: ['./result-chart-widget.component.css']
+    styleUrls: ['./result-chart-widget.component.scss']
 })
 @Widget({
     title: 'Display Results Chart',
     description: 'Display Search chart results in Widgets',
     category: 'Visualize',
     indexName: 'display-results-chart',
-    className: 'ResultChartWidgetComponent'
+    className: 'ResultChartWidgetComponent',
+    minHeight:400,
+    minWidth:600
     // settingWindow: false
 })
 export class ResultChartWidgetComponent implements IWidget {

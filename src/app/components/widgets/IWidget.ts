@@ -7,6 +7,7 @@ export interface IWidget extends OnInit, OnDestroy {
     openDialog(): void;
     setConfig?(config: any): void;
     refresh?(): void;
+    doSearchResult?(): void;
 }
 
 export interface IWidgetMetaData {
@@ -19,5 +20,8 @@ export interface IWidgetMetaData {
     enable?: boolean;
     componentClass?: any;
     settingWindow?: boolean;
-    className?: string
+    className?: string;
+    submit?: boolean;
+    minWidth?: number;
+    minHeight?:number;
 }

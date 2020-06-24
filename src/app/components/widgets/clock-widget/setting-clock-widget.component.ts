@@ -8,7 +8,7 @@ const moment: any = _moment;
 @Component({
     selector: 'app-setting-clock-widget-component',
     templateUrl: 'setting-clock-widget.component.html',
-    styleUrls: ['./setting-clock-widget.component.css']
+    styleUrls: ['./setting-clock-widget.component.scss']
 })
 
 export class SettingClockWidgetComponent {

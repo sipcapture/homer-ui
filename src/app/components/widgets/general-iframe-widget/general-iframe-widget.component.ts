@@ -21,14 +21,16 @@ export interface GeneralIframeConfig {
 @Component({
     selector: 'app-general-iframe-widget',
     templateUrl: './general-iframe-widget.component.html',
-    styleUrls: ['./general-iframe-widget.component.css']
+    styleUrls: ['./general-iframe-widget.component.scss']
 })
 @Widget({
     title: 'Embed Content',
     description: 'Display External Content in iFrame',
     category: 'Visualize',
     indexName: 'embed-content',
-    className: 'GeneralIframeWidgetComponent'
+    className: 'GeneralIframeWidgetComponent',
+    minHeight: 300,
+    minWidth: 300
 })
 export class GeneralIframeWidgetComponent implements IWidget {
     @Input() config: GeneralIframeConfig;

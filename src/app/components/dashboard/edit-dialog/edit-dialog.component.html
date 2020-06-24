@@ -53,6 +53,20 @@
       </mat-select>
     </mat-form-field>
     <mat-checkbox labelPosition="Before" [(ngModel)]="data.pushing">Pushing</mat-checkbox>
+
+
+  </div>
+  <div *ngIf="data.type !== 2" style="display: flex; flex-direction: column">
+      <hr style="width: 100%;">
+    <h4>Widget overflow</h4>
+    <mat-form-field>
+      <mat-label>Widget minimum size mode</mat-label>
+      <mat-select [(value)]="data.ignoreMinSize" >
+        <mat-option *ngFor="let mode of ignoreMinSizeList | keyvalue" [value]="mode.value">
+          {{mode.key}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
   <hr style="width: 100%;">
   <div>

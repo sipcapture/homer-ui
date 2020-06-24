@@ -1,0 +1,29 @@
+.menu-title {
+	padding-left: 1rem;
+	padding-top: 2rem;
+}
+.nav-list {
+	background-color: rgb(238, 238, 238);
+	flex: 0.1;
+	min-width: 300px;
+	padding-left: 2rem;
+	box-sizing: border-box;
+}
+table {
+	width: 100%;
+}
+.mat-form-field {
+	font-size: 14px;
+	width: 100%;
+}
+.loading {
+	text-align: center;
+	width: calc(100% - 300px - 4rem);
+	display: flex;
+	justify-content: center;
+	height: 10rem;
+	align-items: center;
+	background-color: rgba(0,0,0,0.03);
+	border-radius: 1rem;
+	position: absolute;
+}

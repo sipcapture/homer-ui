@@ -1,0 +1,28 @@
+.div-field {
+    padding: 0.2rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.54);
+    outline: none;
+    font-family: monospace;
+    font-size: 14px;
+    background-color: #fdffe2;
+    margin-bottom: 1.25em;
+    min-height: 28px;
+    word-break: break-word;
+    line-height: 1rem;
+}
+.menu-title {
+    background: rgba(0,0,0,0.1);
+    margin: 0;
+    padding: 4px 1rem;
+    font-size: 0.9em;
+}
+.error {
+    align-items: center;
+    display: flex;
+    font-size: 0.9em;
+    color: red;
+    background-color: #fdd;
+    padding: 1rem;
+    border-radius: 0.3rem;
+    margin-bottom: 1rem;
+}

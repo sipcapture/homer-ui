@@ -7,7 +7,7 @@ import 'brace/theme/github';
 @Component({
     selector: 'app-dialog-mapping',
     templateUrl: './dialog-mapping.component.html',
-    styleUrls: ['./dialog-mapping.component.css']
+    styleUrls: ['./dialog-mapping.component.scss']
 })
 export class DialogMappingComponent {
     constructor(
