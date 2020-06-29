@@ -57,7 +57,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!filters) {
             return;
         }
-        this._isSimplifyPort = filters.isSimplifyPort;
+        this._isSimplifyPort = !filters.isSimplifyPort;
         this._isCombineByAlias = filters.isCombineByAlias;
         setTimeout(this.initData.bind(this));
     }
@@ -315,7 +315,15 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             }
             return num;
         };
-        this.flowGridLines = Array.from({length: this.aliasTitle.length - 1});
+        const at = this.aliasTitle;
+        if (at.length === 2 && at[1].arrip.length) {
+            at.push({
+                empty: true
+            })
+        }
+
+        this.flowGridLines = Array.from({length: at.length - 1});
+
         this.arrayItems = sortedArray.map((item, key, arr) => {
             diffTs = key - 1 >= 0 && arr[key - 1] !== null ? (item.micro_ts - arr[key - 1].micro_ts) / 1000 : 0;
             const {min, max, abs} = Math;
