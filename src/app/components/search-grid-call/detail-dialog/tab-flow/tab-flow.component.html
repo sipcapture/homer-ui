@@ -8,17 +8,27 @@
     <div class="hosts" [ngStyle]="{'min-width.px': (isSimplify ? 150 : 200) * (flowGridLines.length)}">
         <!-- host titles -->
         <ng-template ngFor let-itemhost [ngForOf]="aliasTitle">
+
             <div *ngIf="itemhost.empty" style="min-width: 100px;"></div>
             <div *ngIf="!itemhost.empty && itemhost && !itemhost.hidden"
+            matTooltipClass="iptooltip"
             [matTooltip]="_isCombineByAlias ? 
                 pipeToString(itemhost) :
-                itemhost.IP + (itemhost.PORT ? ':' + itemhost.PORT : '')"
+                itemhost.IP + (itemhost.PORT ? ':' + itemhost.PORT : '') ) + ' ( click to copy )'"
+                (click)="openSnackBar(_isCombineByAlias ? 
+                pipeToString(itemhost) :
+                itemhost.IP + (itemhost.PORT ? ':' + itemhost.PORT : ''))"
+                
             [ngClass]="'item-wrapper' + (isSimplify ? ' big' : '')"> <!-- wrapper -->
-                <div class="item"> <!-- container -->
-                    <div style="font-size: 0.9em;color: #999">{{(!_isSimplifyPort ? 'PORT:' + itemhost.PORT : '')}}</div>
+
+                <div class="item" style="user-select:text; cursor:pointer"> <!-- container -->
+                    
+                    <div style="font-size: 0.9em;color: #999">{{(_isSimplifyPort ? 'PORT:' + itemhost.PORT : '')}}</div>
                     <div *ngIf="!itemhost.arrip"> {{ itemhost.shortIPtext2 }} </div>
                     <div *ngIf="itemhost.arrip"> 
                         <div *ngFor="let ip of itemhost.arrip"
+                        id="{{ shortcutIPv6String(ip) }}"
+                      
                         style="text-align: center;">{{ shortcutIPv6String(ip) }}</div>
                     </div>
                     <div
