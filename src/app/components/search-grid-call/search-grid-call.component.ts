@@ -808,8 +808,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             }
             return a;
         }, []);
-        
-        const timeArray = selectedRows.map( i => i.create_date || i.update_ts); 
+
+        const timeArray = selectedRows.map( i => i.create_date || i.update_ts);
         const timeArray_from = selectedRows.length ? Math.min.apply(this, timeArray) : row.data.create_date;
         const timeArray_to = selectedRows.length ? Math.max.apply(this, timeArray) : row.data.create_date;
 
@@ -948,7 +948,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }
 
         if ( row.isLog || (row.data.payloadType === 1 && (row.data.raw || row.data.item && row.data.item.raw))) {
-            const data = row.data.item || row.data;
+            let data;
+            if (typeof row.data.item !== 'undefined' && row.data.item.length < 1) {
+                data = row.data.item;
+            } else {
+                data = row.data;
+            }
             mData.data = data || {};
             mData.data.item = {
                 raw: mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty'
