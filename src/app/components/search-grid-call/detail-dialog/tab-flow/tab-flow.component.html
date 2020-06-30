@@ -14,7 +14,7 @@
             matTooltipClass="iptooltip"
             [matTooltip]="_isCombineByAlias ? 
                 pipeToString(itemhost) :
-                itemhost.IP + (itemhost.PORT ? ':' + itemhost.PORT : '') ) + ' ( click to copy )'"
+                itemhost.IP + (itemhost.PORT ? ':' + itemhost.PORT : '') + ' ( click to copy )'"
                 (click)="openSnackBar(_isCombineByAlias ? 
                 pipeToString(itemhost) :
                 itemhost.IP + (itemhost.PORT ? ':' + itemhost.PORT : ''))"
