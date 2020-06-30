@@ -948,7 +948,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }
 
         if ( row.isLog || (row.data.payloadType === 1 && (row.data.raw || row.data.item && row.data.item.raw))) {
-            const data = row.data.item || row.data;
+            let data;
+            if (typeof row.data.item !== 'undefined' && row.data.item.length < 1) {
+                data = row.data.item;
+            } else {
+                data = row.data;
+            }
             mData.data = data || {};
             mData.data.item = {
                 raw: mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty'

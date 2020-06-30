@@ -39,10 +39,10 @@
         *ngFor="let item of arrayItems; let idx = index"
         [ngStyle]="{
             'min-width.px': (isSimplify ? 150 : 200) * (flowGridLines.length),
-            'display': item.invisibleDisplayNone ? 'none' : 'flex',
-            'overflow': item.invisibleDisplayNone ? 'hidden' : 'inherit',
-            'max-height.px': !item.invisible ? 100 : 0,
-            'opacity': !item.invisible ? 1 : 0.0001
+            'display': 'flex',
+            'overflow': 'inherit',
+            'max-height.px': 100,
+            'opacity':  1 
         }">
             <div class="bg-color-polygon" [ngStyle]="{'background-color': item.options.color }" ></div> <!-- background-color -->
 
@@ -58,7 +58,7 @@
                 }} <span *ngIf="item.QOS" [ngClass]="item.options.mosColor"></span> {{
                     item.QOS ? item.QOS.MOS + ' [' + item.QOS.qosTYPEless + ']' : ''
                 }} </div>
-                <div class="call_text-mini" [ngStyle]="{'height.px': !isSimplify ? 15 : 0}">{{item.ruri_user}}</div>
+                <div class="call_text-mini" [ngStyle]="{'height.px': !isSimplify ? 15 : 0,'max-width.px':isSimplify ? 150 : 200}">{{ item.ruri_user }}</div>
                 <div [ngClass]="'port-label-' + (!item.options.direction ? 'left' : 'right')">{{ item.srcPort }}</div>
                 <!-- ARROW line -->
                 <div
@@ -76,8 +76,14 @@
                 <div [ngClass]="'port-label-' + (item.options.direction ? 'left' : 'right')"
                     [ngStyle]="item.options.isRedialArrow && {'left.px' : -47 }"
                 >{{ item.dstPort }}</div>
-                <div class="call-text-date" [ngStyle]="{'maxHeight.px': !isSimplify ? 50 : 0}">[{{ idx + 1 }}][{{ item.proto | uppercase }}] {{ item.micro_ts }}</div>
-                <div class="call-text-date">+ {{ item.diffTs }} s</div>
+                <span *ngIf='!item.options.isRedialArrow; else elseBlock'>
+                    <div class="call-text-date" [ngStyle]="{'maxHeight.px': !isSimplify ? 50 : 0}">[{{ idx + 1 }}][{{ item.proto | uppercase }}] {{ item.micro_ts }}</div>
+                    <div class="call-text-date">+ {{ item.diffTs }} s</div> 
+                </span>
+                <ng-template #elseBlock>
+                    <div class="call-text-date" [ngStyle]="{'maxHeight.px': (!isSimplify ? 50 : 0)}">[{{ idx + 1 }}][{{ item.proto | uppercase }}] {{ item.micro_ts }} + {{ item.diffTs }} s</div>
+                    <div class="call-text-date" [ngStyle]="{'display': (!isSimplify ? 'none' : 'block'),'text-align': 'center'}"> + {{ item.diffTs }} s </div>
+                </ng-template>
             </div>
             <div [ngStyle]="{'flex': item.options.rightEnd || 0.0000001 }"></div> <!-- right space -->
         </div>
