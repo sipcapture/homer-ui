@@ -260,3 +260,11 @@
     font-weight: bold;
   
 }
+.copysnack {
+    color:white !important;
+    background-color:rgb(61, 61, 61) !important;
+    .mat-simple-snackbar-action {
+        color: rgb(28, 221, 160) !important;
+    }
+
+}

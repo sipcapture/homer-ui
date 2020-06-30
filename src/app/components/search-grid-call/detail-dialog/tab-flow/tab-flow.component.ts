@@ -471,7 +471,8 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         let message = "IP " + e;
         let action = "copied to clipboard"
         this._snackBar.open(message,action,{
-            duration:2000
+            duration:3000,
+            panelClass: 'copysnack'
         })
     }
 }
