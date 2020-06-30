@@ -434,7 +434,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     pipeToString(itemhost) {
         const arr = itemhost.arrip || [itemhost.IP];
         return arr.join(', ');
-    }
+    } 
     onSavePng() {
         if (!this._flagAfterViewInit) {
             setTimeout(this.onSavePng.bind(this), 1000);
