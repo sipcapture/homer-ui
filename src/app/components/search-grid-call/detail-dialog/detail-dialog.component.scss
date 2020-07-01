@@ -31,6 +31,18 @@
 	color: rgba(0,0,0,0.8);
 	background-color: rgba(0,0,0,0.2);
 	margin: -1rem;
+	margin-top: 1rem;
 	margin-bottom: 1rem;
 	padding: 0.5rem;
 }
+.filter-radio-group {
+	display: flex;
+	flex-direction: column;
+	margin: 15px 0;
+	.filter-radio-button {
+		margin: 5px;
+		font-size: .8em
+  	}
+}
+  
+  
