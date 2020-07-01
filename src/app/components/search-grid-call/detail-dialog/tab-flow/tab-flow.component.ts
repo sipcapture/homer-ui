@@ -48,7 +48,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     _qosData: any;
     _flagAfterViewInit = false;
     _isSimplify = false;
-    public _isSimplifyPort = true;
+    public _isSimplifyPort = false;
     public _isCombineByAlias = true;
     private _dataItem: any;
     flowGridLines = [];
@@ -62,7 +62,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!filters) {
             return;
         }
-        this._isSimplifyPort = !filters.isSimplifyPort;
+        this._isSimplifyPort = filters.isSimplifyPort;
         this._isCombineByAlias = filters.isCombineByAlias;
         setTimeout(this.initData.bind(this));
     }
@@ -324,7 +324,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         if (at.length === 2 && at[1].arrip.length) {
             at.push({
                 empty: true
-            })
+            });
         }
 
         this.flowGridLines = Array.from({length: at.length - 1});
