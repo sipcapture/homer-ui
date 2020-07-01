@@ -24,11 +24,13 @@
       Extended Format
     </mat-slide-toggle>
     <br *ngIf="activeTab !== 0">
+
     <mat-radio-group *ngIf="activeTab !== 0" [(ngModel)]='combineType'  class="filter-radio-group" (change)='doFilterMessages()'>
       <mat-radio-button color="warn" class="filter-radio-button" *ngFor="let type of listCombineTypes | keyvalue" [value]="type.key">
         {{type.value}}
       </mat-radio-button>
     </mat-radio-group>
+
     <div class="filter-label">PayloadType:</div>
     <mat-checkbox color="warn" style="font-size: .8em;"
       *ngFor="let checkboxItem of checkboxListFilterPayloadType"

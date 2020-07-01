@@ -9,12 +9,15 @@ import {
     OnDestroy,
     ElementRef,
     ChangeDetectionStrategy,
-    ChangeDetectorRef
+    ChangeDetectorRef,
+    ViewEncapsulation 
 } from '@angular/core';
 import * as moment from 'moment';
 import { MesagesData } from '../tab-messages/tab-messages.component';
 import { Functions } from '../../../../helpers/functions';
 import * as html2canvas from 'html2canvas';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 
 enum FlowItemType {
     SIP = 'SIP',
@@ -27,7 +30,9 @@ enum FlowItemType {
     selector: 'app-tab-flow',
     templateUrl: './tab-flow.component.html',
     styleUrls: ['./tab-flow.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None,
+  
 })
 export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('flowtitle', {static: false}) flowtitle;
@@ -105,7 +110,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     arrayItemsRTP_AGENT: Array<any> = [];
     _interval: any;
 
-    constructor(private cdr: ChangeDetectorRef) { }
+    constructor(private cdr: ChangeDetectorRef, private _snackBar :MatSnackBar) { }
 
     ngAfterViewInit() {
         this._flagAfterViewInit = true;
@@ -436,8 +441,8 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     pipeToString(itemhost) {
         const arr = itemhost.arrip || [itemhost.IP];
-        return arr.join(' | ');
-    }
+        return arr.join(', ');
+    } 
     onSavePng() {
         if (!this._flagAfterViewInit) {
             setTimeout(this.onSavePng.bind(this), 1000);
@@ -452,5 +457,30 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.downloadLink.nativeElement.click();
             });
         }
+    }
+    onCopyToClipboard(e){
+   var el = document.createElement('textarea');
+   el.value = e;
+   el.setAttribute('readonly', '');
+   document.body.appendChild(el);
+   el.select();
+   document.execCommand('copy');
+   document.body.removeChild(el);
+   window.alert( "IP " + e + " copied to clipboard" )
+    }
+    openSnackBar(e){
+        var el = document.createElement('textarea');
+        el.value = e;
+        el.setAttribute('readonly', '');
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        let message = "IP " + e;
+        let action = "copied to clipboard"
+        this._snackBar.open(message,action,{
+            duration:3000,
+            panelClass: 'copysnack'
+        })
     }
 }
