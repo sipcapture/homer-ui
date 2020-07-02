@@ -476,7 +476,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         el.select();
         document.execCommand('copy');
         document.body.removeChild(el);
-        let message = "IP " + e;
+        let message = e;
         let action = "copied to clipboard"
         this._snackBar.open(message,action,{
             duration:3000,
