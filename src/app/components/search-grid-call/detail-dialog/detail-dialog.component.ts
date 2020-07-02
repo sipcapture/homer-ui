@@ -34,6 +34,12 @@ export class DetailDialogComponent implements OnInit {
     activeTab = 0;
     isFilterOpened = false;
     isFilterOpenedOutside = false;
+    combineType = '1none';
+    listCombineTypes = {
+        '1none': 'Ungrouped',
+        '2alias': 'Group by Alias',
+        '3port': 'Group Ports'
+    };
     tabs = {
         messages: false,
         flow: false,
@@ -199,6 +205,16 @@ export class DetailDialogComponent implements OnInit {
         });
     }
     doFilterMessages() {
+        if (this.combineType === '1none') {
+            this.isCombineByAlias = false;
+            this.isSimplifyPort   = false;
+        } else if (this.combineType === '2alias') {
+            this.isCombineByAlias = true;
+            this.isSimplifyPort   = true;
+        } else if (this.combineType === '3port') {
+            this.isCombineByAlias = false;
+            this.isSimplifyPort   = true;
+        }
         setTimeout(() => {
             const fc = Functions.cloneObject;
             this.sipDataItem.data.messages = fc(this._messagesBuffer).messages.filter(i => {

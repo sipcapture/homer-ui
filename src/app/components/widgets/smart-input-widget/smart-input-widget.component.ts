@@ -256,7 +256,11 @@ export class SmartInputWidgetComponent implements IWidget, OnInit, AfterViewInit
                         item.formControl.setValue(item.value);
                     }
                     if (item.field_name === ConstValue.CONTAINER && item.value !== '') {
-                        this.targetResultsContainerValue.setValue(item.value);
+                        if (!Array.isArray(item.value)) {
+                            this.targetResultsContainerValue.setValue([item.value]);
+                        } else {
+                            this.targetResultsContainerValue.setValue(item.value);
+                        }
                     }
 
                     if (item.type &&
@@ -303,7 +307,11 @@ export class SmartInputWidgetComponent implements IWidget, OnInit, AfterViewInit
                 if (item.field_name === ConstValue.CONTAINER) {
                     const _c = this._cache ? this._cache.fields.find(i => i.name === ConstValue.CONTAINER) : null;
                     if (_c) {
-                        this.targetResultsContainerValue.setValue(_c.value);
+                        if (!Array.isArray(_c.value)) {
+                            this.targetResultsContainerValue.setValue([_c.value]);
+                        } else {
+                            this.targetResultsContainerValue.setValue(_c.value);
+                        }
                         item.value = _c.value;
                     } else {
                         item.value = Functions.cloneObject(this.widgetResultList[0]);

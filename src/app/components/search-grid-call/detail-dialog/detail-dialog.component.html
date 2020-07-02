@@ -17,7 +17,7 @@
     [ngStyle]="{'display': (activeTab <= 1) ? 'block' : 'none'}"
   ><mat-icon>filter_list</mat-icon></button>
   <!-- filter -->
-  <div *ngIf="activeTab <= 1 && isFilterOpened"
+  <div *ngIf="activeTab <= 1 && isFilterOpened" style="height: calc(100% - 75px);overflow-x: auto;"
     class="button-icon-right-top filter-container"
     #filterContainer>
     <mat-slide-toggle style="width: 200px;font-size: .8em;" color="warn" [(ngModel)]="isSimplify">
@@ -25,24 +25,12 @@
     </mat-slide-toggle>
     <br *ngIf="activeTab !== 0">
 
-    <mat-slide-toggle
-    *ngIf="activeTab !== 0"
-      style="width: 200px;font-size: .8em;" color="warn"
-      [(ngModel)]="isCombineByAlias"
-      (click)="doFilterMessages()">
-      Combined by Alias
-    </mat-slide-toggle>
+    <mat-radio-group *ngIf="activeTab !== 0" [(ngModel)]='combineType'  class="filter-radio-group" (change)='doFilterMessages()'>
+      <mat-radio-button color="warn" class="filter-radio-button" *ngFor="let type of listCombineTypes | keyvalue" [value]="type.key">
+        {{type.value}}
+      </mat-radio-button>
+    </mat-radio-group>
 
-    <br *ngIf="activeTab !== 0">
-
-    <mat-slide-toggle
-    *ngIf="activeTab !== 0"
-      style="width: 200px;font-size: .8em;" color="warn"
-      [(ngModel)]="isSimplifyPort"
-      (click)="doFilterMessages()">
-      Show Ports
-    </mat-slide-toggle>
-    <hr/>
     <div class="filter-label">PayloadType:</div>
     <mat-checkbox color="warn" style="font-size: .8em;"
       *ngFor="let checkboxItem of checkboxListFilterPayloadType"
@@ -51,7 +39,7 @@
       [(ngModel)]="checkboxItem.selected"
     >{{ checkboxItem.title }}</mat-checkbox>
 
-    <!-- <hr/>
+    <!-- 
     <div class="filter-label">Ports:</div>
     <div style="display: flex; flex-flow: row wrap; width: 250px;">
       <mat-checkbox color="warn" style="font-size: .8em;"
@@ -61,10 +49,8 @@
         [(ngModel)]="checkboxItem.selected"
       >{{ checkboxItem.title }}</mat-checkbox>
     </div> -->
-    
-    <hr/>
     <div class="filter-label">CallId:</div>
-    <div style="display: flex; flex-direction: column;">
+    <div style="display: flex; flex-direction: column; ">
       <mat-checkbox color="warn" style="font-size: .8em;"
         *ngFor="let checkboxItem of checkboxListFilterCallId"
         class="example-margin"

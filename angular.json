@@ -23,7 +23,9 @@
             },
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              { "glob": "worker-javascript.js", "input": "./d /ace-builds/src-min/", "output": "/" },
+              { "glob": "worker-json.js", "input": "./node_modules/ace-builds/src-min/", "output": "/" }
             ],
             "styles": [
               "src/styles.scss"
@@ -37,7 +39,9 @@
               "node_modules/ace-builds/src-min/mode-javascript.js",
               "node_modules/ace-builds/src-min/worker-html.js",
               "node_modules/ace-builds/src-min/worker-css.js",
-              "node_modules/ace-builds/src-min/worker-javascript.js"
+              "node_modules/ace-builds/src-min/worker-javascript.js",
+              "node_modules/ace-builds/src-min/mode-json.js",
+              "node_modules/ace-builds/src-min/worker-json.js"
             ]
           },
           "configurations": {
@@ -184,11 +188,15 @@
               "node_modules/ace-builds/src-min/mode-javascript.js",
               "node_modules/ace-builds/src-min/worker-html.js",
               "node_modules/ace-builds/src-min/worker-css.js",
-              "node_modules/ace-builds/src-min/worker-javascript.js"
+              "node_modules/ace-builds/src-min/worker-javascript.js",
+              "node_modules/ace-builds/src-min/mode-json.js",
+              "node_modules/ace-builds/src-min/worker-json.js"
             ],
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              { "glob": "worker-javascript.js", "input": "./d /ace-builds/src-min/", "output": "/" },
+              { "glob": "worker-json.js", "input": "./node_modules/ace-builds/src-min/", "output": "/" }
             ]
           }
         },
