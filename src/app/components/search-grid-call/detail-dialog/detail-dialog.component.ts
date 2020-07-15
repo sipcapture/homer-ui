@@ -34,7 +34,7 @@ export class DetailDialogComponent implements OnInit {
     activeTab = 0;
     isFilterOpened = false;
     isFilterOpenedOutside = false;
-    combineType = '2alias';
+    combineType = '1none';
     listCombineTypes = {
         '1none': 'Ungrouped',
         '2alias': 'Group by Alias',
