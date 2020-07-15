@@ -46,11 +46,11 @@ export class SettingSmartInputWidgetComponent implements OnInit, OnDestroy {
             this.resultConfig.profile = data.config.config.protocol_profile.value;
             this.resultConfig.protocol_id = data.config.config.protocol_id;
             this.mappingSortedData = Functions.cloneObject(data.mapping.data);
-            /* this.mappingSortedData = this.mappingSortedData.filter(
+            this.mappingSortedData = this.mappingSortedData.filter(
                 mapping => mapping.fields_mapping.some(
                     field => field.id === 'smartinput'
                 )
-            ); */
+            );
             if (data.isContainer) {
                 this.mappingSortedData = this.mappingSortedData.filter(item => {
                     return !(item.profile === 'default' && item.hepid === 2000 && item.hep_alias === 'LOKI');
