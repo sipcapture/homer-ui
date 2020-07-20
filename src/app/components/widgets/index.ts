@@ -31,3 +31,4 @@ export * from './result-chart-widget/setting-result-chart-widget.component';
 
 export * from './result-widget/setting-result-widget.component';
 export * from './alert-widget/setting-alert-widget.component';
+export * from './smart-input-widget/setting-smart-input-widget.component';
