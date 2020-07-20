@@ -33,7 +33,7 @@ import {
     WindowComponent
 } from '@app/components';
 import {
-    
+
     AceEditorWidgetComponent,
     ClockWidgetComponent,
     CodeStyleFieldComponent,
@@ -61,6 +61,7 @@ import {
     SettingResultWidgetComponent,
     SettingsAceEditorWidgetComponent,
     SettingAlertWidgetComponent,
+    SettingSmartInputWidgetComponent,
 
 } from '@app/components/widgets';
 
@@ -188,6 +189,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingResultWidgetComponent,
         SettingsAceEditorWidgetComponent,
         SettingAlertWidgetComponent,
+        SettingSmartInputWidgetComponent,
         /** dialogs */
         DialogAdvancedComponent,
         DialogAgentsubComponent,
@@ -199,7 +201,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         DialogMappingComponent,
         DialogUserSettingsComponent,
         DialogUsersComponent,
- 
+
     ],
     // .concat(
         // Object.values<any>(dialogs),
@@ -274,6 +276,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingResultWidgetComponent,
         SettingsAceEditorWidgetComponent,
         SettingAlertWidgetComponent,
+        SettingSmartInputWidgetComponent,
         /** dashboard */
         AddDashboardDialogComponent,
         AddDialogComponent,
