@@ -54,7 +54,7 @@
     "http-server": "0.12.1",
     "https-proxy-agent": "4.0.0",
     "jquery": "3.4.1",
-    "lodash": "4.17.15",
+    "lodash": "4.17.19",
     "moment": "2.24.0",
     "moment-timezone": "0.5.27",
     "ng": "0.0.0",
