@@ -121,7 +121,6 @@ export class FileUploadModel {
         private _http: HttpClient,
         public _pcap : PcapImportService
     
-       
         ) { }
 
         ngOnInit() {
@@ -130,7 +129,7 @@ export class FileUploadModel {
           this.config = {
             name: 'pcap-import',
             config: this.config,
-            pcapws: this.pcapws || '0.0.0.0/9060/hepws'
+            pcapws: this.pcapws || 'ws://0.0.0.0:9060'
          
           }
          //
@@ -156,11 +155,6 @@ export class FileUploadModel {
        
         }
 
-/** PCAP to hep Upload methods */
-// Ref: https://github.com/lmangani/pcap2hep
-// process packet must be part of the api because of js native methods
-// @ TODO: import the proxy handlers as services
-/** Error handlers */
 errorHandler( evt ):any {
   switch ( evt.target.error )
   {
@@ -186,23 +180,17 @@ toHex( d )
   return ( "0" + ( Number( d ).toString( 16 ) ) ).slice( -2 ).toUpperCase()
 }
 
-/** File handlers */
 
 handleFileSelect(e) {
 
-// FileList object
   let files = e.target['files']; // FileList object
- //let reader: FileReader = new FileReader()
-//this.reader.onerror = this.errorHandler(e);
-  // TODO: map onabort event stoping the file list
-  //this.reader.onabort = this.fileAbortHandler(e);
-  // *fileProcessor method
+
   this.reader.onload = (e) => this.fileProcessor(e);
   this.file = files[ 0 ];
   let  blob = this.file.slice( this.fileposition, this.fileposition + 24 );
   this.fileposition += 24;
   this.reader.readAsArrayBuffer( blob );
-// TODO: next => add this to the onClick.fileUpload.onchange
+
 }
 
 fileProcessor(e){
@@ -212,39 +200,35 @@ fileProcessor(e){
     case 0:
       var uint32array = new Uint32Array( data );
 
-      /* Magic number */
-      //  TODO: try to switch this messages on log */
 
       if ( 2712847316 == uint32array[ 0 ] )
       {
-        /* Native byte order */
-       
+   
         console.log( "Native byte order" );
       }
       else if ( 3569595041 == uint32array[ 0 ] )
       {
-        /* Swapped byte order */
-
+ 
         console.log( "Swapped byte order" );
       }
       else if ( 2712812621 == uint32array[ 0 ] )
       {
-        /* Native byte order nano second timing */
+   
         console.log( "Native byte order nano second timing" );
       }
       else if ( 1295823521 == uint32array[ 0 ] )
       {
-        /* Swapped byte order nano second timing */
+     
         console.log( "Swapped byte order nano second timing" );
       }
-      /* http://www.tcpdump.org/linktypes.html */
+
       if ( 1 != uint32array[ 5 ] )
       {
         console.log( "Link layer type not supported" );
         return;
       }
       console.log( "LINKTYPE_ETHERNET" );
-      /* Read our first packet header */
+     
       var blob = this.file.slice( this.fileposition, this.fileposition + 16 );
       this.fileposition += 16;
       this.reader.readAsArrayBuffer( blob );
@@ -279,13 +263,13 @@ fileProcessor(e){
         this.ts_firstether = etherpacket.ts_sec;
       }
       etherpacket.ts_sec_offset = ( this.ts_sec + ( this.ts_usec / 1000000 ) ) - this.ts_firstether;
-      //etherpacket.ts_usec = ts_usec;
+
       etherpacket.src = "" + this.toHex( uint8array[ 0 ] ) + ":" + this.toHex( uint8array[ 1 ] ) + ":" + this.toHex( uint8array[ 2 ] ) + ":" + this.toHex( uint8array[ 3 ] ) + ":" + this.toHex( uint8array[ 4 ] ) + ":" + this.toHex( uint8array[ 5 ] );
       etherpacket.dst = "" + this.toHex( uint8array[ 6 ] ) + ":" + this.toHex( uint8array[ 7 ] ) + ":" + this.toHex( uint8array[ 8 ] ) + ":" + this.toHex( uint8array[ 9 ] ) + ":" + this.toHex( uint8array[ 10 ] ) + ":" + this.toHex( uint8array[ 11 ] );
       etherpacket.ethertype = "" + this.toHex( uint8array[ 12 ] ) + this.toHex( uint8array[ 13 ] );
       if ( parseInt( etherpacket.ethertype, 16 ) > 1536 )
       {
-        // Ref: https://en.wikipedia.org/wiki/EtherType
+
         switch ( etherpacket.ethertype )
         {
         case "0800":
@@ -378,6 +362,7 @@ fileProcessor(e){
       }
       // here can return the etherframes to push
       this.etherframes.push( etherpacket );
+      console.log(this.etherframes)
       if ( this.etherframes.length > 100 )
       {
         // send the parsed data to view
