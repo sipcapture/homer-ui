@@ -19,7 +19,7 @@
     }
   },
   "angularCompilerOptions": {
-    "enableIvy": false,
+    "enableIvy": "ngtsc",
     "types": ["node"],
   }
 }
