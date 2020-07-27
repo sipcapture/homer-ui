@@ -236,7 +236,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         });
 
         this.aliasTitle = Object.keys(hosts).map( i => {
-            const __alias = Object.entries(this.dataItem.data.alias).find(j => j[0].includes(i));
+	    const __alias = Object.entries(this.dataItem.data.alias).find(j => j[0].startsWith(i+':'));
             const alias = this.dataItem.data.alias[i] || (__alias && __alias[1]);
             // This is where the GUI splits port from IP Address.
             // Note: not perfect. It works 'backwards' from the end of the string

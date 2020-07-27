@@ -89,6 +89,7 @@ export class DetailDialogComponent implements OnInit {
                 });
 
             this.checkboxListFilterPayloadType = filterByParam('payloadType');
+            this.setFiltersByAdvanced();
             const ports = [].concat(filterByParam('dstPort'), filterByParam('srcPort'));
             this.checkboxListFilterPort = Object.keys(ports
                     .map(i => i.title )
@@ -176,7 +177,29 @@ export class DetailDialogComponent implements OnInit {
     onBrowserWindow (event) {
         this.isBrowserWindow = event;
     }
-
+    setFiltersByAdvanced() {
+        this._pas.getAll().toPromise().then(advanced => {
+            if (advanced && advanced.data) {
+                try {
+                    const params = Functions.getUriJson();
+                    const category = params && params.param ? 'export' : 'search';
+                    const setting = advanced.data.filter(i => i.category === category && i.param === 'transaction');
+                    if (setting && setting[0] && setting[0].data) {
+                        const filters = setting[0].data.tabfilterconfig;
+                        const filterBackup = Functions.cloneObject(this.checkboxListFilterPayloadType);
+                        if (this.checkboxListFilterPayloadType.length > 1 ) {
+                            this.checkboxListFilterPayloadType.forEach(filter => {
+                                filter.selected = filters[filter.title];
+                            });
+                        }
+                        if (this.checkboxListFilterPayloadType.every(filter => filter.selected === false)) {
+                            this.checkboxListFilterPayloadType = filterBackup;
+                        }
+                    }
+                } catch (err) { }
+            }
+        });
+    }
     setTabByAdvanced() {
         this._pas.getAll().toPromise().then(advanced => {
             if (advanced && advanced.data) {

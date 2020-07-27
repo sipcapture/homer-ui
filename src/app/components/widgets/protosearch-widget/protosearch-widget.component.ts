@@ -552,13 +552,13 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, AfterViewIni
         this.saveState();
         if (this.targetResultId || (targetResult && isResultContainer)) {
             _targetResult = Functions.cloneObject(targetResult);
-            _targetResult.forEach( target => {
-                if ( target.type === 'page') {
-                    this.router.navigate(['search/result']);
-                } else {
+            if (_targetResult.some(target => target.type === 'page')) {
+                this.router.navigate(['search/result']);
+            } else {
+                _targetResult.forEach( target => {
                     this._ds.setQueryToWidgetResult(target.id, this.searchQuery);
-                }
-            });
+                });
+            }
             this.dosearch.emit({});
             this.cdr.detectChanges();
             return;
