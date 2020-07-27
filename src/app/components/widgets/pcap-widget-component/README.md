@@ -14,7 +14,7 @@ Widget for importing PCAP files into Heplify-Server
 
   * Add new widget -> PCAP Import Widget
 
-  * Set up the public Ip of your heplify server as a websocket, like: ``ws://127.xxx.xxx.xx:9060``
+  * Set up the Ip of your websocket Ip in the Import PCAP Widget
 
 **Instructions:**
 
