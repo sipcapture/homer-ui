@@ -5,6 +5,7 @@ export * from './influxdbchart-widget/influxdbchart-widget.component';
 export * from './prometheus-widget/prometheus-widget.component';
 export * from './protosearch-widget/protosearch-widget.component';
 export * from './rsearch-widget/rsearch-widget.component';
+export * from './pcap-widget-component/pcap-import-widget.component'
 export * from './grafana-widget/grafana-widget.component';
 export * from './general-iframe-widget/general-iframe-widget.component';
 export * from './ace-editor-widget/ace-editor-widget.component';
@@ -23,6 +24,7 @@ export * from './clock-widget/setting-clock-widget.component';
 export * from './influxdbchart-widget/setting-influxdbchart-widget.component';
 export * from './prometheus-widget/setting-prometheus-widget.component';
 export * from './protosearch-widget/setting-protosearch-widget.component';
+export * from './pcap-widget-component/setting-pcap-import-widget.component'
 export * from './grafana-widget/setting-grafana-widget.component';
 export * from './ace-editor-widget/settings-ace-editor-widget.component';
 export * from './general-iframe-widget/setting-general-iframe-widget.component';
