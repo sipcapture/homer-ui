@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import * as moment from 'moment';
 import { Functions } from '@app/helpers/functions';
+import { MAT_HAMMER_OPTIONS } from '@angular/material/core';
 
 export interface MesagesData {
     id: string;
@@ -27,12 +28,19 @@ export interface MesagesData {
 
 export class TabMessagesComponent implements OnInit {
     _dataItem: any;
+    _qosData: any;
     @Input() set dataItem(val) {
         this._dataItem = val;
         this.dataSource = Functions.messageFormatter(this._dataItem.data.messages);
     }
     get dataItem () {
         return this._dataItem;
+    }
+    @Input() set qosData(val) {
+        this._qosData = val.rtcp.data;
+    }
+    get qosData() {
+        return this._qosData;
     }
     @Output() messageWindow: EventEmitter<any> = new EventEmitter();
 
@@ -52,10 +60,16 @@ export class TabMessagesComponent implements OnInit {
         const alias = this.dataItem.data.alias;
         return alias[ip] || ip;
     }
-    getMethodColor(method){
+    getMethodColor(method) {
         return Functions.getMethodColor(method);
     }
     ngOnInit() {
+        if (!this.dataItem.data.messages.some(item => item.proto === 'rtcp')) {
+            this.dataItem.data.messages = this.dataItem.data.messages.concat(this.qosData);
+            this.dataItem.data.messages = this.dataItem.data.messages.sort((a, b) => {
+                return a.timeSeconds - b.timeSeconds;
+            });
+        }
         this.dataSource = Functions.messageFormatter(this.dataItem.data.messages);
     }
     onClickMessageRow(row: any, event = null) {
