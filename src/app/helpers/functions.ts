@@ -178,6 +178,9 @@ export class Functions {
         let prevTimestamp = 0;
         dist.forEach(function(item) {
             let newTs = Math.round((item.timeSeconds * 1000) + (item.timeUseconds / 1000));
+            if (typeof item.raw === 'object'){
+                item.raw = JSON.stringify(item.raw)
+            }
             dataSource.push({
                 id: item.id,
                 create_date: moment( item.create_date ).format('YYYY-MM-DD'),

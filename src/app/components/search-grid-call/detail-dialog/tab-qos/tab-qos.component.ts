@@ -383,7 +383,7 @@ export class TabQosComponent implements OnInit {
                 return;
             }
 
-            if ( (1 * item.raw.type !== 200 && 1 * item.raw.type !== 202) || !item.raw.sender_information ) {
+            if (1 * item.raw.type !== 200 && 1 * item.raw.type !== 201 && 1 * item.raw.type !== 202) {
                 return;
             }
 
@@ -419,10 +419,17 @@ export class TabQosComponent implements OnInit {
                     k.create_date.unshift( item.create_date );
 
                     // packets
-                    k.packetsData.push(i.sender_information.packets);
-
+                    if (typeof i.sender_information === 'undefined') {
+                        k.packetsData.push(0)
+                    } else {
+                        k.packetsData.push(i.sender_information.packets);
+                    }
                     // octets
-                    k.octetsData.push(i.sender_information.octets);
+                    if (typeof i.sender_information === 'undefined') {
+                        k.octetsData.push(0)
+                    } else {
+                        k.octetsData.push(i.sender_information.octets);
+                    }
 
                     if (i.report_blocks && i.report_blocks[0]) {
                         const block = i.report_blocks[0];
@@ -451,14 +458,20 @@ export class TabQosComponent implements OnInit {
                         k.mosData.push(tmpMos * 1);
                         /* end chart */
 
-                        if (!isNaN(i.sender_information.packets)) {
+                        if (typeof i.sender_information === 'undefined') {
+                            this.list[0].value = 0;
+                            this.list[2].value = 0;
+                        } else if (!isNaN(i.sender_information.packets)) {
                             // min packets
                             this.list[0].value = Math.min(this.list[0].value, i.sender_information.packets * 1);
                             // max packets
                             this.list[2].value = Math.max(this.list[2].value, i.sender_information.packets * 1);
                         }
 
-                        if (!isNaN(i.sender_information.octets)) {
+                        if (typeof i.sender_information === 'undefined') {
+                            this.list[3].value = 0;
+                            this.list[5].value = 0;
+                        } else if (!isNaN(i.sender_information.octets)) {
                             // min octets
                             this.list[3].value = Math.min(this.list[3].value, i.sender_information.octets * 1);
                             // max octets
@@ -701,10 +714,8 @@ export class TabQosComponent implements OnInit {
             }
         }
         if (streamsCopy.length === 0) {
-            console.log('No data')
             this.isNoDataRTP = true;
         } else {
-            console.log('Yes data')
             this.isNoDataRTP = false;
         }
         this.renderChartData(streamsCopy, this.chartDataRTP);
