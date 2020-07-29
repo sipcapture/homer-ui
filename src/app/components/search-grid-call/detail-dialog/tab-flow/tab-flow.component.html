@@ -68,7 +68,10 @@
                 }} <span *ngIf="item.QOS" [ngClass]="item.options.mosColor"></span> {{
                     item.QOS ? item.QOS.MOS + ' [' + item.QOS.qosTYPEless + ']' : ''
                 }} </div>
-                <div class="call_text-mini" [ngStyle]="{'height.px': !isSimplify ? 15 : 0,'max-width.px':isSimplify ? 150 : 200}">{{ item.ruri_user }}</div>
+                <div class="call_text-mini" 
+                [ngStyle]="{'height.px': !isSimplify ? 15 : 0,'max-width.px':isSimplify ? 150 : ''}"
+                [ngClass]="!item.options.direction ? 'left' : 'right'"
+                >{{ item.ruri_user }}</div>
                 <div [ngClass]="'port-label-' + (!item.options.direction ? 'left' : 'right')">{{ item.srcPort }}</div>
                 <!-- ARROW line -->
                 <div
