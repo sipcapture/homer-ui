@@ -162,17 +162,16 @@
         padding: 0 4px;
       }
       .call_text-mini {
-        font-size: 0.75em;
+        font-size: 0.7em;
         color: #24465f;
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
         transition: height 0.3s ease;
         padding: 0 4px;
+
         &.right {
-          position: absolute;
-          right: 40px;
-          bottom: 40px;
+          text-align: right;
         }
       }
       .port-label-right {
@@ -185,7 +184,7 @@
         margin-top: -11px;
         text-align: center;
         font-size: 12px;
-        color: rgba(0,0,0,0.5);
+        color: rgba(0, 0, 0, 0.5);
       }
       .port-label-left {
         color: #000;
@@ -197,7 +196,7 @@
         margin-top: -11px;
         text-align: center;
         font-size: 12px;
-        color: rgba(0,0,0,0.5);
+        color: rgba(0, 0, 0, 0.5);
       }
       .call-text-date {
         font-size: 12px;
@@ -251,22 +250,21 @@
   font-size: 12px;
   font-weight: 700;
   .label-callid-wrapper {
-    background-color:rgba(255,255,255,0.7);
+    background-color: rgba(255, 255, 255, 0.7);
     display: inline-block;
     padding: 5px;
     border-radius: 4px;
   }
 }
-.iptooltip{
+.iptooltip {
   white-space: pre-line !important;
 
-  font-size:11px !important;
+  font-size: 11px !important;
   font-weight: bold;
-
 }
 .copysnack {
-  color:white !important;
-  background-color:rgb(61,61,61) !important;
+  color: white !important;
+  background-color: rgb(61, 61, 61) !important;
   .mat-simple-snackbar-action {
     color: rgb(28, 221, 160) !important;
   }

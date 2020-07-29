@@ -69,7 +69,7 @@
                     item.QOS ? item.QOS.MOS + ' [' + item.QOS.qosTYPEless + ']' : ''
                 }} </div>
                 <div class="call_text-mini" 
-                [ngStyle]="{'height.px': !isSimplify ? 15 : 0,'max-width.px':isSimplify ? 150 : 275}"
+                [ngStyle]="{'height.px': !isSimplify ? 15 : 0,'max-width.px':isSimplify ? 150 : ''}"
                 [ngClass]="!item.options.direction ? 'left' : 'right'"
                 >{{ item.ruri_user }}</div>
                 <div [ngClass]="'port-label-' + (!item.options.direction ? 'left' : 'right')">{{ item.srcPort }}</div>
