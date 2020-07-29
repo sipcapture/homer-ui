@@ -7,6 +7,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
   styleUrls: ["./setting-pcap-import-widget.component.scss"],
 })
 export class SettingPcapImportWidgetComponent {
+ pcapws : string = '';
   constructor(
     public dialogRef: MatDialogRef<SettingPcapImportWidgetComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any

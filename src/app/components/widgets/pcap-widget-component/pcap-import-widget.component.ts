@@ -98,7 +98,7 @@ export class PcapImportWidgetComponent implements IWidget {
     fileSize: 0,
   };
 
-  private files = []; //Array<FileUploadModel> = [];
+  files = []; //Array<FileUploadModel> = [];
 
   title: any;
   subsDashboardEvent: Subscription;
