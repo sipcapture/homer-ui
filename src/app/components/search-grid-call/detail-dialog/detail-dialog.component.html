@@ -66,6 +66,7 @@
     <mat-tab *ngIf="_isLoaded && tabs.messages" label="Messages">
       <app-tab-messages
         [dataItem]="sipDataItem"
+        [qosData]="qosData"
         (messageWindow)="addWindow($event)"
       ></app-tab-messages>
     </mat-tab>
