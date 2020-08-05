@@ -146,7 +146,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 mapping: [/*'Partid', */'Profile', 'HEP alias', 'HEP ID', /* 'Retention',*/ 'tools'],
                 hepsub: ['Profile', 'HEP alias', 'HEP ID', 'Version', 'HepSub', 'tools'],
                 'auth token': ['GUID', 'Name', 'Create Date', 'Expire Date', 'Active', 'tools'],
-                agentsub: ['GUID', 'Host', 'Port', 'Node', 'Type', 'Expire', 'tools'],
+                agentsub: ['UUID', 'Host', 'Port', 'Node', 'Type', 'Expire', 'tools'],
             };
 
             this.service = {
@@ -249,13 +249,13 @@ export class PreferenceComponent implements OnInit, OnDestroy {
 
     async updateData () {
         this.isLoading = true;
-        let responce;
+        let response;
 
         switch (this.pageId) {
             case 'users':
-                responce = await this._pus.getAll().toPromise();
+                response = await this._pus.getAll().toPromise();
 
-                this.dataSource = new MatTableDataSource(responce.data.map(
+                this.dataSource = new MatTableDataSource(response.data.map(
                     (item: PreferenceUsers) => ({
                         Firstname: item.firstname,
                         Lastname: item.lastname,
@@ -267,9 +267,9 @@ export class PreferenceComponent implements OnInit, OnDestroy {
 
                 break;
             case 'user settings':
-                responce = await this._puss.getAll().toPromise();
+                response = await this._puss.getAll().toPromise();
 
-                this.dataSource = new MatTableDataSource(responce.data.map(
+                this.dataSource = new MatTableDataSource(response.data.map(
                     (item: PreferenceUsersSettings) => ({
                         Username: item.username,
                         Partid: item.partid,
@@ -281,9 +281,9 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 this.isLoading = false;
                 break;
             case 'alias':
-                responce = await this._pas.getAll().toPromise();
+                response = await this._pas.getAll().toPromise();
 
-                this.dataSource = new MatTableDataSource(responce.data.map(
+                this.dataSource = new MatTableDataSource(response.data.map(
                     (item: PreferenceAlias) => ({
                         Alias: item.alias,
                         'IP Address': item.ip,
@@ -297,8 +297,8 @@ export class PreferenceComponent implements OnInit, OnDestroy {
 
                 break;
             case 'advanced':
-                responce = await this._pads.getAll().toPromise();
-                this.dataSource = new MatTableDataSource(responce.data.map(
+                response = await this._pads.getAll().toPromise();
+                this.dataSource = new MatTableDataSource(response.data.map(
                     (item: PreferenceAdvanced) => ({
                         Partid: item.partid,
                         Category: item.category,
@@ -311,8 +311,8 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 break;
             case 'mapping':
                 try {
-                    responce = await this._pmps.getAll().toPromise();
-                    this.dataSource = new MatTableDataSource(responce.data.map(
+                    response = await this._pmps.getAll().toPromise();
+                    this.dataSource = new MatTableDataSource(response.data.map(
                         (item: PreferenceMapping) => ({
                             Partid: item.partid,
                             Profile: item.profile,
@@ -329,8 +329,8 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 }
                 break;
             case 'auth token':
-                    responce = await this._aks.getAll().toPromise();
-                    this.dataSource = new MatTableDataSource(responce.data.map(
+                    response = await this._aks.getAll().toPromise();
+                    this.dataSource = new MatTableDataSource(response.data.map(
                         (item: PreferenceAuthKey) => ({
                             GUID: item.guid,
                             Name: item.name,
@@ -339,14 +339,16 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                             Active: item.active,
                             item: item
                     })));
+                    console.log(response)
+
                     this.isLoading = false;
 
                     break;
             case 'hepsub':
                 try {
-                    responce = await this._phs.getAll().toPromise();
+                    response = await this._phs.getAll().toPromise();
                     this.isLoading = false;
-                    this.dataSource = new MatTableDataSource(responce.data.map(
+                    this.dataSource = new MatTableDataSource(response.data.map(
                         (item: PreferenceHepsub) => ({
                             'HEP alias': item.hep_alias,
                             'HEP ID': item.hepid,
@@ -362,11 +364,11 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 break;
             case 'agentsub':
                     try {
-                        responce = await this._pags.getAll().toPromise();
+                        response = await this._pags.getAll().toPromise();
                         this.isLoading = false;
-                        this.dataSource = new MatTableDataSource(responce.data.map(
+                        this.dataSource = new MatTableDataSource(response.data.map(
                             (item: PreferenceAgentsub) => ({
-                                'GUID': item.uuid,
+                                'UUID': item.uuid,
                                 'Host': item.host,
                                 Port: item.port,
                                 Node: item.node,
@@ -374,6 +376,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                                 Expire: item.expire_date,
                                 item: item
                         })));
+                        console.log(response)
                     } catch (err) {
                         this.isLoading = false;
                         alert('error reques : 503');
@@ -438,7 +441,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
 
     onDelete (item: any = null) {
         this.openDialog(DialogDeleteAlertComponent, null, result =>
-            result && this.service[this.pageId].delete(item.guid).toPromise().then(this.updateData.bind(this)));
+            result && this.service[this.pageId].delete(item.guid || item.uuid).toPromise().then(this.updateData.bind(this)));
     }
     onClearLocalData() {
         Object.keys(localStorage.valueOf()).filter(i => i !== 'currentUser').forEach(i => localStorage.removeItem(i));
