@@ -48,6 +48,7 @@
   background: white;
 
   .item-wrapper {
+    margin-top:7px;
     min-width: 200px;
     transition: all 0.3s ease;
     &.big {
@@ -167,6 +168,7 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
+        max-width:34ch;
         transition: height 0.3s ease;
         padding: 0 4px;
         &.right {
@@ -267,4 +269,11 @@
   .mat-simple-snackbar-action {
     color: rgb(28, 221, 160) !important;
   }
+}
+
+.itemhost-alias {
+  text-align: center;
+  font-size: 13px !important;
+  font-weight: normal;
+  white-space: nowrap;
 }
