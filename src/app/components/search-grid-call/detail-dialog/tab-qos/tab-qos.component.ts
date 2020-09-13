@@ -249,27 +249,27 @@ export class TabQosComponent implements OnInit {
             }
 
             const i = item.raw;
-            this.chartLabelsRTP.push(moment( item.create_date ).format('YYYY-MM-DD HH:mm:ss'));
+            this.chartLabelsRTP.push(moment( item.create_date ).format('HH:mm:ss'));
 
             if (this.streamsRTP.filter((j: any) => j.dstIp === item.dstIp && j.srcIp === item.srcIp).length === 0) {
                 this.streamsRTP.push({
                     dstIp: item.dstIp,
                     srcIp: item.srcIp,
                     create_date: [],
-                    _indeterminate: false,
+                    _indeterminate: true,
                     _checked: true,
                     TOTAL_PKData: [],
-                    TOTAL_PK: true,
+                    TOTAL_PK: false,
                     EXPECTED_PKData: [],
-                    EXPECTED_PK: true,
+                    EXPECTED_PK: false,
                     JITTERData: [],
-                    JITTER: true,
+                    JITTER: false,
                     MOSData: [],
                     MOS: true,
                     DELTAData: [],
-                    DELTA: true,
+                    DELTA: false,
                     PACKET_LOSSData: [],
-                    PACKET_LOSS: true,
+                    PACKET_LOSS: false,
                 });
             }
             this.streamsRTP.forEach((k: any) => {
@@ -389,27 +389,27 @@ export class TabQosComponent implements OnInit {
 
             const i = item.raw;
 
-            this.chartLabels.push(moment( item.create_date ).format('YYYY-MM-DD HH:mm:ss'));
+            this.chartLabels.push(moment( item.create_date ).format('HH:mm:ss'));
 
             if (this.streams.filter((j: any) => j.dstIp === item.dstIp && j.srcIp === item.srcIp).length === 0) {
                 this.streams.push({
                     dstIp: item.dstIp,
                     srcIp: item.srcIp,
                     create_date: [],
-                    _indeterminate: false,
-                    _checked: true,
+                    _indeterminate: true,
+                    _checked: false,
                     packetsData: [],
-                    packets: true,
+                    packets: false,
                     octetsData: [],
-                    octets: true,
+                    octets: false,
                     highest_seq_noData: [],
-                    highest_seq_no: true,
+                    highest_seq_no: false,
                     ia_jitterData: [],
-                    ia_jitter: true,
+                    ia_jitter: false,
                     packets_lostData: [],
-                    packets_lost: true,
+                    packets_lost: false,
                     lsrData: [],
-                    lsr: true,
+                    lsr: false,
                     mosData: [],
                     mos: true
                 });
@@ -577,8 +577,9 @@ export class TabQosComponent implements OnInit {
             i.backgroundColor = [];
             i.hoverBackgroundColor = [];
         });
+        const subChartData: any = Functions.cloneObject(chartData);
         streams.forEach(item => {
-            chartData.forEach(val => {
+            subChartData.forEach(val => {
                 const unique = item.srcIp + val.label + item.dstIp;
                 const rColor = this.setColor( unique );
                 const arrData = val.data as Array<number> || [];
@@ -589,7 +590,7 @@ export class TabQosComponent implements OnInit {
                 val.data = arrData.concat(_data);
 
                 item[val.label + '_color'] = rColor.backgroundColor;
-
+                val.create_date = item.create_date;
                 val.backgroundColor = arrBackgroundColor
                     .concat(Array.from({ length: _data.length }, i => rColor.backgroundColor) );
                 val.hoverBackgroundColor = arrHoverBackgroundColor
@@ -597,6 +598,18 @@ export class TabQosComponent implements OnInit {
             });
 
         });
+        console.log({streams, chartData})
+        /**
+         * .sort(( a, b ) => {
+                    a = new Date(a.micro_ts).getTime();
+                    b = new Date(b.micro_ts).getTime();
+                    if (this.lokiSort === 'desc') {
+                        return ( a < b ) ? 1 : (( a > b ) ? -1 : 0);
+                    } else if (this.lokiSort === 'asc') {
+                        return ( a < b ) ? -1 : (( a > b ) ? 1 : 0);
+                    }
+                });
+         */
         this.cdr.detectChanges();
     }
 
@@ -650,11 +663,11 @@ export class TabQosComponent implements OnInit {
         this.streams.forEach((stream) => {
             if (!stream._checked && !stream._indeterminate) {
                 stream.create_date.forEach (create_date => this.chartLabels =
-                    this.chartLabels.filter(label => label !== moment( create_date ).format('YYYY-MM-DD HH:mm:ss')));
+                    this.chartLabels.filter(label => label !== moment( create_date ).format('HH:mm:ss')));
             } else if (stream._checked || stream._indeterminate) {
                 stream.create_date.forEach (create_date => this.chartLabels =
-                    this.chartLabels.filter(label => label !== moment( create_date ).format('YYYY-MM-DD HH:mm:ss')));
-                stream.create_date.forEach (create_date => this.chartLabels.push(moment( create_date ).format('YYYY-MM-DD HH:mm:ss')));
+                    this.chartLabels.filter(label => label !== moment( create_date ).format('HH:mm:ss')));
+                stream.create_date.forEach (create_date => this.chartLabels.push(moment( create_date ).format('HH:mm:ss')));
             }
         });
         if (streamsCopy.length === 0) {
@@ -698,11 +711,11 @@ export class TabQosComponent implements OnInit {
         this.streamsRTP.forEach((stream) => {
             if (!stream._checked && !stream._indeterminate) {
                 stream.create_date.forEach (create_date => this.chartLabelsRTP =
-                     this.chartLabelsRTP.filter(label => label !== moment( create_date ).format('YYYY-MM-DD HH:mm:ss')));
+                     this.chartLabelsRTP.filter(label => label !== moment( create_date ).format('HH:mm:ss')));
             } else if (stream._checked || stream._indeterminate) {
                 stream.create_date.forEach (create_date => this.chartLabelsRTP =
-                    this.chartLabelsRTP.filter(label => label !== moment( create_date ).format('YYYY-MM-DD HH:mm:ss')));
-                stream.create_date.forEach (create_date => this.chartLabelsRTP.push(moment( create_date ).format('YYYY-MM-DD HH:mm:ss')));
+                    this.chartLabelsRTP.filter(label => label !== moment( create_date ).format('HH:mm:ss')));
+                stream.create_date.forEach (create_date => this.chartLabelsRTP.push(moment( create_date ).format('HH:mm:ss')));
             }
         });
         // Hides disabled labels
