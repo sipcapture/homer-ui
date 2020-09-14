@@ -64,6 +64,8 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         this._isSimplifyPort = filters.isSimplifyPort;
         this._isCombineByAlias = filters.isCombineByAlias;
+
+        console.log({filters});
         setTimeout(this.initData.bind(this));
     }
 
@@ -83,7 +85,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         this.arrayItemsRTP_AGENT = [].concat(arrRTP);
         setTimeout(this.initData.bind(this));
     }
-    _RTPFilterForFLOW = true;
+    _RTPFilterForFLOW = false;
     @Input() set RTPFilterForFLOW(val: boolean) {
         this._RTPFilterForFLOW = val;
         this.initData();
