@@ -583,6 +583,7 @@ export class TabQosComponent implements OnInit {
             i.hoverBackgroundColor = [];
         });
         const streamItems = [];
+        
         streams.forEach(item => {
             if (isRTCP) {
                 for (let i = 0 ; i < item.create_date.length; i++) {
@@ -591,28 +592,29 @@ export class TabQosComponent implements OnInit {
                         dstIp: item.dstIp,
                         highest_seq_no: item.highest_seq_no,
                         highest_seq_noData: [item.highest_seq_noData[i]],
-                        highest_seq_no_color: item.highest_seq_no_color,
+                        // highest_seq_no_color: item.highest_seq_no_color,
                         ia_jitter: item.ia_jitter,
                         ia_jitterData: [item.ia_jitterData[i]],
-                        ia_jitter_color: item.ia_jitter_color,
+                        // ia_jitter_color: item.ia_jitter_color,
                         lsr: item.lsr,
                         lsrData: [item.lsrData[i]],
-                        lsr_color: item.lsr_color,
+                        // lsr_color: item.lsr_color,
                         mos: item.mos,
                         mosData: [item.mosData[i]],
-                        mos_color: item.mos_color,
+                        // mos_color: item.mos_color,
                         octets: item.octets,
                         octetsData: [item.octetsData[i]],
-                        octets_color: item.octets_color,
+                        // octets_color: item.octets_color,
                         packets: item.packets,
                         packetsData: [item.packetsData[i]],
-                        packets_color: item.packets_color,
+                        // packets_color: item.packets_color,
                         packets_lost: item.packets_lost,
                         packets_lostData: [item.packets_lostData[i]],
-                        packets_lost_color: item.packets_lost_color,
+                        // packets_lost_color: item.packets_lost_color,
                         srcIp: item.srcIp,
                         _checked: item._checked,
                         _indeterminate: item._indeterminate,
+                        parent_stream: item
                     });
                 }
             } else {
@@ -636,6 +638,7 @@ export class TabQosComponent implements OnInit {
                         DELTA: false,
                         PACKET_LOSSData: [item.PACKET_LOSSData[i]],
                         PACKET_LOSS: false,
+                        parent_stream: item
                     });
                 }
             }
@@ -666,7 +669,7 @@ export class TabQosComponent implements OnInit {
 
                 val.data = arrData.concat(_data);
 
-                item[val.label + '_color'] = rColor.backgroundColor;
+                item.parent_stream[val.label + '_color'] = rColor.backgroundColor;
 
                 val.backgroundColor = arrBackgroundColor
                     .concat(Array.from({ length: _data.length }, i => rColor.backgroundColor) );
