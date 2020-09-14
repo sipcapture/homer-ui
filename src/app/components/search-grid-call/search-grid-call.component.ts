@@ -954,10 +954,19 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             } else {
                 data = row.data;
             }
-            mData.data = data || {};
-            mData.data.item = {
-                raw: mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty'
-            };
+
+            mData.data = Functions.cloneObject(data) || {};
+
+            if (typeof mData.data.raw  === 'undefined'){
+                mData.data.raw = {
+                    raw: mData.data.item.raw
+                };
+            } else {
+                mData.data.item = {
+                    raw:  mData.data.raw
+                };
+            }
+
             mData.data.messageDetailTableData = Object.keys(mData.data)
                 .map(i => {
                     let val;

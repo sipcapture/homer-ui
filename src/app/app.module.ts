@@ -33,7 +33,7 @@ import {
     WindowComponent
 } from '@app/components';
 import {
-    
+
     AceEditorWidgetComponent,
     ClockWidgetComponent,
     CodeStyleFieldComponent,
@@ -46,6 +46,7 @@ import {
     InfluxdbchartWidgetComponent,
     PrometheusWidgetComponent,
     ProtosearchWidgetComponent,
+    PcapImportWidgetComponent,
     ResultChartWidgetComponent,
     ResultWidgetComponent,
     RsearchWidgetComponent,
@@ -56,11 +57,13 @@ import {
     SettingIframeWidgetComponent,
     SettingInfluxdbchartWidgetComponent,
     SettingPrometheusWidgetComponent,
+    SettingPcapImportWidgetComponent,
     SettingProtosearchWidgetComponent,
     SettingResultChartWidgetComponent,
     SettingResultWidgetComponent,
     SettingsAceEditorWidgetComponent,
     SettingAlertWidgetComponent,
+    SettingSmartInputWidgetComponent,
 
 } from '@app/components/widgets';
 
@@ -173,6 +176,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         InfluxdbchartWidgetComponent,
         PrometheusWidgetComponent,
         ProtosearchWidgetComponent,
+        PcapImportWidgetComponent,
         ResultChartWidgetComponent,
         AlertWidgetComponent,
         ResultWidgetComponent,
@@ -184,10 +188,12 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingInfluxdbchartWidgetComponent,
         SettingPrometheusWidgetComponent,
         SettingProtosearchWidgetComponent,
+        SettingPcapImportWidgetComponent,
         SettingResultChartWidgetComponent,
         SettingResultWidgetComponent,
         SettingsAceEditorWidgetComponent,
         SettingAlertWidgetComponent,
+        SettingSmartInputWidgetComponent,
         /** dialogs */
         DialogAdvancedComponent,
         DialogAgentsubComponent,
@@ -199,7 +205,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         DialogMappingComponent,
         DialogUserSettingsComponent,
         DialogUsersComponent,
- 
+
     ],
     // .concat(
         // Object.values<any>(dialogs),
@@ -259,6 +265,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         InfluxdbchartWidgetComponent,
         PrometheusWidgetComponent,
         ProtosearchWidgetComponent,
+        PcapImportWidgetComponent,
         ResultChartWidgetComponent,
         ResultWidgetComponent,
         RsearchWidgetComponent,
@@ -270,10 +277,12 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         SettingInfluxdbchartWidgetComponent,
         SettingPrometheusWidgetComponent,
         SettingProtosearchWidgetComponent,
+        SettingPcapImportWidgetComponent,
         SettingResultChartWidgetComponent,
         SettingResultWidgetComponent,
         SettingsAceEditorWidgetComponent,
         SettingAlertWidgetComponent,
+        SettingSmartInputWidgetComponent,
         /** dashboard */
         AddDashboardDialogComponent,
         AddDialogComponent,
