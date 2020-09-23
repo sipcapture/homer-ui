@@ -223,7 +223,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         HttpClientModule,
         GridsterModule,
         ChartsModule,
-        DynamicModule.withComponents([]),
+        DynamicModule,
         routing,
         AppRoutingModule,
         HepicMaterialModule,
