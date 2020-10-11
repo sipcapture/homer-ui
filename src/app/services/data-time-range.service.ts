@@ -46,6 +46,7 @@ export class DateTimeRangeService {
             if (data.updateType !== 'proto-search') {
                 if (data && data.dateTimeRange.dates) {
                     DateTimeRangeService.dateTimeRangr.title = data.dateTimeRange.title;
+                    DateTimeRangeService.dateTimeRangr.timezone = data.dateTimeRange.timezone;
                     DateTimeRangeService.dateTimeRangr.dates = data.dateTimeRange.dates.map(i => moment(i));
                 }
             }
@@ -93,6 +94,10 @@ export class DateTimeRangeService {
         };
     }
 
+    getTimezoneForQuery() {
+        return (DateTimeRangeService.dateTimeRangr.timezone || moment.tz.guess(true));
+    }
+
     getRangeByLabel(label: string, isAll = false) {
         if (!label || label === '') {
             label = 'Today';
@@ -132,10 +137,12 @@ export class DateTimeRangeService {
      */
     updateDataRange(dtr: any) {
         DateTimeRangeService.dateTimeRangr.title = dtr.title;
+        DateTimeRangeService.dateTimeRangr.timezone = dtr.timezone;
 
         DateTimeRangeService.dateTimeRangr.dates = this.getRangeByLabel(dtr.title) || dtr.dates;
         this._sss.saveDateTimeRange({
             title: DateTimeRangeService.dateTimeRangr.title,
+            timezone: DateTimeRangeService.dateTimeRangr.timezone,
             dates: DateTimeRangeService.dateTimeRangr.dates
         });
         this.refrash();

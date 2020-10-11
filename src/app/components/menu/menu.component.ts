@@ -10,6 +10,7 @@ import { DateTimeRangeService } from '../../services/data-time-range.service';
 import { SessionStorageService, UserSettings } from '../../services/session-storage.service';
 import { Subscription } from 'rxjs';
 import { environment } from '@environments/environment';
+import { curveNatural } from 'd3';
 
 export interface DashboardData {
     cssclass: string;
@@ -60,7 +61,12 @@ export class MenuComponent implements OnInit, OnDestroy {
 
     selectedDateTimeRangeTitle: string;
     selectedDateTimeRange: any;
+    selectedDateTimeRangeZone: string;
     currentPath: string;
+
+    startDate: moment.Moment = null;
+    endDate: moment.Moment = null;
+    timepickerTimezone: string = null;
 
     // Components variables
     protected toggle: boolean;
@@ -79,6 +85,11 @@ export class MenuComponent implements OnInit, OnDestroy {
         private authenticationService: AuthenticationService,
         private _sss: SessionStorageService
     ) {
+
+        this.startDate = null;
+        this.endDate = null;
+        this.selectedDateTimeRangeZone = null;
+    
         if (environment.environment !== '') {
             document.title += ' ' + environment.environment;
         }
@@ -106,6 +117,19 @@ export class MenuComponent implements OnInit, OnDestroy {
             this.selectedDateTimeRangeTitle = 'Today';
             this.selectedDateTimeRange = this._dtrs.getRangeByLabel(this.selectedDateTimeRangeTitle);
         }
+
+        if (!this.selectedDateTimeRangeZone) {
+            this.selectedDateTimeRangeZone = this._dtrs.getTimezoneForQuery();
+        }
+
+        if(!this.startDate) {
+            var dateFor = this._dtrs.getDatesForQuery(true);
+            this.startDate = moment.unix(dateFor.from/1000);
+            this.endDate = moment.unix(dateFor.to/1000);
+        }
+
+        this.timepickerTimezone = this._dtrs.getTimezoneForQuery();
+
         this._dtrs.castRangeUpdateTimeout.subscribe(dtr => {
             this.loadingAnim = 'loading-anim';
             setTimeout(() => {
@@ -213,7 +237,9 @@ export class MenuComponent implements OnInit, OnDestroy {
         this.selectedDateTimeRangeTitle = event.label;
     }
     onDatesUpdated (event: any) {
+
         this.selectedDateTimeRange = [event.startDate, event.endDate];
+        this.selectedDateTimeRangeZone = event.timezone;
         if (this.isRangeClicked) {
             this.isRangeClicked = false;
         } else {
@@ -222,6 +248,7 @@ export class MenuComponent implements OnInit, OnDestroy {
 
         this._dtrs.updateDataRange({
             title: this.selectedDateTimeRangeTitle,
+            timezone: this.selectedDateTimeRangeZone,
             dates: this.selectedDateTimeRange
         });
     }
@@ -239,4 +266,3 @@ export class MenuComponent implements OnInit, OnDestroy {
         this.sessionStorageSubscription.unsubscribe();
     }
 }
-
