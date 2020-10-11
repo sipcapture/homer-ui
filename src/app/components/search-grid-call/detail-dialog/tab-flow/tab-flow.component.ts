@@ -65,7 +65,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         this._isSimplifyPort = filters.isSimplifyPort;
         this._isCombineByAlias = filters.isCombineByAlias;
 
-        console.log({filters});
+        //console.log({filters});
         setTimeout(this.initData.bind(this));
     }
 
