@@ -529,7 +529,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             if (hepVersion < 2000) {
                 myRemoteColumns.push({ headerName: 'ID', field: 'id', minWidth: 20, maxWidth: 40, hide: true});
                 myRemoteColumns.push({ headerName: 'Date', field: 'create_date', filter: true, suppressSizeToFit: true,
-                    valueFormatter: (item: any) => item.value ? moment(item.value).format('YYYY-MM-DD HH:mm:ss.SSS') : null});
+                    valueFormatter: (item: any) => item.value ? moment(item.value).format('YYYY-MM-DD HH:mm:ss.SSS Z') : null});
             }
             for (const h of marData) {
                 const idArray = h.id.split('.');
@@ -555,7 +555,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 }
                 if ((h.hasOwnProperty('date_field') && h.date_field === true)) {
                     vaColumn.valueFormatter =
-                        (item: any) => item.value ? moment(item.value).format('YYYY-MM-DD HH:mm:ss.SSS') : null;
+                        (item: any) => item.value ? moment(item.value).format('YYYY-MM-DD HH:mm:ss.SSS Z') : null;
                 }
                 if (h.hasOwnProperty('hide') && h.hide === true) {
                     vaColumn.hide = true;
@@ -971,7 +971,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 .map(i => {
                     let val;
                     if (i === 'create_date') {
-                        val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS');
+                        val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS Z');
                     } else if (i === 'timeSeconds') {
                         val =  mData.data[i];
                     } else {
@@ -993,7 +993,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             mData.data.messageDetailTableData = Object.keys(mData.data).map(i => {
                 let val;
                 if (i === 'create_date') {
-                    val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS');
+                    val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS Z');
                 } else if (i === 'timeSeconds') {
                     val = mData.data[i];
                 } else {

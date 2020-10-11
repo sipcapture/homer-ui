@@ -122,13 +122,14 @@ export class MenuComponent implements OnInit, OnDestroy {
             this.selectedDateTimeRangeZone = this._dtrs.getTimezoneForQuery();
         }
 
+        this.timepickerTimezone = this._dtrs.getTimezoneForQuery();
+        moment.tz.setDefault(this.timepickerTimezone);
+
         if(!this.startDate) {
             var dateFor = this._dtrs.getDatesForQuery(true);
             this.startDate = moment.unix(dateFor.from/1000);
             this.endDate = moment.unix(dateFor.to/1000);
         }
-
-        this.timepickerTimezone = this._dtrs.getTimezoneForQuery();
 
         this._dtrs.castRangeUpdateTimeout.subscribe(dtr => {
             this.loadingAnim = 'loading-anim';
