@@ -322,7 +322,7 @@ export class ResultChartWidgetComponent implements IWidget {
         this.saveConfig();
     }
 
-    private saveConfig() {
+    saveConfig() {
         const _f = Functions.cloneObject;
         this.config = {
             title: this.title || this.id,

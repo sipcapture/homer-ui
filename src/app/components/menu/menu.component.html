@@ -5,18 +5,15 @@
 	</div>
 	<div>
 		<div style="float: right; margin-bottom: 0rem; ">
-			<button mat-button (click)="onPreference()">Settings</button> 
-			<button mat-button
-				[matMenuTriggerFor]="panels"
-				[(ngModel)]="panelName" name="panelName"
+			<button mat-button (click)="onPreference()">Settings</button>
+			<button mat-button [matMenuTriggerFor]="panels" [(ngModel)]="panelName" name="panelName"
 				ngDefaultControl>Panels: {{panelName || 'Home'}}</button>
 			<mat-menu #panels="matMenu">
 				<mat-form-field style="margin-left: 1rem;">
 					<mat-label>filter dashboards...</mat-label>
 					<input matInput [(ngModel)]="searchText" (click)="$event.stopPropagation();">
 				</mat-form-field>
-				<button mat-menu-item 
-					*ngFor="let dashboardItem of dashboards | filter : searchText"
+				<button mat-menu-item *ngFor="let dashboardItem of dashboards | filter : searchText"
 					[className]="'menu-item ' + (dashboardItem.id === currentDashboardId ? 'menu-item-active' : '')"
 					(click)="panelName = dashboardItem.name; dashboardGo(dashboardItem.href)"
 					[title]="dashboardItem.name + ' (' + dashboardItem.id + ')'">
@@ -27,43 +24,38 @@
 					Add New Dashboard
 				</button>
 			</mat-menu>
-			
+
 			<span class="mat-button time-range-icon">
 				<mat-icon>access_time</mat-icon>
 			</span>
 			<span style="color: white;">
-				<input type="button" class="mat-button" ngxDaterangepickerMd
-					[showCustomRangeLabel]="true"
-					[alwaysShowCalendars]="true"
-					[ranges]="ranges"
-					[linkedCalendars]="true"
-					[showClearButton]="false"
-					[autoApply]="false"
-					[opens]="'left'"
-					[timePicker]="true"
-					[timeInput]="true"
-					[timeZone]="true"				
-					[timePickerSeconds]="true"
-					[timePickerIncrement]="1"
-					[locale]="{format: 'DD/MM/YYYY HH:mm:ss', firstDay: 1}"
-					[timePicker24Hour]="true"
-					(rangeClicked)="onRangeClicked($event)"
-					(datesUpdated)="onDatesUpdated($event)"
-					[value]="selectedDateTimeRangeTitle" />
+				<input type="button" class="mat-button" ngxDaterangepickerMd [showCustomRangeLabel]="true"
+					[alwaysShowCalendars]="true" [ranges]="ranges" [linkedCalendars]="true" [showClearButton]="false"
+					[autoApply]="false" [opens]="'left'" [timePicker]="true" [timeInput]="true" [timeZone]="true"
+					[timePickerSeconds]="true" [timePickerIncrement]="1"
+					[locale]="{format: 'DD/MM/YYYY HH:mm:ss', firstDay: 1}" [timePicker24Hour]="true"
+					(rangeClicked)="onRangeClicked($event)" (datesUpdated)="onDatesUpdated($event)"
+					[timepickerTimezone]=timepickerTimezone [startDate]=startDate [endDate]="endDate"
+					[titleDate] = "selectedDateTimeRangeTitle" [value]="selectedDateTimeRangeTitle" />
 			</span>
-			<button mat-button (click)="refresh()" [className]="'btn-refrash ' + loadingAnim">
+			<button mat-button (click)="refresh()"
+				[className]="'mat-button mat-button-base btn-refresh ' + loadingAnim">
 				<mat-icon>refresh</mat-icon>
 			</button>
-			<button mat-button class="btn-refrash-timer" name="refresherName" [matMenuTriggerFor]="refrasher" [(ngModel)]="refresherName" ngDefaultControl>
+			<button mat-button class="btn-refresh-timer" name="refresherName" [matMenuTriggerFor]="refrasher"
+				[(ngModel)]="refresherName" ngDefaultControl>
 				{{refresherName || 'off'}}
 			</button>
 			<mat-menu #refrasher="matMenu">
-				<button mat-menu-item *ngFor="let item of refresherList" (click)="refresherName = item.name; onRefrasher(item.value)">
+				<button mat-menu-item *ngFor="let item of refresherList"
+					(click)="refresherName = item.name; onRefrasher(item.value)">
 					{{ item.title }}
 				</button>
 			</mat-menu>
-			<button mat-button (click)="logout()"><mat-icon>exit_to_app</mat-icon></button>
-		</div> 
+			<button mat-button (click)="logout()">
+				<mat-icon>exit_to_app</mat-icon>
+			</button>
+		</div>
 	</div>
 </mat-toolbar>
 <router-outlet></router-outlet>

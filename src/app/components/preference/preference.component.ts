@@ -339,7 +339,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                             Active: item.active,
                             item: item
                     })));
-                    console.log(response)
+                    //console.log(response)
 
                     this.isLoading = false;
 
@@ -376,7 +376,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                                 Expire: item.expire_date,
                                 item: item
                         })));
-                        console.log(response)
+                        //console.log(response)
                     } catch (err) {
                         this.isLoading = false;
                         alert('error reques : 503');

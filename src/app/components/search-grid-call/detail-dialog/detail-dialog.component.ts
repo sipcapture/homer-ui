@@ -30,7 +30,7 @@ export class DetailDialogComponent implements OnInit {
     isSimplifyPort = false;
     isCombineByAlias = true;
     IdFromCallID;
-    RTPFilterForFLOW = true;
+    RTPFilterForFLOW = false;
     activeTab = 0;
     isFilterOpened = false;
     isFilterOpenedOutside = false;
@@ -130,6 +130,7 @@ export class DetailDialogComponent implements OnInit {
         if (this.sipDataItem) {
             this.dataLogs = this.sipDataItem.data.messages.filter(i => !i.method).map(i => ({ payload: i }));
             setTimeout(this.checkStatusTabs.bind(this));
+            this.doFilterMessages();
         }
     }
     checkStatusTabs() {
@@ -149,6 +150,7 @@ export class DetailDialogComponent implements OnInit {
                         selected: true,
                         title: 'RTP'
                     });
+                    this.doFilterMessages();
                     this.changeDetectorRefs.detectChanges();
                 }
             }
@@ -195,6 +197,7 @@ export class DetailDialogComponent implements OnInit {
                         if (this.checkboxListFilterPayloadType.every(filter => filter.selected === false)) {
                             this.checkboxListFilterPayloadType = filterBackup;
                         }
+                        this.doFilterMessages();
                     }
                 } catch (err) { }
             }
@@ -214,6 +217,7 @@ export class DetailDialogComponent implements OnInit {
                             this.activeTab = this.tabIndexByDefault;
                             this.changeDetectorRefs.detectChanges();
                         }
+                        this.doFilterMessages();
                     }
                 } catch (err) { }
             }
@@ -228,6 +232,9 @@ export class DetailDialogComponent implements OnInit {
         });
     }
     doFilterMessages() {
+        if (!this.sipDataItem) {
+            return;
+        }
         if (this.combineType === '1none') {
             this.isCombineByAlias = false;
             this.isSimplifyPort   = false;
@@ -269,14 +276,14 @@ export class DetailDialogComponent implements OnInit {
                 CallId: this.checkboxListFilterCallId
             };
             this.changeDetectorRefs.detectChanges();
-        }, 100);
+        });
     }
 
     doOpenFilter() {
         setTimeout(() => {
             this.isFilterOpened = true;
             this.changeDetectorRefs.detectChanges();
-        }, 10);
+        });
     }
 
     @HostListener('document:click', ['$event.target'])

@@ -6,8 +6,6 @@ import {ICellRendererAngularComp} from 'ag-grid-angular';
     template: `
         <div class="user-actions">
             <a (click)="openTransactionPopup()"
-            (mouseover)="hover=true"
-            (mouseleave)="hover=false"
             class="material-icons md-18">open_in_new</a>
         </div>`,
     styles: [

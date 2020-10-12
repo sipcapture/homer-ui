@@ -12,15 +12,17 @@
 		width: 32px;
 	}
 }
-.btn-refrash {
+.btn-refresh {
 	z-index: 1;
 	margin: 0;
 	padding: 0px;
 	min-width: initial;
-	margin-right: 4px;
+	margin-right: 4px !important;
 	padding-right: 2px;
+	color: inherit;
+    background: transparent;
 }
-.btn-refrash-timer {
+.btn-refresh-timer {
 	border-left: 1px solid #fff;
 	border-radius: 0;
 	margin-left: 0;

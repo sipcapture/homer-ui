@@ -8,8 +8,6 @@ import { DialogSettingsGridDialog} from '../grid-settings-dialog/grid-settings-d
     template: `
         <div class="user-actions">
             <a (click)="onChackAllClick()"
-                (mouseover)="hover=true"
-                (mouseleave)="hover=false"
                 class="material-icons md-18"
             >done_outline</a>
         </div>`,
@@ -28,7 +26,7 @@ export class HeaderActionRenderer {
         this.params = headerParams;
     }
 
-    private onChackAllClick() {
+    onChackAllClick() {
         let i = 0;
         let bool = true;
         while (this.params.api.getRowNode(i) !== undefined && bool) {

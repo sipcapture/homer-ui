@@ -3,7 +3,7 @@ import {ICellRendererAngularComp} from 'ag-grid-angular';
 
 @Component({
     selector: 'app-child-cell',
-    template: `<a (click)="openTransactionPopup($event)" (mouseover)="hover=true" (mouseleave)="hover=false">{{callid}}</a>`,
+    template: `<a (click)="openTransactionPopup($event)">{{callid}}</a>`,
     styles: ['a { user-select: text }']
 })
 export class ColumnCallidRenderer implements ICellRendererAngularComp {
