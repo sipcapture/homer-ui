@@ -416,17 +416,17 @@ export class TabQosComponent implements OnInit {
             }
             this.streams.forEach((k: any) => {
                 if (k.dstIp === item.dstIp && k.srcIp === item.srcIp) {
-                    k.create_date.unshift( item.create_date );
+                    k.create_date.push( item.create_date );
 
                     // packets
                     if (typeof i.sender_information === 'undefined') {
-                        k.packetsData.push(0)
+                        k.packetsData.push(0);
                     } else {
                         k.packetsData.push(i.sender_information.packets);
                     }
                     // octets
                     if (typeof i.sender_information === 'undefined') {
-                        k.octetsData.push(0)
+                        k.octetsData.push(0);
                     } else {
                         k.octetsData.push(i.sender_information.octets);
                     }
@@ -583,7 +583,7 @@ export class TabQosComponent implements OnInit {
             i.hoverBackgroundColor = [];
         });
         const streamItems = [];
-        
+
         streams.forEach(item => {
             if (isRTCP) {
                 for (let i = 0 ; i < item.create_date.length; i++) {
