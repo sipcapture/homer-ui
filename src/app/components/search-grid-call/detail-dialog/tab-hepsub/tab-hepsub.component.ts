@@ -46,15 +46,15 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
 
         try {
 
-            let data = this.getQuery();
+            const data = this.getQuery();
             if (data.param && data.param.search) {
-                let key = Object.keys(data.param.search);
-                let response = this._phs.getAll().toPromise().then(res => {
-                    let that = this;
-                    if (res && res["data"]) {
-                        res["data"].forEach(function (value) {
+                const key = Object.keys(data.param.search);
+                const response = this._phs.getAll().toPromise().then(res => {
+                    const that = this;
+                    if (res && res['data']) {
+                        res['data'].forEach(function (value) {
 
-                            let valKey = value["hepid"] + "_" + value["profile"];
+                            const valKey = value['hepid'] + '_' + value['profile'];
                             if (valKey == key[0]) {
                                 that.getData(value.mapping);
                                 return;
@@ -79,11 +79,12 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
 
     getData(mapping) {
 
-        this.agentsubService.getType(mapping["lookup_profile"]).toPromise().then(res => {
+        this.agentsubService.getType(mapping['lookup_profile']).toPromise().then(res => {
             if (res && res.data) {
-                let { uuid, type } = res.data[0];
+                const type = mapping['lookup_profile'];
+                const { uuid } = res.data[0];
                 this.subTabList = res.data.map(i => {
-                    i.title = `"${i.node}"/ ${i.type}`;
+                    i.title = `"${i.node}"/ ${type}`;
                     return i;
                 });
                 this.onTabClick(uuid, type, mapping); // open first TAB by default
@@ -98,34 +99,34 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
 
     async onTabClick(uuid, type, mapping) {
 
-        let dataQuery = this.getQuery();
-        let profile = this.getProfile();
+        const dataQuery = this.getQuery();
+        const profile = this.getProfile();
 
-        if (mapping["source_fields"]) {
+        if (mapping['source_fields']) {
 
-            let obj = mapping["source_fields"];
-            for (let key in obj) {
-                var splitted = obj[key].split(".", 2);
+            const obj = mapping['source_fields'];
+            for (const key in obj) {
+                let splitted = obj[key].split('.', 2);
                 if (splitted[1]) {
-                    if (splitted[0] == "data_header") {
-                        let newData = this.getMyDataArray(splitted[1]);
-                        dataQuery["param"]["search"][profile][key] = newData;
-                    } else if (splitted[0] == "message") {
-                        let newData = this.getMyMessagesArray(splitted[1]);
-                        dataQuery["param"]["search"][profile][key] = newData;
+                    if (splitted[0] == 'data_header') {
+                        const newData = this.getMyDataArray(splitted[1]);
+                        dataQuery['param']['search'][profile][key] = newData;
+                    } else if (splitted[0] == 'message') {
+                        const newData = this.getMyMessagesArray(splitted[1]);
+                        dataQuery['param']['search'][profile][key] = newData;
                     }
                 }
             }
-        } else if (mapping["source_field"]) {
+        } else if (mapping['source_field']) {
 
-            var splitted = mapping["source_field"].split(".", 2);
+            let splitted = mapping['source_field'].split('.', 2);
             if (splitted[1]) {
-                if (splitted[0] == "data_header") {
-                    let newData = this.getMyDataArray(splitted[1]);
-                    dataQuery["param"]["search"][profile][splitted[1]] = newData;
-                } else if (splitted[0] == "message") {
-                    let newData = this.getMyMessagesArray(splitted[1]);
-                    dataQuery["param"]["search"][profile][splitted[1]] = newData;
+                if (splitted[0] == 'data_header') {
+                    const newData = this.getMyDataArray(splitted[1]);
+                    dataQuery['param']['search'][profile][splitted[1]] = newData;
+                } else if (splitted[0] == 'message') {
+                    const newData = this.getMyMessagesArray(splitted[1]);
+                    dataQuery['param']['search'][profile][splitted[1]] = newData;
                 }
             }
         }
