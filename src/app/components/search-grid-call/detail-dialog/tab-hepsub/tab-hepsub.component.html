@@ -10,7 +10,15 @@
     (click)="onTabClick(item.uuid, item.type)"
     [label]="'HEPSUB:' + item.title">
     
+    <br>
+    <div *ngFor="let button of downloadArray">
+      <button mat-raised-button color="primary" (click)="downloadData(button)"
+        >Download: {{ button.cid }}</button>
+    </div>
+    <br>
+
     <ngx-json-viewer [json]="jsonData" [expanded]="true"></ngx-json-viewer>
+
   </mat-tab>
 
 

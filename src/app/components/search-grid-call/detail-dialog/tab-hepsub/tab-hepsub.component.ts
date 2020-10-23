@@ -33,6 +33,8 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
 
     isLogs = true;
     subTabList = [];
+    downloadArray = [];
+    downloadKey = {};
     jsonData: any;
     _interval: any;
     constructor(
@@ -105,7 +107,7 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
         if (mapping['source_fields']) {
 
             const obj = mapping['source_fields'];
-            for (const key in obj) {
+             for (const key of Object.keys(obj)) {
                 let splitted = obj[key].split('.', 2);
                 if (splitted[1]) {
                     if (splitted[0] == 'data_header') {
@@ -119,7 +121,7 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
             }
         } else if (mapping['source_field']) {
 
-            let splitted = mapping['source_field'].split('.', 2);
+            const splitted = mapping['source_field'].split('.', 2);
             if (splitted[1]) {
                 if (splitted[0] == 'data_header') {
                     const newData = this.getMyDataArray(splitted[1]);
@@ -131,11 +133,30 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
             }
         }
         const res2 = await this.agentsubService.getHepsubElements({ uuid, type, data: dataQuery }).toPromise();
-         if (res2 && res2.data) {
-             this.jsonData = res2.data;
-             this.indexTabPosition = 0;
-             this.cdr.detectChanges();
-         }
+        if (res2 && res2.data) {
+
+            const hepData = (JSON.parse(JSON.stringify(res2.data)));
+
+            for (let key of Object.keys(hepData)) {
+                for (const skey in hepData[key]) {
+                    if (skey.startsWith("__")) {
+                        if (skey == '__hep__' && hepData[key][skey]['type'] && hepData[key][skey]['type'] == "download") {
+                            const newObj = JSON.parse(JSON.stringify(hepData[key]));
+                            if(!this.downloadKey[newObj.cid]) {
+                                this.downloadArray.push(newObj);
+                                this.downloadKey[newObj.cid] = 1;
+                            }
+                        }
+
+                        delete hepData[key][skey];
+                    }
+                }
+            }
+
+            this.jsonData = hepData;
+            this.indexTabPosition = 0;
+            this.cdr.detectChanges();
+        }
     }
 
     getProfile() {
@@ -145,6 +166,12 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
             this.dataItem.data.messages[0] &&
             this.dataItem.data.messages[0].profile ?
             this.dataItem.data.messages[0].profile : null;
+    }
+
+    public downloadData(data) {
+
+        alert("File will be downloaded soon");
+        console.log("Data download", data);
     }
 
     private getCallIdArray() {
