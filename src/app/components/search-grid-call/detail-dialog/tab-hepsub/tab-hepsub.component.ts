@@ -170,14 +170,20 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
 
     public downloadData(data) {
 
-        //alert("File will be downloaded soon");
-        console.log("Data download", data);
-        console.log("Data KEYS", this.downloadKey);
-        let dataQuery = this.getQuery();
-        const uuid = this.downloadKey[data.cid];
-        dataQuery.param.search[this.getProfile()] = data;
-        const dataBlob = this.agentsubService.getHepsubBlobData({ uuid, data: dataQuery }).toPromise();
-        Functions.saveToFile(dataBlob, `export_${this.id}.pcap`);
+        try {
+            const dataQuery = this.getQuery();
+            const uuid = this.downloadKey[data.cid];
+            if (dataQuery.param && dataQuery.param.search) {
+                dataQuery.param.search[this.getProfile()] = data;
+                const response = this.agentsubService.getHepsubBlobData({ uuid, data: dataQuery }).toPromise().then(res => {
+                    Functions.saveToFile(res, `export_${uuid}.pcap`);
+                });
+            }
+        } catch (err) {
+            console.log('error request:', err);
+        }
+
+
     }
 
     private getCallIdArray() {
