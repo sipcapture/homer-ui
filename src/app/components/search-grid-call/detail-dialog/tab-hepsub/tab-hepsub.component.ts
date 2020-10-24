@@ -144,7 +144,7 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
                             const newObj = JSON.parse(JSON.stringify(hepData[key]));
                             if(!this.downloadKey[newObj.cid]) {
                                 this.downloadArray.push(newObj);
-                                this.downloadKey[newObj.cid] = 1;
+                                this.downloadKey[newObj.cid] = uuid;
                             }
                         }
 
@@ -170,8 +170,14 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
 
     public downloadData(data) {
 
-        alert("File will be downloaded soon");
+        //alert("File will be downloaded soon");
         console.log("Data download", data);
+        console.log("Data KEYS", this.downloadKey);
+        let dataQuery = this.getQuery();
+        const uuid = this.downloadKey[data.cid];
+        dataQuery.param.search[this.getProfile()] = data;
+        const dataBlob = this.agentsubService.getHepsubBlobData({ uuid, data: dataQuery }).toPromise();
+        Functions.saveToFile(dataBlob, `export_${this.id}.pcap`);
     }
 
     private getCallIdArray() {
@@ -182,7 +188,7 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
             }
             return a;
         }, []);
-        return callidArray;
+        return callidArray || [];
     }
 
     private getMyDataArray(key) {
