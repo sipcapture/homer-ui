@@ -9,6 +9,7 @@ export interface UserSettings {
     updateType: string;
     dateTimeRange: {
         title: string;
+        timezone: string;
         dates: [ moment.Moment, moment.Moment ]
     };
     protosearchSettings: any;
@@ -23,6 +24,7 @@ export class SessionStorageService {
         updateType: 'full',
         dateTimeRange: {
             title: '',
+            timezone: '',
             dates: [moment(), moment()]
         },
         protosearchSettings: {}
@@ -62,6 +64,7 @@ export class SessionStorageService {
             updateType: this.FULL,
             dateTimeRange: {
                 title: '',
+                timezone: '',
                 dates: [moment(), moment()]
             },
             protosearchSettings: {}

@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import * as moment from 'moment';
 import { Functions } from '@app/helpers/functions';
-import { MAT_HAMMER_OPTIONS } from '@angular/material/core';
 
 export interface MesagesData {
     id: string;

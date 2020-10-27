@@ -78,7 +78,7 @@ export class ResultWidgetComponent implements IWidget {
             this.cdr.detectChanges();
         }
     }
-    private saveConfig() {
+    saveConfig() {
         const _f = Functions.cloneObject;
         this.config = {
             title: this.title
