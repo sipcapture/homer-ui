@@ -140,10 +140,10 @@ export class PreferenceComponent implements OnInit, OnDestroy {
 
             this.pagesStructure = {
                 users: ['Firstname', 'Lastname', 'Username', 'Email', 'tools'],
-                'user settings': ['Username', /*'Partid',*/ 'Category', 'Param', /* 'Data' */, 'tools'],
+                'user settings': ['Username', 'Category', 'Param',  'tools'],
                 alias: ['Alias', 'IP Address', 'Port', 'Mask', 'CaptureID', 'Status', 'tools'],
-                advanced: [/*'Partid',*/ 'Category', 'Param', 'Data', 'tools'],
-                mapping: [/*'Partid', */'Profile', 'HEP alias', 'HEP ID', /* 'Retention',*/ 'tools'],
+                advanced: [ 'Category', 'Param', 'Data', 'tools'],
+                mapping: ['Profile', 'HEP alias', 'HEP ID', 'tools'],
                 hepsub: ['Profile', 'HEP alias', 'HEP ID', 'Version', 'HepSub', 'tools'],
                 'auth token': ['GUID', 'Name', 'Create Date', 'Expire Date', 'Active', 'tools'],
                 agentsub: ['UUID', 'Host', 'Port', 'Node', 'Type', 'Expire', 'tools'],
@@ -253,60 +253,75 @@ export class PreferenceComponent implements OnInit, OnDestroy {
 
         switch (this.pageId) {
             case 'users':
-                response = await this._pus.getAll().toPromise();
-
-                this.dataSource = new MatTableDataSource(response.data.map(
-                    (item: PreferenceUsers) => ({
-                        Firstname: item.firstname,
-                        Lastname: item.lastname,
-                        Username: item.username,
-                        Email: item.email,
-                        item: item
-                })));
-                this.isLoading = false;
+                try {
+                    response = await this._pus.getAll().toPromise();
+                    this.dataSource = new MatTableDataSource(response.data.map(
+                        (item: PreferenceUsers) => ({
+                            Firstname: item.firstname,
+                            Lastname: item.lastname,
+                            Username: item.username,
+                            Email: item.email,
+                            item: item
+                    })));
+                    this.isLoading = false;
+                } catch (err) {
+                    this.isLoading = false;
+                    alert('error request');
+                }
 
                 break;
             case 'user settings':
-                response = await this._puss.getAll().toPromise();
-
-                this.dataSource = new MatTableDataSource(response.data.map(
-                    (item: PreferenceUsersSettings) => ({
-                        Username: item.username,
-                        Partid: item.partid,
-                        Category: item.category,
-                        Param: item.param,
-                        data: JSON.stringify(item.data).slice(0, 40) + ' . . .',
-                        item: item
-                })));
-                this.isLoading = false;
+                try {
+                    response = await this._puss.getAll().toPromise();
+                    this.dataSource = new MatTableDataSource(response.data.map(
+                        (item: PreferenceUsersSettings) => ({
+                            Username: item.username,
+                            Partid: item.partid,
+                            Category: item.category,
+                            Param: item.param,
+                            item: item
+                    })));
+                    this.isLoading = false;
+                } catch (err) {
+                    this.isLoading = false;
+                    alert('error request');
+                }
                 break;
             case 'alias':
-                response = await this._pas.getAll().toPromise();
-
-                this.dataSource = new MatTableDataSource(response.data.map(
-                    (item: PreferenceAlias) => ({
-                        Alias: item.alias,
-                        'IP Address': item.ip,
-                        Port: item.port,
-                        Mask: item.mask,
-                        CaptureID: item.captureID,
-                        Status: item.status,
-                        item: item
-                })));
-                this.isLoading = false;
+                try {
+                    response = await this._pas.getAll().toPromise();
+                    this.dataSource = new MatTableDataSource(response.data.map(
+                        (item: PreferenceAlias) => ({
+                            Alias: item.alias,
+                            'IP Address': item.ip,
+                            Port: item.port,
+                            Mask: item.mask,
+                            CaptureID: item.captureID,
+                            Status: item.status,
+                            item: item
+                    })));
+                    this.isLoading = false;
+                } catch (err) {
+                    this.isLoading = false;
+                    alert('error request');
+                }
 
                 break;
             case 'advanced':
-                response = await this._pads.getAll().toPromise();
-                this.dataSource = new MatTableDataSource(response.data.map(
-                    (item: PreferenceAdvanced) => ({
-                        Partid: item.partid,
-                        Category: item.category,
-                        Param: item.param,
-                        Data: JSON.stringify(item.data).slice(0, 50) + ' . . .',
-                        item: item
-                })));
-                this.isLoading = false;
+                try {
+                    response = await this._pads.getAll().toPromise();
+                    this.dataSource = new MatTableDataSource(response.data.map(
+                        (item: PreferenceAdvanced) => ({
+                            Partid: item.partid,
+                            Category: item.category,
+                            Param: item.param,
+                            item: item
+                    })));
+                    this.isLoading = false;
+                } catch (err) {
+                    this.isLoading = false;
+                    alert('error request');
+                }
 
                 break;
             case 'mapping':
@@ -329,6 +344,7 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                 }
                 break;
             case 'auth token':
+                try {
                     response = await this._aks.getAll().toPromise();
                     this.dataSource = new MatTableDataSource(response.data.map(
                         (item: PreferenceAuthKey) => ({
@@ -339,8 +355,10 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                             Active: item.active,
                             item: item
                     })));
-                    //console.log(response)
-
+                } catch (err) {
+                    this.isLoading = false;
+                    alert('error request');
+                }
                     this.isLoading = false;
 
                     break;
@@ -376,7 +394,6 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                                 Expire: item.expire_date,
                                 item: item
                         })));
-                        //console.log(response)
                     } catch (err) {
                         this.isLoading = false;
                         alert('error reques : 503');
@@ -384,7 +401,6 @@ export class PreferenceComponent implements OnInit, OnDestroy {
                     break;
         }
     }
-
     async openDialog(type: any, data: any = null, cb: Function = null) {
         const result = await this.dialog.open(type, {
             width: '800px', data: { data, isnew: data === null }
