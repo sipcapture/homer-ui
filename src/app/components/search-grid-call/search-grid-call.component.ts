@@ -943,11 +943,11 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
             if (typeof mData.data.raw === 'undefined') {
                 mData.data.raw = {
-                    raw: mData.data.item.raw
+                    raw: Functions.stylingRowText(mData.data.item.raw)
                 };
             } else {
                 mData.data.item = {
-                    raw: mData.data.raw
+                    raw: Functions.stylingRowText(mData.data.raw)
                 };
             }
 
@@ -971,7 +971,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
             mData.data = result && result.data && result.data[0] ? result.data[0] : {};
             mData.data.item = {
-                raw: mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty'
+                raw: Functions.stylingRowText(mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty')
             };
             mData.data.messageDetailTableData = Object.keys(mData.data).map(i => {
                 let val;

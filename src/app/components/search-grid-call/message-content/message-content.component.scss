@@ -17,3 +17,24 @@ table {
 	box-sizing: border-box;
 	margin: 0;
 }
+/*
+.pre-content {
+	font-family: Roboto;
+	font-size: 13px;
+	padding: 0.5rem 2rem;
+	height: 100%;
+	box-sizing: border-box;
+	margin: 0;
+	line-height: 24px;
+    margin-left: 6px;
+    margin-top: 6px;
+}
+*/
+.raw-json {
+	white-space: pre-wrap;
+	font-size: 13px;
+	line-height: 24px;
+    margin-left: 6px;
+	margin-top: 6px;
+	color:#505050;
+}
