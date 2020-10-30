@@ -351,7 +351,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         } else {
             currentWidget = this._ds.dbs.currentWidget;
         }
-        if (id !== currentWidget.id) {
+        if (currentWidget.id && id !== currentWidget.id) {
             for (let i = 0; i < this.submitCheck().length; i++) {
                 if (id === this.submitCheck()[i].id) {
                     // currentWidget.id
