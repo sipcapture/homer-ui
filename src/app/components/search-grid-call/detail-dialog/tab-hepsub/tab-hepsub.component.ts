@@ -33,7 +33,11 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
 
     isLogs = true;
     subTabList = [];
+    downloadArray = {};
+    downloadKey = {};
+    isDownload = false;
     jsonData: any;
+    jsonDownload: any;
     _interval: any;
     constructor(
         private agentsubService: AgentsubService,
@@ -46,15 +50,15 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
 
         try {
 
-            let data = this.getQuery();
+            const data = this.getQuery();
             if (data.param && data.param.search) {
-                let key = Object.keys(data.param.search);
-                let response = this._phs.getAll().toPromise().then(res => {
-                    let that = this;
-                    if (res && res["data"]) {
-                        res["data"].forEach(function (value) {
+                const key = Object.keys(data.param.search);
+                const response = this._phs.getAll().toPromise().then(res => {
+                    const that = this;
+                    if (res && res['data']) {
+                        res['data'].forEach(function (value) {
 
-                            let valKey = value["hepid"] + "_" + value["profile"];
+                            const valKey = value['hepid'] + '_' + value['profile'];
                             if (valKey == key[0]) {
                                 that.getData(value.mapping);
                                 return;
@@ -79,11 +83,12 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
 
     getData(mapping) {
 
-        this.agentsubService.getType(mapping["lookup_profile"]).toPromise().then(res => {
+        this.agentsubService.getType(mapping['lookup_profile']).toPromise().then(res => {
             if (res && res.data) {
-                let { uuid, type } = res.data[0];
+                const type = mapping['lookup_profile'];
+                const { uuid } = res.data[0];
                 this.subTabList = res.data.map(i => {
-                    i.title = `"${i.node}"/ ${i.type}`;
+                    i.title = `"${i.node}"/ ${type}`;
                     return i;
                 });
                 this.onTabClick(uuid, type, mapping); // open first TAB by default
@@ -98,43 +103,67 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
 
     async onTabClick(uuid, type, mapping) {
 
-        let dataQuery = this.getQuery();
-        let profile = this.getProfile();
+        const dataQuery = this.getQuery();
+        const profile = this.getProfile();
 
-        if (mapping["source_fields"]) {
+        if (mapping['source_fields']) {
 
-            let obj = mapping["source_fields"];
-            for (let key in obj) {
-                var splitted = obj[key].split(".", 2);
+            const obj = mapping['source_fields'];
+             for (const key of Object.keys(obj)) {
+                let splitted = obj[key].split('.', 2);
                 if (splitted[1]) {
-                    if (splitted[0] == "data_header") {
-                        let newData = this.getMyDataArray(splitted[1]);
-                        dataQuery["param"]["search"][profile][key] = newData;
-                    } else if (splitted[0] == "message") {
-                        let newData = this.getMyMessagesArray(splitted[1]);
-                        dataQuery["param"]["search"][profile][key] = newData;
+                    if (splitted[0] == 'data_header') {
+                        const newData = this.getMyDataArray(splitted[1]);
+                        dataQuery['param']['search'][profile][key] = newData;
+                    } else if (splitted[0] == 'message') {
+                        const newData = this.getMyMessagesArray(splitted[1]);
+                        dataQuery['param']['search'][profile][key] = newData;
                     }
                 }
             }
-        } else if (mapping["source_field"]) {
+        } else if (mapping['source_field']) {
 
-            var splitted = mapping["source_field"].split(".", 2);
+            const splitted = mapping['source_field'].split('.', 2);
             if (splitted[1]) {
-                if (splitted[0] == "data_header") {
-                    let newData = this.getMyDataArray(splitted[1]);
-                    dataQuery["param"]["search"][profile][splitted[1]] = newData;
-                } else if (splitted[0] == "message") {
-                    let newData = this.getMyMessagesArray(splitted[1]);
-                    dataQuery["param"]["search"][profile][splitted[1]] = newData;
+                if (splitted[0] == 'data_header') {
+                    const newData = this.getMyDataArray(splitted[1]);
+                    dataQuery['param']['search'][profile][splitted[1]] = newData;
+                } else if (splitted[0] == 'message') {
+                    const newData = this.getMyMessagesArray(splitted[1]);
+                    dataQuery['param']['search'][profile][splitted[1]] = newData;
                 }
             }
         }
         const res2 = await this.agentsubService.getHepsubElements({ uuid, type, data: dataQuery }).toPromise();
-         if (res2 && res2.data) {
-             this.jsonData = res2.data;
-             this.indexTabPosition = 0;
-             this.cdr.detectChanges();
-         }
+        if (res2 && res2.data) {
+
+            const hepData = (JSON.parse(JSON.stringify(res2.data)));
+            const downloadJSON = {};
+
+            for (let key of Object.keys(hepData)) {
+                for (const skey in hepData[key]) {
+                    if (skey.startsWith("__")) {
+                        if (skey == '__hep__' && hepData[key][skey]['type'] && hepData[key][skey]['type'] == "download") {
+                            const newObj = JSON.parse(JSON.stringify(hepData[key]));
+                            if(!this.downloadKey[newObj.cid]) {
+                                this.downloadArray[newObj.cid] = newObj;
+                                this.downloadKey[newObj.cid] = uuid;
+                            }
+                        }
+
+                        delete hepData[key][skey];
+                        downloadJSON[key] = (JSON.parse(JSON.stringify(hepData[key])));
+                        delete hepData[key];
+                        this.isDownload = true;
+                    }
+                }
+            }
+
+            this.jsonDownload = downloadJSON;
+            this.jsonData = hepData;
+            this.indexTabPosition = 0;
+            this.cdr.detectChanges();
+        }
     }
 
     getProfile() {
@@ -146,6 +175,21 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
             this.dataItem.data.messages[0].profile : null;
     }
 
+    public downloadData(data) {
+        try {
+            const dataQuery = this.getQuery();
+            const uuid = this.downloadKey[data.cid];
+            if (dataQuery.param && dataQuery.param.search) {
+                dataQuery.param.search[this.getProfile()] = data;
+                const response = this.agentsubService.getHepsubBlobData({ uuid, data: dataQuery }).toPromise().then(res => {
+                    Functions.saveToFile(res, `export_${uuid}.pcap`);
+                });
+            }
+        } catch (err) {
+            console.log('error request:', err);
+        }
+    }
+
     private getCallIdArray() {
         const data = this.dataItem.data;
         const callidArray = data.calldata.map(i => i.sid).reduce((a, b) => {
@@ -154,7 +198,7 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
             }
             return a;
         }, []);
-        return callidArray;
+        return callidArray || [];
     }
 
     private getMyDataArray(key) {
