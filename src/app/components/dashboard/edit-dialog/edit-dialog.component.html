@@ -68,6 +68,11 @@
       </mat-select>
     </mat-form-field>
   </div>
+  <div *ngIf="data.type === 2" style="display: flex; flex-direction: column">
+    <hr style="width: 100%;">
+    <h4>Grafana Timestamp sync</h4>
+    <mat-checkbox labelPosition="Before" [(ngModel)]="data.grafanaTimestamp">Sync with Dashboard</mat-checkbox>
+  </div>
   <hr style="width: 100%;">
   <div>
     <button mat-raised-button color="primary" (click)="onExport()">Export dashboard settings</button>  

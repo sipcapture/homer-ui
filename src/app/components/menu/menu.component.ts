@@ -8,6 +8,7 @@ import { filter } from 'rxjs/operators';
 import * as moment from 'moment';
 import { DateTimeRangeService } from '../../services/data-time-range.service';
 import { SessionStorageService, UserSettings } from '../../services/session-storage.service';
+import { PreferenceAdvancedService } from '@app/services';
 import { Subscription } from 'rxjs';
 import { environment } from '@environments/environment';
 import { curveNatural } from 'd3';
@@ -67,7 +68,7 @@ export class MenuComponent implements OnInit, OnDestroy {
     startDate: moment.Moment = null;
     endDate: moment.Moment = null;
     timepickerTimezone: string = null;
-
+    grafana: any;
     // Components variables
     protected toggle: boolean;
     protected modal: boolean;
@@ -83,17 +84,19 @@ export class MenuComponent implements OnInit, OnDestroy {
         private router: Router,
         public dialog: MatDialog,
         private authenticationService: AuthenticationService,
-        private _sss: SessionStorageService
+        private _sss: SessionStorageService,
+        private _pas: PreferenceAdvancedService,
     ) {
 
         this.startDate = null;
         this.endDate = null;
         this.selectedDateTimeRangeZone = null;
-    
         if (environment.environment !== '') {
             document.title += ' ' + environment.environment;
         }
         this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
+        this._pas.getAll().subscribe(advancedObj => [this.grafana] = advancedObj.data.filter(advanced =>
+            advanced.category === 'search' && advanced.param === 'grafana'));
         router.events.pipe(
             filter(e => e instanceof ActivationEnd)
         ).subscribe((evt: ActivationEnd) => {
@@ -125,16 +128,17 @@ export class MenuComponent implements OnInit, OnDestroy {
         this.timepickerTimezone = this._dtrs.getTimezoneForQuery();
         moment.tz.setDefault(this.timepickerTimezone);
 
-        if(!this.startDate) {
-            var dateFor = this._dtrs.getDatesForQuery(true);
-            this.startDate = moment.unix(dateFor.from/1000);
-            this.endDate = moment.unix(dateFor.to/1000);
+        if (!this.startDate) {
+            const dateFor = this._dtrs.getDatesForQuery(true);
+            this.startDate = moment.unix(dateFor.from / 1000);
+            this.endDate = moment.unix(dateFor.to / 1000);
         }
 
         this._dtrs.castRangeUpdateTimeout.subscribe(dtr => {
             this.loadingAnim = 'loading-anim';
             setTimeout(() => {
                 this.loadingAnim = '';
+
             }, 1500);
         });
         this._ds.dashboardEvent.subscribe((data: DashboardEventData) => {
@@ -199,6 +203,9 @@ export class MenuComponent implements OnInit, OnDestroy {
                 if (data.type === 4) {
                     id = 'search';
                 }
+                if (data.type === 2 && data.param === '') {
+                    data.param = this.grafana.data.host;
+                }
 
                 let dashboardData = {
                     id: id,
@@ -212,7 +219,7 @@ export class MenuComponent implements OnInit, OnDestroy {
                     widgets: [],
                     config: {
                         ignoreMinSize: 'warning',
-                        maxrows:5,
+                        maxrows: 5,
                         columns: 5
                     }
                 };
