@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { AuthenticationService, DashboardService, DashboardEventData } from '@app/services';
 import { User, WidgetModel, DashboardModel } from '@app/models';
 import { Router, ActivationEnd, ActivatedRoute } from '@angular/router';
@@ -27,7 +27,8 @@ export interface DashboardData {
 @Component({
     selector: 'app-menu',
     templateUrl: './menu.component.html',
-    styleUrls: ['./menu.component.scss']
+    styleUrls: ['./menu.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MenuComponent implements OnInit, OnDestroy {
     sessionStorageSubscription: Subscription;
@@ -86,8 +87,9 @@ export class MenuComponent implements OnInit, OnDestroy {
         private authenticationService: AuthenticationService,
         private _sss: SessionStorageService,
         private _pas: PreferenceAdvancedService,
+        private changeDetectorRefs: ChangeDetectorRef
     ) {
-
+        this.changeDetectorRefs.detach();
         this.startDate = null;
         this.endDate = null;
         this.selectedDateTimeRangeZone = null;
@@ -106,6 +108,7 @@ export class MenuComponent implements OnInit, OnDestroy {
 
     // On component init we store Widget Marketplace in a WidgetModel array
     ngOnInit(): void {
+
         this.sessionStorageSubscription = this._sss.sessionStorage.subscribe((data: UserSettings) => {
             if (data.updateType !== 'proto-search') {
                 if (data && data.dateTimeRange.dates) {
@@ -129,22 +132,25 @@ export class MenuComponent implements OnInit, OnDestroy {
         moment.tz.setDefault(this.timepickerTimezone);
 
         if (!this.startDate) {
-            const dateFor = this._dtrs.getDatesForQuery(true);
+            const dateFor: any = this._dtrs.getDatesForQuery(true);
             this.startDate = moment.unix(dateFor.from / 1000);
             this.endDate = moment.unix(dateFor.to / 1000);
         }
 
         this._dtrs.castRangeUpdateTimeout.subscribe(dtr => {
             this.loadingAnim = 'loading-anim';
+            this.changeDetectorRefs.detectChanges();
             setTimeout(() => {
                 this.loadingAnim = '';
 
+                this.changeDetectorRefs.detectChanges();
             }, 1500);
         });
         this._ds.dashboardEvent.subscribe((data: DashboardEventData) => {
             this.updateDashboardList();
         });
         this.updateDashboardList();
+        this.changeDetectorRefs.detectChanges();
     }
     updateDashboardList() {
         this._ds.getDashboardInfo().toPromise().then((resData: any) => {
@@ -165,47 +171,53 @@ export class MenuComponent implements OnInit, OnDestroy {
                     this.panelName = this.dashboards.find(item => item.href === this._ds.getCurrentDashBoardId()).name;
                     this.currentDashboardId = this._ds.getCurrentDashBoardId();
                 } catch (e) { }
+                this.changeDetectorRefs.detectChanges();
             }
         });
     }
     logout() {
         this.authenticationService.logout();
-        this.router.navigate([{ outlets: { primary: null, system: 'login'}}]);
+        this.router.navigate([{ outlets: { primary: null, system: 'login' } }]);
+        this.changeDetectorRefs.detectChanges();
     }
 
     dashboardGo(id: string) {
         this.router.navigate(['dashboard/' + id.toLowerCase()]);
+        this.changeDetectorRefs.detectChanges();
     }
 
     doSearchResult() {
         this.router.navigate(['search/result']);
+        this.changeDetectorRefs.detectChanges();
     }
-    backLastToDashboard () {
+    backLastToDashboard() {
         // this.panelName = this._ds.getCurrentDashBoardId();
         // this.dashboardGo('/' + this._ds.getCurrentDashBoardId());
         this.panelName = 'home';
         this.dashboardGo('/home');
+        this.changeDetectorRefs.detectChanges();
     }
-    onAddDashboard () {
-        const dialogRef = this.dialog.open(AddDashboardDialogComponent, { width: '650px',
+    onAddDashboard() {
+        const dialogRef = this.dialog.open(AddDashboardDialogComponent, {
+            width: '650px',
             data: {
                 nameNewPanel: '',
                 type: 1,
                 param: ''
             }
         });
-        const dialogRefSubscription = dialogRef.afterClosed().subscribe( (data) => {
+        const dialogRefSubscription = dialogRef.afterClosed().subscribe((data) => {
             if (data) {
                 let id = '_' + new Date().getTime();
                 if (data.type === 3) {
                     id = 'home';
-                } else
-                if (data.type === 4) {
+                } else if (data.type === 4) {
                     id = 'search';
                 }
                 if (data.type === 2 && data.param === '') {
                     data.param = this.grafana.data.host;
                 }
+
 
                 let dashboardData = {
                     id: id,
@@ -229,13 +241,13 @@ export class MenuComponent implements OnInit, OnDestroy {
                     dashboardData.name = data.nameNewPanel;
                     dashboardData.param = data.param || data.nameNewPanel.toLowerCase();
                 }
-                const dashboardStoreSubscription = this._ds.postDashboardStore(dashboardData.id, dashboardData).subscribe(res => {
-                    dashboardStoreSubscription.unsubscribe();
+                this._ds.postDashboardStore(dashboardData.id, dashboardData).toPromise().then(res => {
                     this.updateDashboardList();
                     if (res && res.status === 'ok') {
                         this.router.navigate([`/dashboard/${dashboardData.id}`]);
                     }
                 });
+                this.changeDetectorRefs.detectChanges();
             }
             dialogRefSubscription.unsubscribe();
         });
@@ -243,8 +255,9 @@ export class MenuComponent implements OnInit, OnDestroy {
     onRangeClicked(event: any) {
         this.isRangeClicked = true;
         this.selectedDateTimeRangeTitle = event.label;
+        this.changeDetectorRefs.detectChanges();
     }
-    onDatesUpdated (event: any) {
+    onDatesUpdated(event: any) {
 
         this.selectedDateTimeRange = [event.startDate, event.endDate];
         this.selectedDateTimeRangeZone = event.timezone;
@@ -259,18 +272,22 @@ export class MenuComponent implements OnInit, OnDestroy {
             timezone: this.selectedDateTimeRangeZone,
             dates: this.selectedDateTimeRange
         });
+        this.changeDetectorRefs.detectChanges();
     }
-    onRefrasher (delay: number) {
+    onRefrasher(delay: number) {
         this._dtrs.setDelay(delay);
+        this.changeDetectorRefs.detectChanges();
     }
 
     onPreference() {
         this.router.navigate(['preference/users']);
+        this.changeDetectorRefs.detectChanges();
     }
     refresh() {
         this._dtrs.refrash();
+        this.changeDetectorRefs.detectChanges();
     }
-    ngOnDestroy () {
+    ngOnDestroy() {
         this.sessionStorageSubscription.unsubscribe();
     }
 }

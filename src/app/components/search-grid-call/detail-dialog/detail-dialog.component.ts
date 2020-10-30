@@ -158,6 +158,7 @@ export class DetailDialogComponent implements OnInit {
     }
     onClose () {
         this.close.emit();
+        this.changeDetectorRefs.detectChanges();
     }
 
     addWindow(data: any) {
@@ -174,10 +175,12 @@ export class DetailDialogComponent implements OnInit {
                 isBrowserWindow: this.isBrowserWindow
             });
         }
+        this.changeDetectorRefs.detectChanges();
     }
 
     onBrowserWindow (event) {
         this.isBrowserWindow = event;
+        this.changeDetectorRefs.detectChanges();
     }
     setFiltersByAdvanced() {
         this._pas.getAll().toPromise().then(advanced => {
@@ -198,6 +201,7 @@ export class DetailDialogComponent implements OnInit {
                             this.checkboxListFilterPayloadType = filterBackup;
                         }
                         this.doFilterMessages();
+                        this.changeDetectorRefs.detectChanges();
                     }
                 } catch (err) { }
             }
@@ -230,6 +234,7 @@ export class DetailDialogComponent implements OnInit {
             this.exportAsPNG = false;
             this.changeDetectorRefs.detectChanges();
         });
+        this.changeDetectorRefs.detectChanges();
     }
     doFilterMessages() {
         if (!this.sipDataItem) {
@@ -278,7 +283,10 @@ export class DetailDialogComponent implements OnInit {
             this.changeDetectorRefs.detectChanges();
         });
     }
-
+    selectedIndexChange(event) {
+        this.activeTab = event;
+        this.changeDetectorRefs.detectChanges();
+    }
     doOpenFilter() {
         setTimeout(() => {
             this.isFilterOpened = true;

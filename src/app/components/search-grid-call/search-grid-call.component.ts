@@ -56,7 +56,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     @Input() id: string = null;
     @Output() dataReady: EventEmitter<any> = new EventEmitter();
 
-    @ViewChild('searchSlider', {static: false}) searchSlider: any;
+    @ViewChild('searchSlider', { static: false }) searchSlider: any;
     filterGridValue: string;
     defaultColDef: Object;
     columnDefs: Array<Object>;
@@ -81,25 +81,25 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     searchSliderConfig = {
         countFieldColumns: 4,
         config: {
-           protocol_id: {
-              name: 'SIP',
-              value: 1
-           },
-           protocol_profile: {
-              name: 'call',
-              value: 'call'
-           },
-           searchbutton: false,
-           title: 'CALL 2 SIP SEARCH'
+            protocol_id: {
+                name: 'SIP',
+                value: 1
+            },
+            protocol_profile: {
+                name: 'call',
+                value: 'call'
+            },
+            searchbutton: false,
+            title: 'CALL 2 SIP SEARCH'
         },
         fields: [],
         protocol_id: {
-           name: 'SIP',
-           value: 100
+            name: 'SIP',
+            value: 100
         },
         refresh: false,
     };
-    gridOptions: GridOptions = <GridOptions> {
+    gridOptions: GridOptions = <GridOptions>{
         defaultColDef: {
             sortable: true,
             resizable: true
@@ -192,12 +192,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     ngOnInit() {
-     this.lokiSort = this.getLokiSort();
-    if (this.isLokiQuery) {
-
-        this.update(true);
-
-    }
+        this.lokiSort = this.getLokiSort();
+        if (this.isLokiQuery) {
+            this.update(true);
+        }
         if (this.inContainer) {
             this.subscriptionDashboardEvent = this._ds.dashboardEvent.subscribe(data => {
                 const dataId = data.resultWidget[this.id];
@@ -229,13 +227,13 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                         this.subscriptionRangeUpdateTimeout = this._dtrs.castRangeUpdateTimeout.subscribe(() => {
                             this.update();
                         });
-                    this.config.lokiSort = this.lokiSort;
+                        this.config.lokiSort = this.lokiSort;
                     } else {
                         this.update(true);
                     }
+                    this.changeDetectorRefs.detectChanges();
                 }
 
-                this.changeDetectorRefs.detectChanges();
             });
         } else {
             setTimeout(() => { /** <== fixing ExpressionChangedAfterItHasBeenCheckedError */
@@ -369,7 +367,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     params.param.search[this.protocol_profile] &&
                     params.param.search[this.protocol_profile].callid
                 ) {
-                    const sids: Array<string>  = params.param.search[this.protocol_profile].callid;
+                    const sids: Array<string> = params.param.search[this.protocol_profile].callid;
                     this.config.param.search = {};
                     this.config.param.search[this.protocol_profile] = [{
                         name: 'sid',
@@ -481,7 +479,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     const { openwindow } = setting[0].data;
                     if (openwindow === true) {
                         const sids = params.param.search[this.protocol_profile].callid;
-                        const rowData: Array<any>  = Functions.cloneObject(this.rowData) as Array<any>;
+                        const rowData: Array<any> = Functions.cloneObject(this.rowData) as Array<any>;
 
                         this.openTransactionDialog({
                             data: sids.map(j => rowData.filter(i => i.sid === j)[0])[0]
@@ -527,9 +525,11 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
             /* don't add create date  */
             if (hepVersion < 2000) {
-                myRemoteColumns.push({ headerName: 'ID', field: 'id', minWidth: 20, maxWidth: 40, hide: true});
-                myRemoteColumns.push({ headerName: 'Date', field: 'create_date', filter: true, suppressSizeToFit: true,
-                    valueFormatter: (item: any) => item.value ? moment(item.value).format('YYYY-MM-DD HH:mm:ss.SSS Z') : null});
+                myRemoteColumns.push({ headerName: 'ID', field: 'id', minWidth: 20, maxWidth: 40, hide: true });
+                myRemoteColumns.push({
+                    headerName: 'Date', field: 'create_date', filter: true, suppressSizeToFit: true,
+                    valueFormatter: (item: any) => item.value ? moment(item.value).format('YYYY-MM-DD HH:mm:ss.SSS Z') : null
+                });
             }
             for (const h of marData) {
                 const idArray = h.id.split('.');
@@ -541,7 +541,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 }
 
                 /* default column values */
-                const vaColumn: any =  { headerName: h.name, field: idColumn, filter: true, resizable: true};
+                const vaColumn: any = { headerName: h.name, field: idColumn, filter: true, resizable: true };
                 if (idColumn === 'sid' || idColumn === 'callid' || (h.hasOwnProperty('sid_type') && h.sid_type === true)) {
                     vaColumn.cellStyle = this.getCallIDColor.bind(this);
                     vaColumn.cellRenderer = 'columnCallidRenderer';
@@ -582,7 +582,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     private localStateHeaders(apiColumn) {
         let lsIndex = 'result-state';
         const _apiColumn = [];
-        if ( this.id ) {
+        if (this.id) {
             lsIndex += `-${this.id}`;
         }
         let h: any = localStorage.getItem(lsIndex);
@@ -639,10 +639,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             return;
         }
         this.config.timestamp = this._dtrs.getDatesForQuery(true);
-       this.config.lokiSort = this.lokiSort;
-       if (this.localData) {
-        this.localData.lokiSort = this.config.lokiSort;
-       }
+        this.config.lokiSort = this.lokiSort;
+        if (this.localData) {
+            this.localData.lokiSort = this.config.lokiSort;
+        }
 
         if (this.inContainer) { /* if ag-grid in result widget */
             this.getHeaders();
@@ -650,15 +650,15 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             this.getQueryData();
         }
         this.rowData = null;
-        if ( this.isLokiQuery ) {
+        if (this.isLokiQuery) {
             this._srs.getData(this.queryBuilderForLoki()).toPromise().then(result => {
-                this.rowData = result.data.sort(( a, b ) => {
+                this.rowData = result.data.sort((a, b) => {
                     a = new Date(a.micro_ts).getTime();
                     b = new Date(b.micro_ts).getTime();
                     if (this.lokiSort === 'desc') {
-                        return ( a < b ) ? 1 : (( a > b ) ? -1 : 0);
+                        return (a < b) ? 1 : ((a > b) ? -1 : 0);
                     } else if (this.lokiSort === 'asc') {
-                        return ( a < b ) ? -1 : (( a > b ) ? 1 : 0);
+                        return (a < b) ? -1 : ((a > b) ? 1 : 0);
                     }
                 });
                 this.sizeToFit();
@@ -683,7 +683,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 }
 
 
-               this.rowData = result.data;
+                this.rowData = result.data;
                 for (let i = 0; i < this.rowData.length; i++) {
                     if (this.rowData[i].protocol !== undefined && this.rowData[i].protocol === 17) {
                         this.rowData[i].protocol = 'UDP';
@@ -705,11 +705,11 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }
     }
 
-    ngAfterViewInit () {
+    ngAfterViewInit() {
         window.document.body.addEventListener('mouseup', this.onSizeToFit.bind(this));
     }
 
-    onSizeToFit () {
+    onSizeToFit() {
         if (!this.gridApi) {
             return;
         }
@@ -730,18 +730,18 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         return ((i >> 24) & 0xFF);
     }
 
-    private getCallIDColor (params) {
+    private getCallIDColor(params) {
         return (!params.hasOwnProperty('value') ||
-            (typeof params.value === 'undefined')) ?  {} :
-                {'color': Functions.getColorByString(params.value, 100, 25, 1, 180)};
+            (typeof params.value === 'undefined')) ? {} :
+            { 'color': Functions.getColorByString(params.value, 100, 25, 1, 180) };
     }
 
-    private getMethodColor (params) {
+    private getMethodColor(params) {
         if (params.hasOwnProperty('value') && typeof params.value !== undefined) {
 
             const color = Functions.getMethodColor(params.value);
 
-            return {'color' : color};
+            return { 'color': color };
         } else {
             return {};
         }
@@ -766,12 +766,14 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             if (this.gridApi) {
                 this.gridApi.sizeColumnsToFit();
             }
+            this.changeDetectorRefs.detectChanges();
         }, 300);
+        this.changeDetectorRefs.detectChanges();
     }
 
-      setQuickFilter() {
-      this.gridOptions.api.setQuickFilter(this.filterGridValue);
-     }
+    setQuickFilter() {
+        this.gridOptions.api.setQuickFilter(this.filterGridValue);
+    }
 
     public onGridReady(params) {
         this.gridApi = params.api;
@@ -779,16 +781,16 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     public openTransactionForSelectedRows(index, row, mouseEventData = null) {
-        const data = {data: row};
+        const data = { data: row };
         this.openTransactionDialog(data, mouseEventData);
     }
 
-    public openMethodForSelectedRow(index, row, mouseEventData = null ) {
-        const data = {data: row};
+    public openMethodForSelectedRow(index, row, mouseEventData = null) {
+        const data = { data: row };
         this.addWindowMessage(data, mouseEventData);
     }
 
-    public openTransactionDialog (row, mouseEventData = null, callisArray = null) {
+    public openTransactionDialog(row, mouseEventData = null, callisArray = null) {
         // do not open duplicate window
 
         const sid = row.data.callid ? row.data.callid : row.data.sid;
@@ -809,7 +811,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             return a;
         }, []);
 
-        const timeArray = selectedRows.map( i => i.create_date || i.update_ts);
+        const timeArray = selectedRows.map(i => i.create_date || i.update_ts);
         const timeArray_from = selectedRows.length ? Math.min.apply(this, timeArray) : row.data.create_date;
         const timeArray_to = selectedRows.length ? Math.max.apply(this, timeArray) : row.data.create_date;
 
@@ -881,6 +883,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
     closeWindow(id: number) {
         this.arrWindow.splice(id, 1);
+        this.changeDetectorRefs.detectChanges();
     }
 
     public async addWindowMessage(row: any, mouseEventData = null) {
@@ -926,28 +929,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }
 
         this.arrMessageDetail.push(mData);
-        if (!row.isLog) {
-            this._scs.getDecodedData(request).toPromise().then(res => {
-                let _decoded = null;
-                if (res.data && res.data[0] && res.data[0].decoded) {
-                    _decoded = res.data[0].decoded;
-                }
-                if (_decoded && _decoded[0]) {
-                    if (_decoded[0]._source && _decoded[0]._source.layers) {
-                        mData.data.decoded = _decoded[0]._source.layers;
-                    } else {
-                        mData.data.decoded = _decoded[0];
-                    }
-                } else {
-                    mData.data.decoded = _decoded;
-                }
-                /* for update Dialog window */
-                mData.data = Functions.cloneObject(mData.data);
-                this.changeDetectorRefs.detectChanges();
-            });
-        }
 
-        if ( row.isLog || (row.data.payloadType === 1 && (row.data.raw || row.data.item && row.data.item.raw))) {
+
+        if (row.isLog || (row.data.payloadType === 1 && (row.data.raw || row.data.item && row.data.item.raw))) {
             let data;
             if (typeof row.data.item !== 'undefined' && row.data.item.length < 1) {
                 data = row.data.item;
@@ -957,29 +941,28 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
             mData.data = Functions.cloneObject(data) || {};
 
-            if (typeof mData.data.raw  === 'undefined'){
+            if (typeof mData.data.raw === 'undefined') {
                 mData.data.raw = {
                     raw: mData.data.item.raw
                 };
             } else {
                 mData.data.item = {
-                    raw:  mData.data.raw
+                    raw: mData.data.raw
                 };
             }
 
-            mData.data.messageDetailTableData = Object.keys(mData.data)
-                .map(i => {
-                    let val;
-                    if (i === 'create_date') {
-                        val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS Z');
-                    } else if (i === 'timeSeconds') {
-                        val =  mData.data[i];
-                    } else {
-                        val = mData.data[i];
-                    }
-                    return {name: i, value: val};
-                })
-                .filter(i => typeof i.value !== 'object' && i.name !== 'raw');
+            mData.data.messageDetailTableData = Object.keys(mData.data).map(i => {
+                let val;
+                if (i === 'create_date') {
+                    val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS Z');
+                } else if (i === 'timeSeconds') {
+                    val = mData.data[i];
+                } else {
+                    val = mData.data[i];
+                }
+                return { name: i, value: val };
+            }).filter(i => typeof i.value !== 'object' && i.name !== 'raw');
+
             this.changeDetectorRefs.detectChanges();
             mData.loaded = true;
             return;
@@ -999,19 +982,42 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 } else {
                     val = mData.data[i];
                 }
-                return {name: i, value: val};
+                return { name: i, value: val };
             }).filter(i => typeof i.value !== 'object' && i.name !== 'raw');
 
             mData.loaded = true;
             this.changeDetectorRefs.detectChanges();
         }
+
+        if (!row.isLog) {
+            const res = await this._scs.getDecodedData(request).toPromise();
+            let _decoded = null;
+            if (res.data && res.data[0] && res.data[0].decoded) {
+                _decoded = res.data[0].decoded;
+            }
+            if (_decoded && _decoded[0]) {
+                if (_decoded[0]._source && _decoded[0]._source.layers) {
+                    mData.data.decoded = _decoded[0]._source.layers;
+                } else {
+                    mData.data.decoded = _decoded[0];
+                }
+            } else {
+                mData.data.decoded = _decoded;
+            }
+            /* for update Dialog window */
+            mData.data = Functions.cloneObject(mData.data);
+            this.changeDetectorRefs.detectChanges();
+
+        }
     }
 
     public closeWindowMessage(id: number) {
         this.arrMessageDetail.splice(id, 1);
+        this.changeDetectorRefs.detectChanges();
     }
     onLokiSort() {
         this.lokiSort = this.lokiSorted;
+        this.changeDetectorRefs.detectChanges();
     }
     onSettingButtonClick() {
         const params = {
@@ -1022,7 +1028,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         } as any;
 
         this.dialog.open(DialogSettingsGridDialog, {
-            width:  '500px', data: {
+            width: '500px', data: {
                 apicol: params.columnApi,
                 apipoint: params.api,
                 lokisort: params.lokiSort,
@@ -1030,11 +1036,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 idParent: params.context.componentParent.id
             }
         });
+        this.changeDetectorRefs.detectChanges();
     }
-    onColumnMoved (event) {
+    onColumnMoved(event) {
         const bufferData = Functions.cloneObject(event.api.columnController.gridColumns.map(i => i.colDef));
         let lsIndex = 'result-state';
-        if ( this.id ) {
+        if (this.id) {
             lsIndex += `-${this.id}`;
         }
         localStorage.setItem(lsIndex, JSON.stringify(bufferData.map(i => ({
@@ -1042,8 +1049,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             field: i.field,
             selected: !i.hide
         }))));
+        this.changeDetectorRefs.detectChanges();
     }
-    ngOnDestroy () {
+    ngOnDestroy() {
         if (this.subscriptionDashboardEvent) {
             this.subscriptionDashboardEvent.unsubscribe();
         }
