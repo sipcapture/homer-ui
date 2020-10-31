@@ -89,7 +89,6 @@ export class MenuComponent implements OnInit, OnDestroy {
         private _pas: PreferenceAdvancedService,
         private changeDetectorRefs: ChangeDetectorRef
     ) {
-        // this.changeDetectorRefs.detach();
         this.startDate = null;
         this.endDate = null;
         this.selectedDateTimeRangeZone = null;
