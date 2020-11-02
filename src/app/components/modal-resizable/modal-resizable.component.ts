@@ -1,3 +1,5 @@
+
+import { ChangeDetectorRef } from '@angular/core';
 import {
     Component,
     OnInit,
@@ -14,16 +16,17 @@ import {
 @Component({
     selector: 'app-modal-resizable',
     templateUrl: './modal-resizable.component.html',
-    styleUrls: ['./modal-resizable.component.scss']
+    styleUrls: ['./modal-resizable.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy {
     static ZIndex = 12;
     _content;
-
-    @ViewChild('layerZIndex', {static: false}) layerZIndex;
-    @ViewChild('containerWindow', {static: false}) containerWindow;
-    @ViewChild('inWindow', {static: false}) inWindow;
-    @ViewChild('outWindow', {static: false}) outWindow;
+    _noLayout = false;
+    @ViewChild('layerZIndex', { static: false }) layerZIndex;
+    @ViewChild('containerWindow', { static: false }) containerWindow;
+    @ViewChild('inWindow', { static: false }) inWindow;
+    @ViewChild('outWindow', { static: false }) outWindow;
 
     @Input() title: string;
     @Input() headerColor: string;
@@ -39,12 +42,20 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
     __isBrowserWindow = false;
     isFullPage = false;
 
-    constructor() { }
+    constructor(private cdr: ChangeDetectorRef) {
+        this.cdr.detach();
+    }
 
-    ngOnInit() { }
+    ngOnInit() {
+        this.cdr.detectChanges();
+    }
 
-    onFullPage () {
+    onFullPage() {
         this.isFullPage = !this.isFullPage;
+        setTimeout(() => {
+            window.dispatchEvent(new Event('resize'));
+        }, 100);
+        this.cdr.detectChanges();
     }
 
     @HostListener('document:keydown.escape', ['$event']) onKeydownHandler(event: KeyboardEvent) {
@@ -81,7 +92,7 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
             this.newWindow();
         }
     }
-    setPositionWindow({x = 0, y = 0}) {
+    setPositionWindow({ x = 0, y = 0 }) {
         const el = this.containerWindow.nativeElement;
         const positionLocal = this.getTranslatePosition(el);
         const positionGlobal = el.getBoundingClientRect();
@@ -94,15 +105,19 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
 
         el.style.transform = `translate3d(${positionLocal.x}px, ${positionLocal.y}px, 0px)`;
     }
-    onClose () {
+    onClose() {
         this.close.emit();
+        this.cdr.detectChanges();
     }
 
-    onFocus () {
+    onFocus() {
         this.layerZIndex.nativeElement.style.zIndex = '' + ((ModalResizableComponent.ZIndex += 2) + this.startZIndex);
+        this.cdr.detectChanges();
     }
 
     onResize(event: any, controlName: string) {
+        this._noLayout = false;
+        this.setMouseLayer(true);
         const x0 = event.clientX;
         const y0 = event.clientY;
         const winWidth = this.containerWindow.nativeElement.offsetWidth;
@@ -111,22 +126,22 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
 
         this.containerWindow.nativeElement.classList.add('animation-off');
         const vector = {
-            left:   { h: -1, v:  0 },
-            right:  { h:  1, v:  0 },
-            bottom: { h:  0, v:  1 },
-            top:    { h:  0, v: -1 },
-            tl:     { h: -1, v: -1 },
-            tr:     { h:  1, v: -1 },
-            bl:     { h: -1, v:  1 },
-            br:     { h:  1, v:  1 },
+            left: { h: -1, v: 0 },
+            right: { h: 1, v: 0 },
+            bottom: { h: 0, v: 1 },
+            top: { h: 0, v: -1 },
+            tl: { h: -1, v: -1 },
+            tr: { h: 1, v: -1 },
+            bl: { h: -1, v: 1 },
+            br: { h: 1, v: 1 },
         };
 
         const size = { w: 0, h: 0 },
             vh = vector[controlName].h,
             vv = vector[controlName].v,
-            position = {x: winPosition.x, y: winPosition.y};
+            position = { x: winPosition.x, y: winPosition.y };
 
-        window.document.body.classList.add('no-selected-text');
+        // window.document.body.classList.add('no-selected-text');
         window.document.body.onmousemove = evt => {
             if (vh !== 0) {
                 const cX = Math.floor(Math[(vh > 0) ? 'max' : 'min'](x0 + vh * (this.minWidth - winWidth), evt.clientX));
@@ -146,11 +161,17 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
 
         window.document.body.onmouseleave = window.document.body.onmouseup = () => {
             this.containerWindow.nativeElement.classList.remove('animation-off');
-            window.document.body.classList.remove('no-selected-text');
+            // window.document.body.classList.remove('no-selected-text');
+            this.setMouseLayer(false);
             window.document.body.onmouseleave = null;
             window.document.body.onmousemove = null;
             window.document.body.onmouseup = null;
         };
+    }
+    afterResize() {
+        this._noLayout = true;
+        window.dispatchEvent(new Event('resize'));
+        this.cdr.detectChanges();
     }
 
     private getTranslatePosition(el): any {
@@ -160,6 +181,7 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     onStartMove(event) {
+
         const x0 = event.clientX;
         const y0 = event.clientY;
         const winPosition = this.getTranslatePosition(this.containerWindow.nativeElement);
@@ -169,9 +191,11 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
         const top0px = (documentHeigth - winPosition.h) / -2;
 
         this.containerWindow.nativeElement.classList.add('animation-off');
-        window.document.body.classList.add('no-selected-text');
+        // window.document.body.classList.add('no-selected-text');
+        this.layerZIndex.nativeElement.classList.add('active');
 
         window.document.body.onmousemove = evt => {
+            this.setMouseLayer(true);
             const xMove = winPosition.x + (evt.clientX - x0);
             const yMove = Math.max(top0px, winPosition.y + (evt.clientY - y0));
             this.containerWindow.nativeElement.style.transform = `translate3d(${xMove}px, ${yMove}px, 0px)`;
@@ -179,31 +203,40 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
 
         window.document.body.onmouseleave = window.document.body.onmouseup = () => {
             this.containerWindow.nativeElement.classList.remove('animation-off');
-            window.document.body.classList.remove('no-selected-text');
-
+            // window.document.body.classList.remove('no-selected-text');
+            this.layerZIndex.nativeElement.classList.remove('active');
+            this.setMouseLayer(false);
             window.document.body.onmouseleave = null;
             window.document.body.onmousemove = null;
             window.document.body.onmouseup = null;
         };
     }
 
-    onWindowClose (event: any) {
+    onWindowClose(event: any) {
         this._content.appendChild(this.inWindow.nativeElement);
         this.browserWindow.emit(this.__isBrowserWindow);
 
         this.onClose();
     }
+    setMouseLayer(bool: boolean = true) {
+        let _layer: any = document.querySelector('.mouse-layer');
+        if (!_layer) {
+            _layer = document.createElement('div');
+            _layer.classList.add('mouse-layer');
+            document.body.appendChild(_layer);
+        }
+        _layer.style.display = bool && !this._noLayout ? 'block' : 'none';
 
-    newWindow () {
-        setTimeout(() => {
-            this.__isBrowserWindow = true;
-            this._content = this.inWindow.nativeElement.parentElement;
-            this.outWindow.nativeElement.appendChild(this.inWindow.nativeElement);
-            this.layerZIndex.nativeElement.style.display = 'none';
-            this.browserWindow.emit(this.__isBrowserWindow);
-        });
     }
-    ngOnDestroy () {
+    newWindow() {
+        this.__isBrowserWindow = true;
+        this._content = this.inWindow.nativeElement.parentElement;
+        this.outWindow.nativeElement.appendChild(this.inWindow.nativeElement);
+        this.layerZIndex.nativeElement.style.display = 'none';
+        this.browserWindow.emit(this.__isBrowserWindow);
+        this.cdr.detectChanges();
+    }
+    ngOnDestroy() {
         document.body.removeChild(this.layerZIndex.nativeElement);
     }
 }

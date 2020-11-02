@@ -446,3 +446,12 @@ h3 {
 .ag-theme-material{
 	font-size: 14px;
 }
+.mouse-layer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: transparent;
+    z-index: 9999999;
+}

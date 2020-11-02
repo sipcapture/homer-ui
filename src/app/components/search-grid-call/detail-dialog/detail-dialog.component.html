@@ -60,7 +60,7 @@
     </div>
   </div>
   <mat-tab-group
-    (selectedIndexChange)="activeTab=$event"
+    (selectedIndexChange)="selectedIndexChange($event)"
     [selectedIndex]="this.tabIndexByDefault"
     *ngIf="_isLoaded" style="height: 100%;">
     <mat-tab *ngIf="_isLoaded && tabs.messages" label="Messages">
