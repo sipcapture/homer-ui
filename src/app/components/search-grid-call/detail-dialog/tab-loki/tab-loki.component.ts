@@ -2,6 +2,7 @@ import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectorRef, EventEm
 import { DateTimeRangeService } from '@app/services/data-time-range.service';
 import { SearchRemoteService } from '@app/services';
 import { SearchService } from '@app/services';
+import { PreferenceAdvancedService } from '@app/services';
 
 @Component({
     selector: 'app-tab-loki',
@@ -23,12 +24,14 @@ export class TabLokiComponent implements OnInit {
     isFirstSearch = true;
     labels: Array<any> = [];
     lokiLabels;
+    lokiTemplate;
     dataSource: Array<any> = []
     constructor(
+        private _pas: PreferenceAdvancedService,
         private _srs: SearchRemoteService,
         private _dtrs: DateTimeRangeService,
         private searchService: SearchService,
-        private cdr : ChangeDetectorRef
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit() {
@@ -39,8 +42,19 @@ export class TabLokiComponent implements OnInit {
             }
             return a;
         }, []).join(' | ');
-
         this.queryText = `{job="heplify-server"} ${labels}`;
+        this._pas.getAll().toPromise().then((advanced: any) => {
+            [this.lokiTemplate] = advanced.data
+            .filter(i => i.category === 'search' && i.param === 'lokiserver')
+            .map(i => i.data.template);
+            if (this.lokiTemplate !== '' && typeof this.lokiTemplate !== 'undefined') {
+                console.log('test')
+                this.queryText = `${this.lokiTemplate} ${labels}`;
+                this.cdr.detectChanges();
+            }
+            this.cdr.detectChanges();
+        });
+
         this.cdr.detectChanges();
     }
     async doSerchResult () {
