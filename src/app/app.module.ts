@@ -235,7 +235,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         AceEditorModule,
         MarkdownModule.forRoot(),
         ColorChromeModule,
-        ColorCircleModule,
+        ColorCircleModule
     ],
     entryComponents: [
         MenuComponent,
