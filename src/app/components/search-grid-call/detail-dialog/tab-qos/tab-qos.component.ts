@@ -1,3 +1,7 @@
+/**
+ * https://github.com/jjppof/chartjs-plugin-zoom-pan-select
+ */
+
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Chart, ChartType, ChartDataSets, ChartColor } from 'chart.js';
 import { Label, Color, BaseChartDirective } from 'ng2-charts';

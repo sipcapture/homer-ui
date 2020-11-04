@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import * as moment from 'moment';
 import { Functions } from '@app/helpers/functions';
+import { TableVirtualScrollDataSource } from 'ng-table-virtual-scroll';
 
 export interface MesagesData {
     id: string;
@@ -30,7 +31,7 @@ export class TabMessagesComponent implements OnInit {
     _qosData: any;
     @Input() set dataItem(val) {
         this._dataItem = val;
-        this.dataSource = Functions.messageFormatter(this._dataItem.data.messages);
+        this.dataSource = new TableVirtualScrollDataSource(Functions.messageFormatter(this._dataItem.data.messages));
     }
     get dataItem () {
         return this._dataItem;
@@ -45,7 +46,7 @@ export class TabMessagesComponent implements OnInit {
 
     isWindow = false;
 
-    dataSource: Array<MesagesData> = [];
+    dataSource: TableVirtualScrollDataSource<MesagesData> = new TableVirtualScrollDataSource();
     displayedColumns: string[] = [
         'id', 'create_date', 'timeSeconds', 'diff',
         'method', 'Msg_Size',
@@ -69,7 +70,7 @@ export class TabMessagesComponent implements OnInit {
                 return a.timeSeconds - b.timeSeconds;
             });
         }
-        this.dataSource = Functions.messageFormatter(this.dataItem.data.messages);
+        this.dataSource = new TableVirtualScrollDataSource(Functions.messageFormatter(this.dataItem.data.messages));
     }
     onClickMessageRow(row: any, event = null) {
         row.mouseEventData = event;
