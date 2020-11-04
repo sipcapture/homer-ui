@@ -13,7 +13,8 @@ import {
     HostListener,
     Output,
     EventEmitter,
-    ViewChild
+    ViewChild,
+    ChangeDetectionStrategy
 } from '@angular/core';
 import {
     ColumnActionRenderer,
@@ -37,7 +38,6 @@ import {
 } from '@app/services';
 import { DialogSettingsGridDialog } from './grid-settings-dialog/grid-settings-dialog';
 import { MatDialog } from '@angular/material/dialog';
-import { ChangeDetectionStrategy } from '@angular/core';
 
 
 @Component({
@@ -254,6 +254,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                             new Date(to).toISOString()
                         ]
                     });
+                    this.changeDetectorRefs.detectChanges();
                 }
             });
             if (!this.subscriptionRangeUpdateTimeout) {
@@ -707,6 +708,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
     ngAfterViewInit() {
         window.document.body.addEventListener('mouseup', this.onSizeToFit.bind(this));
+        this.changeDetectorRefs.detectChanges();
     }
 
     onSizeToFit() {
@@ -714,6 +716,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             return;
         }
         this.sizeToFit();
+        this.changeDetectorRefs.detectChanges();
     }
 
     private hashCode(str) {
@@ -773,6 +776,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
     setQuickFilter() {
         this.gridOptions.api.setQuickFilter(this.filterGridValue);
+        this.changeDetectorRefs.detectChanges();
     }
 
     public onGridReady(params) {
@@ -851,15 +855,17 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         this.arrWindow.push(windowData);
 
         const readyToOpen = (data, dataQOS) => {
-            if (!data || !dataQOS) {
+            if (!data) {
                 return;
             }
             windowData.loaded = true;
             windowData.data = data;
             windowData.dataQOS = dataQOS;
+
+            this.changeDetectorRefs.detectChanges();
         };
         let localDataQOS: any = null, localData: any = null;
-
+        console.log('start open transaction window', performance.now());
         this._cts.getTransaction(request).toPromise().then(res => {
             const allCallIds = res.data.calldata.map(i => i.sid).sort().filter((i, k, a) => a[k - 1] !== i);
             const timestampArray: Array<number> = [];
@@ -872,13 +878,15 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             this._ers.postQOS(this.searchService.queryBuilderQOS(row, allCallIds, timestamp)).toPromise().then(dataQOS => {
                 localDataQOS = dataQOS;
                 readyToOpen(localData, localDataQOS);
-                this.changeDetectorRefs.detectChanges();
+                console.log('promise::postQOS', performance.now(), dataQOS);
             });
 
             localData = res;
             readyToOpen(localData, localDataQOS);
-            this.changeDetectorRefs.detectChanges();
+
+            console.log('promise::getTransaction', performance.now(), localData);
         });
+        this.changeDetectorRefs.detectChanges();
     }
 
     closeWindow(id: number) {
