@@ -81,7 +81,7 @@ export class TabQosComponent implements OnInit {
     streams: Array<any> = [];
     streamsRTP: Array<any> = [];
     worker: WorkerService;
-
+    _isLoaded: boolean = false;
     constructor(private cdr: ChangeDetectorRef) {
         console.log('constructor::new WorkerService');
         this.worker = new WorkerService(new Worker('@app/qos.worker', { type: 'module' }));
@@ -112,7 +112,11 @@ export class TabQosComponent implements OnInit {
             this.streams = outData.streams as Array<any>;
             this.streamsRTP = outData.streamsRTP as Array<any>;
 
-            // this.cdr.detectChanges();
+            setTimeout(() => {
+                this._isLoaded = true;
+                this.cdr.detectChanges();
+            }, 1000);
+
         }
         if (['onChangeRTCP', 'onChangeRTP'].includes(workerCommand)) {
             this.isRTCP = outData.isRTCP as boolean;
@@ -130,6 +134,7 @@ export class TabQosComponent implements OnInit {
             this.streams = outData.streams as Array<any>;
 
             this.cdr.detectChanges();
+
         }
     }
     ngOnInit() {
