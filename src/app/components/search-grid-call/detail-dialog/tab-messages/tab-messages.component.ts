@@ -32,12 +32,14 @@ export class TabMessagesComponent implements OnInit {
     @Input() set dataItem(val) {
         this._dataItem = val;
         this.dataSource = new TableVirtualScrollDataSource(Functions.messageFormatter(this._dataItem.data.messages));
+        this.cdr.detectChanges();
     }
     get dataItem () {
         return this._dataItem;
     }
     @Input() set qosData(val) {
         this._qosData = val.rtcp.data;
+        this.cdr.detectChanges();
     }
     get qosData() {
         return this._qosData;

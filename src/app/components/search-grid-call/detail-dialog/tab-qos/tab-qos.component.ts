@@ -27,7 +27,7 @@ export class TabQosComponent implements OnInit {
         }
         this._qosData = val;
 
-        this.update('init', this.qosData);
+        (async () => await this.update('init', this.qosData))();
     }
     get qosData(): any {
         return this._qosData;
@@ -112,7 +112,7 @@ export class TabQosComponent implements OnInit {
             this.streams = outData.streams as Array<any>;
             this.streamsRTP = outData.streamsRTP as Array<any>;
 
-            this.cdr.detectChanges();
+            // this.cdr.detectChanges();
         }
         if (['onChangeRTCP', 'onChangeRTP'].includes(workerCommand)) {
             this.isRTCP = outData.isRTCP as boolean;
@@ -155,7 +155,6 @@ export class TabQosComponent implements OnInit {
                 !(!item.packets && !item.octets && !item.highest_seq_no && !item.ia_jitter && !item.lsr && !item.mos && !item.packets_lost);
         }
 
-        await this.update('onChangeRTCP', { item, type, base, streams: this.streams });
 
         // Hides disabled labels
         if (!base && this.rtcpChart) {
@@ -165,6 +164,11 @@ export class TabQosComponent implements OnInit {
         }
 
         this.cdr.detectChanges();
+
+        await this.update('onChangeRTCP', { item, type, base, streams: this.streams });
+
+        this.cdr.detectChanges();
+
     }
 
     async onChangeCheckBoxRTP(item: any, type: any, base = false) {
@@ -177,14 +181,17 @@ export class TabQosComponent implements OnInit {
                 !(!item.TOTAL_PK && !item.EXPECTED_PK && !item.JITTER && !item.MOS && !item.DELTA && !item.PACKET_LOSS);
         }
 
-        await this.update('onChangeRTCP', { item, type, base, streamsRTP: this.streamsRTP });
-
         // Hides disabled labels
         if (!base && this.rtpChart) {
             const [checkArray] = this.streamsRTP.map(stream => stream[type]);
             const index: number = this.rtpChart.datasets.findIndex(i => i.label === type);
             this.rtpChart.hideDataset(index, checkArray);
         }
+        this.cdr.detectChanges();
+
+        await this.update('onChangeRTCP', { item, type, base, streamsRTP: this.streamsRTP });
+
+        this.cdr.detectChanges();
     }
 
     yAxisFormatter(label) {
