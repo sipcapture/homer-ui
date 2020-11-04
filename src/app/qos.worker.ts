@@ -725,69 +725,44 @@ class QosProcessor {
     }
 
     onChangeCheckBox(item: any, type: any, base = false) {
-        if (base) {
-            item.packets = item.octets = item.highest_seq_no = item.ia_jitter = item.lsr = item.mos = item.packets_lost = item._checked;
-            item._indeterminate = false;
-        } else {
-            item._checked = item.packets && item.octets && item.highest_seq_no &&
-                item.ia_jitter && item.lsr && item.mos && item.packets_lost;
-            item._indeterminate = !item._checked &&
-                !(!item.packets && !item.octets && !item.highest_seq_no && !item.ia_jitter && !item.lsr && !item.mos && !item.packets_lost);
-        }
-        const checkArray = [];
-        this.streams.forEach(stream => checkArray.push(stream[type]));
-        let streamsCopy = this.cloneObject(this.streams);
+
         // Removes disabled datastream
-        streamsCopy = streamsCopy.filter(lStream => lStream._checked || lStream._indeterminate);
-        this.streams.forEach((stream) => {
-            if (!stream._checked && !stream._indeterminate) {
-                stream.create_date.forEach(create_date => this.chartLabels =
-                    this.chartLabels.filter(label => label !== moment(create_date).format('HH:mm:ss')));
-            } else if (stream._checked || stream._indeterminate) {
-                stream.create_date.forEach(create_date => this.chartLabels =
-                    this.chartLabels.filter(label => label !== moment(create_date).format('HH:mm:ss')));
-                stream.create_date.forEach(create_date => this.chartLabels.push(moment(create_date).format('HH:mm:ss')));
-            }
-        });
-        if (streamsCopy.length === 0) {
-            this.isNoDataRTCP = true;
-        } else {
-            this.isNoDataRTCP = false;
-        }
+
+        // this.streams.forEach((stream) => {
+        //     if (!stream._checked && !stream._indeterminate) {
+        //         stream.create_date.forEach(create_date => this.chartLabels =
+        //             this.chartLabels.filter(label => label !== moment(create_date).format('HH:mm:ss')));
+        //     } else if (stream._checked || stream._indeterminate) {
+        //         stream.create_date.forEach(create_date => this.chartLabels =
+        //             this.chartLabels.filter(label => label !== moment(create_date).format('HH:mm:ss')));
+
+        //         stream.create_date.forEach(create_date => this.chartLabels.push(moment(create_date).format('HH:mm:ss')));
+        //     }
+        // });
+        const streamsCopy = this.streams.filter(lStream => lStream._checked || lStream._indeterminate);
+        this.isNoDataRTCP = streamsCopy.length === 0;
+
         this.renderChartData(streamsCopy, this.chartData, true);
     }
 
     onChangeCheckBoxRTP(item: any, type: any, base = false) {
-        if (base) {
-            item.TOTAL_PK = item.EXPECTED_PK = item.JITTER = item.MOS = item.DELTA = item.PACKET_LOSS = item._checked;
-            item._indeterminate = false;
-        } else {
-            item._checked = item.TOTAL_PK && item.EXPECTED_PK && item.JITTER && item.MOS && item.DELTA && item.PACKET_LOSS;
-            item._indeterminate = !item._checked &&
-                !(!item.TOTAL_PK && !item.EXPECTED_PK && !item.JITTER && !item.MOS && !item.DELTA && !item.PACKET_LOSS);
-        }
-        const checkArray = [];
-        this.streamsRTP.forEach(stream => checkArray.push(stream[type]));
 
-        let streamsCopy = this.cloneObject(this.streamsRTP);
+        const streamsCopy = this.streamsRTP.filter(lStream => lStream._checked || lStream._indeterminate);
         // Removes disabled datastream
-        streamsCopy = streamsCopy.filter(lStream => lStream._checked || lStream._indeterminate);
-        this.streamsRTP.forEach((stream) => {
-            if (!stream._checked && !stream._indeterminate) {
-                stream.create_date.forEach(create_date => this.chartLabelsRTP =
-                    this.chartLabelsRTP.filter(label => label !== moment(create_date).format('HH:mm:ss')));
-            } else if (stream._checked || stream._indeterminate) {
-                stream.create_date.forEach(create_date => this.chartLabelsRTP =
-                    this.chartLabelsRTP.filter(label => label !== moment(create_date).format('HH:mm:ss')));
-                stream.create_date.forEach(create_date => this.chartLabelsRTP.push(moment(create_date).format('HH:mm:ss')));
-            }
-        });
 
-        if (streamsCopy.length === 0) {
-            this.isNoDataRTP = true;
-        } else {
-            this.isNoDataRTP = false;
-        }
+        // this.streamsRTP.forEach((stream) => {
+        //     if (!stream._checked && !stream._indeterminate) {
+        //         stream.create_date.forEach(create_date => this.chartLabelsRTP =
+        //             this.chartLabelsRTP.filter(label => label !== moment(create_date).format('HH:mm:ss')));
+        //     } else if (stream._checked || stream._indeterminate) {
+        //         stream.create_date.forEach(create_date => this.chartLabelsRTP =
+        //             this.chartLabelsRTP.filter(label => label !== moment(create_date).format('HH:mm:ss')));
+        //         stream.create_date.forEach(create_date => this.chartLabelsRTP.push(moment(create_date).format('HH:mm:ss')));
+        //     }
+        // });
+
+
+        this.isNoDataRTP = streamsCopy.length === 0;
         this.renderChartData(streamsCopy, this.chartDataRTP, false);
 
     }
