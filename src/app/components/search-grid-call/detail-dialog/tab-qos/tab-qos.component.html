@@ -12,9 +12,9 @@
         <h5 *ngIf="isRTP">RTP</h5>
         <div class="responcive">
             <div class="chart-container">
-                <canvas *ngIf="!isNoDataRTP" baseChart #rtpChart='base-chart' [datasets]="chartDataRTP" [labels]="chartLabelsRTP"
+                <!-- <canvas *ngIf="!isNoDataRTP" baseChart #rtpChart='base-chart' [datasets]="chartDataRTP" [labels]="chartLabelsRTP"
                     [options]="chartOptions" [legend]="chartLegend" [chartType]="chartType">
-                </canvas>
+                </canvas> -->
                 <div *ngIf="isNoDataRTP" class="nodata">
                     <div [ngStyle]="{'backgroundColor':color}" class='nodata-card'>
                         <div class='text-container'>

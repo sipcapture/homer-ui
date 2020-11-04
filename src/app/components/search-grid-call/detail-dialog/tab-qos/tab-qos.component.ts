@@ -53,6 +53,18 @@ export class TabQosComponent implements OnInit {
     public chartOptions: any = {
         responsive: true,
         maintainAspectRatio: false,
+        elements: {
+            line: {
+                tension: 0 // disables bezier curves
+            }
+        },
+        animation: {
+            duration: 0 // general animation time
+        },
+        hover: {
+            animationDuration: 0 // duration of animations when hovering an item
+        },
+        responsiveAnimationDuration: 0, // animation duration after a resize
         scales: {
             yAxes: [{
                 ticks: {
@@ -61,6 +73,7 @@ export class TabQosComponent implements OnInit {
                 }
             }]
         },
+        showLines: false,
         legend: {
             display: false
         }
@@ -114,7 +127,9 @@ export class TabQosComponent implements OnInit {
 
             setTimeout(() => {
                 this._isLoaded = true;
+                const t = performance.now();
                 this.cdr.detectChanges();
+                console.log('>>>', performance.now() - t, 'ms')
             }, 1000);
 
         }
@@ -133,7 +148,12 @@ export class TabQosComponent implements OnInit {
             this.chartData = outData.chartData as ChartDataSets[];
             this.streams = outData.streams as Array<any>;
 
+
+            this._isLoaded = true;
+            const t = performance.now();
             this.cdr.detectChanges();
+            console.log('>>>', performance.now() - t, 'ms')
+
 
         }
     }
@@ -149,7 +169,7 @@ export class TabQosComponent implements OnInit {
         this.cdr.detectChanges();
     }
 
-    async onChangeCheckBox(item: any, type: any, base = false) {
+    onChangeCheckBox(item: any, type: any, base = false) {
         if (base) {
             item.packets = item.octets = item.highest_seq_no = item.ia_jitter = item.lsr = item.mos = item.packets_lost = item._checked;
             item._indeterminate = false;
@@ -160,23 +180,26 @@ export class TabQosComponent implements OnInit {
                 !(!item.packets && !item.octets && !item.highest_seq_no && !item.ia_jitter && !item.lsr && !item.mos && !item.packets_lost);
         }
 
-
-        // Hides disabled labels
-        if (!base && this.rtcpChart) {
-            const [checkArray] = this.streams.map(stream => stream[type]);
-            const index: number = this.rtcpChart.datasets.findIndex(i => i.label === type);
-            this.rtcpChart.hideDataset(index, checkArray);
-        }
-
+        this._isLoaded = false;
         this.cdr.detectChanges();
+        setTimeout(async () => {
+            // Hides disabled labels
+            if (!base && this.rtcpChart) {
+                const [checkArray] = this.streams.map(stream => stream[type]);
+                const index: number = this.rtcpChart.datasets.findIndex(i => i.label === type);
+                console.log('this.rtcpChart.datasets', this.rtcpChart.datasets, this.streams);
+                this.rtcpChart.hideDataset(index, checkArray);
+            }
 
-        await this.update('onChangeRTCP', { item, type, base, streams: this.streams });
 
-        this.cdr.detectChanges();
+            await this.update('onChangeRTCP', { item, type, base, streams: this.streams });
+
+            this.cdr.detectChanges();
+        }, 10);
 
     }
 
-    async onChangeCheckBoxRTP(item: any, type: any, base = false) {
+    onChangeCheckBoxRTP(item: any, type: any, base = false) {
         if (base) {
             item.TOTAL_PK = item.EXPECTED_PK = item.JITTER = item.MOS = item.DELTA = item.PACKET_LOSS = item._checked;
             item._indeterminate = false;
@@ -186,17 +209,20 @@ export class TabQosComponent implements OnInit {
                 !(!item.TOTAL_PK && !item.EXPECTED_PK && !item.JITTER && !item.MOS && !item.DELTA && !item.PACKET_LOSS);
         }
 
-        // Hides disabled labels
-        if (!base && this.rtpChart) {
-            const [checkArray] = this.streamsRTP.map(stream => stream[type]);
-            const index: number = this.rtpChart.datasets.findIndex(i => i.label === type);
-            this.rtpChart.hideDataset(index, checkArray);
-        }
+        this._isLoaded = false;
         this.cdr.detectChanges();
+        setTimeout(async () => {
+            // Hides disabled labels
+            if (!base && this.rtpChart) {
+                const [checkArray] = this.streamsRTP.map(stream => stream[type]);
+                const index: number = this.rtpChart.datasets.findIndex(i => i.label === type);
+                this.rtpChart.hideDataset(index, checkArray);
+            }
 
-        await this.update('onChangeRTCP', { item, type, base, streamsRTP: this.streamsRTP });
+            await this.update('onChangeRTCP', { item, type, base, streamsRTP: this.streamsRTP });
 
-        this.cdr.detectChanges();
+            this.cdr.detectChanges();
+        }, 10);
     }
 
     yAxisFormatter(label) {
