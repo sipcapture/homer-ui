@@ -179,7 +179,7 @@ class QosProcessor {
     public streamsRTP: Array<any> = [];
 
     public init(srcdata) {
-        console.log('{ metedata, srcdata }', { srcdata });
+        console.log('{ metaData, srcdata }', { srcdata });
 
         try {
             this.parseRTCP(srcdata.rtcp.data);
@@ -337,19 +337,17 @@ class QosProcessor {
             return;
         }
         // this.chartLabels = [];
+        data = data.map(i => (i.raw = JSON.parse(i.raw), i))
+            .filter(({ raw }) => raw &&
+                raw.sender_information &&
+                raw.sender_information.packets &&
+                raw.sender_information.octets);
+        console.log('private parseRTCP(data)', { data });
         data.forEach(item => {
-            // try {
-            item.raw = JSON.parse(item.raw);
-            // } catch (err) {
-            //     this.onErrorMessage(err);
-            //     return;
-            // }
-
-            if (1 * item.raw.type !== 200 && 1 * item.raw.type !== 201 && 1 * item.raw.type !== 202) {
+            const i = item.raw;
+            if (![200, 201, 202].includes(1 * i.type)) {
                 return;
             }
-
-            const i = item.raw;
 
             // this.chartLabels.push(moment( item.create_date ).format('HH:mm:ss'));
 
@@ -393,8 +391,8 @@ class QosProcessor {
                         k.octetsData.push(i.sender_information.octets);
                     }
 
-                    if (i.report_blocks && i.report_blocks[0]) {
-                        const block = i.report_blocks[0];
+                    const [block] = i.report_blocks || [];
+                    if (block) {
                         const tmpMos = Math.round(this.calculateJitterMos({
                             rtt: (block.dlsr < 1000 ? block.dlsr : 0),
                             jitter: block.ia_jitter,
@@ -641,7 +639,6 @@ class QosProcessor {
 
         });
 
-
     }
     private setColor(str: string) {
         const rColor = this.getColorByStringHEX(str)
@@ -766,24 +763,23 @@ class QosProcessor {
         this.renderChartData(streamsCopy, this.chartDataRTP, false);
 
     }
-
 }
 
 const qp = new QosProcessor();
 
 addEventListener('message', ({ data }) => {
-    console.log('worker:inside', { data });
-    const { metedata, srcdata } = JSON.parse(data);
+    const { metaData, srcdata } = JSON.parse(data);
+    console.log('worker:inside', { metaData, srcdata });
 
-    if (metedata && metedata.workerCommand) {
+    if (metaData && metaData.workerCommand) {
 
-        qp[metedata.workerCommand](srcdata);
+        qp[metaData.workerCommand](srcdata);
 
         console.log('worker:inside', { qp });
 
         const response = JSON.stringify(qp);
         postMessage(response);
     } else {
-        postMessage(JSON.stringify({ error: 'metedata.workerCommand is undefined' }));
+        postMessage(JSON.stringify({ error: 'metaData.workerCommand is undefined' }));
     }
 });
