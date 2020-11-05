@@ -44,7 +44,7 @@
     <!-- flow packets -->
 
     <!-- <div class="flow-packets-wrapper" [style.height.px]="flowscreen"> -->
-    <cdk-virtual-scroll-viewport itemSize="40" class="flow-packets-wrapper">
+    <cdk-virtual-scroll-viewport itemSize="40" class="flow-packets-wrapper" auditTimeInMs="1">
         <div *cdkVirtualFor="let item of arrayItems; let idx = index" class="item-flow-packet-container"
             [style.min-width.px]="(isSimplify ? 150 : 200) * (flowGridLines.length) + 100">
             <div class="bg-color-polygon" [style.background-color]="item.options.color"></div>
