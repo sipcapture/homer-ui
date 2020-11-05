@@ -9,7 +9,7 @@ export class WorkerService {
         this.worker = worker;
     }
 
-    public getParseData(metedata, srcdata): Promise<any> {
+    public getParseData(metaData, srcdata): Promise<any> {
         return new Promise((resolve, reject) => {
             const t = performance.now();
 
@@ -24,7 +24,7 @@ export class WorkerService {
                 // }
             };
             console.log('set data into worker', t);
-            this.worker.postMessage(JSON.stringify({ metedata, srcdata }));
+            this.worker.postMessage(JSON.stringify({ metaData, srcdata }));
             console.log('(END) set data into worker', performance.now() - t, 'ms');
         });
     }
