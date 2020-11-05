@@ -27,9 +27,15 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
     @ViewChild('containerWindow', { static: false }) containerWindow;
     @ViewChild('inWindow', { static: false }) inWindow;
     @ViewChild('outWindow', { static: false }) outWindow;
-
+    _headerColor: any;
     @Input() title: string;
-    @Input() headerColor: string;
+    set headerColor(val: any) {
+        this._headerColor = val;
+        this.cdr.detectChanges();
+    }
+    get headerColor(): any {
+        return this._headerColor;
+    }
     @Input() width = 700;
     @Input() height = 600;
     @Input() minWidth = 300;

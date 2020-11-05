@@ -30,19 +30,27 @@ export class DetailDialogComponent implements OnInit {
     get sipDataItem() {
         return this._sipDataItem;
     }
+    _headerColor: any;
+    @Input()
+    set headerColor(val: any) {
+        this._headerColor = val;
+        this.changeDetectorRefs.detectChanges();
+    }
+    get headerColor(): any {
+        return this._headerColor;
+    }
 
-    @Input() headerColor: any;
     @Input() mouseEventData: any;
     @Input() snapShotTimeRange: any;
     isSimplify = true;
-    isSimplifyPort = false;
-    isCombineByAlias = true;
+    isSimplifyPort = true;
+    isCombineByAlias = false;
     IdFromCallID;
     RTPFilterForFLOW = false;
     activeTab = 0;
     isFilterOpened = false;
     isFilterOpenedOutside = false;
-    combineType = '1none';
+    combineType = '3port';
     listCombineTypes = {
         '1none': 'Ungrouped',
         '2alias': 'Group by Alias',
@@ -139,6 +147,7 @@ export class DetailDialogComponent implements OnInit {
             this.dataLogs = this.sipDataItem.data.messages.filter(i => !i.method).map(i => ({ payload: i }));
             setTimeout(this.checkStatusTabs.bind(this));
             this.doFilterMessages();
+            this.changeDetectorRefs.detectChanges();
         }
     }
     checkStatusTabs() {
