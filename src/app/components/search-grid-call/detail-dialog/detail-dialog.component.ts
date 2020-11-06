@@ -30,13 +30,13 @@ export class DetailDialogComponent implements OnInit {
     get sipDataItem() {
         return this._sipDataItem;
     }
-    _headerColor: any;
+    _headerColor: string;
     @Input()
-    set headerColor(val: any) {
+    set headerColor(val: string) {
         this._headerColor = val;
         this.changeDetectorRefs.detectChanges();
     }
-    get headerColor(): any {
+    get headerColor(): string {
         return this._headerColor;
     }
 
@@ -168,10 +168,12 @@ export class DetailDialogComponent implements OnInit {
                         title: 'RTP'
                     });
                     this.doFilterMessages();
-                    this.changeDetectorRefs.detectChanges();
                 }
             }
-        });
+            this.changeDetectorRefs.detectChanges();
+        }, 150);
+        this.tabs.qos = isVisible;
+        this.changeDetectorRefs.detectChanges();
     }
     onClose() {
         this.close.emit();

@@ -22,18 +22,14 @@ export class TabQosComponent implements OnInit {
     @Input() callid;
     @Input() dataItem: any;
     @Input() set qosData(val: any) {
-
         if (!val) {
-            this.haveData.emit(false);
-            this.cdr.detectChanges();
             return;
         }
-        console.log('===================>', { val });
 
         this._qosData = val;
         this.haveData.emit(this.qosData.rtcp.data.length > 0 || this.qosData.rtp.data.length > 0);
         this.cdr.detectChanges();
-        (async () => await this.update('init', this.qosData))();
+        this.update('init', this.qosData);
     }
     get qosData(): any {
         return this._qosData;
