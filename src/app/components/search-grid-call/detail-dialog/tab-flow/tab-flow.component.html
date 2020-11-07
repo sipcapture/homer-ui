@@ -1,13 +1,12 @@
 <!-- flow grid lines -->
-<div class="flow-grid-lines" [style.min-width.px]="(isSimplify ? 150 : 200) * flowGridLines.length">
-    <!-- wrapper -->
-    <div *ngFor="let title of flowGridLines" class="line"></div>
-</div>
-
 <div class="flowscreen" #flowscreen>
+    <div class="flow-grid-lines" [style.min-width.px]="pageWidth">
+        <!-- wrapper -->
+        <div *ngFor="let title of flowGridLines" class="line"></div>
+    </div>
 
     <!-- hosts -->
-    <div class="hosts" [style.min-width.px]="(isSimplify ? 150 : 200) * flowGridLines.length">
+    <div class="hosts" [style.min-width.px]="pageWidth">
         <!-- host titles -->
         <ng-template ngFor let-itemhost [ngForOf]="aliasTitle">
 
@@ -44,9 +43,10 @@
     <!-- flow packets -->
 
     <!-- <div class="flow-packets-wrapper" [style.height.px]="flowscreen"> -->
-    <cdk-virtual-scroll-viewport itemSize="40" class="flow-packets-wrapper" auditTimeInMs="1">
-        <div *cdkVirtualFor="let item of arrayItems; let idx = index" class="item-flow-packet-container"
-            [style.min-width.px]="(isSimplify ? 150 : 200) * (flowGridLines.length) + 100">
+    <cdk-virtual-scroll-viewport itemSize="77" class="flow-packets-wrapper" auditTimeInMs="2"
+        [style.min-width.px]="pageWidth + 100" (scroll)="onScroll($event)" #virtualScroll>
+        <!-- [style.min-width.px]="(isSimplify ? 150 : 200) * (flowGridLines.length)" -->
+        <div *cdkVirtualFor="let item of arrayItems; let idx = index" class="item-flow-packet-container">
             <div class="bg-color-polygon" [style.background-color]="item.options.color"></div>
             <!-- background-color -->
 
@@ -93,6 +93,7 @@
             </div>
             <div [ngStyle]="{'flex': item.options.rightEnd || 0.0000001 }"></div> <!-- right space -->
         </div>
+        <div style="height: 80px;"></div>
     </cdk-virtual-scroll-viewport>
     <!-- </div> -->
 </div>
@@ -105,4 +106,7 @@
 <div id="download" style="display: none;">
     <img #canvas>
     <a #downloadLink></a>
+</div>
+<div class="virtual-scrollbar" (scroll)="onScroll($event, $event)" #virtualScrollbar>
+    <div [style.transform]="'translateY(' + getVirtualScrollHeight() + 'px)'" [style.padding.px]="1"></div>
 </div>

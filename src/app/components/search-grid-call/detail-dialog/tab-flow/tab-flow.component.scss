@@ -75,8 +75,17 @@
     display: flex;
     flex-direction: column;
     height: calc(100% - 67px);
-    }
+}
 
+.virtual-scrollbar {
+    position: absolute;
+    // background: aqua;
+    width: 22px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+}
 
 cdk-virtual-scroll-viewport {
     // contain: none;

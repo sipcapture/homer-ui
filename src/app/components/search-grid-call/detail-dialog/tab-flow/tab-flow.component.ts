@@ -17,7 +17,7 @@ import { MesagesData } from '../tab-messages/tab-messages.component';
 import { Functions } from '../../../../helpers/functions';
 import * as html2canvas from 'html2canvas';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FixedSizeVirtualScrollStrategy, VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
+import { CdkVirtualScrollViewport, FixedSizeVirtualScrollStrategy, VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
 
 export class CustomVirtualScrollStrategy extends FixedSizeVirtualScrollStrategy {
     constructor() {
@@ -43,7 +43,8 @@ enum FlowItemType {
 })
 export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('flowtitle', { static: false }) flowtitle;
-
+    @ViewChild('virtualScroll') virtualScroll: CdkVirtualScrollViewport;
+    @ViewChild('virtualScrollbar') virtualScrollbar: ElementRef;
     @Input()
     set isSimplify(val: boolean) {
         this._isSimplify = val;
@@ -64,7 +65,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     arrayItems: Array<any> = [];
     color_sid: string;
     labels: Array<any> = [];
-
+    private scrollFlag = 0;
     @Input() set flowFilters(filters: any) {
         if (!filters) {
             return;
@@ -109,6 +110,10 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             this.cdr.detectChanges();
             setTimeout(this.onSavePng.bind(this), 500);
         }
+    }
+
+    get pageWidth() {
+        return (this.isSimplify ? 150 : 200) * this.flowGridLines.length;
     }
     @Output() messageWindow: EventEmitter<any> = new EventEmitter();
 
@@ -498,5 +503,32 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             duration: 3000,
             panelClass: 'copysnack'
         });
+    }
+    onScroll({ target: { scrollTop }, target }, event = null) {
+        this.scrollFlag++;
+        this.scrollFlag = this.scrollFlag % 2;
+        if (!this.scrollFlag) {
+            return false;
+        }
+        console.log(event)
+        // if (this.virtualScroll.elementRef.nativeElement.scrollTop !== scrollTop) {
+        //     // this.virtualScroll.elementRef.nativeElement.scrollTop = scrollTop;
+        // }
+        if (this.virtualScrollbar.nativeElement.scrollTop !== scrollTop) {
+            this.virtualScrollbar.nativeElement.scrollTop = scrollTop;
+            console.log('virtualScrollbar');
+        } else {
+            this.virtualScroll.scrollToOffset(scrollTop);
+            console.log('virtualScroll');
+        }
+    }
+    // onScrollVirtual({ target: { scrollTop } }) {
+    //     if (this.virtualScrollbar.nativeElement.scrollTop !== scrollTop) {
+    //         this.virtualScrollbar.nativeElement.scrollTop = scrollTop;
+    //     }
+
+    // }
+    getVirtualScrollHeight() {
+        return this.virtualScroll && this.virtualScroll.elementRef.nativeElement.scrollHeight || 10000;
     }
 }
