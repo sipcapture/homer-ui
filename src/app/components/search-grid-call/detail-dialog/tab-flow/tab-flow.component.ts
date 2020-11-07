@@ -137,6 +137,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     ngOnInit() {
         this.initData();
+        this.virtualScroll.setRenderedContentOffset(1);
     }
     formattingQosItemAsFlowElement(item: any, pid: number) {
         item = Functions.cloneObject(item);
@@ -504,30 +505,19 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             panelClass: 'copysnack'
         });
     }
-    onScroll({ target: { scrollTop }, target }, event = null) {
+    onScroll({ target: { scrollTop } }) {
         this.scrollFlag++;
         this.scrollFlag = this.scrollFlag % 2;
         if (!this.scrollFlag) {
             return false;
         }
-        console.log(event)
-        // if (this.virtualScroll.elementRef.nativeElement.scrollTop !== scrollTop) {
-        //     // this.virtualScroll.elementRef.nativeElement.scrollTop = scrollTop;
-        // }
         if (this.virtualScrollbar.nativeElement.scrollTop !== scrollTop) {
             this.virtualScrollbar.nativeElement.scrollTop = scrollTop;
-            console.log('virtualScrollbar');
         } else {
             this.virtualScroll.scrollToOffset(scrollTop);
-            console.log('virtualScroll');
         }
     }
-    // onScrollVirtual({ target: { scrollTop } }) {
-    //     if (this.virtualScrollbar.nativeElement.scrollTop !== scrollTop) {
-    //         this.virtualScrollbar.nativeElement.scrollTop = scrollTop;
-    //     }
 
-    // }
     getVirtualScrollHeight() {
         return this.virtualScroll && this.virtualScroll.elementRef.nativeElement.scrollHeight || 10000;
     }

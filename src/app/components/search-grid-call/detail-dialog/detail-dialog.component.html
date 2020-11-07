@@ -54,7 +54,8 @@
                 (messageWindow)="addWindow($event)"></app-tab-messages>
         </mat-tab>
         <mat-tab *ngIf="_isLoaded && tabs.flow" label="Flow">
-            <app-tab-flow [isSimplify]="!isSimplify" [callid]="titleId" [flowFilters]="flowFilters" [dataItem]="sipDataItem"
+            <app-tab-flow *ngIf="activeTab === 1" [isSimplify]="!isSimplify" [callid]="titleId" [flowFilters]="flowFilters"
+                [dataItem]="sipDataItem"
                 [qosData]="qosData" [RTPFilterForFLOW]="RTPFilterForFLOW" (messageWindow)="addWindow($event)"></app-tab-flow>
         </mat-tab>
         <mat-tab *ngIf="false || tabs.qos" label="QoS">
