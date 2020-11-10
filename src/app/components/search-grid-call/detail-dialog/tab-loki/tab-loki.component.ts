@@ -41,14 +41,17 @@ export class TabLokiComponent implements OnInit {
                 a.push(b);
             }
             return a;
-        }, []).join(' | ');
-        this.queryText = `{job="heplify-server"} ${labels}`;
+        }, []).join('|');
+        this.lokiTemplate = {
+            lineFilterOperator: '|~',
+            logStreamSelector: '{job="heplify-server"}'
+        };
         this._pas.getAll().toPromise().then((advanced: any) => {
             [this.lokiTemplate] = advanced.data
             .filter(i => i.category === 'search' && i.param === 'lokiserver')
             .map(i => i.data.template);
-            if (this.lokiTemplate !== '' && typeof this.lokiTemplate !== 'undefined') {
-                this.queryText = `${this.lokiTemplate} ${labels}`;
+            if (typeof this.lokiTemplate !== 'undefined') {
+                this.queryText = `${this.lokiTemplate.logStreamSelector} ${this.lokiTemplate.lineFilterOperator} "${labels}"`;
                 this.cdr.detectChanges();
             }
             this.cdr.detectChanges();
@@ -101,7 +104,7 @@ export class TabLokiComponent implements OnInit {
     private highlight(value: string = '') {
         let data;
         if (!!this.rxText) {
-            const rxText = this.rxText.replace(/\s/g, '').replace(/(\|=|\|~|!=|!~)/g, '').replace(/("|`)/g, '');
+            const rxText = this.rxText.replace(/\s|(\|=|\|~|!=|!~)|("|`)/g, '').split('|').sort((a,b) => b.length - a.length).join('|');
             const regex = new RegExp('(' + rxText + ')', 'g');
             data = value
                 .replace(/\</g, '&lt;')
@@ -112,6 +115,7 @@ export class TabLokiComponent implements OnInit {
         } else {
             data = value || '';
         }
+        console.log(data)
         return data;
     }
 }
