@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectorRef, EventEmitter, ɵConsole } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 import { DateTimeRangeService } from '@app/services/data-time-range.service';
 import { SearchRemoteService } from '@app/services';
 import { SearchService } from '@app/services';
@@ -48,7 +48,6 @@ export class TabLokiComponent implements OnInit {
             .filter(i => i.category === 'search' && i.param === 'lokiserver')
             .map(i => i.data.template);
             if (this.lokiTemplate !== '' && typeof this.lokiTemplate !== 'undefined') {
-                console.log('test')
                 this.queryText = `${this.lokiTemplate} ${labels}`;
                 this.cdr.detectChanges();
             }
@@ -102,7 +101,7 @@ export class TabLokiComponent implements OnInit {
     private highlight(value: string = '') {
         let data;
         if (!!this.rxText) {
-            const rxText = this.rxText.replace(/\s/g, '');
+            const rxText = this.rxText.replace(/\s/g, '').replace(/(\|=|\|~|!=|!~)/g, '').replace(/("|`)/g, '');
             const regex = new RegExp('(' + rxText + ')', 'g');
             data = value
                 .replace(/\</g, '&lt;')
