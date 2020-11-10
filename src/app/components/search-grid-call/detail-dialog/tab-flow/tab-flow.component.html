@@ -1,113 +1,112 @@
-<div class="flowscreen" style="position: relative;" #flowscreen>
-  <!-- flow grid lines -->
-  <div class="flow-grid-lines" [ngStyle]="{'min-width.px': (isSimplify ? 150 : 200) * (flowGridLines.length)}"> <!-- wrapper -->
-      <div *ngFor="let title of flowGridLines" class="line"></div>
-  </div>
+<!-- flow grid lines -->
+<div class="flowscreen" #flowscreen>
+    <div class="flow-grid-lines" [style.min-width.px]="pageWidth">
+        <!-- wrapper -->
+        <div *ngFor="let title of flowGridLines" class="line"></div>
+    </div>
 
     <!-- hosts -->
-    <div class="hosts" [ngStyle]="{'min-width.px': (isSimplify ? 150 : 200) * (flowGridLines.length)}">
+    <div class="hosts" [style.min-width.px]="pageWidth">
         <!-- host titles -->
         <ng-template ngFor let-itemhost [ngForOf]="aliasTitle">
 
-            <div *ngIf="itemhost.empty" style="min-width: 100px;"></div>
-            <div *ngIf="!itemhost.empty && itemhost && !itemhost.hidden"
-            matTooltipClass="iptooltip"
-            [matTooltip]="_isCombineByAlias ? 
+            <div *ngIf="itemhost && itemhost.empty" style="min-width: 100px;"></div>
+            <div *ngIf="itemhost && !itemhost.empty && !itemhost.hidden" matTooltipClass="iptooltip"
+                [matTooltip]="_isCombineByAlias ? 
                 pipeToString(itemhost) :
-                itemhost.IP + (itemhost.PORT ? ':' + itemhost.PORT : '') + ' ( click to copy )'"
-                (click)="openSnackBar(_isCombineByAlias ? 
+                itemhost.IP + (itemhost.PORT ? ':' + itemhost.PORT : '') + ' ( click to copy )'" (click)="openSnackBar(_isCombineByAlias ? 
                 pipeToString(itemhost) :
                 itemhost.IP + (itemhost.PORT ? ':' + itemhost.PORT : ''))"
-                
-            [ngClass]="'item-wrapper' + (isSimplify ? ' big' : '')"> <!-- wrapper -->
+                [ngClass]="'item-wrapper' + (isSimplify ? ' big' : '')">
+                <!-- wrapper -->
 
-                <div class="item" style="user-select:text; cursor:pointer"> <!-- container -->
-                    <div
-                    *ngIf="itemhost.alias !== itemhost.ip && itemhost.alias !== itemhost.IP && itemhost.alias !== ''"
-                    class="itemhost-alias"> {{
+                <div class="item" style="user-select:text; cursor:pointer">
+                    <!-- container -->
+                    <div *ngIf="itemhost.alias !== itemhost.ip && itemhost.alias !== itemhost.IP && itemhost.alias !== ''"
+                        class="itemhost-alias"> {{
                         itemhost.alias === itemhost.ip || itemhost.alias === '' ?
                             itemhost.shortIPtext2 :
                             itemhost.alias
                     }} </div>
-                   <!-- <div style="font-size: 0.9em;color: #999">{{(_isSimplifyPort ? 'PORT:' + itemhost.PORT : '')}}</div> -->
+                    <!-- <div style="font-size: 0.9em;color: #999">{{(_isSimplifyPort ? 'PORT:' + itemhost.PORT : '')}}</div> -->
                     <div *ngIf="!itemhost.arrip"> {{ itemhost.shortIPtext2 }} </div>
-                    <div *ngIf="itemhost.arrip"> 
-                        <div *ngFor="let ip of itemhost.arrip"
-                        id="{{ shortcutIPv6String(ip) }}"
-                      
-                        style="text-align: center;">{{ shortcutIPv6String(ip) }}</div>
+                    <div *ngIf="itemhost.arrip">
+                        <div *ngFor="let ip of itemhost.arrip" id="{{ shortcutIPv6String(ip) }}"
+                            style="text-align: center;">{{ shortcutIPv6String(ip) }}</div>
                     </div>
-                 
+
                 </div>
             </div>
         </ng-template>
     </div>
 
     <!-- flow packets -->
-    <div class="flow-packets-wrapper">
-        <div 
-        *ngFor="let item of arrayItems; let idx = index"
-        [ngStyle]="{
-            'min-width.px': (isSimplify ? 150 : 200) * (flowGridLines.length),
-            'display': 'flex',
-            'overflow': 'inherit',
-            'max-height.px': 100,
-            'opacity':  1 
-        }">
-            <div class="bg-color-polygon" [ngStyle]="{'background-color': item.options.color }" ></div> <!-- background-color -->
 
-            <div [ngStyle]="{'flex': item.options.start || 0.0000001 }"></div> <!-- left space -->
+    <!-- <div class="flow-packets-wrapper" [style.height.px]="flowscreen"> -->
+    <cdk-virtual-scroll-viewport itemSize="77" class="flow-packets-wrapper" auditTimeInMs="2"
+        [style.min-width.px]="pageWidth + 100" (scroll)="onScroll($event)" #virtualScroll>
+        <!-- [style.min-width.px]="(isSimplify ? 150 : 200) * (flowGridLines.length)" -->
+        <div *cdkVirtualFor="let item of arrayItems; let idx = index" class="item-flow-packet-container">
+            <div class="bg-color-polygon" [style.background-color]="item.options.color"></div>
+            <!-- background-color -->
+
+            <div [style.flex]="item.options.start || 0.0000001"></div> <!-- left space -->
             <div [ngStyle]="{
-                'flex': item.options.middle || 0.0000001,
-                'text-align': item.options.direction ? 'right' : 'left'
-            }"
-            class="item-flow-packet"
-            (click)="onClickItem(item, $event)"> <!-- content -->
-                <div class="call_text" [ngStyle]="{'color': item.color_method ? item.color_method : 'initial' }"> {{
-                    item.method_text 
-                }} <span *ngIf="item.QOS" [ngClass]="item.options.mosColor"></span> {{
+                    'flex': item.options.middle || 0.0000001,
+                    'text-align': item.options.direction ? 'right' : 'left'
+                }" class="item-flow-packet" (click)="onClickItem(item, $event)">
+                <!-- content -->
+                <div class="call_text" [style.color]=" item.color_method ? item.color_method : 'initial' "> {{
+                        item.method_text 
+                    }} <span *ngIf="item.QOS" [ngClass]="item.options.mosColor"></span> {{
                     item.QOS ? item.QOS.MOS + ' [' + item.QOS.qosTYPEless + ']' : ''
                 }} </div>
-                <div class="call_text-mini" 
-                [ngStyle]="{'height.px': !isSimplify ? 15 : 0,'max-width.px':isSimplify ? 150 : ''}"
-                [ngClass]="!item.options.direction ? 'left' : 'right'"
-                title="{{item.ruri_user}}"
-                >{{ item.ruri_user }}</div>
-                <div [ngClass]="'port-label-' + (!item.options.direction ? 'left' : 'right')">{{ item.srcPort }}</div>
+                <div class="call_text-mini"
+                    [ngStyle]="{'height.px': !isSimplify ? 15 : 0,'max-width.px':isSimplify ? 150 : ''}"
+                    [ngClass]="!item.options.direction ? 'left' : 'right'" title="{{item.ruri_user}}">
+                    {{ item.ruri_user }}</div>
+                <div [ngClass]="'port-label-' + (!item.options.direction ? 'left' : 'right')">{{ item.srcPort }}
+                </div>
                 <!-- ARROW line -->
-                <div
-                    *ngIf="!item.options.isRedialArrow"
+                <div *ngIf="!item.options.isRedialArrow"
                     [ngClass]="'arrow' + (item.options.direction ? ' left': '') + (!item.options.arrowStyleSolid ? ' arrow-solid' : ' arrow-dotted')"
-                    [ngStyle]="{'color': item.options.color }" 
-                ></div>
+                    [style.color]="item.options.color"></div>
                 <!-- ARROW redial -->
-                <div
-                    *ngIf="item.options.isRedialArrow"
+                <div *ngIf="item.options.isRedialArrow"
                     [ngClass]="'redial-arrow' + (item.options.arrowStyleSolid ? ' rtp' : '')"
-                    [ngStyle]="{'color': item.options.color }" 
-                ></div>
-                
+                    [style.color]="item.options.color"></div>
+
                 <div [ngClass]="'port-label-' + (item.options.direction ? 'left' : 'right')"
-                    [ngStyle]="item.options.isRedialArrow && {'left.px' : -47 }"
-                >{{ item.dstPort }}</div>
+                    [ngStyle]="item.options.isRedialArrow && {'left.px' : -47 }">{{ item.dstPort }}</div>
                 <span *ngIf='!item.options.isRedialArrow; else elseBlock'>
-                    <div class="call-text-date" [ngStyle]="{'maxHeight.px': !isSimplify ? 50 : 0}">[{{ idx + 1 }}][{{ item.proto | uppercase }}] {{ item.micro_ts }}</div>
-                    <div class="call-text-date">+ {{ item.diffTs }} s</div> 
+                    <div class="call-text-date" [ngStyle]="{'maxHeight.px': !isSimplify ? 50 : 0}">
+                        [{{ idx + 1 }}][{{ item.proto | uppercase }}] {{ item.micro_ts }}</div>
+                    <div class="call-text-date">+ {{ item.diffTs }} s</div>
                 </span>
                 <ng-template #elseBlock>
-                    <div class="call-text-date" [ngStyle]="{'maxHeight.px': (!isSimplify ? 50 : 0)}">[{{ idx + 1 }}][{{ item.proto | uppercase }}] {{ item.micro_ts }} + {{ item.diffTs }} s</div>
-                    <div class="call-text-date" [ngStyle]="{'display': (!isSimplify ? 'none' : 'block'),'text-align': 'center'}"> + {{ item.diffTs }} s </div>
+                    <div class="call-text-date" [ngStyle]="{'maxHeight.px': (!isSimplify ? 50 : 0)}">
+                        [{{ idx + 1 }}][{{ item.proto | uppercase }}] {{ item.micro_ts }} + {{ item.diffTs }} s
+                    </div>
+                    <div class="call-text-date" [ngStyle]="{'display': (!isSimplify ? 'none' : 'block'),'text-align': 'center'}"> +
+                        {{ item.diffTs }} s </div>
                 </ng-template>
             </div>
             <div [ngStyle]="{'flex': item.options.rightEnd || 0.0000001 }"></div> <!-- right space -->
         </div>
-    </div>
+        <div style="height: 80px;"></div>
+    </cdk-virtual-scroll-viewport>
+    <!-- </div> -->
 </div>
+
 <div class="label-callid-container">
-    <div class="label-callid-wrapper" *ngFor="let itemLabel of labels" [ngStyle]="{'color': itemLabel.color_sid}"> * {{ itemLabel.callid }} </div>
+    <div class="label-callid-wrapper" *ngFor="let itemLabel of labels" [ngStyle]="{'color': itemLabel.color_sid}"> *
+        {{ itemLabel.callid }} </div>
 </div>
 
 <div id="download" style="display: none;">
     <img #canvas>
     <a #downloadLink></a>
+</div>
+<div class="virtual-scrollbar" (scroll)="onScroll($event, $event)" #virtualScrollbar>
+    <div [style.transform]="'translateY(' + getVirtualScrollHeight() + 'px)'" [style.padding.px]="1"></div>
 </div>

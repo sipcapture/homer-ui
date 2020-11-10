@@ -118,7 +118,7 @@ import { ChartsModule } from 'ng2-charts';
 import { MarkdownModule } from 'ngx-markdown';
 import { ColorChromeModule } from 'ngx-color/chrome';
 import { ColorCircleModule } from 'ngx-color/circle';
-
+import { TableVirtualScrollModule } from 'ng-table-virtual-scroll';
 
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {
 };
@@ -238,6 +238,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         MarkdownModule.forRoot(),
         ColorChromeModule,
         ColorCircleModule,
+        TableVirtualScrollModule
     ],
     entryComponents: [
         MenuComponent,
