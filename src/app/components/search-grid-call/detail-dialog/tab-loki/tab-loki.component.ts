@@ -47,11 +47,15 @@ export class TabLokiComponent implements OnInit {
             logStreamSelector: '{job="heplify-server"}'
         };
         this._pas.getAll().toPromise().then((advanced: any) => {
-            [this.lokiTemplate] = advanced.data
+            const [advancedTemplate] = advanced.data
             .filter(i => i.category === 'search' && i.param === 'lokiserver')
             .map(i => i.data.template);
+            if (typeof advancedTemplate !== 'undefined'
+            && (advancedTemplate.hasOwnProperty('logStreamSelector') || advancedTemplate.hasOwnProperty('lineFilterOperator'))) {
+                this.lokiTemplate = advancedTemplate;
+            }
             if (typeof this.lokiTemplate !== 'undefined') {
-                this.queryText = `${this.lokiTemplate.logStreamSelector} ${this.lokiTemplate.lineFilterOperator} "${labels}"`;
+                this.queryText = `${this.lokiTemplate.logStreamSelector ? this.lokiTemplate.logStreamSelector : ''}${this.lokiTemplate.lineFilterOperator}"${labels}"`;
                 this.cdr.detectChanges();
             }
             this.cdr.detectChanges();
@@ -115,7 +119,6 @@ export class TabLokiComponent implements OnInit {
         } else {
             data = value || '';
         }
-        console.log(data)
         return data;
     }
 }
