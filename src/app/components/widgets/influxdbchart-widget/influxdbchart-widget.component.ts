@@ -1,7 +1,15 @@
 import { SettingInfluxdbchartWidgetComponent } from './setting-influxdbchart-widget.component';
 import { MatDialog } from '@angular/material/dialog';
 import { IWidget } from '../IWidget';
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
+import { Component,
+    OnInit,
+    Input,
+    Output,
+    EventEmitter,
+    OnDestroy,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef
+ } from '@angular/core';
 
 import { ChartType, ChartDataSets } from 'chart.js';
 import { Label } from 'ng2-charts';
@@ -14,7 +22,8 @@ import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 @Component({
     selector: 'app-influxdbchart-widget',
     templateUrl: './influxdbchart-widget.component.html',
-    styleUrls: ['./influxdbchart-widget.component.scss']
+    styleUrls: ['./influxdbchart-widget.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 @Widget({
     title: 'InfluxDB',
@@ -22,10 +31,10 @@ import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
     category: 'Metrics',
     indexName: 'influxdbchart',
     className: 'InfluxdbchartWidgetComponent',
-    minHeight:300,
-    minWidth:300
+    minHeight: 300,
+    minWidth: 300
 })
-export class InfluxdbchartWidgetComponent implements IWidget {
+export class InfluxdbchartWidgetComponent implements IWidget, OnInit, OnDestroy {
     @Input() id: string;
     @Input() config: any;
     @Output() changeSettings = new EventEmitter<any> ();
@@ -70,7 +79,8 @@ export class InfluxdbchartWidgetComponent implements IWidget {
     constructor(
         public dialog: MatDialog,
         private _dtrs: DateTimeRangeService,
-        private _ss: StatisticService) { }
+        private _ss: StatisticService,
+        private cdr: ChangeDetectorRef) { }
 
     ngOnInit() {
         WidgetArrayInstance[this.id] = this as IWidget;
@@ -164,7 +174,8 @@ export class InfluxdbchartWidgetComponent implements IWidget {
                         i.main = name;
                         return i;
                     });
-
+                    console.log('requestList', requestList);
+                    console.log('multiDataArr', this.multiDataArr)
                     this.multiDataArr = this.multiDataArr.concat(s);
                     this.getDataByQuery(requestList, chartType);
                 },
@@ -197,6 +208,7 @@ export class InfluxdbchartWidgetComponent implements IWidget {
                     return a;
                 }, []);
             })));
+            console.log(this.multiDataArr)
             this.renderingChart(this.multiDataArr, chartType);
         }
     }
@@ -214,7 +226,7 @@ export class InfluxdbchartWidgetComponent implements IWidget {
     }
     renderingChart(data, chartType) {
         let isFill;
-
+        data.sort((a, b) => a.reporttime - b.reporttime)
         if (chartType === 'area') {
             this.chartOptions.scales.yAxes[0].stacked = true;
             isFill = true;
@@ -227,7 +239,6 @@ export class InfluxdbchartWidgetComponent implements IWidget {
         this.chartLabels = [];
         this.chartData = [];
         this.noChartData = data.length === 0;
-
         const formattedData = data.map(i => ({
             label: i.table + '.' + i.countername,
             value: i.value
@@ -238,11 +249,10 @@ export class InfluxdbchartWidgetComponent implements IWidget {
             a[b.label].push(b.value);
             return a;
         }, {});
-
+        const timeFormat = this.timeRange.to - this.timeRange.from >= 86400 ? 'DD.MM HH:mm' : 'HH:mm';
         this.chartLabels = data
-            .map(item => moment(item.reporttime * 1000).format('HH:mm'))
+            .map(item => moment(item.reporttime, 'x').format(timeFormat))
             .filter((i, k, a) => i !== a[k + 1]);
-
         let fillKey = 0;
         Object.keys(formattedData).forEach(key => {
             const value = formattedData[key];
@@ -253,11 +263,11 @@ export class InfluxdbchartWidgetComponent implements IWidget {
             });
             fillKey ++;
         });
-
         setTimeout(() => {
             if (chartType) {
                 this.chartType = chartType;
                 this._isLoaded = true;
+            this.cdr.detectChanges();
             }
         }, 0);
     }
