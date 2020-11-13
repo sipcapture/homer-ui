@@ -12,9 +12,9 @@
         <h5 *ngIf="isRTP">RTP</h5>
         <div class="responcive">
             <div class="chart-container">
-                <!-- <canvas *ngIf="!isNoDataRTP" baseChart #rtpChart='base-chart' [datasets]="chartDataRTP" [labels]="chartLabelsRTP"
+                <canvas *ngIf="!isNoDataRTP" baseChart #rtpChart='base-chart' [datasets]="chartDataRTP" [labels]="chartLabelsRTP"
                     [options]="chartOptions" [legend]="chartLegend" [chartType]="chartType">
-                </canvas> -->
+                </canvas>
                 <div *ngIf="isNoDataRTP" class="nodata">
                     <div [ngStyle]="{'backgroundColor':color}" class='nodata-card'>
                         <div class='text-container'>
@@ -49,27 +49,27 @@
                 </mat-checkbox>
                 <div style="padding-left: 2rem; display: flex; flex-direction: column;">
                     <mat-checkbox (change)="onChangeCheckBoxRTP(item,'TOTAL_PK')" [(ngModel)]="item.TOTAL_PK">
-                        <span class="color-bable" [ngStyle]="{'backgroundColor': item.TOTAL_PK_color }"></span>
+                        <span class="color-bable" [style.background-color]="item.TOTAL_PK_color"></span>
                         TOTAL_PK
                     </mat-checkbox>
                     <mat-checkbox (change)="onChangeCheckBoxRTP(item,'EXPECTED_PK')" [(ngModel)]="item.EXPECTED_PK">
-                        <span class="color-bable" [ngStyle]="{'backgroundColor': item.EXPECTED_PK_color }"></span>
+                        <span class="color-bable" [style.background-color]="item.EXPECTED_PK_color"></span>
                         EXPECTED_PK
                     </mat-checkbox>
                     <mat-checkbox (change)="onChangeCheckBoxRTP(item,'JITTER')" [(ngModel)]="item.JITTER">
-                        <span class="color-bable" [ngStyle]="{'backgroundColor': item.JITTER_color }"></span>
+                        <span class="color-bable" [style.background-color]="item.JITTER_color"></span>
                         JITTER
                     </mat-checkbox>
                     <mat-checkbox (change)="onChangeCheckBoxRTP(item,'MOS')" [(ngModel)]="item.MOS">
-                        <span class="color-bable" [ngStyle]="{'backgroundColor': item.MOS_color }"></span>
+                        <span class="color-bable" [style.background-color]="item.MOS_color"></span>
                         MOS
                     </mat-checkbox>
                     <mat-checkbox (change)="onChangeCheckBoxRTP(item,'DELTA')" [(ngModel)]="item.DELTA">
-                        <span class="color-bable" [ngStyle]="{'backgroundColor': item.DELTA_color }"></span>
+                        <span class="color-bable" [style.background-color]="item.DELTA_color"></span>
                         DELTA
                     </mat-checkbox>
                     <mat-checkbox (change)="onChangeCheckBoxRTP(item,'PACKET_LOSS')" [(ngModel)]="item.PACKET_LOSS">
-                        <span class="color-bable" [ngStyle]="{'backgroundColor': item.PACKET_LOSS_color }"></span>
+                        <span class="color-bable" [style.background-color]="item.PACKET_LOSS_color"></span>
                         PACKET_LOSS
                     </mat-checkbox>
                 </div>
@@ -118,31 +118,31 @@
                 </mat-checkbox>
                 <div style="padding-left: 2rem; display: flex; flex-direction: column;">
                     <mat-checkbox (change)="onChangeCheckBox(item, 'packets')" [(ngModel)]="item.packets">
-                        <span class="color-bable" [ngStyle]="{'background-color': item.packets_color}"></span>
+                        <span class="color-bable" [style.background-color]="item.packets_color"></span>
                         packets
                     </mat-checkbox>
                     <mat-checkbox (change)="onChangeCheckBox(item, 'octets')" [(ngModel)]="item.octets">
-                        <span class="color-bable" [ngStyle]="{'background-color': item.octets_color}"></span>
+                        <span class="color-bable" [style.background-color]="item.octets_color"></span>
                         octets
                     </mat-checkbox>
                     <mat-checkbox (change)="onChangeCheckBox(item, 'highest_seq_no')" [(ngModel)]="item.highest_seq_no">
-                        <span class="color-bable" [ngStyle]="{'background-color': item.highest_seq_no_color}"></span>
+                        <span class="color-bable" [style.background-color]="item.highest_seq_no_color"></span>
                         highest_seq_no
                     </mat-checkbox>
                     <mat-checkbox (change)="onChangeCheckBox(item, 'mos')" [(ngModel)]="item.mos">
-                        <span class="color-bable" [ngStyle]="{'background-color': item.mos_color}"></span>
+                        <span class="color-bable" [style.background-color]="item.mos_color"></span>
                         mos
                     </mat-checkbox>
                     <mat-checkbox (change)="onChangeCheckBox(item, 'ia_jitter')" [(ngModel)]="item.ia_jitter">
-                        <span class="color-bable" [ngStyle]="{'background-color': item.ia_jitter_color}"></span>
+                        <span class="color-bable" [style.background-color]="item.ia_jitter_color"></span>
                         ia_jitter
                     </mat-checkbox>
                     <mat-checkbox (change)="onChangeCheckBox(item, 'lsr')" [(ngModel)]="item.lsr">
-                        <span class="color-bable" [ngStyle]="{'background-color': item.lsr_color}"></span>
+                        <span class="color-bable" [style.background-color]="item.lsr_color"></span>
                         lsr
                     </mat-checkbox>
                     <mat-checkbox (change)="onChangeCheckBox(item, 'packets_lost')" [(ngModel)]="item.packets_lost">
-                        <span class="color-bable" [ngStyle]="{'background-color': item.packets_lost_color}"></span>
+                        <span class="color-bable" [style.background-color]="item.packets_lost_color"></span>
                         packets_lost
                     </mat-checkbox>
                 </div>

@@ -107,6 +107,6 @@
     <img #canvas>
     <a #downloadLink></a>
 </div>
-<div class="virtual-scrollbar" (scroll)="onScroll($event, $event)" #virtualScrollbar>
+<div class="virtual-scrollbar" (scroll)="onScroll($event)" #virtualScrollbar>
     <div [style.transform]="'translateY(' + getVirtualScrollHeight() + 'px)'" [style.padding.px]="1"></div>
 </div>
