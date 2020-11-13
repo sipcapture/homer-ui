@@ -98,7 +98,6 @@ export class TabQosComponent implements OnInit {
     worker: WorkerService;
     _isLoaded: boolean = false;
     constructor(private cdr: ChangeDetectorRef) {
-        console.log('constructor::new WorkerService');
         this.worker = new WorkerService(new Worker('@app/qos.worker', { type: 'module' }));
     }
 
@@ -116,6 +115,7 @@ export class TabQosComponent implements OnInit {
             this.chartLabelsRTP = outData.chartLabelsRTP as Label[];
 
             this.chartLabels = outData.chartLabels as Label[];
+
             this.chartType = outData.chartType as ChartType;
             this.chartLegend = outData.chartLegend as boolean;
 
@@ -131,32 +131,31 @@ export class TabQosComponent implements OnInit {
                 this._isLoaded = true;
                 const t = performance.now();
                 this.cdr.detectChanges();
-                console.log('>>>', performance.now() - t, 'ms')
             }, 1000);
 
         }
         if (['onChangeRTCP', 'onChangeRTP'].includes(workerCommand)) {
-            this.isRTCP = outData.isRTCP as boolean;
-            this.isRTP = outData.isRTP as boolean;
-            this.isNoDataRTP = outData.isNoDataRTP as boolean;
-            this.isNoDataRTCP = outData.isNoDataRTCP as boolean;
-            this.chartDataRTP = outData.chartDataRTP as ChartDataSets[];
-            this.chartLabelsRTP = outData.chartLabelsRTP as Label[];
-
-            this.chartLabels = outData.chartLabels as Label[];
+        /** for both */
             this.chartType = outData.chartType as ChartType;
             this.chartLegend = outData.chartLegend as boolean;
 
+            /** for RTCP */
+            this.isRTCP = outData.isRTCP as boolean;
+            this.isNoDataRTCP = outData.isNoDataRTCP as boolean;
+            this.chartLabels = outData.chartLabels as Label[];
             this.chartData = outData.chartData as ChartDataSets[];
             this.streams = outData.streams as Array<any>;
 
+            /** for RTP */
+            this.isRTP = outData.isRTP as boolean;
+            this.isNoDataRTP = outData.isNoDataRTP as boolean;
+            this.chartLabelsRTP = outData.chartLabelsRTP as Label[];
+            this.chartDataRTP = outData.chartDataRTP as ChartDataSets[];
+            this.streamsRTP = outData.streamsRTP as Array<any>;
 
             this._isLoaded = true;
             const t = performance.now();
             this.cdr.detectChanges();
-            console.log('>>>', performance.now() - t, 'ms')
-
-
         }
     }
     ngOnInit() {
@@ -189,12 +188,11 @@ export class TabQosComponent implements OnInit {
             if (!base && this.rtcpChart) {
                 const [checkArray] = this.streams.map(stream => stream[type]);
                 const index: number = this.rtcpChart.datasets.findIndex(i => i.label === type);
-                console.log('this.rtcpChart.datasets', this.rtcpChart.datasets, this.streams);
                 this.rtcpChart.hideDataset(index, checkArray);
             }
 
 
-            await this.update('onChangeRTCP', { item, type, base, streams: this.streams });
+            await this.update('onChangeRTCP', { streams: this.streams });
 
             this.cdr.detectChanges();
         }, 10);
@@ -221,8 +219,7 @@ export class TabQosComponent implements OnInit {
                 this.rtpChart.hideDataset(index, checkArray);
             }
 
-            await this.update('onChangeRTCP', { item, type, base, streamsRTP: this.streamsRTP });
-
+            await this.update('onChangeRTP', { streamsRTP: this.streamsRTP });
             this.cdr.detectChanges();
         }, 10);
     }
