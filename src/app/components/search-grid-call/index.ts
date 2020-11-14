@@ -1,4 +1,5 @@
 export * from './detail-dialog/detail-dialog.component';
+export * from './detail-dialog/tab-callinfo/tab-callinfo.component';
 export * from './detail-dialog/tab-export/tab-export.component';
 export * from './detail-dialog/tab-flow/tab-flow.component';
 export * from './detail-dialog/tab-logs/tab-logs.component';
