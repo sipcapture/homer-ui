@@ -172,12 +172,13 @@ export class TabCallinfoComponent {
                                     cSeqMethod = dataCseq[2];
                                 }
                             }
+
                             if (trans.SessionRequestDelay == 0 && trans.timeInvite != 0) {
-                                trans.SessionRequestDelay = trans.timeInvite - messageTime;
+                                trans.SessionRequestDelay = messageTime - trans.timeInvite;
                             }
 
                             if (reply > 100 && reply < 200 && trans.SuccessfulSessionSetupDelay == 0) {
-                                trans.SuccessfulSessionSetupDelay = trans.timeInvite - messageTime;
+                                trans.SuccessfulSessionSetupDelay = messageTime - trans.timeInvite;
                                 if (message.user_agent != "") {
                                     trans.UAS = message.user_agent;
                                 }
@@ -295,7 +296,7 @@ export class TabCallinfoComponent {
 
                     trans.task.push({
                         title: 'Last Bad Reply',
-                        color: COLOR.orange,
+                        color: COLOR.redlighter,
                         type: TASK_TYPE.number,
                         body: trans['LastBadReply'],
                         prefix: '',
