@@ -58,6 +58,9 @@
                 [dataItem]="sipDataItem"
                 [qosData]="qosData" [RTPFilterForFLOW]="RTPFilterForFLOW" (messageWindow)="addWindow($event)"></app-tab-flow>
         </mat-tab>
+        <mat-tab label="Session Info" *ngIf="_isLoaded && tabs.callinfo">
+            <app-tab-callinfo *ngIf="true || activeTab === 3" [dataItem]="sipDataItem"></app-tab-callinfo>
+        </mat-tab>
         <mat-tab *ngIf="false || tabs.qos" label="QoS">
             <app-tab-qos [callid]="titleId" [dataItem]="sipDataItem" [qosData]="qosData" [id]="IdFromCallID"
                 (haveData)="onTabQos($event)"></app-tab-qos>
