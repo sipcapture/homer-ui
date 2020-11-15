@@ -97,8 +97,8 @@ export class TabCallinfoComponent {
                         Duration: 0,
                         Status: 0,
                         LastBadReply: 0,
-                        UAC: "",
-                        UAS: "",
+                        UAC: "Uknown",
+                        UAS: "Uknown",
                         timeInvite: 0,
                         timeTrying: 0,
                         timeRinging: 0,
@@ -124,7 +124,7 @@ export class TabCallinfoComponent {
                     messages.forEach((message) => {
 
                         var reply = parseInt(message.method);
-                        var messageTime = (message.timeSeconds * 1000000 + message.timeUseconds) / 1000;
+                        var messageTime =  Math.round((message.timeSeconds * 1000000 + message.timeUseconds) / 1000);
 
                         if (!trans.methods[message.method]) {
                             trans.methods[message.method] = 0;
@@ -162,7 +162,7 @@ export class TabCallinfoComponent {
 
                             if (trans.CdrConnectTime != 0 && trans.CdrConnectTime < trans.CdrStopTime) {
                                 trans.SuccessfulSessionDurationSDT = trans.CdrStopTime - trans.CdrStartTime;
-                                trans.Duration = trans.SessionDurationTime / 1000;
+                                trans.Duration =  Math.round(trans.SessionDurationTime / 1000);
                             }
 
                         } else if (message.method == "CANCEL" && trans.timeCancel == 0) {
@@ -320,26 +320,22 @@ export class TabCallinfoComponent {
                         prefix: '',
                     });
 
-                    if (trans['UAC'] && trans['UAC'] !== '') {
-                        trans['ua_src'] = {
+                     trans['ua_src'] = {
                             title: 'UAC',
                             color: COLOR.yellow,
                             type: TASK_TYPE.number,
                             body: trans['UAC'],
                             prefix: '',
-                        };
-                    }
-
-                    if (trans['UAS'] && trans['UAS'] !== '') {
-                        trans['ua_dst'] = {
-                            title: 'UAS',
+                    };
+                    
+                    trans['ua_dst'] = {
+                           title: 'UAS',
                             color: COLOR.yellow,
                             type: TASK_TYPE.number,
                             body: trans['UAS'],
                             prefix: '',
-                        };
-                    }
-
+                    };
+                    
                     /* metrics */
                     if (trans['SessionRequestDelay'] > 0) {
                         const val = trans['SessionRequestDelay'];
@@ -417,8 +413,8 @@ export class TabCallinfoComponent {
                         Duration: 0,
                         Status: 0,
                         LastBadReply: 0,
-                        UAC: "",
-                        UAS: "",
+                        UAC: "Uknown",
+                        UAS: "Uknown",
                         timeRegister: 0,
                         timeFailed: 0,
                         timeFinish: 0,
@@ -439,7 +435,7 @@ export class TabCallinfoComponent {
                     messages.forEach((message) => {
 
                         var reply = parseInt(message.method);
-                        var messageTime = (message.timeSeconds * 1000000 + message.timeUseconds) / 1000;
+                        var messageTime =  Math.round(message.timeSeconds * 1000000 + message.timeUseconds) / 1000);
 
                         if (!trans.methods[message.method]) {
                             trans.methods[message.method] = 0;
@@ -480,7 +476,7 @@ export class TabCallinfoComponent {
 
                                 if (trans.CdrFinishTime == 0) {
                                     trans.CdrFinishTime = messageTime;
-                                    trans.RegistrationRequestDelay = Math.round(messageTime - trans.timeRegister);
+                                    trans.RegistrationRequestDelay = messageTime - trans.timeRegister;
                                     trans.Duration = trans.RegistrationRequestDelay;
                                 }
 
@@ -511,7 +507,7 @@ export class TabCallinfoComponent {
 
                                 trans.CdrFailedTime = messageTime;
                                 if (messageTime > trans.CdrStartTime) {
-                                    trans.FailedRegistrationRequestDelay = Math.round(messageTime - trans.CdrStartTime);
+                                    trans.FailedRegistrationRequestDelay = messageTime - trans.CdrStartTime;
                                     trans.Duration = trans.FailedRegistrationRequestDelay;
                                 }
                             }
@@ -573,25 +569,21 @@ export class TabCallinfoComponent {
                         prefix: '',
                     });
 
-                    if (trans['UAC'] && trans['UAC'] !== '') {
-                        trans['ua_src'] = {
+                    trans['ua_src'] = {
                             title: 'UAC',
                             color: COLOR.yellow,
                             type: TASK_TYPE.number,
                             body: trans['UAC'],
                             prefix: '',
-                        };
-                    }
-
-                    if (trans['UAS'] && trans['UAS'] !== '') {
-                        trans['ua_dst'] = {
+                    };
+                    
+                    trans['ua_dst'] = {
                             title: 'UAS',
                             color: COLOR.yellow,
                             type: TASK_TYPE.number,
                             body: trans['UAS'],
                             prefix: '',
-                        };
-                    }
+                    };
 
                     /* metrics */
                     if (trans['RegistrationRequestDelay'] > 0) {
