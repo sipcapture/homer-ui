@@ -186,6 +186,30 @@ export class Functions {
         return color;
     }
 
+    static getColorRegistrationByStatus(status) {
+        let color = '#000';
+        if (status === 1) {
+            color = '#ea4b35';
+        } else if (status === 2) {
+            color = 'rgb(255, 51, 50)';
+        } else if (status === 3) {
+            color = '#7bd062';
+        } else if (status === 4) {
+            color = 'rgb(184, 242, 255)';
+        } else if (status === 5) {
+            color = '#44c51a';
+        } else if (status === 6) {
+            color = 'grey';
+        } else if (status === 7) {
+            color = '#FFF6BA';
+        } else if (status === 8) {
+            color = 'rgb(244, 30, 199)';
+        } else if (status === 9) {
+            color = 'rgb(244, 30, 199)';
+        }
+        return color;
+    }
+
 
     static getMethodColor (str){
         let color:string = 'hsl(0,0%,0%)'

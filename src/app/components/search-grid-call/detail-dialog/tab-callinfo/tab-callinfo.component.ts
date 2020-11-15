@@ -40,6 +40,7 @@ export class TabCallinfoComponent {
     callTransaction: Array<any> = [];
     callDataByCallid: Array<any> = [];
     rtpagentReports: any = {};
+    transactionProfile: any;
     UAC = '';
     F = Functions;
     objectKeys = Object.keys;
@@ -71,8 +72,14 @@ export class TabCallinfoComponent {
 
             if (this.callDataByCallid.hasOwnProperty(callid)) {
 
-                if (this.callDataByCallid[callid].profile = "1_call") {
+                var profile = "";
+                if (this.callDataByCallid[callid][0]) {
+                    profile = this.callDataByCallid[callid][0].profile;
+                }
 
+                if (profile == "1_call") {
+
+                    this.transactionProfile = "call";
                     const messages = this.callDataByCallid[callid];
                     const trans = {
                         SessionRequestDelay: 0,
@@ -394,6 +401,224 @@ export class TabCallinfoComponent {
 
                     this.callTransaction.push(trans);
                 }
+
+                if (profile == "1_registration") {
+
+                    this.transactionProfile = "registration";
+
+                    const messages = this.callDataByCallid[callid];
+                    const trans = {
+                        RegistrationRequestDelay: 0,
+                        FailedRegistrationRequestDelay: 0,
+                        FirstMessage: 0,
+                        CdrStartTime: 0,
+                        CdrFinishTime: 0,
+                        CdrFailedTime: 0,
+                        Duration: 0,
+                        Status: 0,
+                        LastBadReply: 0,
+                        UAC: "",
+                        UAS: "",
+                        timeRegister: 0,
+                        timeFailed: 0,
+                        timeFinish: 0,
+                        methods: {},
+                        destination_ip: "127.0.0.1",
+                        source_ip: "127.0.0.1",
+                        destination_port: 0,
+                        source_port: 0,
+                        from_user: "",
+                        to_user: "",
+                        from_domain: "",
+                        ruri_domain: "",
+                        ruri_user: "",
+                        callid: callid,
+                        task: []
+                    }
+
+                    messages.forEach((message) => {
+
+                        var reply = parseInt(message.method);
+                        var messageTime = (message.timeSeconds * 1000000 + message.timeUseconds) / 1000;
+
+                        if (!trans.methods[message.method]) {
+                            trans.methods[message.method] = 0;
+                        }
+
+                        trans.methods[message.method]++;
+
+                        if (trans.FirstMessage == 0) {
+                            trans.FirstMessage = messageTime;
+                        }
+
+                        if (message.method == "REGISTER" && trans.timeRegister == 0) {
+                            trans.timeRegister = messageTime;
+                            trans.CdrStartTime = trans.timeRegister;
+                            if (message.user_agent != "") {
+                                trans.UAC = message.user_agent;
+                            }
+                            trans.from_user = message.from_user;
+                            trans.ruri_user = message.ruri_user;
+                            trans.to_user = message.to_user;
+                            trans.source_ip = message.srcIp;
+                            trans.source_port = message.srcPort;
+                            trans.destination_port = message.dstPort;
+                            trans.destination_ip = message.dstIp;
+                            trans.from_domain = message.from_domain;
+                            trans.ruri_domain = message.ruri_domain;
+
+                            trans.Status = 1;
+                        } else if (reply >= 100 && reply < 700) {
+
+                            if (reply > 100 && reply < 200) {
+                                if (message.user_agent != "") {
+                                    trans.UAS = message.user_agent;
+                                }
+                            }
+
+                            if (reply == 200) {
+
+                                if (trans.CdrFinishTime == 0) {
+                                    trans.CdrFinishTime = messageTime;
+                                    trans.RegistrationRequestDelay = Math.round(messageTime - trans.timeRegister);
+                                    trans.Duration = trans.RegistrationRequestDelay;
+                                }
+
+                                //reset if we seen MOVE
+                                trans.Status = 3;
+                                if (message.user_agent != "") {
+                                    trans.UAS = message.user_agent;
+                                }
+                            }
+
+
+
+                            if (reply > 400 && reply < 700 && reply != 401 && reply != 407 && reply != 487
+                                && trans.FailedRegistrationRequestDelay == 0) {
+
+                                if (reply == 480) {
+                                    trans.Status = 6;
+                                }
+                                else if (reply / 100 == 4) {
+                                    trans.Status = 7;
+                                }
+                                else if (reply / 100 == 5) {
+                                    trans.Status = 8;
+                                }
+                                else if (reply / 100 == 6) {
+                                    trans.Status = 8;
+                                }
+
+                                trans.CdrFailedTime = messageTime;
+                                if (messageTime > trans.CdrStartTime) {
+                                    trans.FailedRegistrationRequestDelay = Math.round(messageTime - trans.CdrStartTime);
+                                    trans.Duration = trans.FailedRegistrationRequestDelay;
+                                }
+                            }
+
+                            if (reply == 401 || reply == 407) {
+                                trans.Status = 2;
+                            }
+
+                            if (reply > 400 && reply < 700) {
+                                trans.LastBadReply = reply;
+                            }
+                        }
+                    });
+
+                    /** tasks for each CallId */
+
+                    /* messages array */
+                    if (Object.keys(trans.methods).length > 0) {
+                        /* chart of messages */
+                        var mKeys = Object.keys(trans.methods);
+                        var mValues = mKeys.map(function (v) { return trans.methods[v] });
+                        trans.task.push({
+                            type: TASK_TYPE.chart,
+                            title: 'Methods',
+                            color: COLOR.bluelighter,
+                            data: trans.methods,
+                            /** body is chart data */
+                            label: mKeys,
+                            value: mValues
+                        });
+                    }
+
+
+                    trans.task.push({
+                        title: 'Duration',
+                        color: COLOR.orange,
+                        type: TASK_TYPE.number,
+                        body: this.secFormatter(trans['Duration']),
+                        prefix: '',
+                    });
+
+
+                    trans.task.push({
+                        title: 'Last Bad Reply',
+                        color: COLOR.redlighter,
+                        type: TASK_TYPE.number,
+                        body: trans['LastBadReply'],
+                        prefix: '',
+                    });
+
+                    trans.task.push({
+                        title: 'Status',
+                        color:
+                            Functions.getColorRegistrationByStatus(trans['Status']) ||
+                            COLOR.grey,
+                        type: TASK_TYPE.number,
+                        abs: trans['Status'],
+                        body: this.getNameRegistrationByStatus(trans['Status']),
+                        prefix: '',
+                    });
+
+                    if (trans['UAC'] && trans['UAC'] !== '') {
+                        trans['ua_src'] = {
+                            title: 'UAC',
+                            color: COLOR.yellow,
+                            type: TASK_TYPE.number,
+                            body: trans['UAC'],
+                            prefix: '',
+                        };
+                    }
+
+                    if (trans['UAS'] && trans['UAS'] !== '') {
+                        trans['ua_dst'] = {
+                            title: 'UAS',
+                            color: COLOR.yellow,
+                            type: TASK_TYPE.number,
+                            body: trans['UAS'],
+                            prefix: '',
+                        };
+                    }
+
+                    /* metrics */
+                    if (trans['RegistrationRequestDelay'] > 0) {
+                        const val = trans['RegistrationRequestDelay'];
+                        trans.task.push({
+                            title: 'Registration Request Delay',
+                            color: COLOR.grey,
+                            type: TASK_TYPE.stats,
+                            body: val,
+                            prefix: 'ms',
+                        });
+                    }
+
+                    /* metrics */
+                    if (trans['FailedRegistrationRequestDelay'] > 0) {
+                        const val = trans['FailedRegistrationRequestDelay'];
+                        trans.task.push({
+                            title: 'Failed Registration Request Delay',
+                            color: COLOR.grey,
+                            type: TASK_TYPE.stats,
+                            body: val,
+                            prefix: 'ms',
+                        });
+                    }
+
+                    this.callTransaction.push(trans);
+                }
             }
         }
     }
@@ -497,6 +722,30 @@ export class TabCallinfoComponent {
             return 'Unknown';
         }
     }
+
+
+    private getNameRegistrationByStatus(status: number) {
+        if (status === 1) {
+            return 'Init';
+        } else if (status === 2) {
+            return 'Unauthorized';
+        } else if (status === 3) {
+            return 'Registered';
+        } else if (status === 4) {
+            return 'Moved';
+        } else if (status === 5) {
+            return 'Blocked';
+        } else if (status === 6) {
+            return 'Timeout Terminated';
+        } else if (status === 7) {
+            return 'Soft Terminated';
+        } else if (status === 8) {
+            return 'Hard Terminated';
+        } else {
+            return 'Unknown';
+        }
+    }
+
     findTaskData(task, type): any {
         return task.find((f: any) => f.title === type) || { body: '' };
     }
