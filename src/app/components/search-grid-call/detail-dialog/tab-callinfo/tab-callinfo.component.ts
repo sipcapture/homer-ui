@@ -435,7 +435,7 @@ export class TabCallinfoComponent {
                     messages.forEach((message) => {
 
                         var reply = parseInt(message.method);
-                        var messageTime =  Math.round(message.timeSeconds * 1000000 + message.timeUseconds) / 1000);
+                        var messageTime =  Math.round((message.timeSeconds * 1000000 + message.timeUseconds) / 1000);
 
                         if (!trans.methods[message.method]) {
                             trans.methods[message.method] = 0;
