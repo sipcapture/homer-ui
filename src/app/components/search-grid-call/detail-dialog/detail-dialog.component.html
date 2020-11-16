@@ -49,6 +49,7 @@
     </div>
     <mat-tab-group [animationDuration]="0" (selectedIndexChange)="selectedIndexChange($event)"
         [selectedIndex]="this.tabIndexByDefault" *ngIf="_isLoaded" style="height: 100%;">
+
         <mat-tab *ngIf="_isLoaded && tabs.messages" label="Messages">
             <app-tab-messages *ngIf="activeTab === 0" [dataItem]="sipDataItem" [qosData]="qosData"
                 (messageWindow)="addWindow($event)"></app-tab-messages>
@@ -58,9 +59,11 @@
                 [dataItem]="sipDataItem"
                 [qosData]="qosData" [RTPFilterForFLOW]="RTPFilterForFLOW" (messageWindow)="addWindow($event)"></app-tab-flow>
         </mat-tab>
+
         <mat-tab label="Session Info" *ngIf="_isLoaded && tabs.callinfo">
             <app-tab-callinfo *ngIf="true || activeTab === 3" [dataItem]="sipDataItem"></app-tab-callinfo>
         </mat-tab>
+
         <mat-tab *ngIf="false || tabs.qos" label="QoS">
             <app-tab-qos [callid]="titleId" [dataItem]="sipDataItem" [qosData]="qosData" [id]="IdFromCallID"
                 (haveData)="onTabQos($event)"></app-tab-qos>

@@ -62,6 +62,7 @@ export class MenuComponent implements OnInit, OnDestroy {
     }
 
     selectedDateTimeRangeTitle: string;
+    selectedDateTimeRangeTitleValue: string;
     selectedDateTimeRange: any;
     selectedDateTimeRangeZone: string;
     currentPath: string;
@@ -112,6 +113,8 @@ export class MenuComponent implements OnInit, OnDestroy {
             if (data.updateType !== 'proto-search') {
                 if (data && data.dateTimeRange.dates) {
                     this.selectedDateTimeRangeTitle = data.dateTimeRange.title;
+                    this.selectedDateTimeRangeTitleValue  = data.dateTimeRange.title;
+
                     this.selectedDateTimeRange = (data.dateTimeRange.title)
                         || data.dateTimeRange.dates.map(i => moment(i));
                 }
@@ -126,6 +129,7 @@ export class MenuComponent implements OnInit, OnDestroy {
         if (!this.selectedDateTimeRangeZone) {
             this.selectedDateTimeRangeZone = this._dtrs.getTimezoneForQuery();
         }
+
 
         this.timepickerTimezone = this._dtrs.getTimezoneForQuery();
         moment.tz.setDefault(this.timepickerTimezone);
@@ -266,11 +270,13 @@ export class MenuComponent implements OnInit, OnDestroy {
             this.selectedDateTimeRangeTitle = this.selectedDateTimeRange.map(i => i.format('DD/MM/YYYY HH:mm:ss')).join(' - ');
         }
 
-        this._dtrs.updateDataRange({
+        this._dtrs.updateDataRange(
+            {
             title: this.selectedDateTimeRangeTitle,
             timezone: this.selectedDateTimeRangeZone,
             dates: this.selectedDateTimeRange
         });
+
         this.changeDetectorRefs.detectChanges();
     }
     onRefrasher(delay: number) {
