@@ -18,6 +18,7 @@ import { DateTimeRangeService, DateTimeTick, Timestamp } from '../../../services
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
 import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
+import { WorkerService } from '@app/services/worker.service';
 
 @Component({
     selector: 'app-influxdbchart-widget',
@@ -38,6 +39,7 @@ export class InfluxdbchartWidgetComponent implements IWidget, OnInit, OnDestroy 
     @Input() id: string;
     @Input() config: any;
     @Output() changeSettings = new EventEmitter<any> ();
+    worker: WorkerService;
 
 
     _isLoaded = false;
@@ -80,7 +82,11 @@ export class InfluxdbchartWidgetComponent implements IWidget, OnInit, OnDestroy 
         public dialog: MatDialog,
         private _dtrs: DateTimeRangeService,
         private _ss: StatisticService,
-        private cdr: ChangeDetectorRef) { }
+        private cdr: ChangeDetectorRef) {
+            console.log('constructor::new WorkerService INFLUX');
+            this.worker = new WorkerService(new Worker('@app/influx.worker', { type: 'module' }));
+            console.log(this.worker)
+        }
 
     ngOnInit() {
         WidgetArrayInstance[this.id] = this as IWidget;
@@ -112,7 +118,6 @@ export class InfluxdbchartWidgetComponent implements IWidget, OnInit, OnDestroy 
             //     id: this.id
             // });
         }
-
         this.subscription = this._dtrs.castRangeUpdateTimeout.subscribe((dtr: DateTimeTick) => {
             this.timeRange = this._dtrs.getDatesForQuery();
             this.update(this.config.chart.type.value);
@@ -144,6 +149,22 @@ export class InfluxdbchartWidgetComponent implements IWidget, OnInit, OnDestroy 
             }
         };
     }
+    async updateWorker (workerCommand) {
+        if (!this.config) {
+            return;
+        }
+        const workerData = {
+            config: this.config,
+            timeRange: this._dtrs.getDatesForQuery(),
+            timeRangeUNIX: this._dtrs.getDatesForQuery(true)
+        }
+        this.requestData = this.querybuilder(this.config);
+        const queryStack = this.querySeporetor(this.requestData);
+        this.multiDataArr = [];
+        console.log(this.worker)
+        const outData = await this.worker.getParseData({ workerCommand }, workerData);
+
+    }
     update (chartType: any) {
         if (!this.config) {
             return;
@@ -155,12 +176,18 @@ export class InfluxdbchartWidgetComponent implements IWidget, OnInit, OnDestroy 
         this.getDataByQuery(queryStack, chartType);
 
     }
-    getDataByQuery(requestList: Array<any>, chartType) {
+    async getDataByQuery(requestList: Array<any>, chartType) {
         const request = requestList.shift();
         if (requestList.length > 0 || request) {
             this._ss.getStatisticData(request).toPromise().then(
                 (res: any) => {
-                    const {columns, values, name} = res.data.Results[0].Series[0];
+                    const workerCommand = 'getData';
+                    this.worker.getParseData({workerCommand}, res).then(workerRes => {
+                            this.multiDataArr = this.multiDataArr.concat(workerRes);
+                            this.getDataByQuery(requestList, chartType);
+                        }
+                    );
+/*                     const {columns, values, name} = res.data.Results[0].Series[0];
 
                     let s = values.map(i => {
                         const o = {};
@@ -173,11 +200,7 @@ export class InfluxdbchartWidgetComponent implements IWidget, OnInit, OnDestroy 
                     s = s.map(i => {
                         i.main = name;
                         return i;
-                    });
-                    console.log('requestList', requestList);
-                    console.log('multiDataArr', this.multiDataArr)
-                    this.multiDataArr = this.multiDataArr.concat(s);
-                    this.getDataByQuery(requestList, chartType);
+                    }); */
                 },
                 err => {
                     console.error('err >> ', err);
@@ -185,7 +208,9 @@ export class InfluxdbchartWidgetComponent implements IWidget, OnInit, OnDestroy 
                     this.noChartData = true;
                 });
         } else {
-            this.multiDataArr = [].concat(...(Object.values(this.multiDataArr.reduce((a, b) => {
+            const workerCommand = 'parseData';
+            const outData = await this.worker.getParseData({ workerCommand }, this.multiDataArr); 
+/*             this.multiDataArr = [].concat(...(Object.values(this.multiDataArr.reduce((a, b) => {
                 if (!a[b.time]) {
                     a[b.time] = [];
                 }
@@ -208,8 +233,8 @@ export class InfluxdbchartWidgetComponent implements IWidget, OnInit, OnDestroy 
                     return a;
                 }, []);
             })));
-            console.log(this.multiDataArr)
-            this.renderingChart(this.multiDataArr, chartType);
+            console.log(outData) */
+            this.renderingChart(outData, chartType);
         }
     }
 
@@ -224,9 +249,16 @@ export class InfluxdbchartWidgetComponent implements IWidget, OnInit, OnDestroy 
         }
         return querys;
     }
-    renderingChart(data, chartType) {
+    async renderingChart(data, chartType) {
+        const workerCommand = 'renderingChart';
+        const outdata = await this.worker.getParseData({workerCommand}, {
+            data: data,
+            config: this.config,
+            timeRange: this.timeRange,
+            chartType: chartType
+        })
         let isFill;
-        data.sort((a, b) => a.reporttime - b.reporttime)
+        /* data.sort((a, b) => a.reporttime - b.reporttime);
         if (chartType === 'area') {
             this.chartOptions.scales.yAxes[0].stacked = true;
             isFill = true;
@@ -262,14 +294,16 @@ export class InfluxdbchartWidgetComponent implements IWidget, OnInit, OnDestroy 
                 data: value
             });
             fillKey ++;
-        });
-        setTimeout(() => {
-            if (chartType) {
-                this.chartType = chartType;
-                this._isLoaded = true;
+        }); */
+        this.chartData = outdata.chartData;
+        this.chartLabels = outdata.chartLabels;
+        this.noChartData = outdata.noChartData;
+        chartType = outdata.chartType;
+        if (chartType) {
+            this.chartType = chartType;
+            this._isLoaded = true;
             this.cdr.detectChanges();
-            }
-        }, 0);
+        }
     }
 
     openDialog(): void {
