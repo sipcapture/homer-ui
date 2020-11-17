@@ -865,7 +865,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             this.changeDetectorRefs.detectChanges();
         };
         let localDataQOS: any = null, localData: any = null;
-        console.log('start open transaction window', performance.now());
         this._cts.getTransaction(request).toPromise().then(res => {
             const allCallIds = res.data.calldata.map(i => i.sid).sort().filter((i, k, a) => a[k - 1] !== i);
             const timestampArray: Array<number> = [];
@@ -878,13 +877,11 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             this._ers.postQOS(this.searchService.queryBuilderQOS(row, allCallIds, timestamp)).toPromise().then(dataQOS => {
                 localDataQOS = dataQOS;
                 readyToOpen(localData, localDataQOS);
-                console.log('promise::postQOS', performance.now(), dataQOS);
             });
 
             localData = res;
             readyToOpen(localData, localDataQOS);
 
-            console.log('promise::getTransaction', performance.now(), localData);
         });
         this.changeDetectorRefs.detectChanges();
     }
