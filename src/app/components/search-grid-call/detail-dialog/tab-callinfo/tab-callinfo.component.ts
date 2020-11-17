@@ -68,18 +68,18 @@ export class TabCallinfoComponent {
         this.callDataByCallid = dataByCallid || [];
         this.callTransaction = [];
 
-        for (var callid in this.callDataByCallid) {
+        for (const callid in this.callDataByCallid) {
 
             if (this.callDataByCallid.hasOwnProperty(callid)) {
 
-                var profile = "";
+                let profile = '';
                 if (this.callDataByCallid[callid][0]) {
                     profile = this.callDataByCallid[callid][0].profile;
                 }
 
-                if (profile == "1_call") {
+                if (profile === '1_call') {
 
-                    this.transactionProfile = "call";
+                    this.transactionProfile = 'call';
                     const messages = this.callDataByCallid[callid];
                     const trans = {
                         SessionRequestDelay: 0,
@@ -97,8 +97,8 @@ export class TabCallinfoComponent {
                         Duration: 0,
                         Status: 0,
                         LastBadReply: 0,
-                        UAC: "Uknown",
-                        UAS: "Uknown",
+                        UAC: 'Unknown',
+                        UAS: 'Unknown',
                         timeInvite: 0,
                         timeTrying: 0,
                         timeRinging: 0,
@@ -106,25 +106,25 @@ export class TabCallinfoComponent {
                         timeCancel: 0,
                         timeBye: 0,
                         methods: {},
-                        destination_ip: "127.0.0.1",
-                        source_ip: "127.0.0.1",
+                        destination_ip: '127.0.0.1',
+                        source_ip: '127.0.0.1',
                         destination_port: 0,
                         source_port: 0,
-                        from_user: "",
-                        to_user: "",
-                        from_domain: "",
-                        ruri_domain: "",
-                        ruri_user: "",
+                        from_user: '',
+                        to_user: '',
+                        from_domain: '',
+                        ruri_domain: '',
+                        ruri_user: '',
                         callid: callid,
                         task: []
-                    }
+                    };
 
-                    var regexpCseq = new RegExp('CSeq:(.*) (INVITE|BYE|CANCEL|UPDATE)', 'g');
+                    const regexpCseq = new RegExp('CSeq:(.*) (INVITE|BYE|CANCEL|UPDATE)', 'g');
 
                     messages.forEach((message) => {
 
-                        var reply = parseInt(message.method);
-                        var messageTime =  Math.round((message.timeSeconds * 1000000 + message.timeUseconds) / 1000);
+                        const reply = parseInt(message.method, 10);
+                        const messageTime =  Math.round((message.timeSeconds * 1000000 + message.timeUseconds) / 1000);
 
                         if (!trans.methods[message.method]) {
                             trans.methods[message.method] = 0;
@@ -132,16 +132,16 @@ export class TabCallinfoComponent {
 
                         trans.methods[message.method]++;
 
-                        if (trans.FirstMessage == 0) {
+                        if (trans.FirstMessage === 0) {
                             trans.FirstMessage = messageTime;
                         }
 
                         trans.SessionDurationTime = messageTime - trans.FirstMessage;
 
-                        if (message.method == "INVITE" && trans.timeInvite == 0) {
+                        if (message.method === 'INVITE' && trans.timeInvite === 0) {
                             trans.timeInvite = messageTime;
                             trans.CdrStartTime = trans.timeInvite;
-                            if (message.user_agent != "") {
+                            if (message.user_agent !== '') {
                                 trans.UAC = message.user_agent;
                             }
                             trans.from_user = message.from_user;
@@ -155,80 +155,76 @@ export class TabCallinfoComponent {
                             trans.ruri_domain = message.ruri_domain;
 
                             trans.Status = 1;
-                        } else if (message.method == "BYE" && trans.timeBye == 0) {
+                        } else if (message.method === 'BYE' && trans.timeBye === 0) {
                             trans.timeBye = messageTime;
                             trans.CdrStopTime = trans.timeBye;
                             trans.Status = 10;
 
-                            if (trans.CdrConnectTime != 0 && trans.CdrConnectTime < trans.CdrStopTime) {
+                            if (trans.CdrConnectTime !== 0 && trans.CdrConnectTime < trans.CdrStopTime) {
                                 trans.SuccessfulSessionDurationSDT = trans.CdrStopTime - trans.CdrStartTime;
                                 trans.Duration =  Math.round(trans.SessionDurationTime / 1000);
                             }
 
-                        } else if (message.method == "CANCEL" && trans.timeCancel == 0) {
+                        } else if (message.method === 'CANCEL' && trans.timeCancel === 0) {
                             trans.timeCancel = messageTime;
                             trans.CdrStopTime = trans.timeCancel;
                             trans.Status = 11;
                         } else if (reply >= 100 && reply < 700) {
 
-                            var cSeqMethod = "UNKNOWN";
-                            var cRes = message.raw.match(regexpCseq);
+                            let cSeqMethod = 'UNKNOWN';
+                            const cRes = message.raw.match(regexpCseq);
                             if (cRes.length > 0) {
-                                var dataCseq = cRes[0].split(" ");
-                                if (dataCseq[2] && dataCseq[2] != "") {
+                                const dataCseq = cRes[0].split(' ');
+                                if (dataCseq[2] && dataCseq[2] !== '') {
                                     cSeqMethod = dataCseq[2];
                                 }
                             }
 
-                            if (trans.SessionRequestDelay == 0 && trans.timeInvite != 0) {
+                            if (trans.SessionRequestDelay === 0 && trans.timeInvite !== 0) {
                                 trans.SessionRequestDelay = messageTime - trans.timeInvite;
                             }
 
-                            if (reply > 100 && reply < 200 && trans.SuccessfulSessionSetupDelay == 0) {
+                            if (reply > 100 && reply < 200 && trans.SuccessfulSessionSetupDelay === 0) {
                                 trans.SuccessfulSessionSetupDelay = messageTime - trans.timeInvite;
-                                if (message.user_agent != "") {
+                                if (message.user_agent !== '') {
                                     trans.UAS = message.user_agent;
                                 }
                             }
 
-                            if (reply == 183) {
+                            if (reply === 183) {
                                 trans.Status = 3;
                             }
 
-                            if (reply == 180 && trans.CdrRingingTime == 0) {
+                            if (reply === 180 && trans.CdrRingingTime === 0) {
                                 trans.CdrRingingTime = messageTime;
                                 trans.Status = 4;
                             }
 
-                            if (reply == 200 && trans.CdrConnectTime == 0 && cSeqMethod == "INVITE") {
+                            if (reply === 200 && trans.CdrConnectTime === 0 && cSeqMethod === 'INVITE') {
                                 trans.CdrConnectTime = messageTime;
-                                //reset if we seen MOVE
+                                // reset if we seen MOVE
                                 trans.CdrStopTime = 0;
                                 trans.Status = 5;
-                                if (trans.CdrRingingTime != 0 && trans.CdrRingingTime < trans.CdrConnectTime) {
+                                if (trans.CdrRingingTime !== 0 && trans.CdrRingingTime < trans.CdrConnectTime) {
                                     trans.RingingTime = trans.CdrConnectTime - trans.CdrRingingTime;
                                 }
-                                if (message.user_agent != "") {
+                                if (message.user_agent !== '') {
                                     trans.UAS = message.user_agent;
                                 }
                             }
 
-                            if (reply > 400 && reply < 700 && reply != 401 && reply != 402 && reply != 407 && reply != 487
-                                && trans.FailedSessionSetupDelay == 0 && cSeqMethod == "INVITE") {
+                            if (reply > 400 && reply < 700 && reply !== 401 && reply !== 402 && reply !== 407 && reply !== 487
+                                && trans.FailedSessionSetupDelay === 0 && cSeqMethod === 'INVITE') {
 
-                                if (reply == 486) {
+                                if (reply === 486) {
                                     trans.Status = 7;
-                                }
-                                else if (reply == 480) {
+                                } else if (reply === 480) {
                                     trans.Status = 12;
-                                }
-                                else if (reply / 100 == 4) {
+                                } else if (reply / 100 === 4) {
                                     trans.Status = 8;
-                                }
-                                else if (reply / 100 == 5) {
+                                } else if (reply / 100 === 5) {
                                     trans.Status = 9;
-                                }
-                                else if (reply / 100 == 6) {
+                                } else if (reply / 100 === 6) {
                                     trans.Status = 14;
                                 }
 
@@ -238,11 +234,11 @@ export class TabCallinfoComponent {
                                 }
                             }
 
-                            if (reply == 401 || reply == 407 && cSeqMethod == "INVITE") {
+                            if (reply === 401 || reply === 407 && cSeqMethod === 'INVITE') {
                                 trans.Status = 2;
                             }
 
-                            if (reply > 300 && reply < 400 && cSeqMethod == "INVITE") {
+                            if (reply > 300 && reply < 400 && cSeqMethod === 'INVITE') {
                                 trans.Status = 6;
                                 trans.CdrStopTime = messageTime;
                             }
@@ -251,8 +247,8 @@ export class TabCallinfoComponent {
                                 trans.LastBadReply = reply;
                             }
 
-                            if (reply == 200 && trans.SessionDisconnectDelay == 0 && cSeqMethod == "BYE") {
-                                if (trans.timeBye != 0 && trans.timeBye < messageTime) {
+                            if (reply === 200 && trans.SessionDisconnectDelay === 0 && cSeqMethod === 'BYE') {
+                                if (trans.timeBye !== 0 && trans.timeBye < messageTime) {
                                     trans.SessionDisconnectDelay = messageTime - trans.timeBye;
                                 }
                                 trans.Status = 10;
@@ -265,8 +261,8 @@ export class TabCallinfoComponent {
                     /* messages array */
                     if (Object.keys(trans.methods).length > 0) {
                         /* chart of messages */
-                        var mKeys = Object.keys(trans.methods);
-                        var mValues = mKeys.map(function (v) { return trans.methods[v] });
+                        const mKeys = Object.keys(trans.methods);
+                        const mValues = mKeys.map(function (v) { return trans.methods[v]; });
                         trans.task.push({
                             type: TASK_TYPE.chart,
                             title: 'Methods',
@@ -281,7 +277,7 @@ export class TabCallinfoComponent {
 
                     if (trans['RingingTime'] && trans['RingingTime'] > 0) {
 
-                        let val = ((Date.now() * 1000 - trans['RingingTime']) / 1000000).toFixed(2);
+                        const val = ((Date.now() * 1000 - trans['RingingTime']) / 1000000).toFixed(2);
 
                         trans.task.push({
                             title: 'Ringing Time',
@@ -327,7 +323,7 @@ export class TabCallinfoComponent {
                             body: trans['UAC'],
                             prefix: '',
                     };
-                    
+
                     trans['ua_dst'] = {
                            title: 'UAS',
                             color: COLOR.yellow,
@@ -335,7 +331,7 @@ export class TabCallinfoComponent {
                             body: trans['UAS'],
                             prefix: '',
                     };
-                    
+
                     /* metrics */
                     if (trans['SessionRequestDelay'] > 0) {
                         const val = trans['SessionRequestDelay'];
@@ -398,9 +394,9 @@ export class TabCallinfoComponent {
                     this.callTransaction.push(trans);
                 }
 
-                if (profile == "1_registration") {
+                if (profile === '1_registration') {
 
-                    this.transactionProfile = "registration";
+                    this.transactionProfile = 'registration';
 
                     const messages = this.callDataByCallid[callid];
                     const trans = {
@@ -413,29 +409,29 @@ export class TabCallinfoComponent {
                         Duration: 0,
                         Status: 0,
                         LastBadReply: 0,
-                        UAC: "Uknown",
-                        UAS: "Uknown",
+                        UAC: 'Unknown',
+                        UAS: 'Unknown',
                         timeRegister: 0,
                         timeFailed: 0,
                         timeFinish: 0,
                         methods: {},
-                        destination_ip: "127.0.0.1",
-                        source_ip: "127.0.0.1",
+                        destination_ip: '127.0.0.1',
+                        source_ip: '127.0.0.1',
                         destination_port: 0,
                         source_port: 0,
-                        from_user: "",
-                        to_user: "",
-                        from_domain: "",
-                        ruri_domain: "",
-                        ruri_user: "",
+                        from_user: '',
+                        to_user: '',
+                        from_domain: '',
+                        ruri_domain: '',
+                        ruri_user: '',
                         callid: callid,
                         task: []
-                    }
+                    };
 
                     messages.forEach((message) => {
 
-                        var reply = parseInt(message.method);
-                        var messageTime =  Math.round((message.timeSeconds * 1000000 + message.timeUseconds) / 1000);
+                        const reply = parseInt(message.method, 10);
+                        const messageTime =  Math.round((message.timeSeconds * 1000000 + message.timeUseconds) / 1000);
 
                         if (!trans.methods[message.method]) {
                             trans.methods[message.method] = 0;
@@ -443,14 +439,14 @@ export class TabCallinfoComponent {
 
                         trans.methods[message.method]++;
 
-                        if (trans.FirstMessage == 0) {
+                        if (trans.FirstMessage === 0) {
                             trans.FirstMessage = messageTime;
                         }
 
-                        if (message.method == "REGISTER" && trans.timeRegister == 0) {
+                        if (message.method === 'REGISTER' && trans.timeRegister === 0) {
                             trans.timeRegister = messageTime;
                             trans.CdrStartTime = trans.timeRegister;
-                            if (message.user_agent != "") {
+                            if (message.user_agent !== '') {
                                 trans.UAC = message.user_agent;
                             }
                             trans.from_user = message.from_user;
@@ -467,41 +463,38 @@ export class TabCallinfoComponent {
                         } else if (reply >= 100 && reply < 700) {
 
                             if (reply > 100 && reply < 200) {
-                                if (message.user_agent != "") {
+                                if (message.user_agent !== '') {
                                     trans.UAS = message.user_agent;
                                 }
                             }
 
-                            if (reply == 200) {
+                            if (reply === 200) {
 
-                                if (trans.CdrFinishTime == 0) {
+                                if (trans.CdrFinishTime === 0) {
                                     trans.CdrFinishTime = messageTime;
                                     trans.RegistrationRequestDelay = messageTime - trans.timeRegister;
                                     trans.Duration = trans.RegistrationRequestDelay;
                                 }
 
-                                //reset if we seen MOVE
+                                // reset if we seen MOVE
                                 trans.Status = 3;
-                                if (message.user_agent != "") {
+                                if (message.user_agent !== '') {
                                     trans.UAS = message.user_agent;
                                 }
                             }
 
 
 
-                            if (reply > 400 && reply < 700 && reply != 401 && reply != 407 && reply != 487
-                                && trans.FailedRegistrationRequestDelay == 0) {
+                            if (reply > 400 && reply < 700 && reply !== 401 && reply !== 407 && reply !== 487
+                                && trans.FailedRegistrationRequestDelay === 0) {
 
-                                if (reply == 480) {
+                                if (reply === 480) {
                                     trans.Status = 6;
-                                }
-                                else if (reply / 100 == 4) {
+                                } else if (reply / 100 === 4) {
                                     trans.Status = 7;
-                                }
-                                else if (reply / 100 == 5) {
+                                } else if (reply / 100 === 5) {
                                     trans.Status = 8;
-                                }
-                                else if (reply / 100 == 6) {
+                                } else if (reply / 100 === 6) {
                                     trans.Status = 8;
                                 }
 
@@ -512,7 +505,7 @@ export class TabCallinfoComponent {
                                 }
                             }
 
-                            if (reply == 401 || reply == 407) {
+                            if (reply === 401 || reply === 407) {
                                 trans.Status = 2;
                             }
 
@@ -527,8 +520,8 @@ export class TabCallinfoComponent {
                     /* messages array */
                     if (Object.keys(trans.methods).length > 0) {
                         /* chart of messages */
-                        var mKeys = Object.keys(trans.methods);
-                        var mValues = mKeys.map(function (v) { return trans.methods[v] });
+                        const mKeys = Object.keys(trans.methods);
+                        const mValues = mKeys.map(function (v) { return trans.methods[v]; });
                         trans.task.push({
                             type: TASK_TYPE.chart,
                             title: 'Methods',
@@ -576,7 +569,7 @@ export class TabCallinfoComponent {
                             body: trans['UAC'],
                             prefix: '',
                     };
-                    
+
                     trans['ua_dst'] = {
                             title: 'UAS',
                             color: COLOR.yellow,

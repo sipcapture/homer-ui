@@ -25,7 +25,6 @@ export class DetailDialogComponent implements OnInit {
     @Input() set sipDataItem(val: any) {
         this._sipDataItem = val;
         this.changeDetectorRefs.detectChanges();
-        console.log('sipDataItem::', performance.now(), val);
     }
     get sipDataItem() {
         return this._sipDataItem;

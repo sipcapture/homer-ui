@@ -130,7 +130,7 @@ class InfluxProcessor {
                     const f = i => Math.pow(1024, i);
                     let n = 6;
                     while (n-- && !(f(n) < num)) {}
-                    return ((n === 0 ? num: Math.round(num / f(n)) + ('KMGTP'.split('')[n - 1])) || num.toFixed(0)) + 'b';
+                    return ((n === 0 ? num : Math.round(num / f(n)) + ('KMGTP'.split('')[n - 1])) || num.toFixed(0)) + 'b';
                 })(label);
 
         }
@@ -142,14 +142,11 @@ const ip = new InfluxProcessor();
 
 addEventListener('message', ({ data }) => {
     const { metaData, srcdata } = JSON.parse(data);
-    console.log('worker:inside', { metaData, srcdata });
     if (metaData && metaData.workerCommand) {
-        const result = ip[metaData.workerCommand](srcdata)
-        console.log('worker:inside', { result });
-
+        const result = ip[metaData.workerCommand](srcdata);
         const response = JSON.stringify(result);
         postMessage(response);
     } else {
         postMessage(JSON.stringify({ error: 'metaData.workerCommand is undefined' }));
     }
-})
+});
