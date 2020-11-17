@@ -179,7 +179,7 @@ class QosProcessor {
     public streamsRTP: Array<any> = [];
 
     public init(srcdata) {
-        console.log('{ metaData, srcdata }', { srcdata });
+        // console.log('{ metaData, srcdata }', { srcdata });
 
         try {
             this.parseRTCP(srcdata.rtcp.data);
@@ -187,13 +187,13 @@ class QosProcessor {
             // this.haveData.emit(this.qosData.rtcp.data.length > 0 || this.qosData.rtp.data.length > 0);
         } catch (err) { }
     }
-    public onChangeRTP({ item, type, base, streamsRTP }) {
-        this.streamsRTP = streamsRTP;
-        this.onChangeCheckBox(item, type, base);
+    public onChangeRTP({ streamsRTP }) {
+        this.streamsRTP = streamsRTP || [];
+        this.onChangeCheckBoxRTP();
     }
-    public onChangeRTCP({ item, type, base, streams }) {
-        this.streams = streams;
-        this.onChangeCheckBox(item, type, base);
+    public onChangeRTCP({ streams }) {
+        this.streams = streams || [];
+        this.onChangeCheckBox();
     }
 
     private parseRTP(data) {
@@ -342,7 +342,7 @@ class QosProcessor {
                 raw.sender_information &&
                 raw.sender_information.packets &&
                 raw.sender_information.octets);
-        console.log('private parseRTCP(data)', { data });
+        // console.log('private parseRTCP(data)', { data });
         data.forEach(item => {
             const i = item.raw;
             if (![200, 201, 202].includes(1 * i.type)) {
@@ -721,44 +721,15 @@ class QosProcessor {
         return (mos_val);
     }
 
-    onChangeCheckBox(item: any, type: any, base = false) {
-
-        // Removes disabled datastream
-
-        // this.streams.forEach((stream) => {
-        //     if (!stream._checked && !stream._indeterminate) {
-        //         stream.create_date.forEach(create_date => this.chartLabels =
-        //             this.chartLabels.filter(label => label !== moment(create_date).format('HH:mm:ss')));
-        //     } else if (stream._checked || stream._indeterminate) {
-        //         stream.create_date.forEach(create_date => this.chartLabels =
-        //             this.chartLabels.filter(label => label !== moment(create_date).format('HH:mm:ss')));
-
-        //         stream.create_date.forEach(create_date => this.chartLabels.push(moment(create_date).format('HH:mm:ss')));
-        //     }
-        // });
+    onChangeCheckBox() {
         const streamsCopy = this.streams.filter(lStream => lStream._checked || lStream._indeterminate);
         this.isNoDataRTCP = streamsCopy.length === 0;
 
         this.renderChartData(streamsCopy, this.chartData, true);
     }
 
-    onChangeCheckBoxRTP(item: any, type: any, base = false) {
-
+    onChangeCheckBoxRTP() {
         const streamsCopy = this.streamsRTP.filter(lStream => lStream._checked || lStream._indeterminate);
-        // Removes disabled datastream
-
-        // this.streamsRTP.forEach((stream) => {
-        //     if (!stream._checked && !stream._indeterminate) {
-        //         stream.create_date.forEach(create_date => this.chartLabelsRTP =
-        //             this.chartLabelsRTP.filter(label => label !== moment(create_date).format('HH:mm:ss')));
-        //     } else if (stream._checked || stream._indeterminate) {
-        //         stream.create_date.forEach(create_date => this.chartLabelsRTP =
-        //             this.chartLabelsRTP.filter(label => label !== moment(create_date).format('HH:mm:ss')));
-        //         stream.create_date.forEach(create_date => this.chartLabelsRTP.push(moment(create_date).format('HH:mm:ss')));
-        //     }
-        // });
-
-
         this.isNoDataRTP = streamsCopy.length === 0;
         this.renderChartData(streamsCopy, this.chartDataRTP, false);
 
@@ -769,13 +740,13 @@ const qp = new QosProcessor();
 
 addEventListener('message', ({ data }) => {
     const { metaData, srcdata } = JSON.parse(data);
-    console.log('worker:inside', { metaData, srcdata });
+    // console.log('worker:inside', { metaData, srcdata });
 
     if (metaData && metaData.workerCommand) {
 
         qp[metaData.workerCommand](srcdata);
 
-        console.log('worker:inside', { qp });
+        // console.log('worker:inside', { qp });
 
         const response = JSON.stringify(qp);
         postMessage(response);

@@ -1,0 +1,9 @@
+h1 {
+    padding: 2rem;
+    text-align: center;
+    color: grey;
+}
+table {
+    width: 100%;
+ table-layout: fixed;
+}

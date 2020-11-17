@@ -1,0 +1,110 @@
+<!-- table -->
+<div *ngIf="!callTransaction && callTransaction.length === 0">
+No Info
+</div>
+
+<div *ngFor="let trans of callTransaction">
+    <div class="panel panel-default padded">
+        <div class="panel-heading">
+            <div class="toggle-header" [ngStyle]="{ 'border-bottom': '3px solid ' + color(trans.callid, true) }"
+                (click)="toggleCallInfo(trans.callid)">
+                <div style="display: flex; align-items: center">
+                    <mat-icon style="color: #749ad6" id="{{ trans.callid + '-icon' }}">keyboard_arrow_down
+                    </mat-icon>
+                    <strong class="call-header-item">Call-ID:</strong> {{ trans.callid }}
+                </div>
+                <div class="header-data-items">
+                    <div>
+                        <strong class="call-header-item">Duration:</strong>
+                        {{ findTaskData(trans.task, "Duration")["body"] }}
+                    </div>
+                    <div>
+                        <strong class="call-header-item">Status:</strong>
+                        {{ findTaskData(trans.task, "Status")["body"] }}
+                    </div>
+                </div>
+            </div>
+            <div id="{{ trans.callid }}">
+                <div [ngStyle]="{ 'border-top': '1px solid ' + color(trans.callid, true) }" class="call-data-panel">
+                    <div *ngIf="trans['ua_src']" class="__uac"> {{ trans["ua_src"].title }} -->
+                        {{ trans["ua_dst"].title }}:
+                        <strong>{{ trans["ua_src"].body }} --> {{ trans["ua_dst"].body }}</strong>
+                    </div>
+                    <table class="call-info-data">
+                        <tr style="opacity: 0.7">
+                            <td><strong>duration</strong></td>
+                            <td colspan="2"><strong>from</strong></td>
+                            <td colspan="2"><strong>ruri</strong></td>
+                            <td colspan="2"> <strong>src ip:port</strong> </td>
+                            <td colspan="2"> <strong>dst ip:port</strong> </td>
+                        </tr>
+                        <tr>
+                            <td>{{ secFormatter(trans.Duration) }}</td>
+                            <td colspan="2"> {{ trans.from_user }}@{{trans.from_domain}} </td>
+                            <td colspan="2">
+                                {{ trans.ruri_user || trans.to_user }}@{{trans.ruri_domain || ""}}
+                            </td>
+                            <td colspan="2">
+                                {{trans.source_ip + ":" + trans.source_port }}
+                            </td>
+                            <td colspan="2">
+                                {{ trans.destination_ip  + ":" + trans.destination_port }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="task-wrapper">
+                    <ng-container *ngFor="let task of trans.task">
+                        <div class="task-item"
+                            *ngIf=" task.body !== 0 && task.body !== '' && task.abs !== 0 && task.type !== 404"
+                            [ngStyle]="{ 'background-color': task.color, 'grid-area': task.grid }"
+                            id="{{ task.title }}">
+                            <div *ngIf="task.type === 3" style="min-width: 50px">
+                                <div>{{ task.title }}</div>
+                                <div style=" height: 150px; width: 100px; display: block; ">
+                                    <!-- <div *ngFor="let item of task.data | keyvalue">
+                                        <div>{{item.key}}: <b>{{item.value}}</b></div>
+                                    </div>
+                                -->
+
+                                    <canvas baseChart [data]=" chartGetData(task, 'data') "
+                                        [labels]=" chartGetData(task, 'label') " [options]="pieChartOptions"
+                                        [legend]="false" [chartType]="pieChartType">
+                                    </canvas>
+
+                                </div>
+                            </div>
+
+                            <div *ngIf=" task.type === 1 && task.body !== 0 && task.body !== '' && task.abs !== 0 ">
+                                <div>{{ task.title }}</div>
+                                <div> <span>{{ task.body }}</span> {{ task.prefix }} </div>
+                            </div>
+                            <div *ngIf=" task.type === 6 && objectKeys(task.body).length > 0">
+                                <div>{{ task.title }}</div>
+                                <div style=" font-size: 16px; font-weight: bold; ">
+                                    <span> {{ task.body.in }} <fa-icon style=" color: #7c7c7c; font-size: 14px;"
+                                            icon="arrow-right"></fa-icon> {{ task.body.out }} </span>
+                                </div>
+                            </div>
+                            <div *ngIf="task.type === 9 && objectKeys(task.body).length > 0">
+                                <div>{{ task.title }}</div>
+                                <div style=" font-size: 16px; font-weight: bold; ">
+                                    <span> {{ task.body.in }} <fa-icon style=" color: #7c7c7c; font-size: 14px;"
+                                            icon="arrow-right"></fa-icon> {{ task.body.out }} </span>
+                                </div>
+                            </div>
+
+                            <div *ngIf="task.type === 4" [innerHTML]="task.body | html"></div>
+                            <div *ngIf="task.type === 5 && task.body !== 0 && task.body !== '' && task.abs !== 0 ">
+                                <div>{{ task.title }}</div>
+                                <div> <span>{{ task.body }}</span> {{ task.prefix }} </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <hr />
+    </div>
+</div>
