@@ -36,7 +36,9 @@ export class ErrorInterceptor implements HttpInterceptor {
 
             const error = err.error.message || err.statusText;
 
-            this.alertService.error(error);
+            if (err.error.message !== 'invalid or expired jwt') {
+                this.alertService.error(error);
+            }
 
             return throwError(error);
         }));
