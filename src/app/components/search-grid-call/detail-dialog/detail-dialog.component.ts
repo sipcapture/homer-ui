@@ -25,7 +25,6 @@ export class DetailDialogComponent implements OnInit {
     @Input() set sipDataItem(val: any) {
         this._sipDataItem = val;
         this.changeDetectorRefs.detectChanges();
-        console.log('sipDataItem::', performance.now(), val);
     }
     get sipDataItem() {
         return this._sipDataItem;
@@ -59,6 +58,7 @@ export class DetailDialogComponent implements OnInit {
     tabs = {
         messages: false,
         flow: false,
+        callinfo: true,
         qos: true,
         logs: true,
         export: false
@@ -153,6 +153,7 @@ export class DetailDialogComponent implements OnInit {
     checkStatusTabs() {
         this.tabs.logs = true; // this.dataLogs.length > 0;
         this.tabs.messages = this.tabs.flow = this.sipDataItem.data.messages.length > 0;
+        this.tabs.callinfo = this.sipDataItem.data.messages.length > 0;
         this.tabs.export = this.sipDataItem.data.messages && !!this.IdFromCallID;
         this.changeDetectorRefs.detectChanges();
     }

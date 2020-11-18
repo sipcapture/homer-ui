@@ -248,6 +248,9 @@ export class SmartInputWidgetComponent implements IWidget, OnInit, AfterViewInit
                         ) {
                             item.value = this._cache[collectionName].value;
                         }
+                    }  else if (item.hasOwnProperty('profile')) {
+                        const [f_field] = this._cache.fields.filter(i => i.name === item.field_name);
+                        item.value = f_field && f_field.value || '';
                     } else {
                         const [f_field] = this._cache.fields.filter(i => i.name === item.field_name);
                         item.value = f_field && f_field.value || '';
@@ -360,10 +363,13 @@ export class SmartInputWidgetComponent implements IWidget, OnInit, AfterViewInit
                 }
                 if (f && f.system_param) {
                     i.system_param = f.system_param;
-                }
-                if (f && f.system_param) {
                     i.mapping = f.mapping;
                 }
+                
+                if (f && f.profile) {
+                    i.profile = f.profile;
+                }
+
                 if (f && f.form_api) {
                     i.form_api = f.form_api;
                 }
@@ -444,7 +450,7 @@ export class SmartInputWidgetComponent implements IWidget, OnInit, AfterViewInit
                     } else {
                         b = false;
                     }
-                    return b && !item.hasOwnProperty('system_param');
+                    return b && !item.hasOwnProperty('system_param') && !item.hasOwnProperty('profile');
                 })
                 .map((item: any) => ({
                     name: item.field_name,
@@ -452,8 +458,7 @@ export class SmartInputWidgetComponent implements IWidget, OnInit, AfterViewInit
                     type: item.type,
                     hepid: item.hepid
                 })),
-            protocol_id: this.config.config.protocol_id.value + '_' +
-                this.config.config.protocol_profile.value // 1_call | 1_ default | 1_registration
+            protocol_id: this.config.config.protocol_id.value + '_' + this.config.config.protocol_profile.value // 1_call | 1_ default | 1_registration
         };
         if (this.onlySmartField) {
             this.searchQuery.protocol_id = JSON.parse(localStorage.getItem(ConstValue.SEARCH_QUERY)).protocol_id;
@@ -480,6 +485,10 @@ export class SmartInputWidgetComponent implements IWidget, OnInit, AfterViewInit
                         };
                     }
                 }
+            } else if ( item.value && item.value !== '' &&   item.hasOwnProperty('profile')) {
+                this.config.config.protocol_profile.value = item.value;
+                this.searchQuery['protocol_id'] = this.config.config.protocol_id.value + '_' + this.config.config.protocol_profile.value;
+                 // 1_call | 1_ default | 1_registration
             }
         });
 

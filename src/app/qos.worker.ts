@@ -179,7 +179,6 @@ class QosProcessor {
     public streamsRTP: Array<any> = [];
 
     public init(srcdata) {
-        // console.log('{ metaData, srcdata }', { srcdata });
 
         try {
             this.parseRTCP(srcdata.rtcp.data);
@@ -342,7 +341,6 @@ class QosProcessor {
                 raw.sender_information &&
                 raw.sender_information.packets &&
                 raw.sender_information.octets);
-        // console.log('private parseRTCP(data)', { data });
         data.forEach(item => {
             const i = item.raw;
             if (![200, 201, 202].includes(1 * i.type)) {
@@ -740,13 +738,10 @@ const qp = new QosProcessor();
 
 addEventListener('message', ({ data }) => {
     const { metaData, srcdata } = JSON.parse(data);
-    // console.log('worker:inside', { metaData, srcdata });
 
     if (metaData && metaData.workerCommand) {
 
         qp[metaData.workerCommand](srcdata);
-
-        // console.log('worker:inside', { qp });
 
         const response = JSON.stringify(qp);
         postMessage(response);

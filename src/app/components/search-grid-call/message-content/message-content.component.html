@@ -1,10 +1,7 @@
 <mat-tab-group class="message-container" #matTabGroup>
   <mat-tab label="Message" style="padding: 1rem;">
       <ngx-json-viewer *ngIf="raw_isJSON" [json]="raw" [expanded]="true"></ngx-json-viewer>
-      
-      <pre *ngIf="!raw_isJSON" class="pre-content">{{
-          raw
-      }}</pre>
+      <div [innerHTML]="raw | safeHtml" class="raw-json" *ngIf="!raw_isJSON"></div>
   </mat-tab>
   
   <mat-tab label="Details" style="padding: 1rem;">

@@ -1,7 +1,15 @@
 import { SettingInfluxdbchartWidgetComponent } from './setting-influxdbchart-widget.component';
 import { MatDialog } from '@angular/material/dialog';
 import { IWidget } from '../IWidget';
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
+import { Component,
+    OnInit,
+    Input,
+    Output,
+    EventEmitter,
+    OnDestroy,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef
+ } from '@angular/core';
 
 import { ChartType, ChartDataSets } from 'chart.js';
 import { Label } from 'ng2-charts';
@@ -10,11 +18,13 @@ import { DateTimeRangeService, DateTimeTick, Timestamp } from '../../../services
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
 import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
+import { WorkerService } from '@app/services/worker.service';
 
 @Component({
     selector: 'app-influxdbchart-widget',
     templateUrl: './influxdbchart-widget.component.html',
-    styleUrls: ['./influxdbchart-widget.component.scss']
+    styleUrls: ['./influxdbchart-widget.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 @Widget({
     title: 'InfluxDB',
@@ -22,13 +32,14 @@ import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
     category: 'Metrics',
     indexName: 'influxdbchart',
     className: 'InfluxdbchartWidgetComponent',
-    minHeight:300,
-    minWidth:300
+    minHeight: 300,
+    minWidth: 300
 })
-export class InfluxdbchartWidgetComponent implements IWidget {
+export class InfluxdbchartWidgetComponent implements IWidget, OnInit, OnDestroy {
     @Input() id: string;
     @Input() config: any;
     @Output() changeSettings = new EventEmitter<any> ();
+    worker: WorkerService;
 
 
     _isLoaded = false;
@@ -66,11 +77,13 @@ export class InfluxdbchartWidgetComponent implements IWidget {
     multiDataArr: Array<any> = [];
     isConfig = true;
     private subscription: Subscription;
-
     constructor(
         public dialog: MatDialog,
         private _dtrs: DateTimeRangeService,
-        private _ss: StatisticService) { }
+        private _ss: StatisticService,
+        private cdr: ChangeDetectorRef) {
+            this.worker = new WorkerService(new Worker('@app/influx.worker', { type: 'module' }));
+        }
 
     ngOnInit() {
         WidgetArrayInstance[this.id] = this as IWidget;
@@ -102,10 +115,11 @@ export class InfluxdbchartWidgetComponent implements IWidget {
             //     id: this.id
             // });
         }
-
         this.subscription = this._dtrs.castRangeUpdateTimeout.subscribe((dtr: DateTimeTick) => {
             this.timeRange = this._dtrs.getDatesForQuery();
+            const t = performance.now();
             this.update(this.config.chart.type.value);
+
         });
     }
     querybuilder (config: any) {
@@ -134,39 +148,47 @@ export class InfluxdbchartWidgetComponent implements IWidget {
             }
         };
     }
+    async updateWorker (workerCommand) {
+        if (!this.config) {
+            return;
+        }
+        const workerData = {
+            config: this.config,
+            timeRange: this._dtrs.getDatesForQuery(),
+            timeRangeUNIX: this._dtrs.getDatesForQuery(true)
+        };
+        this.requestData = this.querybuilder(this.config);
+        const queryStack = this.querySeporetor(this.requestData);
+        this.multiDataArr = [];
+        const outData = await this.worker.getParseData({ workerCommand }, workerData);
+
+    }
     update (chartType: any) {
         if (!this.config) {
             return;
         }
+        const t = performance.now();
 
         this.requestData = this.querybuilder(this.config);
         const queryStack = this.querySeporetor(this.requestData);
+
         this.multiDataArr = [];
         this.getDataByQuery(queryStack, chartType);
 
     }
-    getDataByQuery(requestList: Array<any>, chartType) {
+    async getDataByQuery(requestList: Array<any>, chartType) {
         const request = requestList.shift();
         if (requestList.length > 0 || request) {
+            const t = performance.now();
             this._ss.getStatisticData(request).toPromise().then(
                 (res: any) => {
-                    const {columns, values, name} = res.data.Results[0].Series[0];
 
-                    let s = values.map(i => {
-                        const o = {};
-                        columns.forEach((j, k) => {
-                            o[j] = i[k];
-                        });
-                        return o;
-                    });
-
-                    s = s.map(i => {
-                        i.main = name;
-                        return i;
-                    });
-
-                    this.multiDataArr = this.multiDataArr.concat(s);
-                    this.getDataByQuery(requestList, chartType);
+                    const workerCommand = 'getData';
+                    this.worker.getParseData({workerCommand}, res).then(workerRes => {
+                            this.multiDataArr = this.multiDataArr.concat(workerRes);
+                            this.getDataByQuery(requestList, chartType);
+                        }
+                    );
                 },
                 err => {
                     console.error('err >> ', err);
@@ -174,30 +196,9 @@ export class InfluxdbchartWidgetComponent implements IWidget {
                     this.noChartData = true;
                 });
         } else {
-            this.multiDataArr = [].concat(...(Object.values(this.multiDataArr.reduce((a, b) => {
-                if (!a[b.time]) {
-                    a[b.time] = [];
-                }
-                a[b.time].push(b);
-                return a;
-            }, {})).map((i: any[]) => {
-                return i.reduce((a, b) => {
-                    Object.keys(b).filter(j => j !== 'time' && j !== 'main').forEach(j => a.push({
-                        attemps: 1,
-                        countername: j,
-                        group: 0,
-                        id: 0,
-                        partid: 10,
-                        reporttime: new Date(b.time).getTime(),
-                        table: b.main,
-                        tag1: '',
-                        transaction: 'statistic',
-                        value: b[j]
-                    }));
-                    return a;
-                }, []);
-            })));
-            this.renderingChart(this.multiDataArr, chartType);
+            const workerCommand = 'parseData';
+            const outData = await this.worker.getParseData({ workerCommand }, this.multiDataArr);
+            this.renderingChart(outData, chartType);
         }
     }
 
@@ -212,54 +213,23 @@ export class InfluxdbchartWidgetComponent implements IWidget {
         }
         return querys;
     }
-    renderingChart(data, chartType) {
-        let isFill;
-
-        if (chartType === 'area') {
-            this.chartOptions.scales.yAxes[0].stacked = true;
-            isFill = true;
-            chartType = 'line';
-        } else {
-            isFill = false;
-            this.chartOptions.scales.yAxes[0].stacked = false;
-        }
-
-        this.chartLabels = [];
-        this.chartData = [];
-        this.noChartData = data.length === 0;
-
-        const formattedData = data.map(i => ({
-            label: i.table + '.' + i.countername,
-            value: i.value
-        })).reduce((a, b) => {
-            if (!a[b.label]) {
-                a[b.label] = [];
-            }
-            a[b.label].push(b.value);
-            return a;
-        }, {});
-
-        this.chartLabels = data
-            .map(item => moment(item.reporttime * 1000).format('HH:mm'))
-            .filter((i, k, a) => i !== a[k + 1]);
-
-        let fillKey = 0;
-        Object.keys(formattedData).forEach(key => {
-            const value = formattedData[key];
-            this.chartData.push({
-                fill: isFill ? ( fillKey === 0 ? 'origin' : fillKey - 1) : false,
-                label: key,
-                data: value
-            });
-            fillKey ++;
+    async renderingChart(data, chartType) {
+        const workerCommand = 'renderingChart';
+        const outdata = await this.worker.getParseData({workerCommand}, {
+            data: data,
+            config: this.config,
+            timeRange: this.timeRange,
+            chartType: chartType
         });
-
-        setTimeout(() => {
-            if (chartType) {
-                this.chartType = chartType;
-                this._isLoaded = true;
-            }
-        }, 0);
+        this.chartData = outdata.chartData;
+        this.chartLabels = outdata.chartLabels;
+        this.noChartData = outdata.noChartData;
+        chartType = outdata.chartType;
+        if (chartType) {
+            this.chartType = chartType;
+            this._isLoaded = true;
+            this.cdr.detectChanges();
+        }
     }
 
     openDialog(): void {
@@ -344,7 +314,7 @@ export class InfluxdbchartWidgetComponent implements IWidget {
                     const f = i => Math.pow(1024, i);
                     let n = 6;
                     while (n-- && !(f(n) < num)) {}
-                    return ((n === 0 ? num: Math.round(num / f(n)) + ('KMGTP'.split('')[n - 1])) || num.toFixed(0)) + 'b';
+                    return ((n === 0 ? num : Math.round(num / f(n)) + ('KMGTP'.split('')[n - 1])) || num.toFixed(0)) + 'b';
                 })(label);
 
         }

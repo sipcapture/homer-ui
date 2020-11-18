@@ -865,7 +865,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             this.changeDetectorRefs.detectChanges();
         };
         let localDataQOS: any = null, localData: any = null;
-        console.log('start open transaction window', performance.now());
         this._cts.getTransaction(request).toPromise().then(res => {
             const allCallIds = res.data.calldata.map(i => i.sid).sort().filter((i, k, a) => a[k - 1] !== i);
             const timestampArray: Array<number> = [];
@@ -878,13 +877,11 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             this._ers.postQOS(this.searchService.queryBuilderQOS(row, allCallIds, timestamp)).toPromise().then(dataQOS => {
                 localDataQOS = dataQOS;
                 readyToOpen(localData, localDataQOS);
-                console.log('promise::postQOS', performance.now(), dataQOS);
             });
 
             localData = res;
             readyToOpen(localData, localDataQOS);
 
-            console.log('promise::getTransaction', performance.now(), localData);
         });
         this.changeDetectorRefs.detectChanges();
     }
@@ -951,11 +948,11 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
             if (typeof mData.data.raw === 'undefined') {
                 mData.data.raw = {
-                    raw: mData.data.item.raw
+                    raw: Functions.stylingRowText(mData.data.item.raw)
                 };
             } else {
                 mData.data.item = {
-                    raw: mData.data.raw
+                    raw: Functions.stylingRowText(mData.data.raw)
                 };
             }
 
@@ -979,7 +976,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
             mData.data = result && result.data && result.data[0] ? result.data[0] : {};
             mData.data.item = {
-                raw: mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty'
+                raw: Functions.stylingRowText(mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty')
             };
             mData.data.messageDetailTableData = Object.keys(mData.data).map(i => {
                 let val;
