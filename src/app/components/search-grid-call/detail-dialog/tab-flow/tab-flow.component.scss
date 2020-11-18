@@ -8,6 +8,8 @@
     left: 0px;
     bottom: 0;
     right: 0px;
+    margin-top: 66px;
+    height: calc(100% - 67px);
 
     //   transition: all 0.3s ease;
     .line {
@@ -74,7 +76,11 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    height: calc(100% - 67px);
+    margin-right: 0rem;
+    height: 100%;
+
+    // overflow: hidden;
+
 }
 
 .virtual-scrollbar {
@@ -90,15 +96,23 @@
 cdk-virtual-scroll-viewport {
     // contain: none;
     // height: 800px;
-    // overflow-y: scroll;
-    // overflow-x: hidden;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+
     &.flow-packets-wrapper {
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
-        // margin: 0 50px;
-        min-height: 100%;
+        min-height: calc(100% - 66px);
 
+        // overflow: hidden !important;
+
+        /* Firefox */
         .cdk-virtual-scroll-content-wrapper {
             .item-flow-packet-container {
                 display: flex;
@@ -108,7 +122,7 @@ cdk-virtual-scroll-viewport {
                 overflow: inherit;
                 max-height: 100px;
                 opacity: 1;
-                margin: 0 33px 0 50px;
+                margin: 0 50px 0 50px;
                 // transition: all 0.3s ease;
                 // &>div {
                 //     //   transition: all 0.3s ease;
