@@ -118,6 +118,10 @@ export class DetailDialogComponent implements OnInit {
 
             this.checkboxListFilterCallId = filterByParam('sid');
             this.changeDetectorRefs.detectChanges();
+
+            setTimeout(() => {
+                this.changeDetectorRefs.detectChanges();
+            }, 35);
         }
     }
 
@@ -169,6 +173,7 @@ export class DetailDialogComponent implements OnInit {
                         title: 'RTP'
                     });
                     this.doFilterMessages();
+                    this.changeDetectorRefs.detectChanges();
                 }
             }
             this.changeDetectorRefs.detectChanges();
@@ -260,6 +265,7 @@ export class DetailDialogComponent implements OnInit {
         if (!this.sipDataItem) {
             return;
         }
+        this.changeDetectorRefs.detectChanges();
         if (this.combineType === '1none') {
             this.isCombineByAlias = false;
             this.isSimplifyPort = false;
@@ -287,7 +293,7 @@ export class DetailDialogComponent implements OnInit {
             });
 
             const RTPFilter = this.checkboxListFilterPayloadType.find(i => i.title === 'RTP');
-            this.RTPFilterForFLOW = RTPFilter ? RTPFilter.selected : true;
+            this.RTPFilterForFLOW = RTPFilter && RTPFilter.selected || false;
 
             const selectedId = this.sipDataItem.data.messages.map(i => i.id);
 

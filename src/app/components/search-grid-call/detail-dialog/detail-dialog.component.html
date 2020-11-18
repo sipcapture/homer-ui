@@ -30,16 +30,6 @@
             class="example-margin" (click)="doFilterMessages()" [(ngModel)]="checkboxItem.selected">
             {{ checkboxItem.title }}</mat-checkbox>
 
-        <!-- 
-    <div class="filter-label">Ports:</div>
-    <div style="display: flex; flex-flow: row wrap; width: 250px;">
-      <mat-checkbox color="warn" style="font-size: .8em;"
-        *ngFor="let checkboxItem of checkboxListFilterPort"
-        class="example-margin"
-        (click)="doFilterMessages()"
-        [(ngModel)]="checkboxItem.selected"
-      >{{ checkboxItem.title }}</mat-checkbox>
-    </div> -->
         <div class="filter-label">CallId:</div>
         <div style="display: flex; flex-direction: column; ">
             <mat-checkbox color="warn" style="font-size: .8em;" *ngFor="let checkboxItem of checkboxListFilterCallId"
@@ -51,7 +41,7 @@
         [selectedIndex]="this.tabIndexByDefault" *ngIf="_isLoaded" style="height: 100%;">
 
         <mat-tab *ngIf="_isLoaded && tabs.messages" label="Messages">
-            <app-tab-messages *ngIf="activeTab === 0" [dataItem]="sipDataItem" [qosData]="qosData"
+            <app-tab-messages *ngIf="activeTab === 0" [filter]="flowFilters" [dataItem]="sipDataItem" [qosData]="qosData"
                 (messageWindow)="addWindow($event)"></app-tab-messages>
         </mat-tab>
         <mat-tab *ngIf="_isLoaded && tabs.flow" label="Flow">
