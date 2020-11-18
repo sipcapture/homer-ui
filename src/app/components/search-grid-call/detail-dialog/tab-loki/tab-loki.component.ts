@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectorRef, EventEmitter, ɵConsole } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 import { DateTimeRangeService } from '@app/services/data-time-range.service';
 import { SearchRemoteService } from '@app/services';
 import { SearchService } from '@app/services';
+import { PreferenceAdvancedService } from '@app/services';
 
 @Component({
     selector: 'app-tab-loki',
@@ -23,12 +24,14 @@ export class TabLokiComponent implements OnInit {
     isFirstSearch = true;
     labels: Array<any> = [];
     lokiLabels;
+    lokiTemplate;
     dataSource: Array<any> = []
     constructor(
+        private _pas: PreferenceAdvancedService,
         private _srs: SearchRemoteService,
         private _dtrs: DateTimeRangeService,
         private searchService: SearchService,
-        private cdr : ChangeDetectorRef
+        private cdr: ChangeDetectorRef
     ) { }
 
     ngOnInit() {
@@ -38,9 +41,26 @@ export class TabLokiComponent implements OnInit {
                 a.push(b);
             }
             return a;
-        }, []).join(' | ');
+        }, []).join('|');
+        this.lokiTemplate = {
+            lineFilterOperator: '|~',
+            logStreamSelector: '{job="heplify-server"}'
+        };
+        this._pas.getAll().toPromise().then((advanced: any) => {
+            const [advancedTemplate] = advanced.data
+            .filter(i => i.category === 'search' && i.param === 'lokiserver')
+            .map(i => i.data.template);
+            if (typeof advancedTemplate !== 'undefined'
+            && (advancedTemplate.hasOwnProperty('logStreamSelector') || advancedTemplate.hasOwnProperty('lineFilterOperator'))) {
+                this.lokiTemplate = advancedTemplate;
+            }
+            if (typeof this.lokiTemplate !== 'undefined') {
+                this.queryText = `${this.lokiTemplate.logStreamSelector ? this.lokiTemplate.logStreamSelector : ''}${this.lokiTemplate.lineFilterOperator}"${labels}"`;
+                this.cdr.detectChanges();
+            }
+            this.cdr.detectChanges();
+        });
 
-        this.queryText = `{job="heplify-server"} ${labels}`;
         this.cdr.detectChanges();
     }
     async doSerchResult () {
@@ -88,7 +108,7 @@ export class TabLokiComponent implements OnInit {
     private highlight(value: string = '') {
         let data;
         if (!!this.rxText) {
-            const rxText = this.rxText.replace(/\s/g, '');
+            const rxText = this.rxText.replace(/\s|(\|=|\|~|!=|!~)|("|`)/g, '').split('|').sort((a,b) => b.length - a.length).join('|');
             const regex = new RegExp('(' + rxText + ')', 'g');
             data = value
                 .replace(/\</g, '&lt;')

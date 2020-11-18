@@ -1,124 +1,78 @@
-<app-modal-resizable 
-  [title]="'Call-ID: ' + titleId"
-  [headerColor]="headerColor"
-  (close)="onClose()" 
-  [mouseEventData]="mouseEventData"
-  [width]="1400"
-  [height]="800"
-  [minWidth]="600"
-  [minHeight]="400"
-  (browserWindow)="onBrowserWindow($event)">
-  
-  <div *ngIf="!_isLoaded" class="loading">
-      <mat-spinner></mat-spinner>
-  </div>
-  <button mat-icon-button class="button-icon-right-top"
-    (click)="doOpenFilter()"
-    [ngStyle]="{'display': (activeTab <= 1) ? 'block' : 'none'}"
-  ><mat-icon>filter_list</mat-icon></button>
-  <!-- filter -->
-  <div *ngIf="activeTab <= 1 && isFilterOpened" style="height: calc(100% - 75px);overflow-x: auto;"
-    class="button-icon-right-top filter-container"
-    #filterContainer>
-    <mat-slide-toggle style="width: 200px;font-size: .8em;" color="warn" [(ngModel)]="isSimplify">
-      Extended Format
-    </mat-slide-toggle>
-    <br *ngIf="activeTab !== 0">
+<app-modal-resizable [title]="'Call-ID: ' + titleId" [headerColor]="headerColor" (close)="onClose()"
+    [mouseEventData]="mouseEventData" [width]="1400" [height]="800" [minWidth]="600" [minHeight]="400"
+    (browserWindow)="onBrowserWindow($event)">
 
-    <mat-radio-group *ngIf="activeTab !== 0" [(ngModel)]='combineType'  class="filter-radio-group" (change)='doFilterMessages()'>
-      <mat-radio-button color="warn" class="filter-radio-button" *ngFor="let type of listCombineTypes | keyvalue" [value]="type.key">
-        {{type.value}}
-      </mat-radio-button>
-    </mat-radio-group>
-
-    <div class="filter-label">PayloadType:</div>
-    <mat-checkbox color="warn" style="font-size: .8em;"
-      *ngFor="let checkboxItem of checkboxListFilterPayloadType"
-      class="example-margin"
-      (click)="doFilterMessages()"
-      [(ngModel)]="checkboxItem.selected"
-    >{{ checkboxItem.title }}</mat-checkbox>
-
-    <!-- 
-    <div class="filter-label">Ports:</div>
-    <div style="display: flex; flex-flow: row wrap; width: 250px;">
-      <mat-checkbox color="warn" style="font-size: .8em;"
-        *ngFor="let checkboxItem of checkboxListFilterPort"
-        class="example-margin"
-        (click)="doFilterMessages()"
-        [(ngModel)]="checkboxItem.selected"
-      >{{ checkboxItem.title }}</mat-checkbox>
-    </div> -->
-    <div class="filter-label">CallId:</div>
-    <div style="display: flex; flex-direction: column; ">
-      <mat-checkbox color="warn" style="font-size: .8em;"
-        *ngFor="let checkboxItem of checkboxListFilterCallId"
-        class="example-margin"
-        (click)="doFilterMessages()"
-        [(ngModel)]="checkboxItem.selected"
-      >{{ checkboxItem.title }}</mat-checkbox>
+    <div *ngIf="!_isLoaded" class="loading">
+        <mat-spinner></mat-spinner>
     </div>
-  </div>
-  <mat-tab-group
-    (selectedIndexChange)="activeTab=$event"
-    [selectedIndex]="this.tabIndexByDefault"
-    *ngIf="_isLoaded" style="height: 100%;">
-    <mat-tab *ngIf="_isLoaded && tabs.messages" label="Messages">
-      <app-tab-messages
-        [dataItem]="sipDataItem"
-        [qosData]="qosData"
-        (messageWindow)="addWindow($event)"
-      ></app-tab-messages>
-    </mat-tab>
-    <mat-tab *ngIf="_isLoaded && tabs.flow" label="Flow">
-      <app-tab-flow
-        [isSimplify]="!isSimplify"
-        [callid]="titleId"
-        [flowFilters]="flowFilters"
-        [dataItem]="sipDataItem"
-        [qosData]="qosData"
-        [RTPFilterForFLOW]="RTPFilterForFLOW"
-        (messageWindow)="addWindow($event)"
-      ></app-tab-flow>
-    </mat-tab>
-    <mat-tab *ngIf="tabs.qos" label="QoS">
-      <app-tab-qos 
-        [callid]="titleId"
-        [dataItem]="sipDataItem"
-        [qosData]="qosData"
-        [id]="IdFromCallID"
-        (haveData)="onTabQos($event)"
-      ></app-tab-qos>
-    </mat-tab>
-    <mat-tab *ngIf="_isLoaded && tabs.logs" label="Logs">
-      <app-tab-hepsub
-        [snapShotTimeRange]="snapShotTimeRange"
-        [dataItem]="sipDataItem"
-        [callid]="titleId"
-        [dataLogs]="dataLogs"
-        [id]="IdFromCallID"
-      ></app-tab-hepsub>
-    </mat-tab>
-    <mat-tab *ngIf="_isLoaded && tabs.export" label="Export">
-      <app-tab-export
-        (exportFlowAsPNG)="onExportFlowAsPNG()"
-        [snapShotTimeRange]="snapShotTimeRange"
-        [dataItem]="sipDataItem"
-        [callid]="titleId"
-        [id]="IdFromCallID"
-      ></app-tab-export>
-      <!--  -->
-      <div style="position: relative; overflow: hidden; height: 1px; width: 1px;">
-        <div style="position: absolute;">
-          <app-tab-flow
-            [callid]="titleId"
-            [dataItem]="sipDataItem"
-            [exportAsPNG]="exportAsPNG"
-            (messageWindow)="addWindow($event)"
-          ></app-tab-flow>
+    <button mat-icon-button class="button-icon-right-top" (click)="doOpenFilter()"
+        [ngStyle]="{'display': (activeTab <= 1) ? 'block' : 'none'}">
+        <mat-icon>filter_list</mat-icon>
+    </button>
+    <!-- filter -->
+    <div *ngIf="activeTab <= 1 && isFilterOpened" style="height: calc(100% - 75px);overflow-x: auto;"
+        class="button-icon-right-top filter-container" #filterContainer>
+        <mat-slide-toggle style="width: 200px;font-size: .8em;" color="warn" [(ngModel)]="isSimplify">
+            Extended Format
+        </mat-slide-toggle>
+        <br *ngIf="activeTab !== 0">
+
+        <mat-radio-group *ngIf="activeTab !== 0" [(ngModel)]='combineType' class="filter-radio-group"
+            (change)='doFilterMessages()'>
+            <mat-radio-button color="warn" class="filter-radio-button" *ngFor="let type of listCombineTypes | keyvalue"
+                [value]="type.key">
+                {{type.value}}
+            </mat-radio-button>
+        </mat-radio-group>
+
+        <div class="filter-label">PayloadType:</div>
+        <mat-checkbox color="warn" style="font-size: .8em;" *ngFor="let checkboxItem of checkboxListFilterPayloadType"
+            class="example-margin" (click)="doFilterMessages()" [(ngModel)]="checkboxItem.selected">
+            {{ checkboxItem.title }}</mat-checkbox>
+
+        <div class="filter-label">CallId:</div>
+        <div style="display: flex; flex-direction: column; ">
+            <mat-checkbox color="warn" style="font-size: .8em;" *ngFor="let checkboxItem of checkboxListFilterCallId"
+                class="example-margin" (click)="doFilterMessages()" [(ngModel)]="checkboxItem.selected">
+                {{ checkboxItem.title }}</mat-checkbox>
         </div>
-      </div>
-    </mat-tab>
-    
-  </mat-tab-group>
+    </div>
+    <mat-tab-group [animationDuration]="0" (selectedIndexChange)="selectedIndexChange($event)"
+        [selectedIndex]="this.tabIndexByDefault" *ngIf="_isLoaded" style="height: 100%;">
+
+        <mat-tab *ngIf="_isLoaded && tabs.messages" label="Messages">
+            <app-tab-messages *ngIf="activeTab === 0" [filter]="flowFilters" [dataItem]="sipDataItem" [qosData]="qosData"
+                (messageWindow)="addWindow($event)"></app-tab-messages>
+        </mat-tab>
+        <mat-tab *ngIf="_isLoaded && tabs.flow" label="Flow">
+            <app-tab-flow *ngIf="activeTab === 1" [isSimplify]="!isSimplify" [callid]="titleId" [flowFilters]="flowFilters"
+                [dataItem]="sipDataItem"
+                [qosData]="qosData" [RTPFilterForFLOW]="RTPFilterForFLOW" (messageWindow)="addWindow($event)"></app-tab-flow>
+        </mat-tab>
+
+        <mat-tab label="Session Info" *ngIf="_isLoaded && tabs.callinfo">
+            <app-tab-callinfo *ngIf="true || activeTab === 3" [dataItem]="sipDataItem"></app-tab-callinfo>
+        </mat-tab>
+
+        <mat-tab *ngIf="false || tabs.qos" label="QoS">
+            <app-tab-qos [callid]="titleId" [dataItem]="sipDataItem" [qosData]="qosData" [id]="IdFromCallID"
+                (haveData)="onTabQos($event)"></app-tab-qos>
+        </mat-tab>
+        <mat-tab *ngIf="_isLoaded && tabs.logs" label="Logs">
+            <app-tab-hepsub [snapShotTimeRange]="snapShotTimeRange" [dataItem]="sipDataItem" [callid]="titleId"
+                [dataLogs]="dataLogs" [id]="IdFromCallID"></app-tab-hepsub>
+        </mat-tab>
+        <mat-tab *ngIf="_isLoaded && tabs.export" label="Export">
+            <app-tab-export (exportFlowAsPNG)="onExportFlowAsPNG()" [snapShotTimeRange]="snapShotTimeRange" [dataItem]="sipDataItem"
+                [callid]="titleId" [id]="IdFromCallID"></app-tab-export>
+            <!--  -->
+            <div style="position: relative; overflow: hidden; height: 1px; width: 1px;">
+                <div style="position: absolute;">
+                    <app-tab-flow [callid]="titleId" [dataItem]="sipDataItem" [exportAsPNG]="exportAsPNG"
+                        (messageWindow)="addWindow($event)"></app-tab-flow>
+                </div>
+            </div>
+        </mat-tab>
+
+    </mat-tab-group>
 </app-modal-resizable>

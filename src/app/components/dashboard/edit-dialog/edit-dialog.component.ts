@@ -12,6 +12,7 @@ export interface DashboardConfig {
     maxrows: number;
     pushing: boolean;
     ignoreMinSize: string;
+    grafanaTimestamp: boolean;
 }
 
 @Component({

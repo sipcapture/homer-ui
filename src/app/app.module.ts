@@ -93,8 +93,10 @@ import {
     ColumnMethodRenderer,
     DetailDialogComponent,
     HeaderActionRenderer,
+    MessageSafeHtmlPipe,
     MessageContentComponent,
     TabExportComponent,
+    TabCallinfoComponent,
     TabFlowComponent,
     TabHepsubComponent,
     TabLogsComponent,
@@ -117,7 +119,7 @@ import { ChartsModule } from 'ng2-charts';
 import { MarkdownModule } from 'ngx-markdown';
 import { ColorChromeModule } from 'ngx-color/chrome';
 import { ColorCircleModule } from 'ngx-color/circle';
-
+import { TableVirtualScrollModule } from 'ng-table-virtual-scroll';
 
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {
 };
@@ -154,8 +156,10 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         ColumnMethodRenderer,
         DetailDialogComponent,
         HeaderActionRenderer,
+        MessageSafeHtmlPipe,
         MessageContentComponent,
         TabExportComponent,
+        TabCallinfoComponent,
         TabFlowComponent,
         TabHepsubComponent,
         TabLogsComponent,
@@ -236,6 +240,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         MarkdownModule.forRoot(),
         ColorChromeModule,
         ColorCircleModule,
+        TableVirtualScrollModule
     ],
     entryComponents: [
         MenuComponent,

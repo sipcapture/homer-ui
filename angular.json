@@ -50,7 +50,8 @@
               "node_modules/ace-builds/src-min/worker-javascript.js",
               "node_modules/ace-builds/src-min/mode-json.js",
               "node_modules/ace-builds/src-min/worker-json.js"
-            ]
+            ],
+            "webWorkerTsConfig": "tsconfig.worker.json"
           },
           "configurations": {
             "development": {
@@ -245,7 +246,8 @@
           "options": {
             "tsConfig": [
               "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
+              "src/tsconfig.spec.json",
+              "tsconfig.worker.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -283,5 +285,8 @@
       }
     }
   },
-  "defaultProject": "homer-ui"
+  "defaultProject": "homer-ui",
+  "cli": {
+    "analytics": "dddf3fab-a9f2-435f-a2ae-3aea3ac3de78"
+  }
 }

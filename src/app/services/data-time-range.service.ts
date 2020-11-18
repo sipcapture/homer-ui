@@ -138,7 +138,6 @@ export class DateTimeRangeService {
     updateDataRange(dtr: any) {
         DateTimeRangeService.dateTimeRangr.title = dtr.title;
         DateTimeRangeService.dateTimeRangr.timezone = dtr.timezone;
-
         DateTimeRangeService.dateTimeRangr.dates = this.getRangeByLabel(dtr.title) || dtr.dates;
         this._sss.saveDateTimeRange({
             title: DateTimeRangeService.dateTimeRangr.title,

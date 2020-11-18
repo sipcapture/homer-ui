@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import * as moment from 'moment';
 import { Functions } from '@app/helpers/functions';
+import { TableVirtualScrollDataSource } from 'ng-table-virtual-scroll';
 
 export interface MesagesData {
     id: string;
@@ -28,15 +29,26 @@ export interface MesagesData {
 export class TabMessagesComponent implements OnInit {
     _dataItem: any;
     _qosData: any;
+    RTCPflag = false;
     @Input() set dataItem(val) {
         this._dataItem = val;
-        this.dataSource = Functions.messageFormatter(this._dataItem.data.messages);
+        this.dataSource = new TableVirtualScrollDataSource(Functions.messageFormatter(this._dataItem.data.messages));
+        this.cdr.detectChanges();
     }
-    get dataItem () {
+    get dataItem() {
         return this._dataItem;
     }
+    @Input() set filter(val) {
+        const { PayloadType } = val;
+        this.RTCPflag = PayloadType && (PayloadType.find(item => item.title === 'RTCP') || { selected: false }).selected || false;
+        this.initData();
+    }
     @Input() set qosData(val) {
+        if (!val) {
+            return;
+        }
         this._qosData = val.rtcp.data;
+        this.cdr.detectChanges();
     }
     get qosData() {
         return this._qosData;
@@ -45,7 +57,7 @@ export class TabMessagesComponent implements OnInit {
 
     isWindow = false;
 
-    dataSource: Array<MesagesData> = [];
+    dataSource: TableVirtualScrollDataSource<MesagesData> = new TableVirtualScrollDataSource();
     displayedColumns: string[] = [
         'id', 'create_date', 'timeSeconds', 'diff',
         'method', 'Msg_Size',
@@ -55,7 +67,7 @@ export class TabMessagesComponent implements OnInit {
     ];
 
     constructor(private cdr: ChangeDetectorRef) { }
-    getAliasByIP (ip) {
+    getAliasByIP(ip) {
         const alias = this.dataItem.data.alias;
         return alias[ip] || ip;
     }
@@ -63,13 +75,28 @@ export class TabMessagesComponent implements OnInit {
         return Functions.getMethodColor(method);
     }
     ngOnInit() {
-        if (!this.dataItem.data.messages.some(item => item.proto === 'rtcp')) {
-            this.dataItem.data.messages = this.dataItem.data.messages.concat(this.qosData);
-            this.dataItem.data.messages = this.dataItem.data.messages.sort((a, b) => {
-                return a.timeSeconds - b.timeSeconds;
-            });
+        this.initData();
+    }
+    initData() {
+        if (!this.dataItem) {
+            return;
         }
-        this.dataSource = Functions.messageFormatter(this.dataItem.data.messages);
+        if (!this.dataItem.data.messages.some(item => item.proto === 'rtcp')) {
+            if (this.RTCPflag) {
+                this.dataItem.data.messages = this.dataItem.data.messages.concat(this.qosData);
+                this.dataItem.data.messages = this.dataItem.data.messages.sort((a, b) => {
+                    return a.timeSeconds - b.timeSeconds;
+                });
+            }
+            setTimeout(() => {
+                this.cdr.detectChanges();
+            }, 35);
+        }
+        this.dataSource = new TableVirtualScrollDataSource(Functions.messageFormatter(this.dataItem.data.messages));
+        setTimeout(() => {
+            this.cdr.detectChanges();
+        }, 35);
+
     }
     onClickMessageRow(row: any, event = null) {
         row.mouseEventData = event;

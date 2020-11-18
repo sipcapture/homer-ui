@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { MatTabGroup } from '@angular/material/tabs';
 
 @Component({
@@ -15,29 +15,29 @@ export class MessageContentComponent implements OnInit, OnDestroy {
     get data() {
         return this._data;
     }
-    
-    @ViewChild('matTabGroup', {static: false}) matTabGroup: MatTabGroup;
+
+    @ViewChild('matTabGroup', { static: false }) matTabGroup: MatTabGroup;
 
     @Input('data') set data(val) {
         this._data = val;
         this.messageDetailTableData = this._data.messageDetailTableData;
         this.decoded = null;
 
-        if (this._data.decoded ) {
-                if(this._data.decoded[0]) {
-                    if (this._data.decoded[0]["_source"] && this._data.decoded[0]["_source"]["layers"]) {                                            
-                        this.decoded = this._data.decoded[0]["_source"]["layers"];
-                    } else {
-                        this.decoded = this._data.decoded[0];
-                    }
+        if (this._data.decoded) {
+            if (this._data.decoded[0]) {
+                if (this._data.decoded[0]._source && this._data.decoded[0]._source.layers) {
+                    this.decoded = this._data.decoded[0]._source.layers;
                 } else {
-                    this.decoded = this._data.decoded;
+                    this.decoded = this._data.decoded[0];
                 }
+            } else {
+                this.decoded = this._data.decoded;
+            }
         }
 
         this.raw = this._data.item.raw;
         if (typeof this.raw === 'string') {
-            try {                
+            try {
                 this.raw = JSON.parse(this.raw);
                 this.raw_isJSON = true;
             } catch (e) {
@@ -46,17 +46,21 @@ export class MessageContentComponent implements OnInit, OnDestroy {
         } else {
             this.raw_isJSON = true;
         }
+        this.changeDetectorRefs.detectChanges();
+        setTimeout(() => {
+            this.changeDetectorRefs.detectChanges();
+        }, 35);
     }
 
     messageDetailTableData: any;
-    constructor() {
-
-    }
+    constructor(private changeDetectorRefs: ChangeDetectorRef) { }
 
     ngOnInit() {
         this._interval = setInterval(() => {
             this.matTabGroup.realignInkBar();
-        }, 350)
+            this.changeDetectorRefs.detectChanges();
+        }, 350);
+        this.changeDetectorRefs.detectChanges();
     }
     ngOnDestroy() {
         if (this._interval) {

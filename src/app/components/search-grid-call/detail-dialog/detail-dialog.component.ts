@@ -20,21 +20,36 @@ import { ChangeDetectorRef } from '@angular/core';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DetailDialogComponent implements OnInit {
+    _sipDataItem: any;
     @Input() titleId: string;
-    @Input() sipDataItem: any;
+    @Input() set sipDataItem(val: any) {
+        this._sipDataItem = val;
+        this.changeDetectorRefs.detectChanges();
+    }
+    get sipDataItem() {
+        return this._sipDataItem;
+    }
+    _headerColor: string;
+    @Input()
+    set headerColor(val: string) {
+        this._headerColor = val;
+        this.changeDetectorRefs.detectChanges();
+    }
+    get headerColor(): string {
+        return this._headerColor;
+    }
 
-    @Input() headerColor: any;
     @Input() mouseEventData: any;
     @Input() snapShotTimeRange: any;
     isSimplify = true;
-    isSimplifyPort = false;
-    isCombineByAlias = true;
+    isSimplifyPort = true;
+    isCombineByAlias = false;
     IdFromCallID;
     RTPFilterForFLOW = false;
     activeTab = 0;
     isFilterOpened = false;
     isFilterOpenedOutside = false;
-    combineType = '1none';
+    combineType = '3port';
     listCombineTypes = {
         '1none': 'Ungrouped',
         '2alias': 'Group by Alias',
@@ -43,6 +58,7 @@ export class DetailDialogComponent implements OnInit {
     tabs = {
         messages: false,
         flow: false,
+        callinfo: true,
         qos: true,
         logs: true,
         export: false
@@ -76,32 +92,36 @@ export class DetailDialogComponent implements OnInit {
             this.checkStatusTabs();
 
             const filterByParam = param => Object.keys(
-                    this.sipDataItem.data.messages
-                        .map(i => i[param])
-                        .reduce((a, b) => (a[b] = 1, a), {})
-                ).map((i: any) => {
-                    const obj = {
-                        selected: true,
-                        title: (param === 'payloadType' ? Functions.methodCheck(null, 1 * i) : i)
-                    };
-                    obj[param] = i;
-                    return obj;
-                });
+                this.sipDataItem.data.messages
+                    .map(i => i[param])
+                    .reduce((a, b) => (a[b] = 1, a), {})
+            ).map((i: any) => {
+                const obj = {
+                    selected: true,
+                    title: (param === 'payloadType' ? Functions.methodCheck(null, 1 * i) : i)
+                };
+                obj[param] = i;
+                return obj;
+            });
 
             this.checkboxListFilterPayloadType = filterByParam('payloadType');
             this.setFiltersByAdvanced();
             const ports = [].concat(filterByParam('dstPort'), filterByParam('srcPort'));
             this.checkboxListFilterPort = Object.keys(ports
-                    .map(i => i.title )
-                    .reduce((a, b) => (a[b] = a[b] ? a[b] + 1 : 1, a), {})
-                ).map(i => ({
-                    selected: true,
-                    title: i,
-                    port: i
-                }));
+                .map(i => i.title)
+                .reduce((a, b) => (a[b] = a[b] ? a[b] + 1 : 1, a), {})
+            ).map(i => ({
+                selected: true,
+                title: i,
+                port: i
+            }));
 
             this.checkboxListFilterCallId = filterByParam('sid');
             this.changeDetectorRefs.detectChanges();
+
+            setTimeout(() => {
+                this.changeDetectorRefs.detectChanges();
+            }, 35);
         }
     }
 
@@ -117,7 +137,7 @@ export class DetailDialogComponent implements OnInit {
 
     @Output() openMessage: EventEmitter<any> = new EventEmitter();
     @Output() close: EventEmitter<any> = new EventEmitter();
-    @ViewChild('filterContainer', {static: false}) filterContainer: ElementRef;
+    @ViewChild('filterContainer', { static: false }) filterContainer: ElementRef;
     dataLogs: Array<any>;
 
     constructor(
@@ -125,17 +145,19 @@ export class DetailDialogComponent implements OnInit {
         private changeDetectorRefs: ChangeDetectorRef
     ) { }
 
-    ngOnInit () {
+    ngOnInit() {
         this.setTabByAdvanced();
         if (this.sipDataItem) {
             this.dataLogs = this.sipDataItem.data.messages.filter(i => !i.method).map(i => ({ payload: i }));
             setTimeout(this.checkStatusTabs.bind(this));
             this.doFilterMessages();
+            this.changeDetectorRefs.detectChanges();
         }
     }
     checkStatusTabs() {
         this.tabs.logs = true; // this.dataLogs.length > 0;
         this.tabs.messages = this.tabs.flow = this.sipDataItem.data.messages.length > 0;
+        this.tabs.callinfo = this.sipDataItem.data.messages.length > 0;
         this.tabs.export = this.sipDataItem.data.messages && !!this.IdFromCallID;
         this.changeDetectorRefs.detectChanges();
     }
@@ -154,10 +176,14 @@ export class DetailDialogComponent implements OnInit {
                     this.changeDetectorRefs.detectChanges();
                 }
             }
-        });
+            this.changeDetectorRefs.detectChanges();
+        }, 150);
+        this.tabs.qos = isVisible;
+        this.changeDetectorRefs.detectChanges();
     }
-    onClose () {
+    onClose() {
         this.close.emit();
+        this.changeDetectorRefs.detectChanges();
     }
 
     addWindow(data: any) {
@@ -174,10 +200,12 @@ export class DetailDialogComponent implements OnInit {
                 isBrowserWindow: this.isBrowserWindow
             });
         }
+        this.changeDetectorRefs.detectChanges();
     }
 
-    onBrowserWindow (event) {
+    onBrowserWindow(event) {
         this.isBrowserWindow = event;
+        this.changeDetectorRefs.detectChanges();
     }
     setFiltersByAdvanced() {
         this._pas.getAll().toPromise().then(advanced => {
@@ -189,7 +217,7 @@ export class DetailDialogComponent implements OnInit {
                     if (setting && setting[0] && setting[0].data) {
                         const filters = setting[0].data.tabfilterconfig;
                         const filterBackup = Functions.cloneObject(this.checkboxListFilterPayloadType);
-                        if (this.checkboxListFilterPayloadType.length > 1 ) {
+                        if (this.checkboxListFilterPayloadType.length > 1) {
                             this.checkboxListFilterPayloadType.forEach(filter => {
                                 filter.selected = filters[filter.title];
                             });
@@ -198,6 +226,7 @@ export class DetailDialogComponent implements OnInit {
                             this.checkboxListFilterPayloadType = filterBackup;
                         }
                         this.doFilterMessages();
+                        this.changeDetectorRefs.detectChanges();
                     }
                 } catch (err) { }
             }
@@ -230,20 +259,22 @@ export class DetailDialogComponent implements OnInit {
             this.exportAsPNG = false;
             this.changeDetectorRefs.detectChanges();
         });
+        this.changeDetectorRefs.detectChanges();
     }
     doFilterMessages() {
         if (!this.sipDataItem) {
             return;
         }
+        this.changeDetectorRefs.detectChanges();
         if (this.combineType === '1none') {
             this.isCombineByAlias = false;
-            this.isSimplifyPort   = false;
+            this.isSimplifyPort = false;
         } else if (this.combineType === '2alias') {
             this.isCombineByAlias = true;
-            this.isSimplifyPort   = true;
+            this.isSimplifyPort = true;
         } else if (this.combineType === '3port') {
             this.isCombineByAlias = false;
-            this.isSimplifyPort   = true;
+            this.isSimplifyPort = true;
         }
         setTimeout(() => {
             const fc = Functions.cloneObject;
@@ -262,7 +293,7 @@ export class DetailDialogComponent implements OnInit {
             });
 
             const RTPFilter = this.checkboxListFilterPayloadType.find(i => i.title === 'RTP');
-            this.RTPFilterForFLOW = RTPFilter ? RTPFilter.selected : true;
+            this.RTPFilterForFLOW = RTPFilter && RTPFilter.selected || false;
 
             const selectedId = this.sipDataItem.data.messages.map(i => i.id);
 
@@ -278,7 +309,10 @@ export class DetailDialogComponent implements OnInit {
             this.changeDetectorRefs.detectChanges();
         });
     }
-
+    selectedIndexChange(event) {
+        this.activeTab = event;
+        this.changeDetectorRefs.detectChanges();
+    }
     doOpenFilter() {
         setTimeout(() => {
             this.isFilterOpened = true;
