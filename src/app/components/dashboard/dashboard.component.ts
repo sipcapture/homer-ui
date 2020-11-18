@@ -455,7 +455,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
         if (WidgetArray[i].minHeight !== undefined) {
             const height = WidgetArray[i].minHeight;
-            console.log(height)
             rowAmount = Math.ceil(height / rowRes);
             size += rowAmount + ' rows ';
 
@@ -535,11 +534,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             strongIndex, title,
             output: { changeSettings: this.onChangeWidget.bind(this) }
         };
-        console.log(this.getSize(widget, true), widget);
         const widgetSize = this.getSize(widget, true);
         widget.cols = widgetSize.cols;
         widget.rows = widgetSize.rows;
-        console.log(widgetSize)
         if (!this.gridOptions.api.getNextPossiblePosition(widget)) {
             this.gridOptions.gridType = 'scrollVertical';
             this.dashboardCollection.data.config.gridType = 'scrollVertical';
