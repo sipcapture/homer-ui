@@ -15,7 +15,7 @@
 <!-- container height -->
 <div style="height: calc(100vh - 85px);">
 	<div *ngIf="isIframe">
-		<iframe [src]="iframeUrl | safe"></iframe>
+		<iframe [src]="iframeUrl | safe" style="visibility:hidden;" onload="this.style.visibility='visible';"></iframe>
 	</div>
 	<gridster *ngIf="!isIframe" [options]="gridOptions" id="gridster">
 		<gridster-item [item]="item" *ngFor="let item of dashboardArray; let i = index;" class="widget-item"
