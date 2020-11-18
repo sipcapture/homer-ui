@@ -1,5 +1,6 @@
 <!-- flow grid lines -->
-<div class="flowscreen" #flowscreen>
+<div [style.min-width.px]="pageWidth + 16" style="padding: 1px;"></div>
+<div class="flowscreen" (mousewheel)="onMouseWheel($event)" [style.min-width.px]="pageWidth + 16" #flowscreen>
     <div class="flow-grid-lines" [style.min-width.px]="pageWidth">
         <!-- wrapper -->
         <div *ngFor="let title of flowGridLines" class="line"></div>

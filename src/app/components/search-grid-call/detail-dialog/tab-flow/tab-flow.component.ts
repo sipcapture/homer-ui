@@ -517,7 +517,9 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             this.virtualScroll.scrollToOffset(scrollTop);
         }
     }
-
+    onMouseWheel(event) {
+        console.log(event);
+    }
     getVirtualScrollHeight() {
         return this.virtualScroll && this.virtualScroll.elementRef.nativeElement.scrollHeight || 10000;
     }
