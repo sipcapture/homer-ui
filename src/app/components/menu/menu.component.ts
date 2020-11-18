@@ -235,7 +235,8 @@ export class MenuComponent implements OnInit, OnDestroy {
                     config: {
                         ignoreMinSize: 'warning',
                         maxrows: 5,
-                        columns: 5
+                        columns: 5,
+                        grafanaTimestamp: true
                     }
                 };
                 if (data.dashboard) {

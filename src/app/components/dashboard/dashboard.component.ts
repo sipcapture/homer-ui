@@ -343,7 +343,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             || this.dashboardCollection.data.param === null || !this.dashboardCollection.data.config.grafanaTimestamp) {
             return;
         }
-        this.iframeUrl = [this.dashboardCollection.data.param, Object.keys(this.params).map(i => `${i}=${this.params[i]}`).join('&')].join('?');
+        const cleanedURL = this.dashboardCollection.data.param.replace(/&from=\d*/, '').replace(/&to=\d*/, '')
+        this.iframeUrl = [cleanedURL, Object.keys(this.params).map(i => `${i}=${this.params[i]}`).join('&')].join('?');
         this.cdr.detectChanges();
     }
     submitCheck() {
@@ -435,11 +436,13 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.cdr.detectChanges();
         }
     }
-    getSize(item) {
+    getSize(item, onlyNum = false): any {
         const i = WidgetArray.findIndex(widget => widget.strongIndex === item.strongIndex);
         let size = '';
         let columnRes: number;
         let rowRes: number;
+        let colAmount: number;
+        let rowAmount: number;
         const grid = document.getElementById('gridster');
         if (this.dashboardCollection.data.config !== undefined) {
                 columnRes = grid.getBoundingClientRect().width / this.dashboardCollection.data.config.columns;
@@ -447,16 +450,24 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         if (WidgetArray[i].minWidth !== undefined) {
             const width = WidgetArray[i].minWidth;
-            const colAmount = Math.ceil(width / columnRes);
+            colAmount = Math.ceil(width / columnRes);
             size += colAmount + ' columns ';
         }
         if (WidgetArray[i].minHeight !== undefined) {
             const height = WidgetArray[i].minHeight;
-            const rowAmount = Math.ceil(height / rowRes);
+            console.log(height)
+            rowAmount = Math.ceil(height / rowRes);
             size += rowAmount + ' rows ';
 
         }
-        return size;
+        if (onlyNum) {
+            return {
+                cols: colAmount,
+                rows: rowAmount
+            };
+        } else {
+            return size;
+        }
     }
     private save () {
         setTimeout(async () => await this.onDashboardSave().toPromise());
@@ -524,6 +535,11 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             strongIndex, title,
             output: { changeSettings: this.onChangeWidget.bind(this) }
         };
+        console.log(this.getSize(widget, true), widget);
+        const widgetSize = this.getSize(widget, true);
+        widget.cols = widgetSize.cols;
+        widget.rows = widgetSize.rows;
+        console.log(widgetSize)
         if (!this.gridOptions.api.getNextPossiblePosition(widget)) {
             this.gridOptions.gridType = 'scrollVertical';
             this.dashboardCollection.data.config.gridType = 'scrollVertical';
@@ -560,7 +576,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             ignoreMinSize: _d.config.ignoreMinSize || 'warning',
             gridType: _d.config.gridType || GridType.Fit,
         }});
-
         dialogRef.componentInstance.export(this.onDownloadDashboardSettings.bind(this));
 
         const data = await dialogRef.afterClosed().toPromise();
