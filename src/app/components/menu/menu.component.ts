@@ -123,6 +123,7 @@ export class MenuComponent implements OnInit, OnDestroy {
 
         if (!this.selectedDateTimeRangeTitle) {
             this.selectedDateTimeRangeTitle = 'Today';
+            this.selectedDateTimeRangeTitleValue  = 'Today';
             this.selectedDateTimeRange = this._dtrs.getRangeByLabel(this.selectedDateTimeRangeTitle);
         }
 
