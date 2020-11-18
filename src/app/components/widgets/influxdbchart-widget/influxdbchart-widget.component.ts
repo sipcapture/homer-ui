@@ -19,6 +19,7 @@ import { Subscription } from 'rxjs';
 import * as moment from 'moment';
 import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 import { WorkerService } from '@app/services/worker.service';
+import { Functions } from '@app/helpers/functions';
 
 @Component({
     selector: 'app-influxdbchart-widget',
@@ -50,6 +51,13 @@ export class InfluxdbchartWidgetComponent implements IWidget, OnInit, OnDestroy 
             duration: 0
         },
         scales: {
+            xAxes: [{
+                stacked: true,
+                ticks: {
+                    callback: this.yAxisFormatter.bind(this),
+                    beginAtZero: true
+                }
+            }],
             yAxes: [{
                 stacked: true,
                 ticks: {
@@ -228,10 +236,14 @@ export class InfluxdbchartWidgetComponent implements IWidget, OnInit, OnDestroy 
         if (chartType) {
             this.chartType = chartType;
             this._isLoaded = true;
+            this.noChartData = true;
             this.cdr.detectChanges();
+            setTimeout(() => {
+                this.noChartData = false;
+                this.cdr.detectChanges();
+            }, 0);
         }
     }
-
     openDialog(): void {
         const dialogRef = this.dialog.open(SettingInfluxdbchartWidgetComponent, {
             width: '800px',
@@ -307,13 +319,20 @@ export class InfluxdbchartWidgetComponent implements IWidget, OnInit, OnDestroy 
                     const f = i => Math.pow(1024, i);
                     let n = 4;
                     while (n-- && !(f(n) < num)) {}
+                    if (typeof num !== 'number') {
+                        return num;
+                    }
                     return (n === 0 ? num : Math.round(num / f(n)) + ('kmb'.split('')[n - 1])) || num.toFixed(2);
+
                 })(label);
             case 'bytes':
                 return ((num) => {
                     const f = i => Math.pow(1024, i);
                     let n = 6;
                     while (n-- && !(f(n) < num)) {}
+                    if (typeof num !== 'number') {
+                        return num;
+                    }
                     return ((n === 0 ? num : Math.round(num / f(n)) + ('KMGTP'.split('')[n - 1])) || num.toFixed(0)) + 'b';
                 })(label);
 
