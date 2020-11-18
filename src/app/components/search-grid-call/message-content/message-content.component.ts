@@ -47,6 +47,9 @@ export class MessageContentComponent implements OnInit, OnDestroy {
             this.raw_isJSON = true;
         }
         this.changeDetectorRefs.detectChanges();
+        setTimeout(() => {
+            this.changeDetectorRefs.detectChanges();
+        }, 35);
     }
 
     messageDetailTableData: any;
