@@ -210,7 +210,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             });
         }
         const data = this.dataItem.data;
-        const sortedArray = [].concat(
+        const sortedArray: Array<any> = [].concat(
             ...(this._RTPFilterForFLOW ? this.arrayItemsRTP_AGENT : []),
             ...data.calldata)
             .sort((itemA, itemB) => {
@@ -219,21 +219,23 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 return a < b ? -1 : a > b ? 1 : 0;
             });
 
-        const IpList = [].concat(...sortedArray.map(i => [i.srcId, i.dstId])).reduce((a, b) => {
+        const IpList: Array<any> = [].concat(...sortedArray.map(i => [i.srcId, i.dstId])).reduce((arr, b) => {
             const _ip = this._isSimplifyPort ? b.match(/\d+$|(\[.*\]|\d+\.\d+\.\d+\.\d+)/g)[0] : b;
-            if (!a.includes(_ip)) {
-                a.push(_ip);
+            if (!arr.includes(_ip)) {
+                arr.push(_ip);
             }
-            return a;
+            return arr;
         }, []);
         if (this._isSimplifyPort) {
-            const hostNoPortsArray = Object.keys(hosts).sort().map(i => i.match(/\d+$|(\[.*\]|\d+\.\d+\.\d+\.\d+)/g)).filter((i, k, a) => {
-                if (a[k - 1]) {
-                    return a[k - 1][0] !== i[0];
-                }
-                return true;
-            }).map(i => i.join(':'));
-            const filterdHostd = hostNoPortsArray.reduce((a, b) => {
+            const hostNoPortsArray: Array<any> = Object.keys(hosts).sort()
+                .map(i => i.match(/\d+$|(\[.*\]|\d+\.\d+\.\d+\.\d+)/g))
+                .filter((i, k, a) => {
+                    if (a[k - 1]) {
+                        return a[k - 1][0] !== i[0];
+                    }
+                    return true;
+                }).map(i => i.join(':'));
+            const filterdHostd: any = hostNoPortsArray.reduce((a, b) => {
                 const _ip = this._isSimplifyPort ? b.match(/\d+$|(\[.*\]|\d+\.\d+\.\d+\.\d+)/g)[0] : b;
                 a[_ip] = hosts[b];
                 return a;
@@ -271,6 +273,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 IP = al[0];
                 PORT = al[1] ? ':' + al[1] : '';
             }
+            console.log({alias}, i,alias && alias.includes(i) ? i : alias)
             return {
                 ip: i,
                 isIPv6: IP.match(/\:/g) && IP.match(/\:/g).length > 1,
@@ -284,11 +287,11 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         });
 
         let diffTs = 0;
-        this.labels = data.calldata.map(i => i.sid).reduce((a, b) => {
-            if (a.indexOf(b) === -1) {
-                a.push(b);
+        this.labels = data.calldata.map(i => i.sid).reduce((arr, b) => {
+            if (arr.indexOf(b) === -1) {
+                arr.push(b);
             }
-            return a;
+            return arr;
         }, []).map(i => {
             return {
                 color_sid: Functions.getColorByString(i, 100, 40, 1),
@@ -298,43 +301,52 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
 
         /** maping hosts Combinad aliases OR IPs */
         const positionIPs = sortedArray.map(i => this._isSimplifyPort ? [i.srcIp, i.dstIp] : [i.srcId, i.dstId])
-            .join(',').split(',').reduce((a, b) => {
-                if (a[b] === undefined) {
-                    a[b] = Object.keys(a).length;
+            .join(',').split(',').reduce((obj, b) => {
+                if (obj[b] === undefined) {
+                    obj[b] = Object.keys(obj).length;
                 }
-                return a;
+                return obj;
             }, {});
 
         /** sort hosts */
-        this.aliasTitle = Object.keys(positionIPs).reduce((a, ip) => {
-            a[positionIPs[ip]] = this.aliasTitle.find(i => i.ip === ip || i.shortIPtext1 === ip);
-            return a;
+        this.aliasTitle = Object.keys(positionIPs).reduce((arr, ip) => {
+            arr[positionIPs[ip]] = this.aliasTitle.find(i => i.ip === ip || i.shortIPtext1 === ip);
+            return arr;
         }, []);
         if (this._isCombineByAlias && this._isSimplifyPort) {
-            this.aliasTitle = this.aliasTitle.reduce((a, b) => {
+            this.aliasTitle = this.aliasTitle.reduce((arr, b) => {
                 if (b.arrip === undefined) {
                     b.arrip = [b.ip.replace(/\[|\]/g, '')];
                 }
-                const el = a.find(k => k.alias === b.alias || k.ip === b.ip);
+                const el = arr.find(k => k.alias === b.alias || k.ip === b.ip);
                 if (el) {
                     el.arrip.push(b.ip.replace(/\[|\]/g, ''));
                 } else {
-                    a.push(b);
+                    arr.push(b);
                 }
-                return a;
+                return arr;
             }, []);
         }
         const getHostPosition = (ip, port, ipId) => {
+            const isEqual = (src, ip, port) => {
+                if((ip.match(/[\:]/g) || []).length > 1) {
+                    // it's IPv6
+                    return src === ip;
+                }
+                // it's IPv4
+                ip = ip.split(':')[0];
+                return src === ip || src === `${ip}:${port}`;
+            };
             const [isC, isS] = [this._isCombineByAlias, this._isSimplifyPort];
             let num = 0;
             if (isC && isS) { // 1 1
                 num = this.aliasTitle.findIndex(i => i.arrip.includes(ip));
             } else
                 if (!isC && isS) { // 0 1
-                    num = this.aliasTitle.findIndex(i => i.IP.includes(ip));
+                    num = this.aliasTitle.findIndex(i => isEqual(i.IP, ip, port));
                 } else
                     if (!isS) { // 1 0
-                        num = this.aliasTitle.findIndex(i => (i.IP.includes(ip) && i.PORT === port + '') || i.ip === ipId);
+                        num = this.aliasTitle.findIndex(i => (isEqual(i.IP, ip, port) && i.PORT === port + '') || i.ip === ipId);
                     }
             return num;
         };
