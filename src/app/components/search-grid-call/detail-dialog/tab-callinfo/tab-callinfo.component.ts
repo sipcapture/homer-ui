@@ -124,7 +124,7 @@ export class TabCallinfoComponent {
                     messages.forEach((message) => {
 
                         const reply = parseInt(message.method, 10);
-                        const messageTime =  Math.round((message.timeSeconds * 1000000 + message.timeUseconds) / 1000);
+                        const messageTime = Math.round((message.timeSeconds * 1000000 + message.timeUseconds) / 1000);
 
                         if (!trans.methods[message.method]) {
                             trans.methods[message.method] = 0;
@@ -162,12 +162,25 @@ export class TabCallinfoComponent {
 
                             if (trans.CdrConnectTime !== 0 && trans.CdrConnectTime < trans.CdrStopTime) {
                                 trans.SuccessfulSessionDurationSDT = trans.CdrStopTime - trans.CdrStartTime;
-                                trans.Duration =  Math.round(trans.SessionDurationTime / 1000);
+                                trans.Duration = Math.round(trans.SessionDurationTime / 1000);
+                            }
+
+                            /* woraround if UAC sends BYE and not CANCEL */
+                            if (trans.CdrRingingTime !== 0 && trans.RingingTime == 0
+                                && trans.CdrRingingTime < trans.CdrStopTime) {
+                                trans.RingingTime = trans.CdrStopTime - trans.CdrRingingTime;
                             }
 
                         } else if (message.method === 'CANCEL' && trans.timeCancel === 0) {
                             trans.timeCancel = messageTime;
                             trans.CdrStopTime = trans.timeCancel;
+
+                            /* UAC sends CANCEL - stop it */
+                            if (trans.CdrRingingTime !== 0 && trans.RingingTime == 0
+                                && trans.CdrRingingTime < trans.CdrStopTime) {
+                                trans.RingingTime = trans.CdrStopTime - trans.CdrRingingTime;
+                            }
+
                             trans.Status = 11;
                         } else if (reply >= 100 && reply < 700) {
 
@@ -232,6 +245,12 @@ export class TabCallinfoComponent {
                                 if (messageTime > trans.CdrStartTime) {
                                     trans.FailedSessionSetupDelay = messageTime - trans.CdrStartTime;
                                 }
+
+                                /* UAS sends 4XX - 6XX - stop ringing */
+                                if (trans.CdrRingingTime !== 0 && trans.RingingTime == 0
+                                    && trans.CdrRingingTime < trans.CdrStopTime) {
+                                    trans.RingingTime = trans.CdrStopTime - trans.CdrRingingTime;
+                                }
                             }
 
                             if (reply === 401 || reply === 407 && cSeqMethod === 'INVITE') {
@@ -241,6 +260,11 @@ export class TabCallinfoComponent {
                             if (reply > 300 && reply < 400 && cSeqMethod === 'INVITE') {
                                 trans.Status = 6;
                                 trans.CdrStopTime = messageTime;
+
+                                if (trans.CdrRingingTime !== 0 && trans.RingingTime == 0
+                                    && trans.CdrRingingTime < trans.CdrStopTime) {
+                                    trans.RingingTime = trans.CdrStopTime - trans.CdrRingingTime;
+                                }
                             }
 
                             if (reply > 400 && reply < 700) {
@@ -316,20 +340,20 @@ export class TabCallinfoComponent {
                         prefix: '',
                     });
 
-                     trans['ua_src'] = {
-                            title: 'UAC',
-                            color: COLOR.yellow,
-                            type: TASK_TYPE.number,
-                            body: trans['UAC'],
-                            prefix: '',
+                    trans['ua_src'] = {
+                        title: 'UAC',
+                        color: COLOR.yellow,
+                        type: TASK_TYPE.number,
+                        body: trans['UAC'],
+                        prefix: '',
                     };
 
                     trans['ua_dst'] = {
-                           title: 'UAS',
-                            color: COLOR.yellow,
-                            type: TASK_TYPE.number,
-                            body: trans['UAS'],
-                            prefix: '',
+                        title: 'UAS',
+                        color: COLOR.yellow,
+                        type: TASK_TYPE.number,
+                        body: trans['UAS'],
+                        prefix: '',
                     };
 
                     /* metrics */
@@ -431,7 +455,7 @@ export class TabCallinfoComponent {
                     messages.forEach((message) => {
 
                         const reply = parseInt(message.method, 10);
-                        const messageTime =  Math.round((message.timeSeconds * 1000000 + message.timeUseconds) / 1000);
+                        const messageTime = Math.round((message.timeSeconds * 1000000 + message.timeUseconds) / 1000);
 
                         if (!trans.methods[message.method]) {
                             trans.methods[message.method] = 0;
@@ -563,19 +587,19 @@ export class TabCallinfoComponent {
                     });
 
                     trans['ua_src'] = {
-                            title: 'UAC',
-                            color: COLOR.yellow,
-                            type: TASK_TYPE.number,
-                            body: trans['UAC'],
-                            prefix: '',
+                        title: 'UAC',
+                        color: COLOR.yellow,
+                        type: TASK_TYPE.number,
+                        body: trans['UAC'],
+                        prefix: '',
                     };
 
                     trans['ua_dst'] = {
-                            title: 'UAS',
-                            color: COLOR.yellow,
-                            type: TASK_TYPE.number,
-                            body: trans['UAS'],
-                            prefix: '',
+                        title: 'UAS',
+                        color: COLOR.yellow,
+                        type: TASK_TYPE.number,
+                        body: trans['UAS'],
+                        prefix: '',
                     };
 
                     /* metrics */
