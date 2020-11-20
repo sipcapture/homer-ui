@@ -25,6 +25,7 @@ export class TabLokiComponent implements OnInit {
     labels: Array<any> = [];
     lokiLabels;
     lokiTemplate;
+    lokiLimit;
     dataSource: Array<any> = []
     constructor(
         private _pas: PreferenceAdvancedService,
@@ -47,9 +48,10 @@ export class TabLokiComponent implements OnInit {
             logStreamSelector: '{job="heplify-server"}'
         };
         this._pas.getAll().toPromise().then((advanced: any) => {
-            const [advancedTemplate] = advanced.data
+            const loki = advanced.data
             .filter(i => i.category === 'search' && i.param === 'lokiserver')
-            .map(i => i.data.template);
+            const [advancedTemplate] = loki.map(i => i.data.template);
+            [this.lokiLimit] = loki.map(i => i.data.limit)
             if (typeof advancedTemplate !== 'undefined'
             && (advancedTemplate.hasOwnProperty('logStreamSelector') || advancedTemplate.hasOwnProperty('lineFilterOperator'))) {
                 this.lokiTemplate = advancedTemplate;
@@ -82,7 +84,11 @@ export class TabLokiComponent implements OnInit {
     }
     onUpdateData (event) {
         this.queryObject = event;
-        this.queryObject.limit = 100;
+        if (typeof this.lokiLimit !== 'undefined' && this.lokiLimit !== null && this.lokiLimit > 0) {
+            this.queryObject.limit = this.lokiLimit;
+        } else {
+            this.queryObject.limit = 100;
+        }
         this.cdr.detectChanges();
     }
     queryBuilder() { /** depricated, need use {SearchService} */
