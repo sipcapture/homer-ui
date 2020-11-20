@@ -219,7 +219,8 @@ export class TabCallinfoComponent {
                                 // reset if we seen MOVE
                                 trans.CdrStopTime = 0;
                                 trans.Status = 5;
-                                if (trans.CdrRingingTime !== 0 && trans.CdrRingingTime < trans.CdrConnectTime) {
+                                if (trans.CdrRingingTime !== 0 && trans.RingingTime == 0 
+                                    && trans.CdrRingingTime < trans.CdrConnectTime) {
                                     trans.RingingTime = trans.CdrConnectTime - trans.CdrRingingTime;
                                 }
                                 if (message.user_agent !== '') {
