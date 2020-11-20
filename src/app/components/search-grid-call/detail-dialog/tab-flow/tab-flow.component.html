@@ -1,6 +1,6 @@
 <!-- flow grid lines -->
 <div [style.min-width.px]="pageWidth + 16" style="padding: 1px;"></div>
-<div class="flowscreen" (mousewheel)="onMouseWheel($event)" [style.min-width.px]="pageWidth + 16" #flowscreen>
+<div class="flowscreen" [style.min-width.px]="pageWidth + 16" #flowscreen>
     <div class="flow-grid-lines" [style.min-width.px]="pageWidth">
         <!-- wrapper -->
         <div *ngFor="let title of flowGridLines" class="line"></div>
@@ -44,8 +44,9 @@
     <!-- flow packets -->
 
     <!-- <div class="flow-packets-wrapper" [style.height.px]="flowscreen"> -->
-    <cdk-virtual-scroll-viewport itemSize="77" class="flow-packets-wrapper" auditTimeInMs="2"
-        [style.min-width.px]="pageWidth + 100" (scroll)="onScroll($event)" #virtualScroll>
+    <cdk-virtual-scroll-viewport [itemSize]="isSimplify ? 44 : 77" minBufferPx="50" maxBufferPx="400"
+        class="flow-packets-wrapper" auditTimeInMs="2" [style.min-width.px]="pageWidth + 100" (scroll)="onScroll($event)"
+        (mouseover)="setScrollTarget('virtualScroll')" #virtualScroll>
         <!-- [style.min-width.px]="(isSimplify ? 150 : 200) * (flowGridLines.length)" -->
         <div *cdkVirtualFor="let item of arrayItems; let idx = index" class="item-flow-packet-container">
             <div class="bg-color-polygon" [style.background-color]="item.options.color"></div>
@@ -94,7 +95,7 @@
             </div>
             <div [ngStyle]="{'flex': item.options.rightEnd || 0.0000001 }"></div> <!-- right space -->
         </div>
-        <div style="height: 80px;"></div>
+        <div style="height: 40px;"></div>
     </cdk-virtual-scroll-viewport>
     <!-- </div> -->
 </div>
@@ -108,6 +109,7 @@
     <img #canvas>
     <a #downloadLink></a>
 </div>
-<div class="virtual-scrollbar" (scroll)="onScroll($event)" #virtualScrollbar>
-    <div [style.transform]="'translateY(' + getVirtualScrollHeight() + 'px)'" [style.padding.px]="1"></div>
+<div class="virtual-scrollbar" (mousedown)="setScrollTarget('virtualScrollbar')" (scroll)="onScroll($event)"
+    #virtualScrollbar>
+    <div [style.transform]="getVirtualScrollHeight" [style.padding.px]="1"></div>
 </div>
