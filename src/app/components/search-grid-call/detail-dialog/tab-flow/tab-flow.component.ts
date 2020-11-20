@@ -66,6 +66,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     color_sid: string;
     labels: Array<any> = [];
     private scrollFlag = 0;
+    private ScrollTarget: string;
     @Input() set flowFilters(filters: any) {
         if (!filters) {
             return;
@@ -273,7 +274,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 IP = al[0];
                 PORT = al[1] ? ':' + al[1] : '';
             }
-            console.log({alias}, i,alias && alias.includes(i) ? i : alias)
+
             return {
                 ip: i,
                 isIPv6: IP.match(/\:/g) && IP.match(/\:/g).length > 1,
@@ -329,7 +330,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         }
         const getHostPosition = (ip, port, ipId) => {
             const isEqual = (src, ip, port) => {
-                if((ip.match(/[\:]/g) || []).length > 1) {
+                if ((ip.match(/[\:]/g) || []).length > 1) {
                     // it's IPv6
                     return src === ip;
                 }
@@ -518,21 +519,20 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
     onScroll({ target: { scrollTop } }) {
-        this.scrollFlag++;
-        this.scrollFlag = this.scrollFlag % 2;
-        if (!this.scrollFlag) {
-            return false;
-        }
-        if (this.virtualScrollbar.nativeElement.scrollTop !== scrollTop) {
-            this.virtualScrollbar.nativeElement.scrollTop = scrollTop;
-        } else {
+        if (this.ScrollTarget === 'virtualScrollbar') {
             this.virtualScroll.scrollToOffset(scrollTop);
+            return;
+        }
+        if (this.ScrollTarget === 'virtualScroll') {
+            this.virtualScrollbar.nativeElement.scrollTop = scrollTop;
+            return;
         }
     }
-    onMouseWheel(event) {
-        console.log(event);
+    get getVirtualScrollHeight(): string {
+        const _h = Math.floor((this.virtualScroll && this.virtualScroll.elementRef.nativeElement.scrollHeight || 1) + 80);
+        return `translateY(${_h}px)`;
     }
-    getVirtualScrollHeight() {
-        return this.virtualScroll && this.virtualScroll.elementRef.nativeElement.scrollHeight || 10000;
+    setScrollTarget(targetString: string) {
+        this.ScrollTarget = targetString;
     }
 }
