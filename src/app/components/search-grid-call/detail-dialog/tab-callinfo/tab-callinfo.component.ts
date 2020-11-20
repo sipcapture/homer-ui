@@ -81,6 +81,7 @@ export class TabCallinfoComponent {
 
                     this.transactionProfile = 'call';
                     const messages = this.callDataByCallid[callid];
+
                     const trans = {
                         SessionRequestDelay: 0,
                         SuccessfulSessionSetupDelay: 0,
@@ -186,7 +187,7 @@ export class TabCallinfoComponent {
 
                             let cSeqMethod = 'UNKNOWN';
                             const cRes = message.raw.match(regexpCseq);
-                            if (cRes.length > 0) {
+                            if (cRes && cRes.length > 0) {
                                 const dataCseq = cRes[0].split(' ');
                                 if (dataCseq[2] && dataCseq[2] !== '') {
                                     cSeqMethod = dataCseq[2];
