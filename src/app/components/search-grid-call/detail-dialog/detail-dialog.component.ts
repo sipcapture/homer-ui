@@ -53,7 +53,7 @@ export class DetailDialogComponent implements OnInit {
     listCombineTypes = {
         '1none': 'Ungrouped',
         '2alias': 'Group by Alias',
-        '3port': 'Group Ports'
+        '3port': 'Group by Ports'
     };
     tabs = {
         messages: false,
