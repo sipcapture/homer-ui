@@ -90,6 +90,7 @@ export class TabCallinfoComponent {
                         SessionDurationTime: 0,
                         SuccessfulSessionDurationSDT: 0,
                         FirstMessage: 0,
+                        LastMessage: 0,
                         CdrStartTime: 0,
                         CdrStopTime: 0,
                         CdrConnectTime: 0,
@@ -120,7 +121,7 @@ export class TabCallinfoComponent {
                         task: []
                     };
 
-                    const regexpCseq = new RegExp('CSeq:(.*) (INVITE|BYE|CANCEL|UPDATE)', 'g');
+                    const regexpCseq = new RegExp('CSeq:(.*) (INVITE|BYE|CANCEL|UPDATE|PRACK)', 'g');
 
                     messages.forEach((message) => {
 
@@ -133,11 +134,15 @@ export class TabCallinfoComponent {
 
                         trans.methods[message.method]++;
 
-                        if (trans.FirstMessage === 0) {
+                        if (trans.FirstMessage == 0 || trans.FirstMessage > messageTime) {
                             trans.FirstMessage = messageTime;
                         }
 
-                        trans.SessionDurationTime = messageTime - trans.FirstMessage;
+                        if (trans.LastMessage < messageTime) {
+                            trans.LastMessage = messageTime;
+                        }
+
+                        trans.SessionDurationTime = trans.LastMessage - trans.FirstMessage;
 
                         if (message.method === 'INVITE' && trans.timeInvite === 0) {
                             trans.timeInvite = messageTime;
@@ -303,7 +308,7 @@ export class TabCallinfoComponent {
 
                     if (trans['RingingTime'] && trans['RingingTime'] > 0) {
 
-                        const val = ((Date.now() * 1000 - trans['RingingTime']) / 1000000).toFixed(2);
+                        const val = (trans['RingingTime'] / 1000).toFixed(2);
 
                         trans.task.push({
                             title: 'Ringing Time',
@@ -315,7 +320,7 @@ export class TabCallinfoComponent {
                     }
 
                     trans.task.push({
-                        title: 'Duration',
+                        title: 'Talk Duration',
                         color: COLOR.orange,
                         type: TASK_TYPE.number,
                         body: this.secFormatter(trans['Duration']),
@@ -407,13 +412,14 @@ export class TabCallinfoComponent {
                     }
                     /* metrics */
                     if (trans['SessionDurationTime'] > 0) {
-                        const val = trans['SessionDurationTime'];
+                        const val = (trans['SessionDurationTime'] / 1000).toFixed(2);
+
                         trans.task.push({
                             title: 'Session Duration Time',
                             color: COLOR.grey,
                             type: TASK_TYPE.stats,
                             body: val,
-                            prefix: 'ms',
+                            prefix: 'sec',
                         });
                     }
 
