@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
@@ -7,6 +7,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
     styleUrls: ['./dialog-user-settings.component.scss']
 })
 export class DialogUserSettingsComponent {
+    @ViewChild('data_view', {static: false}) editor;
+    isDisabled = false;
 
     constructor(
         public dialogRef: MatDialogRef<DialogUserSettingsComponent>,
@@ -27,6 +29,13 @@ export class DialogUserSettingsComponent {
                 data.data.data :
                 JSON.stringify(data.data.data, null, 4)
             );
+    }
+    validate() {
+        if (this.editor.getEditor().getSession().getAnnotations().length > 0) {
+            this.isDisabled = true;
+        } else {
+            this.isDisabled = false;
+        }
     }
 
     onNoClick(): void {
