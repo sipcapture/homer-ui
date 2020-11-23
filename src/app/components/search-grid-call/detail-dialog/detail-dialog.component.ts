@@ -255,11 +255,11 @@ export class DetailDialogComponent implements OnInit {
 
     onExportFlowAsPNG() {
         this.exportAsPNG = true;
+        this.changeDetectorRefs.detectChanges();
         setTimeout(() => {
-            this.exportAsPNG = false;
+            // this.exportAsPNG = false;
             this.changeDetectorRefs.detectChanges();
         });
-        this.changeDetectorRefs.detectChanges();
     }
     doFilterMessages() {
         if (!this.sipDataItem) {
