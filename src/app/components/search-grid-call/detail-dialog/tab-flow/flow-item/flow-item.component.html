@@ -1,0 +1,47 @@
+<div class="item-flow-packet-container">
+    <div class="bg-color-polygon" [style.background-color]="item.options.color"></div>
+    <!-- background-color -->
+
+    <div [style.flex]="item.options.start || 0.0000001"></div> <!-- left space -->
+    <div [ngStyle]="{
+                    'flex': item.options.middle || 0.0000001,
+                    'text-align': item.options.direction ? 'right' : 'left'
+                }" class="item-flow-packet" (click)="onClickItem(item, $event)">
+        <!-- content -->
+        <div class="call_text" [style.color]=" item.color_method ? item.color_method : 'initial' "> {{
+                        item.method_text 
+                    }} <span *ngIf="item.QOS" [ngClass]="item.options.mosColor"></span> {{
+                    item.QOS ? item.QOS.MOS + ' [' + item.QOS.qosTYPEless + ']' : ''
+                }} </div>
+        <div class="call_text-mini" [ngStyle]="{'height.px': !isSimplify ? 15 : 0,'max-width.px':isSimplify ? 150 : ''}"
+            [ngClass]="!item.options.direction ? 'left' : 'right'" title="{{item.ruri_user}}">
+            {{ item.ruri_user }}</div>
+        <div [ngClass]="'port-label-' + (!item.options.direction ? 'left' : 'right')">{{ item.srcPort }}
+        </div>
+        <!-- ARROW line -->
+        <div *ngIf="!item.options.isRedialArrow"
+            [ngClass]="'arrow' + (item.options.direction ? ' left': '') + (!item.options.arrowStyleSolid ? ' arrow-solid' : ' arrow-dotted')"
+            [style.color]="item.options.color"></div>
+        <!-- ARROW redial -->
+        <div *ngIf="item.options.isRedialArrow"
+            [ngClass]="'redial-arrow' + (item.options.arrowStyleSolid ? ' rtp' : '')"
+            [style.color]="item.options.color"></div>
+
+        <div [ngClass]="'port-label-' + (item.options.direction ? 'left' : 'right')"
+            [ngStyle]="item.options.isRedialArrow && {'left.px' : -47 }">{{ item.dstPort }}</div>
+        <span *ngIf='!item.options.isRedialArrow; else elseBlock'>
+            <div class="call-text-date" [ngStyle]="{'maxHeight.px': !isSimplify ? 50 : 0}">
+                [{{ idx + 1 }}][{{ item.proto | uppercase }}] {{ item.micro_ts }}</div>
+            <div class="call-text-date">+ {{ item.diffTs }} s</div>
+        </span>
+        <ng-template #elseBlock>
+            <div class="call-text-date" [ngStyle]="{'maxHeight.px': (!isSimplify ? 50 : 0)}">
+                [{{ idx + 1 }}][{{ item.proto | uppercase }}] {{ item.micro_ts }} + {{ item.diffTs }} s
+            </div>
+            <div class="call-text-date"
+                [ngStyle]="{'display': (!isSimplify ? 'none' : 'block'),'text-align': 'center'}"> +
+                {{ item.diffTs }} s </div>
+        </ng-template>
+    </div>
+    <div [ngStyle]="{'flex': item.options.rightEnd || 0.0000001 }"></div> <!-- right space -->
+</div>
