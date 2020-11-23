@@ -198,6 +198,9 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, AfterViewIni
                         ) {
                             item.value = this._cache[collectionName].value;
                         }
+                    }  else if (item.hasOwnProperty('profile')) {
+                            const [f_field] = this._cache.fields.filter(i => i.name === item.field_name);
+                            item.value = f_field && f_field.value || '';
                     } else {
                         const [f_field] = this._cache.fields.filter(i => i.name === item.field_name);
                         item.value = f_field && f_field.value || '';
@@ -310,10 +313,13 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, AfterViewIni
                 }
                 if (f && f.system_param) {
                     i.system_param = f.system_param;
-                }
-                if (f && f.system_param) {
                     i.mapping = f.mapping;
                 }
+
+                if (f && f.profile) {
+                    i.profile = f.profile;
+                }
+
                 if (f && f.form_api) {
                     i.form_api = f.form_api;
                 }
@@ -392,7 +398,7 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, AfterViewIni
                     } else {
                         b = false;
                     }
-                    return b && !item.hasOwnProperty('system_param');
+                    return b && !item.hasOwnProperty('system_param') && !item.hasOwnProperty('profile');
                 })
                 .map((item: any) => ({
                     name: item.field_name,
@@ -400,8 +406,8 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, AfterViewIni
                     type: item.type,
                     hepid: item.hepid
                 })),
-            protocol_id: this.config.config.protocol_id.value + '_' +
-                this.config.config.protocol_profile.value // 1_call | 1_ default | 1_registration
+            protocol_id: this.config.config.protocol_id.value + '_' + this.config.config.protocol_profile.value
+             // 1_call | 1_ default | 1_registration
         };
 
         /* system params */
@@ -426,6 +432,10 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, AfterViewIni
                         };
                     }
                 }
+            } else if ( item.value && item.value !== '' &&   item.hasOwnProperty('profile')) {
+                this.config.config.protocol_profile.value = item.value;
+                this.searchQuery['protocol_id'] = this.config.config.protocol_id.value + '_' + this.config.config.protocol_profile.value;
+                 // 1_call | 1_ default | 1_registration
             }
         });
         this.searchService.setLocalStorageQuery(Functions.cloneObject(this.searchQuery));
@@ -552,13 +562,13 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, AfterViewIni
         this.saveState();
         if (this.targetResultId || (targetResult && isResultContainer)) {
             _targetResult = Functions.cloneObject(targetResult);
-            _targetResult.forEach( target => {
-                if ( target.type === 'page') {
-                    this.router.navigate(['search/result']);
-                } else {
+            if (_targetResult.some(target => target.type === 'page')) {
+                this.router.navigate(['search/result']);
+            } else {
+                _targetResult.forEach( target => {
                     this._ds.setQueryToWidgetResult(target.id, this.searchQuery);
-                }
-            });
+                });
+            }
             this.dosearch.emit({});
             this.cdr.detectChanges();
             return;

@@ -14,10 +14,12 @@ export class ProxyService {
   getProxyGrafanaFolders(): Observable<any> {
     return this._http.get<any>(`${this.url}/grafana/folders`);
   }
-
+  getProxyGrafanaSearch(uid: string): Observable<any> {
+    return this._http.get<any>(`${this.url}/grafana/search/` + uid);
+  }
   // Get Dashboard list
   getProxyGrafanaDashboards(folder: string): Observable<any> {
-    return this._http.get<any>(`${this.url}/grafana/dashboards/uid/`+folder);
+    return this._http.get<any>(`${this.url}/grafana/dashboards/uid/` + folder);
   }
 
   // Get Grafana URL

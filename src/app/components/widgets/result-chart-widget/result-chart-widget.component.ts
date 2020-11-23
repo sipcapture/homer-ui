@@ -43,8 +43,8 @@ type SortType = 'SUM' | 'COUNT' | 'MIN' | 'MAX';
     category: 'Visualize',
     indexName: 'display-results-chart',
     className: 'ResultChartWidgetComponent',
-    minHeight:400,
-    minWidth:600
+    minHeight: 300,
+    minWidth: 500
     // settingWindow: false
 })
 export class ResultChartWidgetComponent implements IWidget {
@@ -322,7 +322,7 @@ export class ResultChartWidgetComponent implements IWidget {
         this.saveConfig();
     }
 
-    private saveConfig() {
+    saveConfig() {
         const _f = Functions.cloneObject;
         this.config = {
             title: this.title || this.id,

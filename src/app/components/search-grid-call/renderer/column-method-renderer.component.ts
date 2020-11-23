@@ -3,7 +3,7 @@ import {ICellRendererAngularComp} from 'ag-grid-angular';
 
 @Component({
     selector: 'app-child-cell',
-    template: `<a (click)="openMethodPopup($event)" (mouseover)="hover=true" (mouseleave)="hover=false">{{method}}</a>`,
+    template: `<a (click)="openMethodPopup($event)">{{method}}</a>`,
     styles: ['a { user-select: text }']
 })
 export class ColumnMethodRenderer implements ICellRendererAngularComp {

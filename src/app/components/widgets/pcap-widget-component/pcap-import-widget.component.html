@@ -1,0 +1,93 @@
+<!-- <div class="container" (complete)="onFileComplete($event)"></div> -->
+<div class="container">
+
+  <div class="files-container">
+    <button
+      *ngIf="files.length <= 0"
+      mat-button
+      color="warn"
+      (click)="onClick()"
+      class="upload-button"
+    >
+      <mat-icon>file_upload</mat-icon>
+      {{ text }}
+    </button>
+    <button
+      *ngIf="etherframes.length > 0"
+      mat-button
+      color="danger"
+      (click)="sendHep()"
+      class="upload-button"
+    >
+      <mat-icon>file_upload</mat-icon>
+      {{ send_text }}
+    </button>
+    <p>
+      <mat-form-field appearance="outline" style="width: 100%; margin-top: 20px;">
+        <mat-label>Add WS URL</mat-label>
+        <input matInput placeholder="{{ pcapws }}" [(ngModel)]="pcapws" />
+        <mat-icon matSuffix>code</mat-icon>
+      </mat-form-field>
+    </p>
+    <ul class="file-uploads">
+      <p *ngIf="files.length > 0; else addFile" class="files-title">
+        {{ files.length }} File uploaded
+      </p>
+      <li *ngFor="let file of files">
+        <mat-progress-bar
+          mode="determinate"
+          [value]="file.progress"
+        ></mat-progress-bar>
+        <div class="file-options" id="file-label">
+          <p style="color: grey; letter-spacing: 1px; font-size: 10px;">
+            {{ file.data.name }}
+          </p>
+        </div>
+      </li>
+    </ul>
+    <input
+      type="file"
+      id="fileUpload"
+      name="fileUpload"
+      multiple="multiple"
+      accept="{{ accept }}"
+      style="display: none;"
+    />
+  </div>
+  <ng-template #addFile>
+    <small class="steps">
+  <div class="container">
+    <h4>Steps:</h4>
+    <p>1- Set Websocket URL</p>
+    <p>2- Upload PCAP file</p>
+    <p>3- Send PCAP to server</p>
+  </div>
+  </small>
+  </ng-template>
+  <div *ngIf="filesLog.files.length > 0" class="log">
+    <h2>File Details:</h2>
+    <div class="log-data">
+      <p>Max file size: {{ filesLog.maxfileSize }}</p>
+      <p>Frames: {{ filesLog.frames }}</p>
+      <p *ngIf="filesLog.hosts.length > 0" class="hosts"> -- Hosts: {{ filesLog.hosts }}</p>
+      <p>
+        Total: {{ filesLog.total }} success: {{ filesLog.success }} error:
+        {{ filesLog.error }}
+      </p>
+    </div>
+    <div class="log-messages" *ngFor="let file of filesLog.files">
+      <div class="file-name">
+        <p>
+          <strong>{{ file.filename }}</strong>
+        </p>
+        <strong *ngIf="file.message === 'error'" class="col-warning">{{
+          file.message
+        }}</strong>
+        <strong *ngIf="file.message === 'success'" class="col-success">{{
+          file.message
+        }}</strong>
+      </div>
+      <p><strong>File size:</strong> {{ file.fileSize }}</p>
+    </div>
+  </div>
+</div>

@@ -33,6 +33,7 @@ import {
 import { ConstValue } from '@app/models';
 import { FormControl } from '@angular/forms';
 import { CodeStyleSmartInputFieldComponent } from '../rsearch-widget/code-style-smart-input-field/code-style-smart-input-field.component';
+import { SettingSmartInputWidgetComponent } from './setting-smart-input-widget.component';
 
 @Component({
     selector: 'app-smart-input-widget',
@@ -46,7 +47,7 @@ import { CodeStyleSmartInputFieldComponent } from '../rsearch-widget/code-style-
     category: 'Search',
     indexName: 'smart-input',
     className: 'SmartInputWidgetComponent',
-    settingWindow: false,
+    settingWindow: true,
     submit: true,
     minHeight: 300,
     minWidth: 300
@@ -247,6 +248,9 @@ export class SmartInputWidgetComponent implements IWidget, OnInit, AfterViewInit
                         ) {
                             item.value = this._cache[collectionName].value;
                         }
+                    }  else if (item.hasOwnProperty('profile')) {
+                        const [f_field] = this._cache.fields.filter(i => i.name === item.field_name);
+                        item.value = f_field && f_field.value || '';
                     } else {
                         const [f_field] = this._cache.fields.filter(i => i.name === item.field_name);
                         item.value = f_field && f_field.value || '';
@@ -359,10 +363,13 @@ export class SmartInputWidgetComponent implements IWidget, OnInit, AfterViewInit
                 }
                 if (f && f.system_param) {
                     i.system_param = f.system_param;
-                }
-                if (f && f.system_param) {
                     i.mapping = f.mapping;
                 }
+                
+                if (f && f.profile) {
+                    i.profile = f.profile;
+                }
+
                 if (f && f.form_api) {
                     i.form_api = f.form_api;
                 }
@@ -443,7 +450,7 @@ export class SmartInputWidgetComponent implements IWidget, OnInit, AfterViewInit
                     } else {
                         b = false;
                     }
-                    return b && !item.hasOwnProperty('system_param');
+                    return b && !item.hasOwnProperty('system_param') && !item.hasOwnProperty('profile');
                 })
                 .map((item: any) => ({
                     name: item.field_name,
@@ -451,9 +458,11 @@ export class SmartInputWidgetComponent implements IWidget, OnInit, AfterViewInit
                     type: item.type,
                     hepid: item.hepid
                 })),
-            protocol_id: this.config.config.protocol_id.value + '_' +
-                this.config.config.protocol_profile.value // 1_call | 1_ default | 1_registration
+            protocol_id: this.config.config.protocol_id.value + '_' + this.config.config.protocol_profile.value // 1_call | 1_ default | 1_registration
         };
+        if (this.onlySmartField) {
+            this.searchQuery.protocol_id = JSON.parse(localStorage.getItem(ConstValue.SEARCH_QUERY)).protocol_id;
+        }
         /* system params */
         this.fields.forEach((item: any) => {
             if (
@@ -476,6 +485,10 @@ export class SmartInputWidgetComponent implements IWidget, OnInit, AfterViewInit
                         };
                     }
                 }
+            } else if ( item.value && item.value !== '' &&   item.hasOwnProperty('profile')) {
+                this.config.config.protocol_profile.value = item.value;
+                this.searchQuery['protocol_id'] = this.config.config.protocol_id.value + '_' + this.config.config.protocol_profile.value;
+                 // 1_call | 1_ default | 1_registration
             }
         });
 
@@ -504,7 +517,36 @@ export class SmartInputWidgetComponent implements IWidget, OnInit, AfterViewInit
         this.cdr.detectChanges();
     }
 
-    openDialog(): void {
+    public async openDialog() {
+        const mapping = await this.preferenceMappingProtocolService.getAll().toPromise();
+        const dialogRef = this.dialog.open(SettingSmartInputWidgetComponent, {
+            width: '600px',
+            data: {
+                config: this.config,
+                mapping: mapping
+            }
+        });
+        const result = await dialogRef.afterClosed().toPromise();
+        if (!result) {
+            return;
+        }
+        this.config.config.protocol_id = result.protocol_id;
+        this.config.config.protocol_profile = {
+            name: result.profile,
+            value: result.profile,
+        };
+        this.config.title = result.title;
+        this.config.config.title = result.title;
+        this._sss.removeProtoSearchConfig(this.widgetId);
+        const _forRestoreFieldsValue = Functions.cloneObject(this.fields);
+        this.updateButtonState();
+
+        this.changeSettings.emit({
+            config: this.config,
+            id: this.id
+        });
+        this.isConfig = true;
+        this.cdr.detectChanges();
     }
 
     onChangeField (event = null, item = null) {
@@ -544,13 +586,13 @@ export class SmartInputWidgetComponent implements IWidget, OnInit, AfterViewInit
         this.saveState();
         if (this.targetResultId || (targetResult && isResultContainer)) {
             _targetResult = Functions.cloneObject(targetResult);
-            _targetResult.forEach( target => {
-                if ( target.type === 'page') {
-                    this.router.navigate(['search/result']);
-                } else {
+            if (_targetResult.some(target => target.type === 'page')) {
+                this.router.navigate(['search/result']);
+            } else {
+                _targetResult.forEach( target => {
                     this._ds.setQueryToWidgetResult(target.id, this.searchQuery);
-                }
-            });
+                });
+            }
             this.dosearch.emit({});
             this.cdr.detectChanges();
             return;

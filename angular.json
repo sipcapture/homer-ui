@@ -11,7 +11,7 @@
       "schematics": {},
       "architect": {
         "build": {
-          "builder": "@angular-builders/custom-webpack:browser",
+          "builder": "ngx-build-plus:browser",
           "options": {
             "outputPath": "dist/homer-ui",
             "index": "src/index.html",
@@ -19,13 +19,21 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
             "customWebpackConfig": {
-              "path":"custom-webpack.config.js"
+              "path": "custom-webpack.config.js"
             },
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              { "glob": "worker-javascript.js", "input": "./d /ace-builds/src-min/", "output": "/" },
-              { "glob": "worker-json.js", "input": "./node_modules/ace-builds/src-min/", "output": "/" }
+              {
+                "glob": "worker-javascript.js",
+                "input": "./d /ace-builds/src-min/",
+                "output": "/"
+              },
+              {
+                "glob": "worker-json.js",
+                "input": "./node_modules/ace-builds/src-min/",
+                "output": "/"
+              }
             ],
             "styles": [
               "src/styles.scss"
@@ -42,7 +50,8 @@
               "node_modules/ace-builds/src-min/worker-javascript.js",
               "node_modules/ace-builds/src-min/mode-json.js",
               "node_modules/ace-builds/src-min/worker-json.js"
-            ]
+            ],
+            "webWorkerTsConfig": "tsconfig.worker.json"
           },
           "configurations": {
             "development": {
@@ -74,6 +83,30 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": true,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "6mb",
+                  "maximumError": "8mb"
+                }
+              ]
+            },
+            "production-noenv": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod-noenv.ts"
                 }
               ],
               "optimization": true,
@@ -144,7 +177,7 @@
           }
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "ngx-build-plus:dev-server",
           "options": {
             "browserTarget": "homer-ui:build"
           },
@@ -158,8 +191,8 @@
             "webapp": {
               "browserTarget": "homer-ui:build:webapp"
             },
-            "server" : {
-              "browserTarget" : "homer-ui:build:server"
+            "server": {
+              "browserTarget": "homer-ui:build:server"
             }
           }
         },
@@ -170,7 +203,7 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "ngx-build-plus:karma",
           "options": {
             "main": "src/test.ts",
             "polyfills": "src/polyfills.ts",
@@ -195,8 +228,16 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              { "glob": "worker-javascript.js", "input": "./d /ace-builds/src-min/", "output": "/" },
-              { "glob": "worker-json.js", "input": "./node_modules/ace-builds/src-min/", "output": "/" }
+              {
+                "glob": "worker-javascript.js",
+                "input": "./d /ace-builds/src-min/",
+                "output": "/"
+              },
+              {
+                "glob": "worker-json.js",
+                "input": "./node_modules/ace-builds/src-min/",
+                "output": "/"
+              }
             ]
           }
         },
@@ -205,7 +246,8 @@
           "options": {
             "tsConfig": [
               "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
+              "src/tsconfig.spec.json",
+              "tsconfig.worker.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -243,5 +285,8 @@
       }
     }
   },
-  "defaultProject": "homer-ui"
+  "defaultProject": "homer-ui",
+  "cli": {
+    "analytics": "dddf3fab-a9f2-435f-a2ae-3aea3ac3de78"
+  }
 }

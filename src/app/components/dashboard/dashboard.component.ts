@@ -19,9 +19,10 @@ import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
 import { AddDialogComponent } from './add-dialog/add-dialog.component';
 import { EditDialogComponent } from './edit-dialog/edit-dialog.component';
 import { IWidget, IWidgetMetaData } from '../widgets/IWidget';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { WidgetArray, WidgetArrayInstance } from '@app/helpers/widget';
 import { Functions } from '@app/helpers/functions';
+import { DateTimeRangeService, DateTimeTick, Timestamp } from '@app/services/data-time-range.service';
 import { ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 
 @Component({
@@ -36,11 +37,14 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     dashboardTitle: string;
     dashboardCollection: DashboardModel;
     dashboardArray: DashboardContentModel[];
+    subscription: Subscription;
     isIframe = false;
     isHome = false;
     iframeUrl: string;
     postSaveHash: string;
     _interval: any;
+    params: any;
+    timeRange: Timestamp;
 
     @ViewChildren('widgets') widgets: QueryList<IWidget>;
     @ViewChild('customWidget', {static: false}) customWidget: any;
@@ -50,6 +54,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         private _ds: DashboardService,
         private router: Router,
         private cdr: ChangeDetectorRef,
+        private _dtrs: DateTimeRangeService,
         public dialog: MatDialog) {}
     @HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
         const ls = JSON.parse(localStorage.getItem('searchQueryWidgetsResult'));
@@ -91,6 +96,11 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
     ngOnInit() {
+        this.params = {
+            refresh: '1h',
+            from: 'now-5m', // 'now-5m',
+            to: 'now', // 'now'
+        }
         // Grid options
         this.gridOptions = {
             gridType: GridType.Fit,
@@ -271,7 +281,17 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
             this.isIframe = this.dashboardCollection.data.type === 2;
             if (this.isIframe) {
-                this.iframeUrl = this.dashboardCollection.data.param;
+                this.subscription = this._dtrs.castRangeUpdateTimeout.subscribe((dtr: DateTimeTick) => {
+
+                    this.timeRange = this._dtrs.getDatesForQuery(true);
+                    this.params.from = this.timeRange.from + '';
+                    this.params.to = this.timeRange.to + '';
+                    this.buildUrl();
+
+                });
+                if (!this.dashboardCollection.data.config.grafanaTimestamp){
+                    this.iframeUrl = this.dashboardCollection.data.param;
+                }
             }
             this.dashboardTitle = this.dashboardCollection &&
                 this.dashboardCollection.data ?
@@ -318,6 +338,15 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.cdr.detectChanges();
         });
     }
+    buildUrl(noCache: boolean = false) {
+        if (this.dashboardCollection.data.param === ''  || typeof this.dashboardCollection.data.param === undefined 
+            || this.dashboardCollection.data.param === null || !this.dashboardCollection.data.config.grafanaTimestamp) {
+            return;
+        }
+        const cleanedURL = this.dashboardCollection.data.param.replace(/&from=\d*/, '').replace(/&to=\d*/, '')
+        this.iframeUrl = [cleanedURL, Object.keys(this.params).map(i => `${i}=${this.params[i]}`).join('&')].join('?');
+        this.cdr.detectChanges();
+    }
     submitCheck() {
         const submitWidgets: Array<any> = [];
         const dashboardSubmitWidgets: Array<any> = [];
@@ -351,7 +380,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         } else {
             currentWidget = this._ds.dbs.currentWidget;
         }
-        if (id !== currentWidget.id) {
+        if (currentWidget.id && id !== currentWidget.id) {
             for (let i = 0; i < this.submitCheck().length; i++) {
                 if (id === this.submitCheck()[i].id) {
                     // currentWidget.id
@@ -407,11 +436,13 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.cdr.detectChanges();
         }
     }
-    getSize(item) {
+    getSize(item, onlyNum = false): any {
         const i = WidgetArray.findIndex(widget => widget.strongIndex === item.strongIndex);
         let size = '';
         let columnRes: number;
         let rowRes: number;
+        let colAmount: number;
+        let rowAmount: number;
         const grid = document.getElementById('gridster');
         if (this.dashboardCollection.data.config !== undefined) {
                 columnRes = grid.getBoundingClientRect().width / this.dashboardCollection.data.config.columns;
@@ -419,16 +450,23 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             }
         if (WidgetArray[i].minWidth !== undefined) {
             const width = WidgetArray[i].minWidth;
-            const colAmount = Math.ceil(width / columnRes);
+            colAmount = Math.ceil(width / columnRes);
             size += colAmount + ' columns ';
         }
         if (WidgetArray[i].minHeight !== undefined) {
             const height = WidgetArray[i].minHeight;
-            const rowAmount = Math.ceil(height / rowRes);
+            rowAmount = Math.ceil(height / rowRes);
             size += rowAmount + ' rows ';
 
         }
-        return size;
+        if (onlyNum) {
+            return {
+                cols: colAmount,
+                rows: rowAmount
+            };
+        } else {
+            return size;
+        }
     }
     private save () {
         setTimeout(async () => await this.onDashboardSave().toPromise());
@@ -449,7 +487,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.gridOptions.maxRows = Number.MAX_VALUE;
                 break;
         }
-        this.gridOptions.api.optionsChanged();
+        if (this.gridOptions && this.gridOptions.api && this.gridOptions.api.optionsChanged) {
+            this.gridOptions.api.optionsChanged();
+        }
         setTimeout(() => {
             this.resizeExcess();
             this.checkWidgets();
@@ -486,7 +526,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         if (!data) {
             return;
         }
-
         const { indexName, strongIndex, title } = data;
         const widget: DashboardContentModel = {
             x: 0, y: 0, cols: 1, rows: 1,
@@ -495,6 +534,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             strongIndex, title,
             output: { changeSettings: this.onChangeWidget.bind(this) }
         };
+        const widgetSize = this.getSize(widget, true);
+        widget.cols = widgetSize.cols;
+        widget.rows = widgetSize.rows;
         if (!this.gridOptions.api.getNextPossiblePosition(widget)) {
             this.gridOptions.gridType = 'scrollVertical';
             this.dashboardCollection.data.config.gridType = 'scrollVertical';
@@ -527,10 +569,10 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             columns: _d.config.columns || 5,
             maxrows: _d.config.maxrows || 5,
             pushing: !!_d.config.pushing,
+            grafanaTimestamp: _d.config.grafanaTimestamp,
             ignoreMinSize: _d.config.ignoreMinSize || 'warning',
             gridType: _d.config.gridType || GridType.Fit,
         }});
-
         dialogRef.componentInstance.export(this.onDownloadDashboardSettings.bind(this));
 
         const data = await dialogRef.afterClosed().toPromise();
@@ -548,6 +590,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             dd.config.columns = data.columns;
             dd.config.maxrows = data.maxrows;
             dd.config.pushing = data.pushing;
+            dd.config.grafanaTimestamp = data.grafanaTimestamp;
             dd.config.ignoreMinSize = data.ignoreMinSize;
             dd.config.gridType = data.gridType;
 
@@ -602,6 +645,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnDestroy() {
         clearInterval(this._interval);
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
     }
 
     private getWidgetItemClass(item: DashboardContentModel): IWidgetMetaData {

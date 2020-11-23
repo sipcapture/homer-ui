@@ -19,8 +19,8 @@ import { Functions } from '@app/helpers/functions';
     indexName: 'result',
     settingWindow: true,
     className: 'ResultWidgetComponent',
-    minWidth: 400,
-    minHeight: 600
+    minHeight: 300,
+    minWidth: 500
 })
 export class ResultWidgetComponent implements IWidget {
     @Input() id: string;
@@ -78,7 +78,7 @@ export class ResultWidgetComponent implements IWidget {
             this.cdr.detectChanges();
         }
     }
-    private saveConfig() {
+    saveConfig() {
         const _f = Functions.cloneObject;
         this.config = {
             title: this.title

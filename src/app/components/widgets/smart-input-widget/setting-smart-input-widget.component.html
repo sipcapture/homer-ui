@@ -1,0 +1,34 @@
+<mat-toolbar class="title" color="primary">
+  <div>Settings</div>
+  <button mat-icon-button (click)="onNoClick()">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-toolbar>
+
+<div mat-dialog-content>
+  <div class="example-container">
+    <mat-form-field>
+      <mat-label>Panel Title</mat-label>
+      <input matInput [(ngModel)]="resultConfig.title" (keydown)="onChange()">
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Proto</mat-label>
+      <mat-select
+          [compareWith]="compareProto"
+          [(ngModel)]="proto"
+          (valueChange)="onChange()"
+          (selectionChange)="onChange()"
+        name="hep_alias"
+        ngDefaultControl>
+        <mat-option *ngFor="let protoItem of mappingSortedData" [value]="protoItem">
+          {{protoItem.hep_alias}} - {{protoItem.profile}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
+
+<div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
+  <button mat-raised-button (click)="onNoClick()">Cancel</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="resultConfig" cdkFocusInitial>Save</button>
+</div> 

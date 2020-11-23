@@ -44,6 +44,8 @@
       [theme]="'eclipse'"
       [readOnly]="false"
       [(text)]="data.data.correlation_mapping"
+      (textChanged)="validate('correlation')"
+      [durationBeforeCallback]="500"
       #correlation_mapping_view style="min-height:350px;"></ace-editor>
     
     <strong>Fields Mapping</strong>
@@ -53,6 +55,8 @@
       [theme]="'eclipse'"
       [readOnly]="false"
       [(text)]="data.data.fields_mapping"
+      (textChanged)="validate('fields')"
+      [durationBeforeCallback]="500"
       #fields_mapping_view style="min-height:350px;"></ace-editor>
     
 
@@ -60,5 +64,5 @@
 
 <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
   <button mat-raised-button (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Save</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial [disabled]="isDisabled">Save</button>
 </div>
