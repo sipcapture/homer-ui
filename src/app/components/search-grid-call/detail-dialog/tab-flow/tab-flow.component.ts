@@ -313,16 +313,18 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             arr[positionIPs[ip]] = this.aliasTitle.find(i => i.ip === ip || i.shortIPtext1 === ip);
             return arr;
         }, []);
-        if (this._isCombineByAlias && this._isSimplifyPort) {
+        if (this._isCombineByAlias && this._isSimplifyPort && this.aliasTitle) {
             this.aliasTitle = this.aliasTitle.reduce((arr, b) => {
-                if (b.arrip === undefined) {
-                    b.arrip = [b.ip.replace(/\[|\]/g, '')];
-                }
-                const el = arr.find(k => k.alias === b.alias || k.ip === b.ip);
-                if (el) {
-                    el.arrip.push(b.ip.replace(/\[|\]/g, ''));
-                } else {
-                    arr.push(b);
+                if (b) {
+                    if (b.arrip === undefined) {
+                        b.arrip = [b.ip.replace(/\[|\]/g, '')];
+                    }
+                    const el = arr.find(k => k.alias === b.alias || k.ip === b.ip);
+                    if (el) {
+                        el.arrip.push(b.ip.replace(/\[|\]/g, ''));
+                    } else {
+                        arr.push(b);
+                    }
                 }
                 return arr;
             }, []);
