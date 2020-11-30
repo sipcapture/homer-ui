@@ -41,15 +41,16 @@ export class DetailDialogComponent implements OnInit {
 
     @Input() mouseEventData: any;
     @Input() snapShotTimeRange: any;
+
     isSimplify = true;
     isSimplifyPort = true;
-    isCombineByAlias = false;
+    isCombineByAlias = true;
     IdFromCallID;
     RTPFilterForFLOW = false;
     activeTab = 0;
     isFilterOpened = false;
     isFilterOpenedOutside = false;
-    combineType = '3port';
+    combineType = '2alias';
     listCombineTypes = {
         '1none': 'Ungrouped',
         '2alias': 'Group by Alias',
@@ -256,10 +257,6 @@ export class DetailDialogComponent implements OnInit {
     onExportFlowAsPNG() {
         this.exportAsPNG = true;
         this.changeDetectorRefs.detectChanges();
-        setTimeout(() => {
-            // this.exportAsPNG = false;
-            this.changeDetectorRefs.detectChanges();
-        });
     }
     doFilterMessages() {
         if (!this.sipDataItem) {
