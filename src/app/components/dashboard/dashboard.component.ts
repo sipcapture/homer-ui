@@ -375,18 +375,17 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     changeCurrent(id: string) {
         const ls = JSON.parse(localStorage.getItem('searchQueryWidgetsResult'));
         let currentWidget: any;
-        if (ls != null && ls.currentWidget !== undefined) {
+        if (ls != null && ls.currentWidget !== undefined && ls.currentWidget !== '') {
             currentWidget = ls.currentWidget;
         } else {
             currentWidget = this._ds.dbs.currentWidget;
         }
-        if (currentWidget.id && id !== currentWidget.id) {
-            for (let i = 0; i < this.submitCheck().length; i++) {
-                if (id === this.submitCheck()[i].id) {
-                    // currentWidget.id
-                    this._ds.setCurrentWidgetId(this.submitCheck()[i]);
-                }
+        if (currentWidget === '' || typeof currentWidget === 'undefined' || (currentWidget.id && id !== currentWidget.id)) {
+            const i = this.submitCheck().findIndex(widget => widget.id === id);
+            if (i === -1) {
+                return;
             }
+            this._ds.setCurrentWidgetId(this.submitCheck()[i]);
             this.save();
         }
     }

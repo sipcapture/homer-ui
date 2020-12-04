@@ -12,7 +12,8 @@
     <!-- filter -->
     <div *ngIf="activeTab <= 1 && isFilterOpened" style="height: calc(100% - 75px);overflow-x: auto;"
         class="button-icon-right-top filter-container" #filterContainer>
-        <mat-slide-toggle style="width: 200px;font-size: .8em;" color="warn" [(ngModel)]="isSimplify">
+        <mat-slide-toggle style="width: 200px;font-size: .8em;" color="warn" [(ngModel)]="isSimplify"
+            (click)="doFilterMessages()">
             Extended Format
         </mat-slide-toggle>
         <br *ngIf="activeTab !== 0">
