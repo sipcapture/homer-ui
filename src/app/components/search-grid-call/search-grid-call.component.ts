@@ -63,6 +63,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     myPredefColumns: Array<Object>;
     rowData: any = [];
     showPortal = false;
+    loader = false;
+    noRowsTemplate = `<span class="norowstemplate">Adjust params and do a search to show results</span>`;
     private isOpenDialog = false;
     title = 'Call Result';
     isLoading = false;
@@ -635,7 +637,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     public update(isImportant = false) {
-
+        this.loader = true;
         if (this.isNewData() && !isImportant) {
             return;
         }
@@ -653,6 +655,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         this.rowData = null;
         if (this.isLokiQuery) {
             this._srs.getData(this.queryBuilderForLoki()).toPromise().then(result => {
+                this.loader = false;
                 this.rowData = result.data.sort((a, b) => {
                     a = new Date(a.micro_ts).getTime();
                     b = new Date(b.micro_ts).getTime();
@@ -664,11 +667,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 });
                 this.sizeToFit();
                 this.changeDetectorRefs.detectChanges();
-                setTimeout(() => { /** for grid updated autoHeight and sizeToFit */
+                if(this.rowData) { /** for grid updated autoHeight and sizeToFit */
                     this.rowData = Functions.cloneObject(this.rowData);
+                    if (this.rowData) { this.loader = false; }
                     this.dataReady.emit({});
                     this.changeDetectorRefs.detectChanges();
-                }, 600);
+                };
             }, err => {
                 this.rowData = [];
                 this.dataReady.emit({});
@@ -685,6 +689,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
 
                 this.rowData = result.data;
+                if (this.rowData) { this.loader = false; }
                 for (let i = 0; i < this.rowData.length; i++) {
                     if (this.rowData[i].protocol !== undefined && this.rowData[i].protocol === 17) {
                         this.rowData[i].protocol = 'UDP';
@@ -816,7 +821,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }, []);
 
         const timeArray = selectedRows.map(i => i.create_date || i.update_ts);
-        const timeArray_from = this.config.timestamp.from ? this.config.timestamp.from : 
+        const timeArray_from = this.config.timestamp.from ? this.config.timestamp.from :
             selectedRows.length ? Math.min.apply(this, timeArray) : row.data.create_date;
         const timeArray_to = this.config.timestamp.to ? this.config.timestamp.to :
             selectedRows.length ? Math.max.apply(this, timeArray) : row.data.create_date;
