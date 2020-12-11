@@ -39,10 +39,17 @@ export class TabMessagesComponent implements OnInit {
         return this._dataItem;
     }
     @Input() set filter(val) {
-        const { PayloadType } = val;
-        this.RTCPflag = PayloadType && (PayloadType.find(item => item.title === 'RTCP') || { selected: false }).selected || false;
+
+        if (!val) {
+            this.RTCPflag = false;
+        } else {
+            const { PayloadTypeData } = val;
+            // tslint:disable-next-line: max-line-length
+            this.RTCPflag = PayloadTypeData && (PayloadTypeData.find(item => item.title === 'RTCP') || { selected: false }).selected || false;
+        }
         this.initData();
     }
+    
     @Input() set qosData(val) {
         if (!val) {
             return;
