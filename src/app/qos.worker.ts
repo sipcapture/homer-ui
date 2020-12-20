@@ -661,7 +661,7 @@ class QosProcessor {
     }
 
     private getColorByStringHEX(str: string) {
-        if (str === 'LOG') {
+        if (str.toLowerCase() === 'log') {
             return 'FFA562';
         }
         let hash = 0;

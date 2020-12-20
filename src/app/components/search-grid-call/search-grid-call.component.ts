@@ -762,7 +762,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             };
         }
         return {
-            'background-color': Functions.getColorByString(params.data.callid, 60, 80, 0.8)
+            'background-color': Functions.getColorByString(params.data.sid, 60, 80, 0.8)
         };
     }
 
