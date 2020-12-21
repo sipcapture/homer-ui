@@ -153,7 +153,6 @@ export class DetailDialogComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        console.log(this.searchProtocol)
         this.setTabByAdvanced();
         if (this.sipDataItem) {
             this.dataLogs = this.sipDataItem.data.messages.filter(i => !i.method).map(i => ({ payload: i }));
