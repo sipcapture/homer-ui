@@ -252,7 +252,7 @@ export class DetailDialogComponent implements OnInit {
     checkStatusTabs() {
         //   this.tabs.logs = true; // this.dataLogs.length > 0;
         let callData = this.sipDataItem.data.calldata
-        this.tabs.logs = callData.some(f => f.method === "LOG")
+        this.tabs.logs = callData.some(f => f.method === "LOG" || f.method === 100)
         this.tabs.messages = this.tabs.flow = this.sipDataItem.data.messages.length > 0;
         this.tabs.callinfo = this.sipDataItem.data.messages.length > 0 && (this.searchProtocol === "1_call" || this.searchProtocol === "1_registration");
         this.tabs.export = this.sipDataItem.data.messages && !!this.IdFromCallID;
