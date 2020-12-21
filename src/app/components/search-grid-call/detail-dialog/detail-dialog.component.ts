@@ -66,6 +66,7 @@ export class DetailDialogComponent implements OnInit {
         logs: true,
         export: false
     };
+    searchProtocol = JSON.parse(localStorage.getItem("searchQuery")).protocol_id
     public flowFilters: any;
     exportAsPNG = false;
     isBrowserWindow = false;
@@ -152,6 +153,7 @@ export class DetailDialogComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        console.log(this.searchProtocol)
         this.setTabByAdvanced();
         if (this.sipDataItem) {
             this.dataLogs = this.sipDataItem.data.messages.filter(i => !i.method).map(i => ({ payload: i }));
@@ -249,9 +251,11 @@ export class DetailDialogComponent implements OnInit {
         }
     }
     checkStatusTabs() {
-        this.tabs.logs = true; // this.dataLogs.length > 0;
+        //   this.tabs.logs = true; // this.dataLogs.length > 0;
+        let callData = this.sipDataItem.data.calldata
+        this.tabs.logs = callData.some(f => f.method === "LOG")
         this.tabs.messages = this.tabs.flow = this.sipDataItem.data.messages.length > 0;
-        this.tabs.callinfo = this.sipDataItem.data.messages.length > 0;
+        this.tabs.callinfo = this.sipDataItem.data.messages.length > 0 && (this.searchProtocol === "1_call" || this.searchProtocol === "1_registration");
         this.tabs.export = this.sipDataItem.data.messages && !!this.IdFromCallID;
         this.changeDetectorRefs.detectChanges();
     }
