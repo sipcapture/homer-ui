@@ -1,56 +1,64 @@
 <div class="top-tool">
 	<h3>{{ dashboardTitle | uppercase }}</h3>
 	<div style="float: right;">
-		<button title="Add widget" mat-icon-button *ngIf="!isIframe" (click)="onDashboardAdd()"><mat-icon>add</mat-icon></button>
-		<button title="Dashboard settings" mat-icon-button (click)="onDashboardSettings()"><mat-icon>settings</mat-icon></button>
-		<button title="Delete dashboard" mat-icon-button *ngIf="!isHome" (click)="onDashboardDelete()"><mat-icon>delete</mat-icon></button>
+		<button title="Add widget" mat-icon-button *ngIf="!isIframe" (click)="onDashboardAdd()">
+			<mat-icon>add</mat-icon>
+		</button>
+		<button title="Dashboard settings" mat-icon-button (click)="onDashboardSettings()">
+			<mat-icon>settings</mat-icon>
+		</button>
+		<button title="Delete dashboard" mat-icon-button *ngIf="!isHome" (click)="onDashboardDelete()">
+			<mat-icon>delete</mat-icon>
+		</button>
 	</div>
 </div>
 <!-- container height -->
-<div  style="height: calc(100vh - 85px);">
+<div style="height: calc(100vh - 85px);">
 	<div *ngIf="isIframe">
-		<iframe [src]="iframeUrl | safe"></iframe>
+		<iframe [src]="iframeUrl | safe" style="visibility:hidden;" onload="this.style.visibility='visible';"></iframe>
 	</div>
 	<gridster *ngIf="!isIframe" [options]="gridOptions" id="gridster">
 		<gridster-item [item]="item" *ngFor="let item of dashboardArray; let i = index;" class="widget-item" (mouseover)="changeCurrent(item.id)" id={{item.id}}>
-			<div class="box-header drag-handler" 
-				(mouseenter)="hoverme=true" 
-				(mouseleave)="hoverme=false" 
+			<div class="box-header drag-handler" (mouseenter)="hoverme=true" (mouseleave)="hoverme=false"
 				[ngStyle]="{'background-color': this._ds.dbs.currentWidget !== undefined && item.id === this._ds.dbs.currentWidget.id   ? '#f8f8f8' : '#ffffff'  }">
-				
-				<h3 *ngIf="item.name !== 'rsearch'" class="ng-binding" >
+
+				<h3 *ngIf="item.name !== 'rsearch'" class="ng-binding">
 					{{ item.config ? item.config.title: item.title || item.id }}
 				</h3>
 				<h3 *ngIf="item.name === 'rsearch'" class="ng-binding">LOKI Search</h3>
-				
-				<div class="box-header-btns pull-right" >
+
+				<div class="box-header-btns pull-right">
 					<div class="box-icon-header">
-						<mat-icon *ngIf="hesSettings(item)" [inline]="true" (click)="openSettings(item)" aria-label="settings">settings</mat-icon>
-						<mat-icon [inline]="true" (mousedown)="removeItem($event, item)" aria-label="delete">delete</mat-icon>
+						<mat-icon *ngIf="hesSettings(item)" [inline]="true" (click)="openSettings(item)"
+							aria-label="settings">settings</mat-icon>
+						<mat-icon [inline]="true" (mousedown)="removeItem($event, item)" aria-label="delete">delete
+						</mat-icon>
 					</div>
 				</div>
 			</div>
-			<div class="widget-warning" *ngIf="this.dashboardCollection.data.config !== undefined && this.dashboardCollection.data.config.ignoreMinSize === 'warning' && item.isWarning && !item.isDismissed " >
+			<div class="widget-warning"
+				*ngIf="this.dashboardCollection.data.config !== undefined && this.dashboardCollection.data.config.ignoreMinSize === 'warning' && item.isWarning && !item.isDismissed ">
 				<p>Widget is too small, we recommend increasing it's size to {{ getSize(item) }}</p>
-				<button mat-icon-button  class="warning-dismiss" matTooltip="Dismiss warning"  (click)="dismissWarning(item)">
-				    <mat-icon>close</mat-icon>
+				<button mat-icon-button class="warning-dismiss" matTooltip="Dismiss warning"
+					(click)="dismissWarning(item)">
+					<mat-icon>close</mat-icon>
 				</button>
 			</div>
-			<div class="widget-block" *ngIf="this.dashboardCollection.data.config !== undefined && this.dashboardCollection.data.config.ignoreMinSize != 'warning' || !item.isWarning || item.isDismissed">
+			<div class="widget-block"
+				*ngIf="this.dashboardCollection.data.config !== undefined && this.dashboardCollection.data.config.ignoreMinSize != 'warning' || !item.isWarning || item.isDismissed">
 				<div class="shadow-polygon" style="display: none;"></div>
-				<ndc-dynamic class="no-drag"
-					[ndcDynamicComponent]="getComponentWidget(item)"
-					[ndcDynamicInputs]="{ id: item.id, config: item.config }"
-					[ndcDynamicOutputs]="item.output"
-				></ndc-dynamic>
+				<ndc-dynamic class="no-drag" [ndcDynamicComponent]="getComponentWidget(item)"
+					[ndcDynamicInputs]="{ id: item.id, config: item.config }" [ndcDynamicOutputs]="item.output">
+				</ndc-dynamic>
 			</div>
-			
+
 		</gridster-item>
 	</gridster>
 	<div *ngIf="!isIframe && (dashboardArray && dashboardArray.length === 0)" class="no-content">
 		<span style="text-align: center;">
 			<h1>Dashboard is empty</h1>
-			<button title="Add widget" mat-raised-button color="primary" (click)="onDashboardAdd()">Add widget <mat-icon>add</mat-icon></button>
+			<button title="Add widget" mat-raised-button color="primary" (click)="onDashboardAdd()">Add widget
+				<mat-icon>add</mat-icon></button>
 		</span>
 	</div>
 </div>

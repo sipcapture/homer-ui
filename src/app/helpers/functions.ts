@@ -3,7 +3,7 @@ import { Md5 } from 'ts-md5/dist/md5';
 export class Functions {
     static newGuid() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-            let r: any = Math.random() * 16 | 0;
+            const r: any = Math.random() * 16 | 0;
             const v = c === 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
@@ -31,7 +31,7 @@ export class Functions {
     }
 
     static methodCheck (method: string, payload: number ) {
-        if(method) return method;
+        if (method) { return method; }
 
         if (payload === 1) {
             return 'SIP';
@@ -52,26 +52,26 @@ export class Functions {
         } else if (payload === 1000) {
             return 'JSON-DYN';
         } else {
-            return 'HEP-'+payload;
+            return 'HEP-' + payload;
         }
     }
 
-    static colorByMethod (method: string,payload: number) {
+    static colorByMethod (method: string, payload: number) {
 
-        if(method) {
-            if (method === "INVITE") {
+        if (method) {
+            if (method === 'INVITE') {
                 return '#00cc00';
-            } else if (method === "BYE") {
+            } else if (method === 'BYE') {
                 return '#6600cc';
-            } else if (method === "CANCEL") {
+            } else if (method === 'CANCEL') {
                 return 'red';
-            } else if (method=== "180" || method=== "183") {
+            } else if (method === '180' || method === '183') {
                 return '#0099cc';
-            } else if (method=== "200") {
+            } else if (method === '200') {
                 return '#0000cc';
-            } else if (method=== "401" || method=== "407" || method ==="404") {
+            } else if (method === '401' || method === '407' || method === '404') {
                 return '#cc0033';
-            } else if (method=== "486") {
+            } else if (method === '486') {
                 return '#cc6600';
             } else {
                 return 'black';
@@ -211,34 +211,34 @@ export class Functions {
     }
 
 
-    static getMethodColor (str){
-        let color:string = 'hsl(0,0%,0%)'
-        if(str === 'INVITE'){
-            color = 'hsl(227.5,82.4%,51%)'
-        }else if(str === "BYE" || str === "CANCEL"){
-            color = 'hsl(120,100%,25%)'
-        }else if(str >= 100 && str < 200){
-            color = 'hsl(0,0%,0%)'
-        }else if(str >= 200 && str < 300){
-            color = 'hsl(120,70%,50%)'
-        }else if(str >= 300 && str < 400){
-            color = 'hsl(280,100%,50%)'
-        }else if(str >= 400 && str < 500){
-            color = 'hsl(15,100%,45%)'
-        }else if(str >= 500 && str < 700){
-            color = 'hsl(0,100%,45%)'
-        }else {
-            color = 'hsl(0,0%,0%)'
+    static getMethodColor (str) {
+        let color = 'hsl(0,0%,0%)';
+        if (str === 'INVITE') {
+            color = 'hsl(227.5,82.4%,51%)';
+        } else if (str === 'BYE' || str === 'CANCEL') {
+            color = 'hsl(120,100%,25%)';
+        } else if (str >= 100 && str < 200) {
+            color = 'hsl(0,0%,0%)';
+        } else if (str >= 200 && str < 300) {
+            color = 'hsl(120,70%,50%)';
+        } else if (str >= 300 && str < 400) {
+            color = 'hsl(280,100%,50%)';
+        } else if (str >= 400 && str < 500) {
+            color = 'hsl(15,100%,45%)';
+        } else if (str >= 500 && str < 700) {
+            color = 'hsl(0,100%,45%)';
+        } else {
+            color = 'hsl(0,0%,0%)';
         }
-        return color
+        return color;
     }
     static messageFormatter(dist: Array<any>) {
         const dataSource: Array<any> = [];
         let prevTimestamp = 0;
         dist.forEach(function(item) {
-            let newTs = Math.round((item.timeSeconds * 1000) + (item.timeUseconds / 1000));
-            if (typeof item.raw === 'object'){
-                item.raw = JSON.stringify(item.raw)
+            const newTs = Math.round((item.timeSeconds * 1000) + (item.timeUseconds / 1000));
+            if (typeof item.raw === 'object') {
+                item.raw = JSON.stringify(item.raw);
             }
             dataSource.push({
                 id: item.id,
@@ -284,7 +284,7 @@ export class Functions {
     static getUriJson(): any {
         if (window.location.search) {
             try {
-                return JSON.parse(decodeURIComponent(window.location.search.slice(1,-1)));
+                return JSON.parse(decodeURIComponent(window.location.search.slice(1, -1)));
             } catch (err) {
                 console.error(new Error(err));
                 return null;
@@ -293,7 +293,7 @@ export class Functions {
             return null;
         }
     }
-    
+
     static md5(str: string): string {
         return Md5.hashStr(str) + '';
     }
@@ -316,22 +316,22 @@ export class Functions {
         }
     }
 
-     static getTimeStamp(v: number,p: string):number {
-        let vlength = v.toString().length
-        let tlength = 0
-        let s = 10
-        let ms = 13
-        let usec = 16
-        switch(p){
+     static getTimeStamp(v: number, p: string): number {
+        const vlength = v.toString().length;
+        let tlength = 0;
+        const s = 10;
+        const ms = 13;
+        const usec = 16;
+        switch (p) {
           case 'sec' : tlength = s ;
           break;
           case 'msec' : tlength = ms;
           break;
           case 'usec' : tlength = usec;
           break;
-          default: tlength = ms
+          default: tlength = ms;
         }
-      return Math.floor(v * Math.pow(10, (tlength - vlength)))
+      return Math.floor(v * Math.pow(10, (tlength - vlength)));
     }
 
     static stylingRowText(raw: string) {
@@ -363,16 +363,16 @@ export class Functions {
                     color = 'blue';
                     switch (g) {
                         case 'INVITE':
-                            color = 'red';
+                            color = 'hsl(227.5,82.4%,51%)';
                             break;
                         case 'CANCEL':
-                            color = 'green';
+                            color = 'hsl(120,100%,25%)';
                             break;
                         case 'BYE':
-                            color = 'blue';
+                            color = 'hsl(120,100%,25%)';
                             break;
                         case 'ACK':
-                            color = 'orange';
+                            color = 'black';
                             break;
                     }
 
@@ -381,7 +381,7 @@ export class Functions {
                 .replace(regexReply, (g, a, c) => {
 
                     color = 'red';
-                    var b = parseInt(c);
+                    const b = parseInt(c);
                     switch (b) {
                         case 100:
                             color = 'orange';

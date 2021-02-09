@@ -2,7 +2,7 @@
     [mouseEventData]="mouseEventData" [width]="1400" [height]="800" [minWidth]="600" [minHeight]="400"
     (browserWindow)="onBrowserWindow($event)">
 
-    <div *ngIf="!_isLoaded" class="loading">
+    <div *ngIf="!_isLoaded || exportAsPNG" class="loading">
         <mat-spinner></mat-spinner>
     </div>
     <button mat-icon-button class="button-icon-right-top" (click)="doOpenFilter()"
@@ -12,7 +12,8 @@
     <!-- filter -->
     <div *ngIf="activeTab <= 1 && isFilterOpened" style="height: calc(100% - 75px);overflow-x: auto;"
         class="button-icon-right-top filter-container" #filterContainer>
-        <mat-slide-toggle style="width: 200px;font-size: .8em;" color="warn" [(ngModel)]="isSimplify">
+        <mat-slide-toggle style="width: 200px;font-size: .8em;" color="warn" [(ngModel)]="isSimplify"
+            (click)="doFilterMessages()">
             Extended Format
         </mat-slide-toggle>
         <br *ngIf="activeTab !== 0">
@@ -46,8 +47,8 @@
         </mat-tab>
         <mat-tab *ngIf="_isLoaded && tabs.flow" label="Flow">
             <app-tab-flow *ngIf="activeTab === 1" [isSimplify]="!isSimplify" [callid]="titleId" [flowFilters]="flowFilters"
-                [dataItem]="sipDataItem"
-                [qosData]="qosData" [RTPFilterForFLOW]="RTPFilterForFLOW" (messageWindow)="addWindow($event)"></app-tab-flow>
+                [dataItem]="sipDataItem" [qosData]="qosData" [RTPFilterForFLOW]="RTPFilterForFLOW"
+                (messageWindow)="addWindow($event)"></app-tab-flow>
         </mat-tab>
 
         <mat-tab label="Session Info" *ngIf="_isLoaded && tabs.callinfo">
@@ -65,11 +66,12 @@
         <mat-tab *ngIf="_isLoaded && tabs.export" label="Export">
             <app-tab-export (exportFlowAsPNG)="onExportFlowAsPNG()" [snapShotTimeRange]="snapShotTimeRange" [dataItem]="sipDataItem"
                 [callid]="titleId" [id]="IdFromCallID"></app-tab-export>
-            <!--  -->
+            
             <div style="position: relative; overflow: hidden; height: 1px; width: 1px;">
                 <div style="position: absolute;">
                     <app-tab-flow [callid]="titleId" [dataItem]="sipDataItem" [exportAsPNG]="exportAsPNG"
-                        (messageWindow)="addWindow($event)"></app-tab-flow>
+                        (messageWindow)="addWindow($event)"
+                        (pngReady)="exportAsPNG=false"></app-tab-flow>
                 </div>
             </div>
         </mat-tab>

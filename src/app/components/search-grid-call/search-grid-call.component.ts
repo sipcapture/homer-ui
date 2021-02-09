@@ -866,8 +866,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }, []);
 
         const timeArray = selectedRows.map(i => i.create_date || i.update_ts);
-        const timeArray_from = selectedRows.length ? Math.min.apply(this, timeArray) : row.data.create_date;
-        const timeArray_to = selectedRows.length ? Math.max.apply(this, timeArray) : row.data.create_date;
+        const timeArray_from = this.config.timestamp.from ? this.config.timestamp.from : 
+            selectedRows.length ? Math.min.apply(this, timeArray) : row.data.create_date;
+        const timeArray_to = this.config.timestamp.to ? this.config.timestamp.to :
+            selectedRows.length ? Math.max.apply(this, timeArray) : row.data.create_date;
 
         const color = Functions.getColorByString(sid, 75, 60, 1);
 
