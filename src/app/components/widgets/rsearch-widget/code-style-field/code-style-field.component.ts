@@ -90,7 +90,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
                 this.setMenuXPosition();
                 this.editor.focus();
 
-            const labels: Array<string> = await this._srs.getLabel(this.serverLoki).toPromise();
+            let labels: Array<string> = await this._srs.getLabel(this.serverLoki).toPromise();
             this.isLabel = true;
             if (labels.length === 0) {
                 this.lokiConnectionDisapper = true;
