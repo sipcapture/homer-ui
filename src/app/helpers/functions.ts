@@ -412,4 +412,19 @@ export class Functions {
         }
     }
 
+    static console2file(data, filename) {
+        if(!data) {
+            console.error('Console.save: No data')
+            return;
+        }
+
+        if(!filename) filename = 'console.json'
+
+        if(typeof data === "object"){
+            data = JSON.stringify(data, undefined, 4)
+        }
+
+        this.saveToFile(data, filename, 'txt/json');
+
+    }
 }
