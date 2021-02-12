@@ -8,6 +8,7 @@
 	display: flex;
 	align-items: center;
 	cursor: pointer;
+    height: 45px;
 	& > img {
 		width: 32px;
 	}
@@ -71,8 +72,8 @@ button {
 	display: inline-block;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 	font-size: 30px;
-	height: 42px;
-	line-height: 32px;
+	height: 45px;
+	line-height: 45px;
 	margin-bottom: 0px;
 	margin-left: 0px;
 	margin-right: 0px;
@@ -80,10 +81,10 @@ button {
 	outline-color: rgb(255, 255, 255);
 	outline-style: none;
 	outline-width: 0px;
-	padding-bottom: 5px;
+	padding-bottom: 0px;
 	padding-left: 5px;
 	padding-right: 5px;
-	padding-top: 5px;
+	padding-top: 0px;
 	text-size-adjust: 100%;
 	vertical-align: baseline;
 	width: 120.906px;
