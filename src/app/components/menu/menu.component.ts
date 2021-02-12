@@ -79,6 +79,7 @@ export class MenuComponent implements OnInit, OnDestroy {
 
     currentUser: User;
     dashboards: DashboardData[];
+    sharedDashboards: DashboardData[];
 
     constructor(
         private _ds: DashboardService,
@@ -159,17 +160,15 @@ export class MenuComponent implements OnInit, OnDestroy {
     updateDashboardList() {
         this._ds.getDashboardInfo().toPromise().then((resData: any) => {
             if (resData) {
-                this.dashboards = resData.data.sort(function (a, b) {
-                    a = (a.name + '').charCodeAt(0);
-                    b = (b.name + '').charCodeAt(0);
-                    if (a > b) {
-                        return 1;
-                    }
-                    if (b > a) {
-                        return -1;
-                    }
-                    return 0;
-                });
+                this.dashboards = resData.data.sort((...aa: any[]) => {
+                    const [a, b] = aa.map(({ name }: { name: string }) => name.charCodeAt(0));
+                    return a < b ? -1 : a > b ? 1 : 0;
+                }).filter(item => item.shared === 0 || item.shared === false);
+                this.sharedDashboards = resData.data.sort((...aa: any[]) => {
+                    const [a, b] = aa.map(({ name }: { name: string }) => name.charCodeAt(0));
+                    return a < b ? -1 : a > b ? 1 : 0;
+                }).filter(item => item.shared === 1 || item.shared === true);
+                console.log(this.sharedDashboards)
                 this.panelList = this.dashboards.map(item => item.name);
                 try {
                     this.panelName = this.dashboards.find(item => item.href === this._ds.getCurrentDashBoardId()).name;
