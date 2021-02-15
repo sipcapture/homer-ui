@@ -202,12 +202,9 @@ class QosProcessor {
         }
         this.chartLabelsRTP = [];
         data.forEach(item => {
-            // try {
+
             item.raw = JSON.parse(item.raw);
-            // } catch (err) {
-            //     this.onErrorMessage(err);
-            //     return;
-            // }
+
 
             const i = item.raw;
             this.chartLabelsRTP.push(moment(item.create_date).format('HH:mm:ss'));
@@ -335,14 +332,20 @@ class QosProcessor {
             this.isRTCP = false;
             return;
         }
-        // this.chartLabels = [];
+
+        let uc = /\u0010/;
+
+        data.map(m => {
+            m.raw = m.raw.replace(uc, '.')
+        })
+
         data = data.map(i => (i.raw = JSON.parse(i.raw), i))
-            .filter(({ raw }) => raw &&
-                raw.sender_information &&
-                raw.sender_information.packets &&
-                raw.sender_information.octets);
+            .filter(({ raw }) => raw?.sender_information &&
+                raw?.sender_information?.packets &&
+                raw?.sender_information?.octets);
         data.forEach(item => {
-            const i = item.raw;
+            const i = item.raw
+
             if (![200, 201, 202].includes(1 * i.type)) {
                 return;
             }
