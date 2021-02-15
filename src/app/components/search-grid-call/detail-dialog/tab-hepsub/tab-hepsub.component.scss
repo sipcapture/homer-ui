@@ -44,7 +44,8 @@
     display: flex;
     background: #fafafa;
     margin-bottom: 5px;
-    align-items: center;
+	align-items: center;
+	overflow:hidden;
     .json-title {
         color: gray;
         padding: 10px;
