@@ -180,6 +180,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         let columnRes: number;
         let rowRes: number;
         const grid = document.getElementById('gridster');
+        if (typeof grid === 'undefined' || grid === null) {
+            return;
+        }
         if (this.dashboardCollection.data.config !== undefined) {
             columnRes = grid.getBoundingClientRect().width / this.dashboardCollection.data.config.columns;
             rowRes = grid.getBoundingClientRect().height / this.dashboardCollection.data.config.maxrows;
@@ -339,12 +342,20 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
     buildUrl(noCache: boolean = false) {
-        if (this.dashboardCollection.data.param === ''  || typeof this.dashboardCollection.data.param === undefined
+        if (this.dashboardCollection.data.param === '' || typeof this.dashboardCollection.data.param === undefined
             || this.dashboardCollection.data.param === null || !this.dashboardCollection.data.config.grafanaTimestamp) {
             return;
         }
-        const cleanedURL = this.dashboardCollection.data.param.replace(/&from=\d*/, '').replace(/&to=\d*/, '');
-        this.iframeUrl = [cleanedURL, Object.keys(this.params).map(i => `${i}=${this.params[i]}`).join('&')].join('?');
+        this.iframeUrl = this.dashboardCollection.data.param;
+        if (/from=\d+/.test(this.iframeUrl)) {
+            this.iframeUrl = this.iframeUrl.replace(/from=\d+/, `from=${this.params.from}`)
+        }
+        if (/to=\d+/.test(this.iframeUrl)) {
+            this.iframeUrl = this.iframeUrl.replace(/to=\d+/, `to=${this.params.to}`)
+        }
+        console.log(this.iframeUrl)
+        this.dashboardCollection.data.param = this.iframeUrl;
+
         this.cdr.detectChanges();
     }
     submitCheck() {

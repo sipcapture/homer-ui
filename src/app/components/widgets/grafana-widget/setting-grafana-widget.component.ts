@@ -115,7 +115,7 @@ export class SettingIframeWidgetComponent implements OnInit {
 
     onPanelSelect() {
         this.data.panelListValue = this.panelListValue.title;
-        this.data.url = this.data.serverUrl + '/d-solo/' + (this.panelListValue.uid || '...') + '/' + (this.panelListValue.title || '...');
+        this.data.url = '/d-solo/' + (this.panelListValue.uid || '...') + '/' + (this.panelListValue.title || '...');
         this.data.params.panelId = this.panelListValue.pid;
     }
 
