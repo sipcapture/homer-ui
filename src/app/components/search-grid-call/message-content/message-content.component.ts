@@ -9,6 +9,7 @@ import { MatTabGroup } from '@angular/material/tabs';
 export class MessageContentComponent implements OnInit, OnDestroy {
     _data: any;
     raw;
+    type;
     decoded: any = null;
     raw_isJSON = false;
     private _interval: any;
@@ -20,6 +21,8 @@ export class MessageContentComponent implements OnInit, OnDestroy {
 
     @Input('data') set data(val) {
         this._data = val;
+        console.log({ val });
+        this.type = val.type;
         this.messageDetailTableData = this._data.messageDetailTableData;
         this.decoded = null;
 
