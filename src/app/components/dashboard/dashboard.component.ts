@@ -353,7 +353,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         if (/to=\d+/.test(this.iframeUrl)) {
             this.iframeUrl = this.iframeUrl.replace(/to=\d+/, `to=${this.params.to}`)
         }
-        console.log(this.iframeUrl)
         this.dashboardCollection.data.param = this.iframeUrl;
 
         this.cdr.detectChanges();
@@ -650,7 +649,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         this.postSaveHash = _hash;
         this._ds.setWidgetListCurrentDashboard(this.dashboardCollection.data.widgets);
 
-        return this._ds.postDashboardStore(this._ds.getCurrentDashBoardId(), this.dashboardCollection.data);
+        return this._ds.updateDashboard(this.dashboardCollection.data);
     }
 
     ngOnDestroy() {

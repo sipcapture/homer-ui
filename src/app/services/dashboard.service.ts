@@ -91,20 +91,20 @@ export class DashboardService {
         return this.dbs.current || 'home';
     }
 
-    // Update json
-    updateDashboard(id: string, params): Observable<DashboardModel> {
-        const httpOptions = { headers: new HttpHeaders({ 'Content-Type':  'application/json' })};
-        return this._http.put<DashboardModel>(`${this.url}/store/${id}`, params, httpOptions);
-    }
-
     // get Dashboard store
     getDashboardStore(id: string): Observable<any> {
         return this._http.get<any>(`${this.url}/store/${id}`);
     }
 
-    // post Dashboard store
+    // post Dashboard store for ADD a new dashboard only
     postDashboardStore(id: string, data: any): Observable<any> {
-        return this._http.post<any>(`${this.url}/store/${id}`, data);
+        /** id - DEPRECATED */
+        return this._http.post<any>(`${this.url}/store/${data.id || id || this.getCurrentDashBoardId()}`, data);
+    }
+
+    // Update json UPDATE data of dahboard
+    updateDashboard(data: any): Observable<any> {
+        return this._http.put<any>(`${this.url}/store/${data.id}`, data);
     }
 
     // delete Dashboard store
