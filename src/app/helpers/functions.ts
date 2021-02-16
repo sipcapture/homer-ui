@@ -269,6 +269,13 @@ export class Functions {
 
         return src;
     }
+    static JSON_parse(jsonString: string): any {
+        try {
+            return JSON.parse(jsonString);
+        } catch (e) {
+            return null;
+        }
+    }
     static getUriParams(): any {
         return window.location.search ? window.location.search.split('&')
             .map(i => i.replace('?', '').split('='))

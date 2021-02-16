@@ -19,6 +19,15 @@
 					[title]="dashboardItem.name + ' (' + dashboardItem.id + ')'">
 					<mat-icon>dashboard</mat-icon>{{dashboardItem.name}}
 				</button>
+                <div  class="menu-item menu-item-text" *ngIf="sharedDashboards !== undefined && sharedDashboards.length > 0">
+                    Shared Dashboards
+                </div>
+                <button mat-menu-item *ngFor="let dashboardItem of sharedDashboards | filter : searchText"
+                    [className]="'menu-item ' + (dashboardItem.id === currentDashboardId ? 'menu-item-active' : '')"
+                    (click)="panelName = dashboardItem.name; dashboardGo(dashboardItem.href)"
+                    [title]="dashboardItem.name + ' (' + dashboardItem.id + ')'">
+                    <mat-icon>dashboard</mat-icon>{{dashboardItem.name}}
+                </button>
 				<button mat-menu-item (click)="onAddDashboard()">
 					<mat-icon>add</mat-icon>
 					Add New Dashboard
