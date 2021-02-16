@@ -274,7 +274,7 @@ export class DetailDialogComponent implements OnInit {
                 }
             }
             this.changeDetectorRefs.detectChanges();
-        }, 150);
+        }, 0);
         this.tabs.qos = isVisible;
         this.changeDetectorRefs.detectChanges();
     }
