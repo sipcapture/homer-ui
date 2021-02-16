@@ -9,6 +9,7 @@ import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 import { PreferenceAdvancedService } from '@app/services';
 import { Functions } from '@app/helpers/functions';
 
+import { environment } from '@environments/environment';
 export interface IframeConfig {
     id?: string;
     title: string;
@@ -51,6 +52,7 @@ export class IframeWidgetComponent implements IWidget, OnInit, OnDestroy {
     @Input() id: string;
     @Output() changeSettings = new EventEmitter<any> ();
 
+    private envUrl = `${environment.apiUrl.replace('/api/v3','')}/grafana`;
     url: string;
     serverUrl: string;
     _config: IframeConfig;
@@ -123,7 +125,7 @@ export class IframeWidgetComponent implements IWidget, OnInit, OnDestroy {
         this.buildUrl(true);
     }
 
-    buildUrl(noCache: boolean = false) {
+    async buildUrl(noCache: boolean = false) {
         if (this._config.url === 'none' || typeof this.panelListValue === 'undefined') {
             this.iframeLoaded = false;
             return;
@@ -133,7 +135,9 @@ export class IframeWidgetComponent implements IWidget, OnInit, OnDestroy {
             params.rand = (Math.random() * 999999).toFixed(0);
         }
         this.url = [this._config.url, Object.keys(params).map(i => `${i}=${params[i]}`).join('&')].join('?');
+        this.url = `${this.envUrl}${this.url}`;
         this._config.configuredUrl = this.url;
+        console.log(this.url)
         this.cdr.detectChanges();
     }
 

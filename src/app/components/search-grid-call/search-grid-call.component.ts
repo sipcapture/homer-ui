@@ -63,6 +63,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     myPredefColumns: Array<Object>;
     rowData: any = [];
     showPortal = false;
+    loader = false;
+    noRowsTemplate = `<span class="norowstemplate">Adjust params and do a search to show results</span>`;
     private isOpenDialog = false;
     title = 'Call Result';
     isLoading = false;
@@ -98,6 +100,11 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             value: 100
         },
         refresh: false,
+    };
+    agGridSizeControl = {
+        sizeToFit: true,
+        sizeColumnsToFit: false,
+        autoSizeAllColumns: false,
     };
     gridOptions: GridOptions = <GridOptions>{
         defaultColDef: {
@@ -158,7 +165,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     ) {
         this.myPredefColumns = [{
             headerName: '',
-            field: 'checkbox',
+            field: '',
             minWidth: 34,
             maxWidth: 34,
             resizable: false,
@@ -182,12 +189,14 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
     @HostListener('window:resize')
     onResize() {
-        if (!this.gridApi) {
+        if (!this.gridApi || !this.agGridSizeControl.sizeToFit) {
             return;
         }
 
         setTimeout(() => {
-            this.gridApi.sizeColumnsToFit();
+            if (this.agGridSizeControl.sizeToFit) {
+                this.gridApi.sizeColumnsToFit();
+            }
         }, 300);
     }
 
@@ -264,6 +273,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             }
             this.getHeaders();
         }
+        
+        this.recoverAgGridSizeControl();
 
         this._pas.getAll().toPromise().then((result: any) => {
             this.limitRange.from = -300000;
@@ -283,6 +294,45 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 }
             }
         });
+    }
+    private recoverAgGridSizeControl() {
+        /** recover agGridSizeControl settings from localStorage */
+        const agGridSettings =
+            localStorage.getItem(ConstValue.SIZE_CONTROL) || '{}';
+        const fromLocalStorage = Functions.JSON_parse(agGridSettings);
+        this.agGridSizeControl.sizeColumnsToFit =
+            fromLocalStorage.sizeColumnsToFit ||
+            this.agGridSizeControl.sizeColumnsToFit;
+        this.agGridSizeControl.sizeToFit =
+            fromLocalStorage.sizeToFit || this.agGridSizeControl.sizeToFit;
+        this.agGridSizeControl.autoSizeAllColumns =
+            fromLocalStorage.autoSizeAllColumns ||
+            this.agGridSizeControl.autoSizeAllColumns;
+
+        this.updateAgGridSizing();
+    }
+
+    private updateAgGridSizing() {
+        if (this.agGridSizeControl.sizeToFit) {
+            this.sizeToFit();
+        }
+        if (this.agGridSizeControl.sizeColumnsToFit) {
+            setTimeout(() => {
+                this.autoSizeAll(true);
+            }, 300);
+        }
+        this.changeDetectorRefs.detectChanges();
+    }
+
+    private autoSizeAll(skipHeader) {
+        if (!this.gridColumnApi) {
+            return;
+        }
+        const allColumnIds = [];
+        this.gridColumnApi.getAllColumns().forEach(({ colId }) => {
+            allColumnIds.push(colId);
+        });
+        this.gridColumnApi.autoSizeColumns(allColumnIds, skipHeader);
     }
 
     async initSearchSlider(isImportantClear = false) {
@@ -458,11 +508,13 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         if (params && params.param) {
             const sids: Array<string> = params.param.search[this.protocol_profile].callid;
             if (sids && sids.length > 1) {
-                this.gridApi.forEachLeafNode(node => {
-                    if (sids.indexOf(node.data.sid) !== -1) {
-                        node.setSelected(true, true);
-                    }
-                });
+                if(typeof this.gridApi !== 'undefined'){
+                    this.gridApi.forEachLeafNode(node => {
+                        if (sids.indexOf(node.data.sid) !== -1) {
+                            node.setSelected(true, true);
+                        }
+                    });
+                }
             }
         }
     }
@@ -577,6 +629,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             const restoreColumns = this.localStateHeaders(myRemoteColumns);
             this.columnDefs = hepVersion < 2000 ? this.myPredefColumns.concat(restoreColumns) : myRemoteColumns;
             this.sizeToFit();
+            this.changeDetectorRefs.detectChanges();
         }
     }
 
@@ -635,7 +688,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     public update(isImportant = false) {
-
+        this.loader = true;
         if (this.isNewData() && !isImportant) {
             return;
         }
@@ -653,6 +706,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         this.rowData = null;
         if (this.isLokiQuery) {
             this._srs.getData(this.queryBuilderForLoki()).toPromise().then(result => {
+                this.loader = false;
                 this.rowData = result.data.sort((a, b) => {
                     a = new Date(a.micro_ts).getTime();
                     b = new Date(b.micro_ts).getTime();
@@ -664,11 +718,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 });
                 this.sizeToFit();
                 this.changeDetectorRefs.detectChanges();
-                setTimeout(() => { /** for grid updated autoHeight and sizeToFit */
+                if(this.rowData) { /** for grid updated autoHeight and sizeToFit */
                     this.rowData = Functions.cloneObject(this.rowData);
+                    if (this.rowData) { this.loader = false; }
                     this.dataReady.emit({});
                     this.changeDetectorRefs.detectChanges();
-                }, 600);
+                };
             }, err => {
                 this.rowData = [];
                 this.dataReady.emit({});
@@ -685,6 +740,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
 
                 this.rowData = result.data;
+                if (this.rowData) { this.loader = false; }
                 for (let i = 0; i < this.rowData.length; i++) {
                     if (this.rowData[i].protocol !== undefined && this.rowData[i].protocol === 17) {
                         this.rowData[i].protocol = 'UDP';
@@ -757,21 +813,22 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             };
         }
         return {
-            'background-color': Functions.getColorByString(params.data.callid, 60, 80, 0.8)
+            'background-color': Functions.getColorByString(params.data.sid, 60, 80, 0.8)
         };
     }
 
     private sizeToFit() {
+        if (!this.agGridSizeControl.sizeToFit) {
+            return;
+        }
         if (this._interval) {
             clearInterval(this._interval);
         }
         this._interval = setTimeout(() => {
-            if (this.gridApi) {
+            if (this.gridApi && this.agGridSizeControl.sizeToFit) {
                 this.gridApi.sizeColumnsToFit();
             }
-            this.changeDetectorRefs.detectChanges();
-        }, 300);
-        this.changeDetectorRefs.detectChanges();
+        }, 100);
     }
 
     setQuickFilter() {
@@ -816,7 +873,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }, []);
 
         const timeArray = selectedRows.map(i => i.create_date || i.update_ts);
-        const timeArray_from = this.config.timestamp.from ? this.config.timestamp.from : 
+        const timeArray_from = this.config.timestamp.from ? this.config.timestamp.from :
             selectedRows.length ? Math.min.apply(this, timeArray) : row.data.create_date;
         const timeArray_to = this.config.timestamp.to ? this.config.timestamp.to :
             selectedRows.length ? Math.max.apply(this, timeArray) : row.data.create_date;
@@ -1033,16 +1090,22 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             context: this.context,
             lokiSort: this.lokiSort
         } as any;
+        console.log(params.context.componentParent.columnDefs)
 
         this.dialog.open(DialogSettingsGridDialog, {
-            width: '500px', data: {
+            data: {
+                agGridSizeControl: this.agGridSizeControl,
                 apicol: params.columnApi,
                 apipoint: params.api,
-                lokisort: params.lokiSort,
                 columns: params.context.componentParent.columnDefs,
-                idParent: params.context.componentParent.id
-            }
-        });
+                idParent: params.context.componentParent.id,
+            },
+        }).afterClosed().toPromise().then(() => {
+            localStorage.setItem(
+                'resultsChartSetting',
+                JSON.stringify(this.agGridSizeControl)
+            );
+        });;
         this.changeDetectorRefs.detectChanges();
     }
     onColumnMoved(event) {

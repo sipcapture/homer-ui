@@ -39,6 +39,7 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
     jsonData: any;
     jsonDownload: any;
     _interval: any;
+    objectKeys = Object.keys
     constructor(
         private agentsubService: AgentsubService,
         private searchService: SearchService,
@@ -161,6 +162,7 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
 
             this.jsonDownload = downloadJSON;
             this.jsonData = hepData;
+            this.jsonData.data = JSON.parse(this.jsonData?.data)
             this.indexTabPosition = 0;
             this.cdr.detectChanges();
         }

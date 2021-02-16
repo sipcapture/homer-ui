@@ -100,7 +100,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             refresh: '1h',
             from: 'now-5m', // 'now-5m',
             to: 'now', // 'now'
-        }
+        };
         // Grid options
         this.gridOptions = {
             gridType: GridType.Fit,
@@ -180,6 +180,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         let columnRes: number;
         let rowRes: number;
         const grid = document.getElementById('gridster');
+        if (typeof grid === 'undefined' || grid === null) {
+            return;
+        }
         if (this.dashboardCollection.data.config !== undefined) {
             columnRes = grid.getBoundingClientRect().width / this.dashboardCollection.data.config.columns;
             rowRes = grid.getBoundingClientRect().height / this.dashboardCollection.data.config.maxrows;
@@ -266,7 +269,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                 i.onmousedown = evt => shadows.forEach( (j: any) => j.style.display = 'block' );
             });
             this.cdr.detectChanges();
-        }, 500);
+        },  100);
     }
 
     getData() {
@@ -289,7 +292,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
                     this.buildUrl();
 
                 });
-                if (!this.dashboardCollection.data.config.grafanaTimestamp){
+                if (!this.dashboardCollection.data.config.grafanaTimestamp) {
                     this.iframeUrl = this.dashboardCollection.data.param;
                 }
             }
@@ -339,12 +342,20 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         });
     }
     buildUrl(noCache: boolean = false) {
-        if (this.dashboardCollection.data.param === ''  || typeof this.dashboardCollection.data.param === undefined 
+        if (this.dashboardCollection.data.param === '' || typeof this.dashboardCollection.data.param === undefined
             || this.dashboardCollection.data.param === null || !this.dashboardCollection.data.config.grafanaTimestamp) {
             return;
         }
-        const cleanedURL = this.dashboardCollection.data.param.replace(/&from=\d*/, '').replace(/&to=\d*/, '')
-        this.iframeUrl = [cleanedURL, Object.keys(this.params).map(i => `${i}=${this.params[i]}`).join('&')].join('?');
+        this.iframeUrl = this.dashboardCollection.data.param;
+        if (/from=\d+/.test(this.iframeUrl)) {
+            this.iframeUrl = this.iframeUrl.replace(/from=\d+/, `from=${this.params.from}`)
+        }
+        if (/to=\d+/.test(this.iframeUrl)) {
+            this.iframeUrl = this.iframeUrl.replace(/to=\d+/, `to=${this.params.to}`)
+        }
+        console.log(this.iframeUrl)
+        this.dashboardCollection.data.param = this.iframeUrl;
+
         this.cdr.detectChanges();
     }
     submitCheck() {
@@ -375,18 +386,17 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     changeCurrent(id: string) {
         const ls = JSON.parse(localStorage.getItem('searchQueryWidgetsResult'));
         let currentWidget: any;
-        if (ls != null && ls.currentWidget !== undefined) {
+        if (ls != null && ls.currentWidget !== undefined && ls.currentWidget !== '') {
             currentWidget = ls.currentWidget;
         } else {
             currentWidget = this._ds.dbs.currentWidget;
         }
-        if (currentWidget.id && id !== currentWidget.id) {
-            for (let i = 0; i < this.submitCheck().length; i++) {
-                if (id === this.submitCheck()[i].id) {
-                    // currentWidget.id
-                    this._ds.setCurrentWidgetId(this.submitCheck()[i]);
-                }
+        if (currentWidget === '' || typeof currentWidget === 'undefined' || (currentWidget.id && id !== currentWidget.id)) {
+            const i = this.submitCheck().findIndex(widget => widget.id === id);
+            if (i === -1) {
+                return;
             }
+            this._ds.setCurrentWidgetId(this.submitCheck()[i]);
             this.save();
         }
     }

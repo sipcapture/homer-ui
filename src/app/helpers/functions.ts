@@ -269,6 +269,13 @@ export class Functions {
 
         return src;
     }
+    static JSON_parse(jsonString: string): any {
+        try {
+            return JSON.parse(jsonString);
+        } catch (e) {
+            return null;
+        }
+    }
     static getUriParams(): any {
         return window.location.search ? window.location.search.split('&')
             .map(i => i.replace('?', '').split('='))
@@ -405,4 +412,19 @@ export class Functions {
         }
     }
 
+    static console2file(data, filename) {
+        if(!data) {
+            console.error('Console.save: No data')
+            return;
+        }
+
+        if(!filename) filename = 'console.json'
+
+        if(typeof data === "object"){
+            data = JSON.stringify(data, undefined, 4)
+        }
+
+        this.saveToFile(data, filename, 'txt/json');
+
+    }
 }

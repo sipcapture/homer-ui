@@ -1,26 +1,32 @@
+
 <mat-toolbar class="title" color="primary">
-  <div>Grid settings</div>
-  <button mat-icon-button (click)="onNoClick()">
-    <mat-icon>close</mat-icon>
-  </button>
-</mat-toolbar>
-<div mat-dialog-content>
-  <p>Select settings</p>
-    <!-- <div *ngIf="allColumnIds">
-     <p>
-       <mat-checkbox class="chack-list" *ngFor="let column of allColumnIds" [(ngModel)]="column.selected" (change)="onChange($event.checked, column.field)">
-        {{column.name}}
-
-      </mat-checkbox> 
-     </p>
-   </div>   -->
-   <app-drag-drop-list 
-    [list]="allColumnIds"
-    (change)="onUpdateProto($event)"
-  ></app-drag-drop-list>
-</div>
-
-<div mat-dialog-actions style="float: right; margin-bottom: 0rem;"> 
-  <button mat-button (click)="onNoClick()">Cancel</button>
-  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
-</div>
+    <div>Grid settings</div>
+    <button mat-icon-button (click)="onNoClick()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar>
+  <div mat-dialog-content>
+    <p>Select settings</p>
+    <div>
+      <mat-checkbox class="chack-list"
+        *ngFor="let checkbox of checkboxSizeType"
+        [(ngModel)]="checkbox.selected"
+        (change)="onChangeSizeToFit($event.checked, checkbox.type)"
+      >{{checkbox.title}}</mat-checkbox> 
+    </div>  
+  
+    <hr />
+  
+    <app-drag-drop-list *ngIf="apiColumn.getAllColumns() !== 'undefined' && this.apiColumn.getAllColumns() !== null"
+      [list]="allColumnIds"
+      (order)="onUpdateProto($event)"
+    ></app-drag-drop-list>
+     <div *ngIf="apiColumn.getAllColumns() === 'undefined' || this.apiColumn.getAllColumns() === null">
+        Please make a search to access settings
+     </div>
+  </div>
+  
+  <div mat-dialog-actions style="float: right; margin-bottom: 0rem;"> 
+    <button  mat-raised-button (click)="onNoClick()">Cancel</button>
+    <button mat-raised-button color=primary [mat-dialog-close]="data" cdkFocusInitial [disabled]="apiColumn.getAllColumns() === 'undefined' || this.apiColumn.getAllColumns() === null">Ok</button>
+  </div>

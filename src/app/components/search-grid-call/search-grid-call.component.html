@@ -23,16 +23,26 @@
     </div>
     <button mat-button style="flex: 1" (click)="update(true)">Refresh search</button>
 </div>
-<ag-grid-angular [ngStyle]="{
+<ag-grid-angular 
+*ngIf="loader === false; else Loader"
+[ngStyle]="{
         'height': inContainer ?
           (isLokiQuery ? 'calc(100% - 67px)': '100%') :
           (isLokiQuery ? 'calc(100vh - 112px)' : 'calc(100vh - 45px)'),
         'width': '100%'
-    }" class="ag-theme-material" [defaultColDef]="defaultColDef" [gridOptions]="gridOptions" [rowData]="rowData"
+    }" 
+    class="ag-theme-material" [defaultColDef]="defaultColDef" [gridOptions]="gridOptions" [rowData]="rowData"
     [columnDefs]="columnDefs" [enableRangeSelection]="true" [rowMultiSelectWithClick]="true" [pagination]="true"
     (gridReady)="onGridReady($event)" [context]="context" [enableCellTextSelection]="true"
+    [overlayNoRowsTemplate]="noRowsTemplate"
     (columnMoved)="onColumnMoved($event)" [frameworkComponents]="frameworkComponents"></ag-grid-angular>
-
+    <ng-template #Loader>
+        <div class="lds-container">
+            <h3>
+                <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+            </h3>
+        </div>
+    </ng-template>
 <!-- 
   search slider
 -->
@@ -81,7 +91,7 @@
 <div *ngIf="isLoading" class="loading">
     <mat-spinner></mat-spinner>
 </div>
-<div *ngIf="!isLokiQuery" style="position:absolute; bottom:0.4rem; left:0.2rem; opacity: 0.7;">
+<div *ngIf="!isLokiQuery && !loader" style="position:absolute; bottom:0.4rem; left:0.2rem; opacity: 0.7;">
     <button matTooltip="Column settings" mat-icon-button (click)="onSettingButtonClick()">
         <mat-icon>settings_applications</mat-icon>
     </button>
