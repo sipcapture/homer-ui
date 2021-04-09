@@ -6,27 +6,42 @@
   </mat-tab>
 
 
-  <mat-tab *ngFor="let item of subTabList"
-    (click)="onTabClick(item.uuid, item.type)"
-    [label]="'HEPSUB:' + item.title">
-    
-    <br>
-    <div *ngFor="let button of downloadArray">
-      <button mat-raised-button color="primary" (click)="downloadData(button)"
-        >Download: {{ button.cid }}</button>
-    </div>
-    <br>
+  <mat-tab *ngFor="let item of subTabList" (click)="onTabClick(item.uuid, item.type)" [label]="'HEPSUB:' + item.title">
 
-    <ngx-json-viewer [json]="jsonData" [expanded]="true"></ngx-json-viewer>
+  
+    <div *ngIf="isDownload" class="divTableCell">
+      <div class="divTable">
+        <div class="divTableBody">
+          <div *ngFor="let item of downloadArray | keyvalue">
+            <div class="divTableRow">
+              <div class="divTableCellLeft">
+                <ngx-json-viewer [json]="jsonDownload[item.key]" [expanded]="true"></ngx-json-viewer>
+              </div>
+              <div class="divTableCellRight">
+                <button mat-raised-button color="primary" (click)="downloadData(item.value)">Download:
+                  {{ item.key }}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<div *ngIf="jsonData">
+  <div class="json-display">
+    <ngx-json-viewer [json]="jsonData" [expanded]="false"></ngx-json-viewer>
+
+  </div>
+</div>
+
+
+  
+   
 
   </mat-tab>
 
 
   <mat-tab label="Loki">
-    <app-tab-loki
-      [id]="id"
-      [dataItem]="dataItem"
-    ></app-tab-loki>
+    <app-tab-loki [id]="id" [dataItem]="dataItem"></app-tab-loki>
   </mat-tab>
 
 

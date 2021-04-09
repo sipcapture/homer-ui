@@ -38,7 +38,10 @@ export interface SelectList {
     tags?: Array<any>;
     value: string;
 }
-
+export interface GroupedSelectList {
+    group: string;
+    list: SelectList[];
+}
 @Component({
     selector: 'app-setting-influxdbchart-widget-component',
     templateUrl: 'setting-influxdbchart-widget.component.html',

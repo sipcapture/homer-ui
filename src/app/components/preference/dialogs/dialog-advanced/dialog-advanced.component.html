@@ -19,12 +19,15 @@
       <input matInput [(ngModel)]="data.data.param">
     </mat-form-field>
   </div>
+  <hr>
   <strong>Data</strong><hr />
-  <ace-editor
+  <ace-editor 
       [mode]="mode"
       [theme]="'eclipse'"
       [readOnly]="false"
       [(text)]="data.data.data"
+      (textChanged)="validate()"
+      [durationBeforeCallback]="500"
       #data_view style="min-height:150px;"></ace-editor>
 </div>
   
@@ -32,5 +35,5 @@
 
 <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
   <button mat-raised-button (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Save</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial [disabled]="isDisabled">Save</button>
 </div>

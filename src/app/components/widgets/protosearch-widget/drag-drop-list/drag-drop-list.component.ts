@@ -1,17 +1,20 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
 @Component({
     selector: 'app-drag-drop-list',
     templateUrl: './drag-drop-list.component.html',
-    styleUrls: ['./drag-drop-list.component.scss']
+    styleUrls: ['./drag-drop-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class DragDropListComponent implements OnInit {
     _list: Array<any>;
     inactiveList: Array<any> = [];
     activeList: Array<any> = [];
 
     @Output() change = new EventEmitter<any> ();
+    @Output() order = new EventEmitter<any> ();
     @Input() sortlistactive: Array<any>;
     @Input('list') set list(val) {
         this._list = val;
@@ -34,8 +37,9 @@ export class DragDropListComponent implements OnInit {
         if (this.sortlistactive && this.sortlistactive.length > 0) {
             const _activeList = [];
             this.sortlistactive.forEach(item => {
-                _activeList.push(this.activeList.filter(i => i.id === item.field_name)[0])
-            })
+                _activeList.push(this.activeList.find(i => i.id === item.field_name));
+
+            });
             this.activeList = _activeList;
         }
     }
@@ -63,6 +67,12 @@ export class DragDropListComponent implements OnInit {
             item.selected = true;
         });
         const newProto = [].concat(this.activeList, this.inactiveList);
+        const sortedProto = newProto.sort((a, b) => a.idx - b.idx)
         this.change.emit(newProto);
+        this.order.emit({
+            sortedProto: sortedProto,
+            newProto: newProto,
+            event: event
+        });
     }
 }

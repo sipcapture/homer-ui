@@ -33,10 +33,13 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
 
     isLogs = true;
     subTabList = [];
-    downloadArray = [];
+    downloadArray = {};
     downloadKey = {};
+    isDownload = false;
     jsonData: any;
+    jsonDownload: any;
     _interval: any;
+    objectKeys = Object.keys
     constructor(
         private agentsubService: AgentsubService,
         private searchService: SearchService,
@@ -136,6 +139,7 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
         if (res2 && res2.data) {
 
             const hepData = (JSON.parse(JSON.stringify(res2.data)));
+            const downloadJSON = {};
 
             for (let key of Object.keys(hepData)) {
                 for (const skey in hepData[key]) {
@@ -143,17 +147,22 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
                         if (skey == '__hep__' && hepData[key][skey]['type'] && hepData[key][skey]['type'] == "download") {
                             const newObj = JSON.parse(JSON.stringify(hepData[key]));
                             if(!this.downloadKey[newObj.cid]) {
-                                this.downloadArray.push(newObj);
+                                this.downloadArray[newObj.cid] = newObj;
                                 this.downloadKey[newObj.cid] = uuid;
                             }
                         }
 
                         delete hepData[key][skey];
+                        downloadJSON[key] = (JSON.parse(JSON.stringify(hepData[key])));
+                        delete hepData[key];
+                        this.isDownload = true;
                     }
                 }
             }
 
+            this.jsonDownload = downloadJSON;
             this.jsonData = hepData;
+            this.jsonData.data = JSON.parse(this.jsonData?.data)
             this.indexTabPosition = 0;
             this.cdr.detectChanges();
         }
@@ -169,7 +178,6 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
     }
 
     public downloadData(data) {
-
         try {
             const dataQuery = this.getQuery();
             const uuid = this.downloadKey[data.cid];
@@ -182,8 +190,6 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
         } catch (err) {
             console.log('error request:', err);
         }
-
-
     }
 
     private getCallIdArray() {

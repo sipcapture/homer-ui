@@ -1,5 +1,14 @@
-
-import { Component, OnInit, ViewChild, AfterViewInit, Output, EventEmitter, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    ViewChild,
+    AfterViewInit,
+    Output,
+    EventEmitter,
+    Input,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    OnChanges } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { SearchRemoteService, PreferenceAdvancedService } from '@app/services';
 
@@ -9,10 +18,11 @@ import { SearchRemoteService, PreferenceAdvancedService } from '@app/services';
     styleUrls: ['./code-style-field.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
+export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges {
     divHTML: string;
     divText: string;
     serverLoki: string;
+    lokiTemplate: string;
     editor: HTMLElement;
     isLabel = true;
     _queryText: string;
@@ -43,15 +53,25 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
         private cdr: ChangeDetectorRef
     ) {
         this._pas.getAll().toPromise().then((data: any) => {
-            this.serverLoki = data.data
+            [this.serverLoki] = data.data
                 .filter(i => i.category === 'search' && i.param === 'lokiserver')
-                .map(i => i.data.host)[0];
+                .map(i => i.data.host);
+            [this.lokiTemplate] = data.data
+            .filter(i => i.category === 'search' && i.param === 'lokiserver')
+            .map(i => i.data.template);
             this.updateEditor();
             this.cdr.detectChanges();
         });
     }
 
     ngOnInit() {
+    }
+    ngOnChanges() {
+        if (this.queryText && this.editor !== undefined) {
+            this.editor.innerText = this.queryText;
+            this.updateEditor();
+        }
+        this.cdr.detectChanges();
     }
     ngAfterViewInit () {
         this.editor = this.divContainer.nativeElement;
@@ -70,7 +90,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
                 this.setMenuXPosition();
                 this.editor.focus();
 
-            const labels: Array<string> = await this._srs.getLabel(this.serverLoki).toPromise();
+            let labels: Array<string> = await this._srs.getLabel(this.serverLoki).toPromise();
             this.isLabel = true;
             if (labels.length === 0) {
                 this.lokiConnectionDisapper = true;
@@ -362,6 +382,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit {
             this.updateData.emit({
                 text: textContent,
                 serverLoki: this.serverLoki,
+                template: this.lokiTemplate || '',
                 obj: this.getObject(textContent),
                 rxText: this.getRegExpString(textContent)
             });

@@ -27,6 +27,7 @@
             <input matInput [(ngModel)]="data.data.partid">
           </mat-form-field>
                </div>-->
+               <hr>
     <strong>Data</strong><hr />
     <!-- <ngx-json-viewer [json]="data.data.data" [expanded]="false"></ngx-json-viewer> -->
     <ace-editor
@@ -34,11 +35,13 @@
       [theme]="'eclipse'"
       [readOnly]="false"
       [(text)]="data.data.data"
+      (textChanged)="validate()"
+      [durationBeforeCallback]="500"
       #data_view style="min-height:350px;"></ace-editor>
 </div>
 
 
 <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
   <button mat-raised-button (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Save</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial [disabled]='isDisabled'>Save</button>
 </div>
