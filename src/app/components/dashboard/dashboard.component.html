@@ -2,13 +2,13 @@
 	<h3>{{ dashboardTitle | uppercase }}</h3>
 	<div style="float: right;">
 		<button mat-icon-button *ngIf="!isIframe" [disabled]='isShared || !isDashboardUpdate' (click)="onDashboardAdd()" onclick="this.blur()">
-            <fa-icon [matTooltip]='isShared ? "Can&#39;t edit shared dashboard" : !isDashboardUpdate ? "Insufficient permissions to Update Dashboard" : "Add widget"'  icon="plus"></fa-icon>
+            <mat-icon [matTooltip]='isShared ? "Can&#39;t edit shared dashboard" : !isDashboardUpdate ? "Insufficient permissions to Update Dashboard" : "Add widget"'  icon="plus">add</mat-icon>
         </button>
 		<button mat-icon-button [disabled]='isShared || !isDashboardUpdate' (click)="onDashboardSettings()" onclick="this.blur()" >
-            <fa-icon icon="cog" [matTooltip]='isShared ? "Can&#39;t edit shared dashboard" : !isDashboardUpdate ? "Insufficient permissions to Update Dashboard" : "Dashboard settings"'></fa-icon>
+            <mat-icon icon="cog" [matTooltip]='isShared ? "Can&#39;t edit shared dashboard" : !isDashboardUpdate ? "Insufficient permissions to Update Dashboard" : "Dashboard settings"'>settings</mat-icon>
         </button>
 		<button mat-icon-button *ngIf="!isHome" [disabled]='isHome || isShared || !isDashboardDelete' (click)="onDashboardDelete()" onclick="this.blur()">
-            <fa-icon [matTooltip]='isShared ? "Can&#39;t edit shared dashboard" : !isDashboardUpdate ? "Insufficient permissions to Delete Dashboard" : "Delete dashboard"' icon="trash-alt"></fa-icon>
+            <mat-icon [matTooltip]='isShared ? "Can&#39;t edit shared dashboard" : !isDashboardUpdate ? "Insufficient permissions to Delete Dashboard" : "Delete dashboard"' icon="trash-alt">delete</mat-icon>
         </button>
 	</div>
 </div>
