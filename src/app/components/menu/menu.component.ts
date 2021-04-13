@@ -168,12 +168,13 @@ export class MenuComponent implements OnInit, OnDestroy {
                 this.dashboards = resData.data.sort((...aa: any[]) => {
                     const [a, b] = aa.map(({ name }: { name: string }) => name.charCodeAt(0));
                     return a < b ? -1 : a > b ? 1 : 0;
-                }).filter(item => (item.shared === 0 || item.shared === false) && item.owner !== currentUser);
+                }).filter(item =>
+                    item.shared === 0 || item.shared === false || item.owner === currentUser);
+                    console.log(resData.data)
                 this.sharedDashboards = resData.data.sort((...aa: any[]) => {
                     const [a, b] = aa.map(({ name }: { name: string }) => name.charCodeAt(0));
                     return a < b ? -1 : a > b ? 1 : 0;
                 }).filter(item => (item.shared === 1 || item.shared === true) && item.owner !== currentUser);
-                console.log(this.sharedDashboards)
                 this.panelList = this.dashboards.map(item => item.name);
                 try {
                     this.panelName = this.dashboards.find(item => item.href === this._ds.getCurrentDashBoardId()).name;
