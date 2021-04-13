@@ -11,3 +11,4 @@ export * from './grid-settings-dialog/grid-settings-dialog';
 export * from './message-content/message-safe-html.component';
 export * from './message-content/message-content.component';
 export * from './renderer/index';
+export * from './export-dialog/export-dialog.component';
