@@ -103,6 +103,7 @@ import {
     TabLokiComponent,
     TabMessagesComponent,
     TabQosComponent,
+    ExportDialogComponent
 } from '@app/components/search-grid-call';
 
 import { MenuComponent } from '@app/components/menu/menu.component';
@@ -168,6 +169,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         TabLokiComponent,
         TabMessagesComponent,
         TabQosComponent,
+        ExportDialogComponent,
 
         /** widgets */
         AceEditorWidgetComponent,

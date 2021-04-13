@@ -315,8 +315,11 @@ export class Functions {
             }, 0);
         }
     }
+    static secondsToHour(data: number = 0) {
+        return new Date(data * 1000).toISOString().substr(11, 8);
+    }
 
-     static getTimeStamp(v: number, p: string): number {
+    static getTimeStamp(v: number, p: string): number {
         const vlength = v.toString().length;
         let tlength = 0;
         const s = 10;
