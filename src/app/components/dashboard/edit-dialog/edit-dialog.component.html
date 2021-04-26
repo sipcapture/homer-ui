@@ -27,7 +27,7 @@
     <input matInput [(ngModel)]="data.param">
   </mat-form-field>
   
-  <mat-checkbox labelPosition="Before" [(ngModel)]="data.shared">Shared</mat-checkbox>
+  <mat-checkbox labelPosition="Before" [(ngModel)]="data.shared" *ngIf="!isHomeOrSearch">Shared</mat-checkbox>
   <div *ngIf="data.type !== 2" style="display: flex; flex-direction: column">
       <hr style="width: 100%;">
     <h4>Grid Configuration</h4>

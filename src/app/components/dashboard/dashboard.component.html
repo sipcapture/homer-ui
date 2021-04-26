@@ -1,15 +1,15 @@
 <div class="top-tool">
 	<h3>{{ dashboardTitle | uppercase }}</h3>
 	<div style="float: right;">
-		<button title="Add widget" mat-icon-button *ngIf="!isIframe" (click)="onDashboardAdd()">
-			<mat-icon>add</mat-icon>
-		</button>
-		<button title="Dashboard settings" mat-icon-button (click)="onDashboardSettings()">
-			<mat-icon>settings</mat-icon>
-		</button>
-		<button title="Delete dashboard" mat-icon-button *ngIf="!isHome" (click)="onDashboardDelete()">
-			<mat-icon>delete</mat-icon>
-		</button>
+		<button mat-icon-button *ngIf="!isIframe" [disabled]='isShared || !isDashboardUpdate' (click)="onDashboardAdd()" onclick="this.blur()">
+            <mat-icon [matTooltip]='isShared ? "Can&#39;t edit shared dashboard" : !isDashboardUpdate ? "Insufficient permissions to Update Dashboard" : "Add widget"'  icon="plus">add</mat-icon>
+        </button>
+		<button mat-icon-button [disabled]='isShared || !isDashboardUpdate' (click)="onDashboardSettings()" onclick="this.blur()" >
+            <mat-icon icon="cog" [matTooltip]='isShared ? "Can&#39;t edit shared dashboard" : !isDashboardUpdate ? "Insufficient permissions to Update Dashboard" : "Dashboard settings"'>settings</mat-icon>
+        </button>
+		<button mat-icon-button *ngIf="!isHome" [disabled]='isHome || isShared || !isDashboardDelete' (click)="onDashboardDelete()" onclick="this.blur()">
+            <mat-icon [matTooltip]='isShared ? "Can&#39;t edit shared dashboard" : !isDashboardUpdate ? "Insufficient permissions to Delete Dashboard" : "Delete dashboard"' icon="trash-alt">delete</mat-icon>
+        </button>
 	</div>
 </div>
 <!-- container height -->
@@ -57,8 +57,9 @@
 	<div *ngIf="!isIframe && (dashboardArray && dashboardArray.length === 0)" class="no-content">
 		<span style="text-align: center;">
 			<h1>Dashboard is empty</h1>
-			<button title="Add widget" mat-raised-button color="primary" (click)="onDashboardAdd()">Add widget
-				<mat-icon>add</mat-icon></button>
+			<button mat-raised-button color="primary" (click)="onDashboardAdd()" [disabled]='isShared || !isDashboardUpdate'>Add widget 
+                <fa-icon icon="plus" [matTooltip]='isShared ? "Can&#39;t edit shared dashboard" : !isDashboardUpdate ? "Insufficient permissions to Update Dashboard" : "Add widget"'></fa-icon>
+            </button>
 		</span>
 	</div>
 </div>

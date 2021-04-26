@@ -7,6 +7,7 @@ import { environment } from '@environments/environment';
 import { User } from '@app/models';
 import { PreferenceUserSettingsService } from './preferences/user-settings.service';
 import * as _moment from 'moment';
+import { Functions } from '@app/helpers/functions';
 
 const moment: any = _moment;
 
@@ -33,6 +34,7 @@ export class AuthenticationService {
                 // login successful if there's a jwt token in the response
                 if (user && user.token) {
                     // store user details and jwt token in local storage to keep user logged in between page refreshes
+                    user.user.username = username;
                     moment.tz.setDefault(moment.tz.guess());
                     localStorage.setItem('currentUser', JSON.stringify(user));
                     this.currentUserSubject.next(user);
@@ -46,7 +48,7 @@ export class AuthenticationService {
 
     async getUserSettingTimeZone(user, username) {
         try {
-            const userSettingsData: any = await this.preferenceUserSettingsService.getCategory("system").toPromise();
+            const userSettingsData: any = await this.preferenceUserSettingsService.getCategory('system').toPromise();
             const timezoneItem = userSettingsData.data.filter(i => 
                 i.category === 'system' &&
                 i.username === username &&
@@ -58,6 +60,9 @@ export class AuthenticationService {
                 localStorage.setItem('currentUser', JSON.stringify(user));
             }
         } catch (err) { }
+    }
+    getUserName(): string {
+        return Functions.JSON_parse(localStorage.getItem('currentUser')).user.username;
     }
     logout() {
         // remove user from local storage to log user out

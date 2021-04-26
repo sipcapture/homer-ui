@@ -1,0 +1,19 @@
+<mat-toolbar class="title" color="primary">
+    <div>Export Grid</div>
+    <button mat-icon-button (click)="onNoClick()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar>
+<div mat-dialog-content>
+    <mat-form-field>
+        <mat-label>File name</mat-label>
+        <input matInput type='text' [(ngModel)]='params.gridExport.fileName'>
+    </mat-form-field>
+    <div *ngIf="apiColumn.getAllColumns() === 'undefined' || this.apiColumn.getAllColumns() === null">
+        Please make a search to access export
+     </div>
+</div>
+<div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
+    <button mat-raised-button (click)="onNoClick()">Cancel</button>
+    <button mat-raised-button color=primary (click)='export()' [disabled]="apiColumn.getAllColumns() === 'undefined' || this.apiColumn.getAllColumns() === null">Export</button>
+</div>

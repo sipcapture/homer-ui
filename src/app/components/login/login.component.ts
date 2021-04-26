@@ -5,6 +5,7 @@ import { first } from 'rxjs/operators';
 import { Title } from '@angular/platform-browser';
 
 import { AlertService, AuthenticationService } from '@app/services';
+import { UserSecurityService } from '@app/services/user-security.service';
 
 @Component({
     selector: 'login-layout',
@@ -26,7 +27,8 @@ export class LoginComponent implements OnInit {
         private router: Router,
         private authenticationService: AuthenticationService,
         private alertService: AlertService,
-        private titleService: Title
+        private titleService: Title,
+        private userSecurityService: UserSecurityService,
     ) {
         // redirect to home if already logged in
         if (this.authenticationService.currentUserValue) {
@@ -61,8 +63,11 @@ export class LoginComponent implements OnInit {
         this.authenticationService.login(this.f.username.value, this.f.password.value)
             .pipe(first())
             .subscribe(
-                () => this.router.navigateByUrl(this.returnUrl),
-                error => {
+                () => {
+                    this.router.navigateByUrl(this.returnUrl);
+                    this.userSecurityService.getAdmin();
+                },
+                (error) => {
                     this.alertService.error(error);
                     this.loading = false;
                 });

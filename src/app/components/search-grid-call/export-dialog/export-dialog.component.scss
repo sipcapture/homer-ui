@@ -1,0 +1,26 @@
+.type-selector-radio {
+    display: flex;
+    flex-direction: column;
+    margin: 15px 0;
+}
+.chack-list {
+    margin-right: 1.3rem;
+}
+
+.title {
+    margin: -1.5rem -1.5rem 2rem -1.5rem;
+    width: initial !important;
+    display: flex;
+    justify-content: space-between;
+}
+
+.example-container {
+    display: flex;
+    flex-direction: column;  
+   & > * {
+    width: 100%;
+  }
+} 
+mat-form-field {
+    width: 100%;
+}
