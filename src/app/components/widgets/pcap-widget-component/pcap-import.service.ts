@@ -107,7 +107,7 @@ export class PcapImportService {
       this.connection = new WebSocket(wspcap);
       // console.log(this.connection)
       this.connection.onerror = (e) => {
-        console.log(`Could not establish connection to WebSocket ${wspcap}`)
+        //console.log(`Could not establish connection to WebSocket ${wspcap}`)
       }
       this.connection.onmessage = (e) => {
         console.log(`Websocket message: ${e}`)
@@ -121,7 +121,7 @@ export class PcapImportService {
         this.connection.close();
       };
     } catch (e) {
-      console.log("Could not establish connection to WebSocket", e)
+      //console.log("Could not establish connection to WebSocket", e)
     }
 
   }

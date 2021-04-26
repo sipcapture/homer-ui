@@ -145,6 +145,10 @@
                         <span class="color-bable" [style.background-color]="item.packets_lost_color"></span>
                         packets_lost
                     </mat-checkbox>
+                    <mat-checkbox (change)="onChangeCheckBox(item, 'fraction_lost')" [(ngModel)]="item.fraction_lost">
+                        <span class="color-bable" [style.background-color]="item.fraction_lost_color"></span>
+                        fraction_lost
+                    </mat-checkbox>
                 </div>
             </mat-card>
         </div>

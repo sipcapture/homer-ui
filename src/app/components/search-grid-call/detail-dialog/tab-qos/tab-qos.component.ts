@@ -3,6 +3,7 @@
  */
 
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { PreferenceAdvancedService } from '@app/services';
 import { Chart, ChartType, ChartDataSets, ChartColor } from 'chart.js';
 import { Label, Color, BaseChartDirective } from 'ng2-charts';
 import * as moment from 'moment';
@@ -29,7 +30,7 @@ export class TabQosComponent implements OnInit {
         this._qosData = val;
         this.haveData.emit(this.qosData.rtcp.data.length > 0 || this.qosData.rtp.data.length > 0);
         this.cdr.detectChanges();
-        this.update('init', this.qosData);
+        this.update('init', this.mosFraction, this.qosData);
     }
     get qosData(): any {
         return this._qosData;
@@ -97,12 +98,33 @@ export class TabQosComponent implements OnInit {
     streamsRTP: Array<any> = [];
     worker: WorkerService;
     _isLoaded: boolean = false;
-    constructor(private cdr: ChangeDetectorRef) {
+    mosFraction: boolean = true;
+    constructor(private cdr: ChangeDetectorRef, private _pas: PreferenceAdvancedService) {
+
+        this._pas.getAll().toPromise().then(advanced => {
+            if (advanced && advanced.data) {
+                try {
+                    const setting = advanced.data.filter(i => i.category === 'system' && i.param === 'qos');
+                    if (setting && setting[0] && setting[0].data) {
+                        const { rtcp_mos_lost } = setting[0].data;
+                        if (rtcp_mos_lost && typeof rtcp_mos_lost === 'string' &&
+                            rtcp_mos_lost !== '' && rtcp_mos_lost == 'packets_lost') {
+                            this.mosFraction = false;
+                        }
+                    }
+                } catch (err) { }
+            }
+        });
+
+
         this.worker = new WorkerService(new Worker('@app/qos.worker', { type: 'module' }));
+
     }
 
-    async update(workerCommand: string, data: any) {
-        const outData = await this.worker.getParseData({ workerCommand }, data);
+    async update(workerCommand: string, mosFraction: boolean, data: any) {
+
+
+        const outData = await this.worker.getParseData({ workerCommand, mosFraction }, data);
 
         if (workerCommand === 'init') {
             this.isError = outData.isError as boolean;
@@ -135,7 +157,7 @@ export class TabQosComponent implements OnInit {
 
         }
         if (['onChangeRTCP', 'onChangeRTP'].includes(workerCommand)) {
-        /** for both */
+            /** for both */
             this.chartType = outData.chartType as ChartType;
             this.chartLegend = outData.chartLegend as boolean;
 
@@ -172,13 +194,15 @@ export class TabQosComponent implements OnInit {
 
     onChangeCheckBox(item: any, type: any, base = false) {
         if (base) {
-            item.packets = item.octets = item.highest_seq_no = item.ia_jitter = item.lsr = item.mos = item.packets_lost = item._checked;
+            item.packets = item.octets = item.highest_seq_no = item.ia_jitter = item.lsr =
+                item.mos = item.packets_lost = item.fraction_lost = item._checked;
             item._indeterminate = false;
         } else {
             item._checked = item.packets && item.octets && item.highest_seq_no &&
-                item.ia_jitter && item.lsr && item.mos && item.packets_lost;
+                item.ia_jitter && item.lsr && item.mos && item.packets_lost && item.fraction_lost;
             item._indeterminate = !item._checked &&
-                !(!item.packets && !item.octets && !item.highest_seq_no && !item.ia_jitter && !item.lsr && !item.mos && !item.packets_lost);
+                !(!item.packets && !item.octets && !item.highest_seq_no && !item.ia_jitter && !item.lsr &&
+                    !item.mos && !item.packets_lost && !item.fraction_lost);
         }
 
         this._isLoaded = false;
@@ -191,8 +215,8 @@ export class TabQosComponent implements OnInit {
                 this.rtcpChart.hideDataset(index, checkArray);
             }
 
-
-            await this.update('onChangeRTCP', { streams: this.streams });
+            const mosFraction = true;
+            await this.update('onChangeRTCP', this.mosFraction, { streams: this.streams });
 
             this.cdr.detectChanges();
         }, 10);
@@ -219,7 +243,7 @@ export class TabQosComponent implements OnInit {
                 this.rtpChart.hideDataset(index, checkArray);
             }
 
-            await this.update('onChangeRTP', { streamsRTP: this.streamsRTP });
+            await this.update('onChangeRTP', this.mosFraction, { streamsRTP: this.streamsRTP });
             this.cdr.detectChanges();
         }, 10);
     }
