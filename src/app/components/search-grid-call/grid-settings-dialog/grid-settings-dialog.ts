@@ -73,7 +73,6 @@ export class DialogSettingsGridDialog {
         }
     }
     onUpdateProto(event) {
-        console.log(event)
         const moved = event.event;
         if (
             typeof this.apiColumn.getAllColumns() !== 'undefined' &&
@@ -112,9 +111,7 @@ export class DialogSettingsGridDialog {
         }
     }
     onChange(event: boolean, field: string, moved: any, test): void {
-        console.log(moved)
         if (moved.index !== -1) {
-            console.log('test')
             moved.index++;
             this.apiColumn.moveColumn(moved.field.field, moved.index);
         }
@@ -170,4 +167,3 @@ export class DialogSettingsGridDialog {
         this.dialogRef.close();
     }
 }
-

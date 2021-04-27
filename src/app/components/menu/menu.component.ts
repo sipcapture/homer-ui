@@ -170,7 +170,6 @@ export class MenuComponent implements OnInit, OnDestroy {
                     return a < b ? -1 : a > b ? 1 : 0;
                 }).filter(item =>
                     item.shared === 0 || item.shared === false || item.owner === currentUser);
-                    console.log(resData.data)
                 this.sharedDashboards = resData.data.sort((...aa: any[]) => {
                     const [a, b] = aa.map(({ name }: { name: string }) => name.charCodeAt(0));
                     return a < b ? -1 : a > b ? 1 : 0;
