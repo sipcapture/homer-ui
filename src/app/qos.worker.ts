@@ -413,7 +413,11 @@ class QosProcessor {
                         if (mosFraction) {
                             if (block.fraction_lost <= 0) {
                                 numPL = 0;
-                            } else {
+                            }
+                            else if (block.fraction_lost > 256 ) {
+                                numPL = 100;
+                            }
+                            else {
                                 numPL = numPL / 256 * 100;
                             }
                         }
