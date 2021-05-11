@@ -414,7 +414,7 @@ class QosProcessor {
                             if (block.fraction_lost <= 0) {
                                 numPL = 0;
                             } else {
-                                numPL = numPL / 256 * 100;
+                                numPL = block.fraction_lost / 256 * 100;
                             }
                         }
 
