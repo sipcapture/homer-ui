@@ -26,13 +26,15 @@
         </div>
       </div>
     </div>
+<div *ngIf="jsonData">
+  <div class="json-display">
+    <ngx-json-viewer [json]="jsonData" [expanded]="false"></ngx-json-viewer>
 
-    <div *ngFor="let jsonkey of objectKeys(jsonData)" class="json-display">
-      <p class="json-title">{{jsonkey}}:</p>
+  </div>
+</div>
 
-      <ngx-json-viewer [json]="jsonData[jsonkey]" [expanded]="false"></ngx-json-viewer>
 
-    </div>
+  
    
 
   </mat-tab>

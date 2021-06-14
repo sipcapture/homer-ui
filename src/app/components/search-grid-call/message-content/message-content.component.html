@@ -1,11 +1,12 @@
 <mat-tab-group class="message-container" #matTabGroup>
   <mat-tab label="Message" style="padding: 1rem;">
-      <ngx-json-viewer *ngIf="raw_isJSON" [json]="raw" [expanded]="true"></ngx-json-viewer>
-      <div [innerHTML]="raw | safeHtml" class="raw-json" *ngIf="!raw_isJSON"></div>
+    <ngx-json-viewer *ngIf="raw_isJSON" [json]="raw" [expanded]="true"></ngx-json-viewer>
+    <div [innerHTML]="raw | safeHtml" class="raw-json" *ngIf="!raw_isJSON && type !== 'INFO'"></div>
+    <pre *ngIf="!raw_isJSON && type === 'INFO'" class="raw-json">{{raw}}</pre>
   </mat-tab>
-  
+
   <mat-tab label="Details" style="padding: 1rem;">
-    <div> 
+    <div>
       <table mat-table [dataSource]="messageDetailTableData" style="width: 100%">
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef> Name </th>
@@ -15,13 +16,27 @@
           <th mat-header-cell *matHeaderCellDef> Value </th>
           <td mat-cell *matCellDef="let element"> {{element.value}} </td>
         </ng-container>
-        
-        <tr mat-header-row *matHeaderRowDef="['name', 'value']"></tr> 
-        <tr mat-row *matRowDef="let row; columns: ['name', 'value']" ></tr>
+
+        <tr mat-header-row *matHeaderRowDef="['name', 'value']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['name', 'value']"></tr>
       </table>
     </div>
   </mat-tab>
-
+  <mat-tab label="SIP" *ngIf="sipData">
+    <ngx-json-viewer [json]="sipData" [expanded]="false"></ngx-json-viewer>
+  </mat-tab>
+  <mat-tab label="SDP" *ngIf="sdpData">
+    <ngx-json-viewer [json]="sdpData" [expanded]="false"></ngx-json-viewer>
+  </mat-tab>
+  <mat-tab label="VQR" *ngIf="vqrData">
+    <ngx-json-viewer [json]="vqrData" [expanded]="false"></ngx-json-viewer>
+  </mat-tab>
+  <mat-tab label="XRTP" *ngIf="xRTPData">
+    <ngx-json-viewer [json]="xRTPData" [expanded]="false"></ngx-json-viewer>
+  </mat-tab>
+  <mat-tab label="JWT" *ngIf="JWTData">
+    <ngx-json-viewer [json]="JWTData" [expanded]="false"></ngx-json-viewer>
+  </mat-tab>
   <mat-tab label="Decoded" *ngIf="decoded" style="padding: 1rem;">
     <ngx-json-viewer [json]="decoded" [expanded]="false"></ngx-json-viewer>
   </mat-tab>

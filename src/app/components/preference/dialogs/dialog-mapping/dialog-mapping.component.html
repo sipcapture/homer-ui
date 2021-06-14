@@ -35,7 +35,7 @@
         <input matInput [(ngModel)]="data.data.retention">
       </mat-form-field> -->
     </div>
-
+<hr>
     <strong>Correlation Mapping</strong>
     <p>Defines any cross-protocol correlation mechanism</p><hr />
     
@@ -47,7 +47,7 @@
       (textChanged)="validate('correlation')"
       [durationBeforeCallback]="500"
       #correlation_mapping_view style="min-height:350px;"></ace-editor>
-    
+    <hr>
     <strong>Fields Mapping</strong>
     <p>Defines schema and mapping for protocol fields</p><hr />
     <ace-editor

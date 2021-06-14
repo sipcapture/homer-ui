@@ -114,6 +114,13 @@ class QosProcessor {
             hoverBackgroundColor: [],
             fill: false,
             borderWidth: 0
+        }, {
+            data: [],
+            label: 'fraction_lost',
+            backgroundColor: [],
+            hoverBackgroundColor: [],
+            fill: false,
+            borderWidth: 0
         },
     ];
 
@@ -171,6 +178,10 @@ class QosProcessor {
         { name: 'min packets_lost', value: Number.MAX_VALUE, color: 'color7' },
         { name: 'avg packets_lost', value: 0, color: 'color7' },
         { name: 'max packets_lost', value: 0, color: 'color7' },
+
+        { name: 'min fraction_lost', value: Number.MAX_VALUE, color: 'color8' },
+        { name: 'avg fraction_lost', value: 0, color: 'color8' },
+        { name: 'max fraction_lost', value: 0, color: 'color8' },
     ];
 
     public hideLabelsFlag = true;
@@ -178,10 +189,10 @@ class QosProcessor {
     public streams: Array<any> = [];
     public streamsRTP: Array<any> = [];
 
-    public init(srcdata) {
+    public init(srcdata, mosFraction) {
 
         try {
-            this.parseRTCP(srcdata.rtcp.data);
+            this.parseRTCP(srcdata.rtcp.data, mosFraction);
             this.parseRTP(srcdata.rtp.data);
             // this.haveData.emit(this.qosData.rtcp.data.length > 0 || this.qosData.rtp.data.length > 0);
         } catch (err) { }
@@ -202,12 +213,9 @@ class QosProcessor {
         }
         this.chartLabelsRTP = [];
         data.forEach(item => {
-            // try {
+
             item.raw = JSON.parse(item.raw);
-            // } catch (err) {
-            //     this.onErrorMessage(err);
-            //     return;
-            // }
+
 
             const i = item.raw;
             this.chartLabelsRTP.push(moment(item.create_date).format('HH:mm:ss'));
@@ -330,19 +338,25 @@ class QosProcessor {
         this.isRTP = true;
     }
 
-    private parseRTCP(data) {
+    private parseRTCP(data, mosFraction) {
         if (!data || data.length === 0) {
             this.isRTCP = false;
             return;
         }
-        // this.chartLabels = [];
+
+        let uc = /\u0010/;
+
+        data.map(m => {
+            m.raw = m.raw.replace(uc, '.')
+        })
+
         data = data.map(i => (i.raw = JSON.parse(i.raw), i))
-            .filter(({ raw }) => raw &&
-                raw.sender_information &&
-                raw.sender_information.packets &&
-                raw.sender_information.octets);
+            .filter(({ raw }) => raw?.sender_information &&
+                raw?.sender_information?.packets &&
+                raw?.sender_information?.octets);
         data.forEach(item => {
-            const i = item.raw;
+            const i = item.raw
+
             if (![200, 201, 202].includes(1 * i.type)) {
                 return;
             }
@@ -366,6 +380,8 @@ class QosProcessor {
                     ia_jitter: false,
                     packets_lostData: [],
                     packets_lost: false,
+                    fraction_lostData: [],
+                    fraction_lost: false,
                     lsrData: [],
                     lsr: false,
                     mosData: [],
@@ -391,10 +407,25 @@ class QosProcessor {
 
                     const [block] = i.report_blocks || [];
                     if (block) {
+
+                        let numPL = block.packets_lost;
+
+                        if (mosFraction) {
+                            if (block.fraction_lost <= 0) {
+                                numPL = 0;
+                            }
+                            else if (block.fraction_lost > 256 ) {
+                                numPL = 100;
+                            }
+                            else {
+                                numPL = numPL / 256 * 100;
+                            }
+                        }
+
                         const tmpMos = Math.round(this.calculateJitterMos({
                             rtt: (block.dlsr < 1000 ? block.dlsr : 0),
                             jitter: block.ia_jitter,
-                            numpacketlost: block.packets_lost
+                            numpacketlost: numPL
                         }) * 100) / 100; // => 0.00
 
                         /**
@@ -409,6 +440,12 @@ class QosProcessor {
                         // packets_lost
                         k.packets_lostData.push(block.packets_lost);
 
+                        // fraction_lost
+                        if (block.fraction_lost <= 0 ) {
+                            k.fraction_lostData.push(0);
+                        } else {
+                            k.fraction_lostData.push(block.fraction_lost / 256);
+                        }
                         // lsr
                         k.lsrData.push(block.lsr * 1);
 
@@ -471,6 +508,12 @@ class QosProcessor {
                             this.list[20].value = Math.max(this.list[20].value, block.packets_lost * 1);
                         }
 
+                        if (!isNaN(block.fraction_lost)) {
+                            // min fraction_lost
+                            this.list[21].value = Math.min(this.list[21].value, block.fraction_lost * 1);
+                            // max fraction_lost
+                            this.list[23].value = Math.max(this.list[23].value, block.fraction_lost * 1);
+                        }
 
                     } else {
                         // highest_seq_no
@@ -481,6 +524,9 @@ class QosProcessor {
 
                         // packets_lost
                         k.packets_lostData.push(0);
+
+                        // fraction_lost
+                        k.fraction_lostData.push(0);
 
                         // lsr
                         k.lsrData.push(0);
@@ -516,6 +562,9 @@ class QosProcessor {
 
         // avg packets_lost
         this.list[19].value = this.average(this.streams, 'packets_lostData');
+
+        // avg fraction_lost
+        this.list[21].value = this.average(this.streams, 'fraction_lostData');
 
         this.renderChartData(this.streams, this.chartData, true);
         this.isRTCP = true;
@@ -569,6 +618,8 @@ class QosProcessor {
                         packets_lost: item.packets_lost,
                         packets_lostData: [item.packets_lostData[i]],
                         // packets_lost_color: item.packets_lost_color,
+                        fraction_lost: item.fraction_lost,
+                        fraction_lostData: [item.fraction_lostData[i]],
                         srcIp: item.srcIp,
                         _checked: item._checked,
                         _indeterminate: item._indeterminate,
@@ -639,7 +690,16 @@ class QosProcessor {
 
     }
     private setColor(str: string) {
-        const rColor = this.getColorByStringHEX(str)
+
+        /* lets make it more uniq */
+        let hash = 0, i, chr;
+        for (i = 0; i < str.length; i++) {
+             chr   = str.charCodeAt(i);
+             hash  = ((hash << 5) - hash) + chr;
+             hash |= 0; // Convert to 32bit integer
+        }
+
+        const rColor = this.getColorByStringHEX(hash.toString())
             .match(/.{2}/g)
             .map(i => parseInt(i, 16))
             .join(', ');
@@ -689,7 +749,7 @@ class QosProcessor {
 
         return src;
     }
-    private calculateJitterMos({ jitter, numpacketlost, rtt = 0 }) {
+    private calculateJitterMos({ jitter, numpacketlost, rtt = 0}) {
         if (rtt === 0) {
             rtt = 10;
         }
@@ -741,7 +801,7 @@ addEventListener('message', ({ data }) => {
 
     if (metaData && metaData.workerCommand) {
 
-        qp[metaData.workerCommand](srcdata);
+        qp[metaData.workerCommand](srcdata, metaData.mosFraction);
 
         const response = JSON.stringify(qp);
         postMessage(response);

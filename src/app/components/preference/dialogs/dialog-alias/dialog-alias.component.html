@@ -6,33 +6,40 @@
 </mat-toolbar>
 <div mat-dialog-content>
   <strong>Alias Settings</strong><hr />
-  <div><mat-form-field style="padding-right: 1rem;">
+<div style="display:flex">
+ <mat-form-field style="padding-right: 1rem;">
     <mat-label>Alias Name</mat-label>
     <input matInput [(ngModel)]="data.data.alias">
-  </mat-form-field></div>
+  </mat-form-field>
   
-  <div><mat-form-field style="padding-right: 1rem;">
+<mat-form-field style="padding-right: 1rem;">
     <mat-label>IP Address</mat-label>
     <input matInput [(ngModel)]="data.data.ip">
-  </mat-form-field></div>
+  </mat-form-field>
   
-  <div><mat-form-field style="padding-right: 1rem;">
+  <mat-form-field style="padding-right: 1rem;">
     <mat-label>Port</mat-label>
     <input matInput [(ngModel)]="data.data.port">
-  </mat-form-field></div>
-  
-  <div><mat-form-field style="padding-right: 1rem;">
+  </mat-form-field>
+
+</div>
+  <div style="display: flex;align-items: center;">
+
+ 
+  <mat-form-field style="padding-right: 1rem;">
     <mat-label>Mask</mat-label>
     <input matInput [(ngModel)]="data.data.mask">
-  </mat-form-field></div>
+  </mat-form-field>
   
-  <div><mat-form-field style="padding-right: 1rem;">
+  <mat-form-field style="padding-right: 1rem;">
     <mat-label>CaptureID</mat-label>
     <input matInput [(ngModel)]="data.data.captureID">
-  </mat-form-field></div>
-  
-  <div><mat-checkbox [(ngModel)]="data.data.status">Status</mat-checkbox></div>
+  </mat-form-field>
+  <mat-checkbox style="padding-left:2rem" [(ngModel)]="data.data.status">Status</mat-checkbox>
 </div>
+  
+ 
+
 
 
 <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
