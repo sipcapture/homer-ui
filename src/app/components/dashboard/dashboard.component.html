@@ -38,7 +38,7 @@
 			</div>
 			<div class="widget-warning"
 				*ngIf="this.dashboardCollection.data.config !== undefined && this.dashboardCollection.data.config.ignoreMinSize === 'warning' && item.isWarning && !item.isDismissed ">
-				<p>Widget is too small, we recommend increasing it's size to {{ getSize(item) }}</p>
+				<p>Widget is too small, we recommend increasing its size to {{ getSize(item) }}</p>
 				<button mat-icon-button class="warning-dismiss" matTooltip="Dismiss warning"
 					(click)="dismissWarning(item)">
 					<mat-icon>close</mat-icon>
