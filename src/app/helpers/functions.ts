@@ -98,7 +98,7 @@ export class Functions {
     }
 
     static getColorByString(str: string, saturation?: number, lightness?: number, alpha?: number, offset?: number) {
-        const col = Functions.getColorByStringHEX(str);
+        const col = Functions.getColorByStringHEX(str); 
         /* const num = parseInt(col, 16) % 360; */
         const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(col);
 
@@ -315,8 +315,11 @@ export class Functions {
             }, 0);
         }
     }
+    static secondsToHour(data: number = 0) {
+        return new Date(data * 1000).toISOString().substr(11, 8);
+    }
 
-     static getTimeStamp(v: number, p: string): number {
+    static getTimeStamp(v: number, p: string): number {
         const vlength = v.toString().length;
         let tlength = 0;
         const s = 10;
@@ -335,28 +338,42 @@ export class Functions {
     }
 
     static stylingRowText(raw: string) {
+    
         if (raw) {
             raw += '';
             const regexMethod = new RegExp('INVITE|CANCEL|PRACK|ACK|BYE|OPTIONS', 'g');
             const regexReply = new RegExp('(SIP/2.0) (100|180|200|404|407|500|503) ', 'g');
             const regexpCallid = new RegExp('(Call-ID):(.*)', 'g');
+            const regexpConst = new RegExp('resolution=|keys=|user=|line=|reg-id=|uniq=|v=|o=|s=|c=|t=|a=|transport=|received=|branch=|username=|realm=|nonce=|uri=|response=|cnonce=|nc=|qop=|algorithm=|ftag=|lb=|r2=|lr=|rport=|party=|privacy=|screen=|refresher=','g')
             const regexpSDP = new RegExp('(m=(audio|video)) (.*)', 'g');
-            const regexpTag = new RegExp('tag=.*', 'g');
+            const regexpRTPMap = new RegExp('(a=(rtpmap)):(.*)', 'g');
+            const regexpTag = new RegExp(';tag=.*', 'g');
             const regexHeaders = new RegExp('(.*): ', 'g');
             let color: string;
+            let background: string;
+            let tag: string;
             raw = raw
                 .replace(/\</g, '&lt;')
                 .replace(/\>/g, '&gt;')
                 .replace(regexpCallid, (g, a, c) => {
-                    color = 'blue';
-                    return `<span style="font-weight:bold">${a}</span><span style="color:${color}">${c}</span>`;
+                    color = '#333333'
+                    return `<span style="font-weight:bold">${a}:</span><span style="color:${color};font-weight:bold">${c}</span>`;
+                })
+                .replace(regexpConst, (g, a) => {
+                    color = '#1DA1BF';
+                    return `<span style="font-weight:bold">${g}</span>`;
                 })
                 .replace(regexpTag, (g, a) => {
-                    color = 'red';
+                    color = '#2534af';
                     return `<span style="font-weight:bold;color:${color}">${g}</span>`;
                 })
                 .replace(regexpSDP, (g, a) => {
-                    color = 'red';
+                    color = '#4C30AB';
+                    return `<span style="font-weight:bold;color:${color}">${g}</span>`;
+                })
+                .replace(regexpRTPMap, (g, a) => {
+                    color = '#45a3c9';
+                    tag='#555555';
                     return `<span style="font-weight:bold;color:${color}">${g}</span>`;
                 })
                 .replace(regexMethod, g => {

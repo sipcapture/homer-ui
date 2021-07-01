@@ -36,7 +36,15 @@ button, .md-drppicker, .month,
 .ag-paging-panel, .cdk-drag {
 	font-family:'Roboto', Helvetica, Arial, sans-serif;
 }
-
+button:focus{
+	border:none;
+	outline:none;
+}
+select {
+	padding:3px;
+	border-radius: 3px;
+	cursor:pointer;
+}
 // ag-borders adjustment
 .ag-theme-material .ag-ltr .ag-cell {
 	border-right: 1px solid lightgray;

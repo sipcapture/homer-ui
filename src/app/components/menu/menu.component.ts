@@ -12,6 +12,7 @@ import { PreferenceAdvancedService } from '@app/services';
 import { Subscription } from 'rxjs';
 import { environment } from '@environments/environment';
 import { curveNatural } from 'd3';
+import { UserSecurityService } from '@app/services/user-security.service';
 
 export interface DashboardData {
     cssclass: string;
@@ -77,6 +78,7 @@ export class MenuComponent implements OnInit, OnDestroy {
     protected widgetCollection: WidgetModel[];
     protected dashboardCollection: DashboardModel[];
 
+    isDashboardAdd = true;
     currentUser: User;
     dashboards: DashboardData[];
     sharedDashboards: DashboardData[];
@@ -89,6 +91,7 @@ export class MenuComponent implements OnInit, OnDestroy {
         private authenticationService: AuthenticationService,
         private _sss: SessionStorageService,
         private _pas: PreferenceAdvancedService,
+        private userSecurityService: UserSecurityService,
         private changeDetectorRefs: ChangeDetectorRef
     ) {
         this.startDate = null;
@@ -108,8 +111,9 @@ export class MenuComponent implements OnInit, OnDestroy {
     }
 
     // On component init we store Widget Marketplace in a WidgetModel array
-    ngOnInit(): void {
+    async ngOnInit() {
 
+        this.isDashboardAdd = await this.userSecurityService.isDashboardAdd();
         this.sessionStorageSubscription = this._sss.sessionStorage.subscribe((data: UserSettings) => {
             if (data.updateType !== 'proto-search') {
                 if (data && data.dateTimeRange.dates) {
@@ -159,16 +163,17 @@ export class MenuComponent implements OnInit, OnDestroy {
     }
     updateDashboardList() {
         this._ds.getDashboardInfo().toPromise().then((resData: any) => {
-            if (resData) {
+            if (resData?.data) {
+                const currentUser = this.authenticationService.getUserName();
                 this.dashboards = resData.data.sort((...aa: any[]) => {
                     const [a, b] = aa.map(({ name }: { name: string }) => name.charCodeAt(0));
                     return a < b ? -1 : a > b ? 1 : 0;
-                }).filter(item => item.shared === 0 || item.shared === false);
+                }).filter(item =>
+                    item.shared === 0 || item.shared === false || item.owner === currentUser);
                 this.sharedDashboards = resData.data.sort((...aa: any[]) => {
                     const [a, b] = aa.map(({ name }: { name: string }) => name.charCodeAt(0));
                     return a < b ? -1 : a > b ? 1 : 0;
-                }).filter(item => item.shared === 1 || item.shared === true);
-                console.log(this.sharedDashboards)
+                }).filter(item => (item.shared === 1 || item.shared === true) && item.owner !== currentUser);
                 this.panelList = this.dashboards.map(item => item.name);
                 try {
                     this.panelName = this.dashboards.find(item => item.href === this._ds.getCurrentDashBoardId()).name;
@@ -179,6 +184,7 @@ export class MenuComponent implements OnInit, OnDestroy {
         });
     }
     logout() {
+        this.userSecurityService.removeUserSettings();
         this.authenticationService.logout();
         this.router.navigate([{ outlets: { primary: null, system: 'login' } }]);
         this.changeDetectorRefs.detectChanges();

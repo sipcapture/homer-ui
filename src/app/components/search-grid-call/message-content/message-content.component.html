@@ -22,7 +22,21 @@
       </table>
     </div>
   </mat-tab>
-
+  <mat-tab label="SIP" *ngIf="sipData">
+    <ngx-json-viewer [json]="sipData" [expanded]="false"></ngx-json-viewer>
+  </mat-tab>
+  <mat-tab label="SDP" *ngIf="sdpData">
+    <ngx-json-viewer [json]="sdpData" [expanded]="false"></ngx-json-viewer>
+  </mat-tab>
+  <mat-tab label="VQR" *ngIf="vqrData">
+    <ngx-json-viewer [json]="vqrData" [expanded]="false"></ngx-json-viewer>
+  </mat-tab>
+  <mat-tab label="XRTP" *ngIf="xRTPData">
+    <ngx-json-viewer [json]="xRTPData" [expanded]="false"></ngx-json-viewer>
+  </mat-tab>
+  <mat-tab label="JWT" *ngIf="JWTData">
+    <ngx-json-viewer [json]="JWTData" [expanded]="false"></ngx-json-viewer>
+  </mat-tab>
   <mat-tab label="Decoded" *ngIf="decoded" style="padding: 1rem;">
     <ngx-json-viewer [json]="decoded" [expanded]="false"></ngx-json-viewer>
   </mat-tab>

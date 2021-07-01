@@ -27,10 +27,8 @@
       </div>
     </div>
 <div *ngIf="jsonData">
-  <div *ngFor="let jsonkey of objectKeys(jsonData)" class="json-display">
-    <p class="json-title">{{jsonkey}}:</p>
-
-    <ngx-json-viewer [json]="jsonData[jsonkey]" [expanded]="false"></ngx-json-viewer>
+  <div class="json-display">
+    <ngx-json-viewer [json]="jsonData" [expanded]="false"></ngx-json-viewer>
 
   </div>
 </div>

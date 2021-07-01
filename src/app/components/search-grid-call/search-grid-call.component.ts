@@ -37,6 +37,7 @@ import {
     ShareLinkService
 } from '@app/services';
 import { DialogSettingsGridDialog } from './grid-settings-dialog/grid-settings-dialog';
+import { ExportDialogComponent } from './export-dialog/export-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
 
@@ -514,8 +515,12 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                             node.setSelected(true, true);
                         }
                     });
+                } else {
+                    setTimeout(() => {
+                        this.selectCallIdFromGetParams();
+                    }, 50);
                 }
-            }
+            } 
         }
     }
     private async openTransactionByAdvancedSettings() {
@@ -737,7 +742,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
                     return;
                 }
-
 
                 this.rowData = result.data;
                 if (this.rowData) { this.loader = false; }
@@ -1090,7 +1094,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             context: this.context,
             lokiSort: this.lokiSort
         } as any;
-        console.log(params.context.componentParent.columnDefs)
 
         this.dialog.open(DialogSettingsGridDialog, {
             data: {
@@ -1108,6 +1111,25 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         });;
         this.changeDetectorRefs.detectChanges();
     }
+    export() {
+        const params = {
+            api: this.gridApi,
+            columnApi: this.gridColumnApi,
+            context: this.context,
+        } as any;
+
+        this.dialog.open(ExportDialogComponent, {
+            width: '500px',
+            data: {
+                apicol: params.columnApi,
+                apipoint: params.api,
+                columns: params.context.componentParent.columnDefs,
+                idParent: params.context.componentParent.id,
+                protocol: this.protocol_profile,
+            },
+        });
+    }
+
     onColumnMoved(event) {
         const bufferData = Functions.cloneObject(event.api.columnController.gridColumns.map(i => i.colDef));
         let lsIndex = 'result-state';

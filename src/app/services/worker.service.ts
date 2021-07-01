@@ -15,5 +15,4 @@ export class WorkerService {
             this.worker.postMessage(JSON.stringify({ metaData, srcdata }));
         });
     }
-
 }
