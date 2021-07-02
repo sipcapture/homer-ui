@@ -20,6 +20,9 @@ import { WorkerService } from '../../../../services/worker.service';
 
 export class TabQosComponent implements OnInit {
     _qosData: any;
+    widthChart = 100;
+    widthChartRTCP = 100;
+
     @Input() callid;
     @Input() dataItem: any;
     @Input() set qosData(val: any) {
@@ -190,6 +193,8 @@ export class TabQosComponent implements OnInit {
 
         this.color = Functions.getColorByString(this.callid, 75, 60, 1);
         this.cdr.detectChanges();
+        console.log('this.chartDataRTP', this.chartDataRTP);
+        console.log('this.chartData', this.chartData);
     }
 
     onChangeCheckBox(item: any, type: any, base = false) {
@@ -255,5 +260,23 @@ export class TabQosComponent implements OnInit {
             while (n-- && !(f(n) < num)) { }
             return (n === 0 ? num : Math.round(num / f(n)) + ('kmb'.split('')[n - 1])) || num.toFixed(2);
         })(label);
+    }
+    onWill(event: any) {
+        event.preventDefault();
+        this.widthChart += event.deltaY / 10;
+        this.widthChart = Math.max(100, this.widthChart);
+        console.log(this.widthChart, event);
+        setTimeout(() => {
+            this.cdr.detectChanges();
+        }, 10);
+    }
+    onWillRTCP(event) {
+        event.preventDefault();
+        this.widthChartRTCP += event.deltaY / 10;
+        this.widthChartRTCP = Math.max(100, this.widthChartRTCP);
+        console.log(this.widthChartRTCP, event);
+        setTimeout(() => {
+            this.cdr.detectChanges();
+        }, 10);
     }
 }
