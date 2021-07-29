@@ -20,6 +20,9 @@ import { WorkerService } from '../../../../services/worker.service';
 
 export class TabQosComponent implements OnInit {
     _qosData: any;
+    widthChart = 100;
+    widthChartRTCP = 100;
+
     @Input() callid;
     @Input() dataItem: any;
     @Input() set qosData(val: any) {
@@ -104,7 +107,7 @@ export class TabQosComponent implements OnInit {
         this._pas.getAll().toPromise().then(advanced => {
             if (advanced && advanced.data) {
                 try {
-                    const setting = advanced.data.filter(i => i.category === 'system' && i.param === 'qos');
+                    const setting = advanced.data.filter((i: any) => i.category === 'system' && i.param === 'qos');
                     if (setting && setting[0] && setting[0].data) {
                         const { rtcp_mos_lost } = setting[0].data;
                         if (rtcp_mos_lost && typeof rtcp_mos_lost === 'string' &&
@@ -181,7 +184,7 @@ export class TabQosComponent implements OnInit {
         }
     }
     ngOnInit() {
-        this.labels = this.dataItem.data.calldata.map(i => i.sid).reduce((a, b) => {
+        this.labels = this.dataItem.data.calldata.map((i: any) => i.sid).reduce((a, b) => {
             if (a.indexOf(b) === -1) {
                 a.push(b);
             }
@@ -190,6 +193,8 @@ export class TabQosComponent implements OnInit {
 
         this.color = Functions.getColorByString(this.callid, 75, 60, 1);
         this.cdr.detectChanges();
+        console.log('this.chartDataRTP', this.chartDataRTP);
+        console.log('this.chartData', this.chartData);
     }
 
     onChangeCheckBox(item: any, type: any, base = false) {
@@ -211,7 +216,7 @@ export class TabQosComponent implements OnInit {
             // Hides disabled labels
             if (!base && this.rtcpChart) {
                 const [checkArray] = this.streams.map(stream => stream[type]);
-                const index: number = this.rtcpChart.datasets.findIndex(i => i.label === type);
+                const index: number = this.rtcpChart.datasets.findIndex((i: any) => i.label === type);
                 this.rtcpChart.hideDataset(index, checkArray);
             }
 
@@ -239,7 +244,7 @@ export class TabQosComponent implements OnInit {
             // Hides disabled labels
             if (!base && this.rtpChart) {
                 const [checkArray] = this.streamsRTP.map(stream => stream[type]);
-                const index: number = this.rtpChart.datasets.findIndex(i => i.label === type);
+                const index: number = this.rtpChart.datasets.findIndex((i: any) => i.label === type);
                 this.rtpChart.hideDataset(index, checkArray);
             }
 
@@ -250,10 +255,28 @@ export class TabQosComponent implements OnInit {
 
     yAxisFormatter(label) {
         return (num => {
-            const f = i => Math.pow(1024, i);
+            const f = (i: any) => Math.pow(1024, i);
             let n = 4;
             while (n-- && !(f(n) < num)) { }
             return (n === 0 ? num : Math.round(num / f(n)) + ('kmb'.split('')[n - 1])) || num.toFixed(2);
         })(label);
+    }
+    onWill(event: any) {
+        event.preventDefault();
+        this.widthChart += event.deltaY / 10;
+        this.widthChart = Math.max(100, this.widthChart);
+        console.log(this.widthChart, event);
+        setTimeout(() => {
+            this.cdr.detectChanges();
+        }, 10);
+    }
+    onWillRTCP(event) {
+        event.preventDefault();
+        this.widthChartRTCP += event.deltaY / 10;
+        this.widthChartRTCP = Math.max(100, this.widthChartRTCP);
+        console.log(this.widthChartRTCP, event);
+        setTimeout(() => {
+            this.cdr.detectChanges();
+        }, 10);
     }
 }

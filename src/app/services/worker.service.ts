@@ -9,7 +9,7 @@ export class WorkerService {
         this.worker = worker;
     }
 
-    public getParseData(metaData, srcdata): Promise<any> {
+    public getParseData(metaData: any, srcdata: any): Promise<any> {
         return new Promise(resolve => {
             this.worker.onmessage = ({ data }) => resolve(JSON.parse(data));
             this.worker.postMessage(JSON.stringify({ metaData, srcdata }));

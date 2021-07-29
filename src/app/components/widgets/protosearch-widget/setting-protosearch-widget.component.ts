@@ -19,7 +19,7 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
         hep_alias: '',
         fields_mapping: []
     };
-    mappingSortedData: Array<any>;
+    mappingSortedData: any;
     resultConfig = {
         title: '',
         isButton: true,
@@ -76,7 +76,7 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
             this.resultConfig.countFieldColumns = data.config.countFieldColumns || 1;
             this.mappingSortedData = Functions.cloneObject(data.mapping.data);
             if (data.isContainer) {
-                this.mappingSortedData = this.mappingSortedData.filter(item => {
+                this.mappingSortedData = this.mappingSortedData.filter((item: any) => {
                     return !(item.profile === 'default' && item.hepid === 2000 && item.hep_alias === 'LOKI');
                 });
             }
@@ -86,30 +86,30 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
                 }
 
                 /* check if we have default fields inside */
-                if (!item.fields_mapping.find(it => it.id === 'limit')) {
+                if (!item.fields_mapping.find((it:any) => it.id === 'limit')) {
                     item.fields_mapping = item.fields_mapping.concat(this.defaultFields);
                 }
             }
             if (data.config.config.protocol_id) {
                 this.proto.hep_alias = data.config.config.protocol_id.name;
                 this.proto.profile = this.resultConfig.profile;
-                const mapping = this.mappingSortedData.find(i =>
+                const mapping = this.mappingSortedData.find((i: any) =>
                     i.hep_alias === data.config.config.protocol_id.name &&
                     i.profile === data.config.config.protocol_profile.value);
-                this.proto.fields_mapping = mapping.fields_mapping.filter(i => !(i.skip === true)).map(i => {
-                    i.selected = data.config.fields.map(j => j.field_name).includes(i.id);
+                this.proto.fields_mapping = mapping.fields_mapping.filter((i: any) => !(i.skip === true)).map((i: any) => {
+                    i.selected = data.config.fields.map((j: any) => j.field_name).includes(i.id);
                     return i;
                 });
-                this.proto.fields_mapping = this.proto.fields_mapping.filter(i => i.id !== 'smartinput');
+                this.proto.fields_mapping = this.proto.fields_mapping.filter((i: any) => i.id !== 'smartinput');
             }
             /* sorting this.proto.fields_mapping by data.config.fields */
             const pm = Functions.cloneObject(this.proto.fields_mapping);
-            const pmActive = [];
-            data.config.fields.forEach(j => {
-                const [pmItem] = pm.splice(pm.findIndex(i => i.id === j.field_name), 1);
+            const pmActive: any = [];
+            data.config.fields.forEach((j: any) => {
+                const [pmItem] = pm.splice(pm.findIndex((i: any) => i.id === j.field_name), 1);
                 pmActive.unshift(pmItem);
             });
-            this.proto.fields_mapping = ([].concat(pmActive.reverse(), pm)).filter(i => !!i);
+            this.proto.fields_mapping = ([].concat(pmActive.reverse(), pm)).filter((i: any) => !!i);
         } catch (err) {
             this.onNoClick();
 
@@ -122,8 +122,8 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
     ngOnInit () {
         this.validate();
     }
-    private getHepId(hep_alias, profile) {
-        return this.mappingSortedData.find(i =>
+    private getHepId(hep_alias: any, profile: any) {
+        return this.mappingSortedData.find((i: any) =>
             i.hep_alias === hep_alias &&
             i.profile === profile
         ).hepid;
@@ -150,7 +150,7 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
                     this.proto.profile : this.resultConfig.profile;
 
                 this.validate();
-                this.resultConfig.fields = this.proto.fields_mapping.filter(item => item.selected === true).map(item => {
+                this.resultConfig.fields = this.proto.fields_mapping.filter((item: any) => item.selected === true).map((item: any) => {
                     item.proto = this.proto.hep_alias + '-' + this.proto.profile;
                     return item;
                 });
@@ -159,7 +159,7 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
     }
     validate() {
         try {
-            this.isValidForm = this.proto.fields_mapping.filter(item => item.selected === true).length > 0;
+            this.isValidForm = this.proto.fields_mapping.filter((item: any) => item.selected === true).length > 0;
             if (this.isValidForm) {
                 this.onChange();
             }

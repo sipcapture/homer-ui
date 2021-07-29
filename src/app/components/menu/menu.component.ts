@@ -11,7 +11,6 @@ import { SessionStorageService, UserSettings } from '../../services/session-stor
 import { PreferenceAdvancedService } from '@app/services';
 import { Subscription } from 'rxjs';
 import { environment } from '@environments/environment';
-import { curveNatural } from 'd3';
 import { UserSecurityService } from '@app/services/user-security.service';
 
 export interface DashboardData {
@@ -121,7 +120,7 @@ export class MenuComponent implements OnInit, OnDestroy {
                     this.selectedDateTimeRangeTitleValue  = data.dateTimeRange.title;
 
                     this.selectedDateTimeRange = (data.dateTimeRange.title)
-                        || data.dateTimeRange.dates.map(i => moment(i));
+                        || data.dateTimeRange.dates.map((i: any) => moment(i));
                 }
             }
         });
@@ -274,7 +273,7 @@ export class MenuComponent implements OnInit, OnDestroy {
         if (this.isRangeClicked) {
             this.isRangeClicked = false;
         } else {
-            this.selectedDateTimeRangeTitle = this.selectedDateTimeRange.map(i => i.format('DD/MM/YYYY HH:mm:ss')).join(' - ');
+            this.selectedDateTimeRangeTitle = this.selectedDateTimeRange.map((i: any) => i.format('DD/MM/YYYY HH:mm:ss')).join(' - ');
         }
 
         this._dtrs.updateDataRange(

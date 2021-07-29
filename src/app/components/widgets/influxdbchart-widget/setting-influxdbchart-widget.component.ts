@@ -117,8 +117,8 @@ export class SettingInfluxdbchartWidgetComponent {
                         buttons: true,
                         detail: {
                             measurement: item.dataquery.main.name,
-                            counter: item.dataquery.type.map(i => i.name),
-                            tags: item.dataquery.tag.map(i => i.name),
+                            counter: item.dataquery.type.map((i: any) => i.name),
+                            tags: item.dataquery.tag.map((i: any) => i.name),
                             values: [],
                             sum: item.dataquery.sum,
                             raw: item.dataquery.raw || ''
@@ -143,7 +143,7 @@ export class SettingInfluxdbchartWidgetComponent {
     addRecord() {
         if (this.panelDataSource && this.database && this.retentionPolicy) {
             let n = 1;
-            const arr = this.dataSource.map(i => i.id);
+            const arr = this.dataSource.map((i: any) => i.id);
 
             while (arr.indexOf('A' + n) !== -1) { n++; }
 
@@ -187,7 +187,7 @@ export class SettingInfluxdbchartWidgetComponent {
         const res = await this._ss.getStatisticMeasurements(this.selecedEditQuery.database).toPromise();
 
         if (res && res.data) {
-            this.measurementList = res.data.Results[0].Series[0].values.map(i => ({name: i[0], value: i[0]}));
+            this.measurementList = res.data.Results[0].Series[0].values.map((i: any) => ({name: i[0], value: i[0]}));
         }
     }
 
@@ -204,7 +204,7 @@ export class SettingInfluxdbchartWidgetComponent {
     async onPanelDatasource() {
         const res = await this._ss.getStatisticDbList().toPromise();
         if (res && res.data) {
-            this.databaseList = res.data.Results[0].Series[0].values.map(i => ({name: i[0], value: i[0]}));
+            this.databaseList = res.data.Results[0].Series[0].values.map((i: any) => ({name: i[0], value: i[0]}));
             this.updateResult();
         }
     }
@@ -222,7 +222,7 @@ export class SettingInfluxdbchartWidgetComponent {
         };
         const res = await this._ss.getStatisticRetentions(reqData).toPromise();
         if (res && res.data) {
-            this.retentionPolicyList = res.data.Results[0].Series[0].values.map(i => ({name: i[0], value: i[0]}));
+            this.retentionPolicyList = res.data.Results[0].Series[0].values.map((i: any) => ({name: i[0], value: i[0]}));
             this.retentionPolicyList.push({ name: 'none', value: 'none'});
 
             this.updateResult();
@@ -246,7 +246,7 @@ export class SettingInfluxdbchartWidgetComponent {
         }).toPromise();
 
         if (res && res.data) {
-            this.counterList = res.data.Results[0].Series[0].values.map(i => ({name: i[0], value: i[0]}));
+            this.counterList = res.data.Results[0].Series[0].values.map((i: any) => ({name: i[0], value: i[0]}));
             this.counter.setValue(this.selecedEditQuery.detail.counter);
             this.selecedEditQuery.detail.measurement = this.measurement;
         }
@@ -266,12 +266,12 @@ export class SettingInfluxdbchartWidgetComponent {
         }).toPromise();
 
         if (res2 && res2.data) {
-            this.tagsList = res2.data.Results[0].Series[0].values.map(i => ({name: i[0], value: i[0]}));
+            this.tagsList = res2.data.Results[0].Series[0].values.map((i: any) => ({name: i[0], value: i[0]}));
             this.tags.setValue(this.selecedEditQuery.detail.tags);
         }
         this.updateCss('counter');
         this.updateCss('tags');
-        
+
         this.updateResult();
     }
     onDetails(tag: string, value: any = null) {
@@ -292,7 +292,7 @@ export class SettingInfluxdbchartWidgetComponent {
     }
     updateResult () {
         if (this.selecedEditQuery) {
-            this.dataSource[this.dataSource.map(i => i.id).indexOf(this.selecedEditQuery.id)] = this.selecedEditQuery;
+            this.dataSource[this.dataSource.map((i: any) => i.id).indexOf(this.selecedEditQuery.id)] = this.selecedEditQuery;
         }
 
         this.outputObject.chartType = this.chartType;

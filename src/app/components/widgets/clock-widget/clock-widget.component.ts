@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild } from '@angular/core';
-import { Widget, WidgetArrayInstance } from '@app/helpers/widget.ts';
+import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 import { SettingClockWidgetComponent } from './setting-clock-widget.component';
 import { MatDialog } from '@angular/material/dialog';
 import { IWidget } from '../IWidget';
@@ -26,7 +26,7 @@ export interface ClockConfig {
     location: TimeZone;
     showDate: boolean;
     showAnalog: string;
-    fontSizeClock: number; 
+    fontSizeClock: number;
     fontSizeDate: number;
     radius: number;
 }

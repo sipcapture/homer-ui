@@ -23,10 +23,10 @@ export class AgentsubService {
     return this.http.get<PreferenceAgentsub>(`${this.url}/fields`);
   }
   /**
-   * 
-   * 
+   *
+   *
    */
-  getHepsubElements({ uuid, type, data }): Observable<any> {
+  getHepsubElements({ uuid, type, data }: any): Observable<any> {
     return this.http.post<any>(`${this.url}/search/${uuid}/${type}`, data);
   }
   // type = 'cdr' | 'wav' | 'json'
@@ -34,7 +34,7 @@ export class AgentsubService {
     return this.http.get<any>(`${this.url}/type/${type}`);
   }
 
-  getHepsubBlobData({ uuid, data }): Observable<any> {
+  getHepsubBlobData({ uuid, data }: any): Observable<any> {
     return this.http.post(`${this.url}/search/${uuid}/download`, data, {
       responseType: 'blob',
       headers: new HttpHeaders().append('Content-Type', 'application/json')

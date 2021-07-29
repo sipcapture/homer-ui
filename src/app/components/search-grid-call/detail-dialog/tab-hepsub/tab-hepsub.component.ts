@@ -88,7 +88,7 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
             if (res && res.data) {
                 const type = mapping['lookup_profile'];
                 const { uuid } = res.data[0];
-                this.subTabList = res.data.map(i => {
+                this.subTabList = res.data.map((i: any) => {
                     i.title = `"${i.node}"/ ${type}`;
                     return i;
                 });
@@ -102,7 +102,7 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
         });
     }
 
-    async onTabClick(uuid, type, mapping) {
+    async onTabClick(uuid?, type?, mapping?) {
 
         const dataQuery = this.getQuery();
         const profile = this.getProfile();
@@ -194,7 +194,7 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
 
     private getCallIdArray() {
         const data = this.dataItem.data;
-        const callidArray = data.calldata.map(i => i.sid).reduce((a, b) => {
+        const callidArray = data.calldata.map((i: any) => i.sid).reduce((a, b) => {
             if (a.indexOf(b) === -1) {
                 a.push(b);
             }
@@ -205,7 +205,7 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
 
     private getMyDataArray(key) {
         const data = this.dataItem.data;
-        const myArray = data.calldata.map(i => i[key]).reduce((a, b) => {
+        const myArray = data.calldata.map((i: any) => i[key]).reduce((a, b) => {
             if (a.indexOf(b) === -1) {
                 a.push(b);
             }
@@ -216,7 +216,7 @@ export class TabHepsubComponent implements OnInit, OnDestroy {
 
     private getMyMessagesArray(key) {
         const data = this.dataItem.data;
-        const myArray = data.messages.map(i => i[key]).reduce((a, b) => {
+        const myArray = data.messages.map((i: any) => i[key]).reduce((a, b) => {
             if (a.indexOf(b) === -1) {
                 a.push(b);
             }

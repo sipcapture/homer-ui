@@ -11,7 +11,7 @@ export class FlowItemComponent {
     @Input() idx = 0;
     @Output() click: EventEmitter<any> = new EventEmitter();
 
-    onClickItem(item, event) {
+    onClickItem(item: any, event: any) {
         this.click.emit({ item, event });
     }
 }

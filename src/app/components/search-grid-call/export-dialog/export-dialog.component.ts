@@ -58,10 +58,10 @@ export class ExportDialogComponent implements OnInit {
                     selected: column.visible
                 }));
             this.allColumnIds = this.allColumnIds
-                .map(i => JSON.stringify(i))
+                .map((i: any) => JSON.stringify(i))
                 .sort()
                 .filter((i, k, arr) => i !== arr[k - 1])
-                .map(i => Functions.JSON_parse(i));
+                .map((i: any) => Functions.JSON_parse(i));
 
             this._bufferData = Functions.cloneObject(this.allColumnIds);
         }

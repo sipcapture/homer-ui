@@ -86,7 +86,7 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
             s.minWidth = Math.min(maxWidth, Math.max(this.minWidth, this.width)) + 'px';
             s.minHeight = Math.min(maxHeight, Math.max(this.minHeight, this.height)) + 'px';
             s.width = Math.min(this.width, maxWidth) + 'px';
-            s.height = Math.min(this.height, maxHeight) + 'px';
+            // s.height = Math.min(this.height, maxHeight) + 'px';
         })(this.containerWindow.nativeElement.style);
 
         if (this.mouseEventData) {

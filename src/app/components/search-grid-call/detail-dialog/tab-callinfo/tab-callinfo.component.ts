@@ -1,3 +1,4 @@
+import { ChartType } from 'chart.js';
 import { Component, Input, EventEmitter, Output } from '@angular/core';
 import { Functions } from '../../../../helpers/functions';
 import * as moment from 'moment';
@@ -49,7 +50,7 @@ export class TabCallinfoComponent {
         maintainAspectRatio: false,
     };
     toggleStatus;
-    public pieChartType = 'pie';
+    public pieChartType: ChartType = 'pie';
     @Input() set dataItem(_dataItem) {
         const clone = Functions.cloneObject;
 
@@ -224,7 +225,7 @@ export class TabCallinfoComponent {
                                 // reset if we seen MOVE
                                 trans.CdrStopTime = 0;
                                 trans.Status = 5;
-                                if (trans.CdrRingingTime !== 0 && trans.RingingTime == 0 
+                                if (trans.CdrRingingTime !== 0 && trans.RingingTime == 0
                                     && trans.CdrRingingTime < trans.CdrConnectTime) {
                                     trans.RingingTime = trans.CdrConnectTime - trans.CdrRingingTime;
                                 }

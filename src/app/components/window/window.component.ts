@@ -18,7 +18,7 @@ import {CdkPortal, DomPortalHost} from '@angular/cdk/portal';
     templateUrl: './window.component.html'
 })
 export class WindowComponent implements OnInit, OnDestroy {
-    @ViewChild(CdkPortal, {static: true}) portal: CdkPortal;
+    @ViewChild(CdkPortal, {static: true}) portal: any;
     @Input() width = 700;
     @Input() height = 600;
     @Input() minWidth = 300;
@@ -41,7 +41,7 @@ export class WindowComponent implements OnInit, OnDestroy {
 
     @Output() close: EventEmitter<any> = new EventEmitter();
 
-    private externalWindow = null;
+    private externalWindow:any = null;
 
     constructor(
         private componentFactoryResolver: ComponentFactoryResolver,
@@ -64,7 +64,7 @@ export class WindowComponent implements OnInit, OnDestroy {
             this.width + ', height=' + this.height + ', top=' + top + ', left=' + left);
 
         try {
-            this.externalWindow.onbeforeunload = evt => {
+            this.externalWindow.onbeforeunload = (evt: any) => {
                 this._isWindow = false;
                 this.close.emit(evt);
             };

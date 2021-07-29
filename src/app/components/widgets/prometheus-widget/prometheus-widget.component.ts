@@ -26,7 +26,7 @@ import * as moment from 'moment';
     minWidth: 300
 })
 export class PrometheusWidgetComponent implements IWidget {
-    @Input() id: string;
+    @Input() id: any;
     @Input() config: any;
     @Output() changeSettings = new EventEmitter<any> ();
 
@@ -47,7 +47,7 @@ export class PrometheusWidgetComponent implements IWidget {
             }]
         }
     };
-    timeRange: Timestamp;
+    timeRange: any;
     public chartLabels: Label[] = [];
     public chartType: ChartType = 'line';
     public chartLegend = true;
@@ -63,7 +63,7 @@ export class PrometheusWidgetComponent implements IWidget {
     noChartData = true;
     multiDataArr: Array<any> = [];
     isConfig = true;
-    private subscription: Subscription;
+    private subscription: any;
 
     constructor(
         public dialog: MatDialog,
@@ -117,7 +117,7 @@ export class PrometheusWidgetComponent implements IWidget {
             this.noChartData = false;
 
             try {
-                let isFill;
+                let isFill: any;
                 this.chartData = [];
                 this.chartLabels = [];
 
@@ -130,18 +130,18 @@ export class PrometheusWidgetComponent implements IWidget {
                     this.chartOptions.scales.yAxes[0].stacked = false;
                 }
 
-                data.forEach(dataItem => {
+                data.forEach((dataItem: any) => {
                     if (!dataItem.data.result || dataItem.data.result.length === 0) {
                         this.noChartData = this.noChartData || false;
                         return;
                     }
-                    this.chartLabels = dataItem.data.result[0].values.map(i => moment(i[0]).format('HH:mm:ss'));
+                    this.chartLabels = dataItem.data.result[0].values.map((i: any) => moment(i[0]).format('HH:mm:ss'));
 
-                    dataItem.data.result.forEach(_result => {
+                    dataItem.data.result.forEach((_result: any) => {
                         this.chartData.push({
                             fill: isFill,
                             label: _result.metric.__name__,
-                            data: _result.values.map(i => i[1] * 1)
+                            data: _result.values.map((i: any) => i[1] * 1)
                         });
                         this.noChartData = this.noChartData || true;
                     });
@@ -166,7 +166,7 @@ export class PrometheusWidgetComponent implements IWidget {
         const dataquery: Array<any> = config.dataquery.data;
         let formattedQuery: Array<any> = [];
         dataquery.forEach(item => {
-            formattedQuery = formattedQuery.concat( item.prometheusLabels.map(i => i + encodeURIComponent(item.prometheusQuries) ) );
+            formattedQuery = formattedQuery.concat( item.prometheusLabels.map((i: any) => i + encodeURIComponent(item.prometheusQuries) ) );
         });
         formattedQuery = formattedQuery[0] instanceof Array ? formattedQuery[0] : formattedQuery;
 
@@ -193,13 +193,13 @@ export class PrometheusWidgetComponent implements IWidget {
                 this.config.chart.type.value = result.chartType;
                 this.config.format.value = result.format;
 
-                this.config.dataquery.data = result.dataSource.map(item => ({
+                this.config.dataquery.data = result.dataSource.map((item: any) => ({
                     sum: item.detail.sum,
                     prometheusLabels: item.detail.prometheusLabels,
                     prometheusQuries: item.detail.prometheusQuries,
                 }));
 
-                this.config.panel.queries = result.dataSource.map(item => ({
+                this.config.panel.queries = result.dataSource.map((item: any) => ({
                     name: item.id,
                     type: {
                         name: item.panelDataSource,
@@ -218,18 +218,18 @@ export class PrometheusWidgetComponent implements IWidget {
         });
     }
 
-    yAxisFormatter (label) {
+    yAxisFormatter (label: any) {
         switch (this.config.format.value) {
             case 'short':
                 return ((num) => {
-                    const f = i => Math.pow(1024, i);
+                    const f = (i: any) => Math.pow(1024, i);
                     let n = 4;
                     while (n-- && !(f(n) < num)) {}
                     return (n === 0 ? num : Math.round(num / f(n)) + ('kmb'.split('')[n - 1])) || num.toFixed(2);
                 })(label);
             case 'bytes':
                 return ((num) => {
-                    const f = i => Math.pow(1024, i);
+                    const f = (i: any) => Math.pow(1024, i);
                     let n = 6;
                     while (n-- && !(f(n) < num)) {}
                     return ((n === 0 ? num : Math.round(num / f(n)) + ('KMGTP'.split('')[n - 1])) || num.toFixed(0)) + 'b';

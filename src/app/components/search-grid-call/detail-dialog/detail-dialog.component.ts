@@ -83,7 +83,7 @@ export class DetailDialogComponent implements OnInit {
     @Input('isLoaded') set isLoaded(val) {
         this._isLoaded = val;
         if (this.sipDataItem) {
-            this.dataLogs = this.sipDataItem.data.messages.filter(i => !i.method).map(i => ({ payload: i }));
+            this.dataLogs = this.sipDataItem.data.messages.filter((i: any) => !i.method).map((i: any) => ({ payload: i }));
             if (
                 this.sipDataItem.data &&
                 this.sipDataItem.data.messages &&
@@ -97,7 +97,7 @@ export class DetailDialogComponent implements OnInit {
 
             const filterByParam = param => Object.keys(
                 this.sipDataItem.data.messages
-                    .map(i => i[param])
+                    .map((i: any) => i[param])
                     .reduce((a, b) => (a[b] = 1, a), {})
             ).map((i: any) => {
                 const obj = {
@@ -112,9 +112,9 @@ export class DetailDialogComponent implements OnInit {
             this.setFiltersByAdvanced();
             const ports = [].concat(filterByParam('dstPort'), filterByParam('srcPort'));
             this.checkboxListFilterPort = Object.keys(ports
-                .map(i => i.title)
+                .map((i: any) => i.title)
                 .reduce((a, b) => (a[b] = a[b] ? a[b] + 1 : 1, a), {})
-            ).map(i => ({
+            ).map((i: any) => ({
                 selected: true,
                 title: i,
                 port: i
@@ -155,7 +155,7 @@ export class DetailDialogComponent implements OnInit {
     ngOnInit() {
         this.setTabByAdvanced();
         if (this.sipDataItem) {
-            this.dataLogs = this.sipDataItem.data.messages.filter(i => !i.method).map(i => ({ payload: i }));
+            this.dataLogs = this.sipDataItem.data.messages.filter((i: any) => !i.method).map((i: any) => ({ payload: i }));
             setTimeout(this.checkStatusTabs.bind(this));
             this.restoreFiltersFromLocalStorage();
             this.doFilterMessages();
@@ -187,7 +187,7 @@ export class DetailDialogComponent implements OnInit {
                 localFilterState = JSON.parse(localFilterState);
                 const { PayloadType } = localFilterState.flowFilters;
                 if (PayloadType) {
-                    return (PayloadType.find(i => i.title === type) || { selected: defaultReturn }).selected;
+                    return (PayloadType.find((i: any) => i.title === type) || { selected: defaultReturn }).selected;
                 } else {
                     return defaultReturn;
                 }
@@ -224,7 +224,7 @@ export class DetailDialogComponent implements OnInit {
                     localFilterState.flowFilters.PayloadType &&
                     localFilterState.flowFilters.PayloadType instanceof Array
                 ) {
-                    this.flowFilters.PayloadType.forEach(i => {
+                    this.flowFilters.PayloadType.forEach((i: any) => {
                         const localitem = localFilterState.flowFilters.PayloadType.find(j => j.title === i.title);
                         if (localitem) {
                             i.selected = localitem.selected;
@@ -310,7 +310,7 @@ export class DetailDialogComponent implements OnInit {
                 try {
                     const params = Functions.getUriJson();
                     const category = params && params.param ? 'export' : 'search';
-                    const setting = advanced.data.filter(i => i.category === category && i.param === 'transaction');
+                    const setting = advanced.data.filter((i: any) => i.category === category && i.param === 'transaction');
                     if (setting && setting[0] && setting[0].data) {
                         const filters = setting[0].data.tabfilterconfig;
                         const filterBackup = Functions.cloneObject(this.checkboxListFilterPayloadType);
@@ -335,7 +335,7 @@ export class DetailDialogComponent implements OnInit {
                 try {
                     const params = Functions.getUriJson();
                     const category = params && params.param ? 'export' : 'search';
-                    const setting = advanced.data.filter(i => i.category === category && i.param === 'transaction');
+                    const setting = advanced.data.filter((i: any) => i.category === category && i.param === 'transaction');
                     if (setting && setting[0] && setting[0].data) {
                         const { tabpositon } = setting[0].data;
                         if (tabpositon && typeof tabpositon === 'string' && tabpositon !== '') {
@@ -372,7 +372,7 @@ export class DetailDialogComponent implements OnInit {
         }
         setTimeout(() => {
             const fc = Functions.cloneObject;
-            this.sipDataItem.data.messages = fc(this._messagesBuffer).messages.filter(i => {
+            this.sipDataItem.data.messages = fc(this._messagesBuffer).messages.filter((i: any) => {
                 const boolPayloadType =
                     this.checkboxListFilterPayloadType.filter(j => j.payloadType * 1 === i.payloadType * 1 && j.selected).length > 0;
 
@@ -386,12 +386,12 @@ export class DetailDialogComponent implements OnInit {
                 return boolPayloadType && boolPort && boolCallId;
             });
 
-            const RTPFilter = this.checkboxListFilterPayloadType.find(i => i.title === 'RTP');
+            const RTPFilter = this.checkboxListFilterPayloadType.find((i: any) => i.title === 'RTP');
             this.RTPFilterForFLOW = RTPFilter && RTPFilter.selected || false;
 
-            const selectedId = this.sipDataItem.data.messages.map(i => i.id);
+            const selectedId = this.sipDataItem.data.messages.map((i: any) => i.id);
 
-            this.sipDataItem.data.calldata = fc(this._messagesBuffer).calldata.filter(i => selectedId.includes(i.id));
+            this.sipDataItem.data.calldata = fc(this._messagesBuffer).calldata.filter((i: any) => selectedId.includes(i.id));
             this.sipDataItem = Functions.cloneObject(this.sipDataItem); // refresh data
             this.flowFilters = {
                 isSimplify: this.isSimplify,

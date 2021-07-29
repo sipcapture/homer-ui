@@ -350,7 +350,7 @@ class QosProcessor {
             m.raw = m.raw.replace(uc, '.')
         })
 
-        data = data.map(i => (i.raw = JSON.parse(i.raw), i))
+        data = data.map((i: any) => (i.raw = JSON.parse(i.raw), i))
             .filter(({ raw }) => raw?.sender_information &&
                 raw?.sender_information?.packets &&
                 raw?.sender_information?.octets);
@@ -413,8 +413,10 @@ class QosProcessor {
                         if (mosFraction) {
                             if (block.fraction_lost <= 0) {
                                 numPL = 0;
+                            } else if (block.fraction_lost > 256) {
+                                numPL = 100;
                             } else {
-                                numPL = block.fraction_lost / 256 * 100;
+                                numPL = numPL / 256 * 100;
                             }
                         }
 
@@ -437,7 +439,7 @@ class QosProcessor {
                         k.packets_lostData.push(block.packets_lost);
 
                         // fraction_lost
-                        if (block.fraction_lost <= 0 ) {
+                        if (block.fraction_lost <= 0) {
                             k.fraction_lostData.push(0);
                         } else {
                             k.fraction_lostData.push(block.fraction_lost / 256);
@@ -567,7 +569,7 @@ class QosProcessor {
     }
     private average(streams, labelData) {
         try {
-            const t = streams.map(i => i[labelData].reduce((a, b) => (a += b, a), 0) / i[labelData].filter(e => e > 0).length);
+            const t = streams.map((i: any) => i[labelData].reduce((a, b) => (a += b, a), 0) / i[labelData].filter(e => e > 0).length);
             const out = t.reduce((a, b) => (a += b, a), 0) / t.filter(e => e > 0).length;
             return isNaN(out) ? 0 : Math.round(out * 100) / 100;
         } catch (err) {
@@ -580,7 +582,7 @@ class QosProcessor {
         } else {
             this.chartLabelsRTP = [];
         }
-        chartData.forEach(i => {
+        chartData.forEach((i: any) => {
             i.data = [];
             i.backgroundColor = [];
             i.hoverBackgroundColor = [];
@@ -677,9 +679,9 @@ class QosProcessor {
                 item.parent_stream[val.label + '_color'] = rColor.backgroundColor;
 
                 val.backgroundColor = arrBackgroundColor
-                    .concat(Array.from({ length: _data.length }, i => rColor.backgroundColor));
+                    .concat(Array.from({ length: _data.length }, (i: any) => rColor.backgroundColor));
                 val.hoverBackgroundColor = arrHoverBackgroundColor
-                    .concat(Array.from({ length: _data.length }, i => rColor.borderColor));
+                    .concat(Array.from({ length: _data.length }, (i: any) => rColor.borderColor));
             });
 
         });
@@ -690,14 +692,14 @@ class QosProcessor {
         /* lets make it more uniq */
         let hash = 0, i, chr;
         for (i = 0; i < str.length; i++) {
-             chr   = str.charCodeAt(i);
-             hash  = ((hash << 5) - hash) + chr;
-             hash |= 0; // Convert to 32bit integer
+            chr = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + chr;
+            hash |= 0; // Convert to 32bit integer
         }
 
         const rColor = this.getColorByStringHEX(hash.toString())
             .match(/.{2}/g)
-            .map(i => parseInt(i, 16))
+            .map((i: any) => parseInt(i, 16))
             .join(', ');
 
         const rColor100 = `rgba(${rColor}, 1)`;
@@ -713,7 +715,7 @@ class QosProcessor {
         if (item[label]) {
             return this.cloneObject(data);
         }
-        return Array.from({ length: data.length }, i => 0);
+        return Array.from({ length: data.length }, (i: any) => 0);
     }
 
     private getColorByStringHEX(str: string) {
@@ -745,7 +747,7 @@ class QosProcessor {
 
         return src;
     }
-    private calculateJitterMos({ jitter, numpacketlost, rtt = 0}) {
+    private calculateJitterMos({ jitter, numpacketlost, rtt = 0 }) {
         if (rtt === 0) {
             rtt = 10;
         }

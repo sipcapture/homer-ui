@@ -7,7 +7,7 @@ import { environment } from './environments/environment';
 if (environment.production) {
   enableProdMode();
 }
-const b = document.head.querySelector('base');
+const b: any = document.head.querySelector('base');
 b.href = b.href + '';
 
 platformBrowserDynamic().bootstrapModule(module.AppModule)

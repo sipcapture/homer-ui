@@ -7,7 +7,7 @@ export interface DashboardContentModel {
     component?: any;
     name: string;
     title?: string;
-    config?: object;
+    config?: any;
     output?: any;
     strongIndex?: string;
     minItemCols?: number;

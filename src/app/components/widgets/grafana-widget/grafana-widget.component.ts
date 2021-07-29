@@ -134,7 +134,7 @@ export class IframeWidgetComponent implements IWidget, OnInit, OnDestroy {
         if (noCache) {
             params.rand = (Math.random() * 999999).toFixed(0);
         }
-        this.url = [this._config.url, Object.keys(params).map(i => `${i}=${params[i]}`).join('&')].join('?');
+        this.url = [this._config.url, Object.keys(params).map((i: any) => `${i}=${params[i]}`).join('&')].join('?');
         this.url = `${this.envUrl}${this.url}`;
         this._config.configuredUrl = this.url;
         console.log(this.url)

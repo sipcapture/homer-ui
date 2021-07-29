@@ -490,13 +490,13 @@ export class PreferenceComponent implements OnInit, OnDestroy, AfterContentCheck
         this.changeDetectorRefs.detectChanges();
     }
     onClearLocalData() {
-        Object.keys(localStorage.valueOf()).filter(i => i !== 'currentUser').forEach(i => localStorage.removeItem(i));
+        Object.keys(localStorage.valueOf()).filter((i: any) => i !== 'currentUser').forEach((i: any) => localStorage.removeItem(i));
         this.dashboardService.clearLocalStorage();
         this.sessionStorageService.clearLocalStorage();
         this.changeDetectorRefs.detectChanges();
     }
     getLocalStorageStatus(): any {
-        return Object.keys(localStorage.valueOf()).filter(i => i !== 'currentUser').length > 0;
+        return Object.keys(localStorage.valueOf()).filter((i: any) => i !== 'currentUser').length > 0;
     }
 
     ngOnDestroy() {

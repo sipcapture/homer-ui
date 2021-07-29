@@ -37,7 +37,7 @@ export class TabLokiComponent implements OnInit {
 
     ngOnInit() {
         const data = this.dataItem.data;
-        const labels = data.calldata.map(i => i.sid).reduce((a, b) => {
+        const labels = data.calldata.map((i: any) => i.sid).reduce((a, b) => {
             if (a.indexOf(b) === -1) {
                 a.push(b);
             }
@@ -49,9 +49,9 @@ export class TabLokiComponent implements OnInit {
         };
         this._pas.getAll().toPromise().then((advanced: any) => {
             const loki = advanced.data
-            .filter(i => i.category === 'search' && i.param === 'lokiserver')
-            const [advancedTemplate] = loki.map(i => i.data.template);
-            [this.lokiLimit] = loki.map(i => i.data.limit)
+            .filter((i: any) => i.category === 'search' && i.param === 'lokiserver')
+            const [advancedTemplate] = loki.map((i: any) => i.data.template);
+            [this.lokiLimit] = loki.map((i: any) => i.data.limit)
             if (typeof advancedTemplate !== 'undefined'
             && (advancedTemplate.hasOwnProperty('logStreamSelector') || advancedTemplate.hasOwnProperty('lineFilterOperator'))) {
                 this.lokiTemplate = advancedTemplate;

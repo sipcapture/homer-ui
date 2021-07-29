@@ -139,8 +139,8 @@ export class InfluxdbchartWidgetComponent implements IWidget, OnInit, OnDestroy 
                 database: `"${item.database.name}"`, // "\"homer\"",
                 retention: `"${item.retention.name}"`, // "\"autogen\"",
                 rawquery: item.raw,
-                type: item.type.map(i => i.name),
-                tag: item.tag.map(i => i.name)
+                type: item.type.map((i: any) => i.name),
+                tag: item.tag.map((i: any) => i.name)
             });
         });
 
@@ -273,10 +273,10 @@ export class InfluxdbchartWidgetComponent implements IWidget, OnInit, OnDestroy 
                     },
                     database: { name: item.database },
                     retention: { name: item.retentionPolicy },
-                    type: item.detail.counter.map(i => ({
+                    type: item.detail.counter.map((i: any) => ({
                         name: i, value: i
                     })),
-                    tag: item.detail.tags.map(i => ({
+                    tag: item.detail.tags.map((i: any) => ({
                         name: i, value: i
                     })),
                     raw: item.detail.raw || '',
@@ -316,7 +316,7 @@ export class InfluxdbchartWidgetComponent implements IWidget, OnInit, OnDestroy 
         switch (this.config.format.value) {
             case 'short':
                 return ((num) => {
-                    const f = i => Math.pow(1024, i);
+                    const f = (i: any) => Math.pow(1024, i);
                     let n = 4;
                     while (n-- && !(f(n) < num)) {}
                     if (typeof num !== 'number') {
@@ -327,7 +327,7 @@ export class InfluxdbchartWidgetComponent implements IWidget, OnInit, OnDestroy 
                 })(label);
             case 'bytes':
                 return ((num) => {
-                    const f = i => Math.pow(1024, i);
+                    const f = (i: any) => Math.pow(1024, i);
                     let n = 6;
                     while (n-- && !(f(n) < num)) {}
                     if (typeof num !== 'number') {

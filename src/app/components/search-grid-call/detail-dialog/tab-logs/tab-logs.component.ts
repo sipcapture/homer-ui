@@ -23,7 +23,7 @@ export class TabLogsComponent {
 
         // Compact Objects
 
-        this._data.forEach(i =>  {
+        this._data.forEach((i: any) =>  {
             try {
                 i.payload.raw = JSON.parse(i.payload.raw);
             } catch (e) { }

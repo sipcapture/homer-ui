@@ -19,7 +19,7 @@ export class SettingSmartInputWidgetComponent implements OnInit, OnDestroy {
         hep_alias: '',
         fields_mapping: []
     };
-    mappingSortedData: Array<any>;
+    mappingSortedData: Array<any> = [];
     resultConfig = {
         title: '',
         isButton: true,
@@ -48,7 +48,7 @@ export class SettingSmartInputWidgetComponent implements OnInit, OnDestroy {
             this.mappingSortedData = Functions.cloneObject(data.mapping.data);
             this.mappingSortedData = this.mappingSortedData.filter(
                 mapping => mapping.fields_mapping.some(
-                    field => field.id === 'smartinput'
+                    (field: any) => field.id === 'smartinput'
                 )
             );
             if (data.isContainer) {
@@ -71,8 +71,8 @@ export class SettingSmartInputWidgetComponent implements OnInit, OnDestroy {
 
     ngOnInit () {
     }
-    private getHepId(hep_alias, profile) {
-        return this.mappingSortedData.find(i =>
+    private getHepId(hep_alias: any, profile: any) {
+        return this.mappingSortedData.find((i: any) =>
             i.hep_alias === hep_alias &&
             i.profile === profile
         ).hepid;

@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var buffer_1 = require("buffer");
 var vm_1 = require("vm");
-require("console-browserify");
+// require("console-browserify");
 var context_1 = require("./context");
 var aliasRegistry = {};
 var FUNCTION_PREFIX = '___parser_';

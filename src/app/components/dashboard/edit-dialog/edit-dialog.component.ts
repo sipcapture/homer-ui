@@ -48,10 +48,10 @@ export class EditDialogComponent {
 
         this._ds.getDashboardInfo().toPromise().then((list: any) => {
             if ( list && list.data && list.data.length > 0) {
-                this.typeBoolean.HOME = list.data.filter(i => i.id === 'home').length === 0;
+                this.typeBoolean.HOME = list.data.filter((i: any) => i.id === 'home').length === 0;
 
                 if (!this.isSEARCH) {
-                    this.typeBoolean.SEARCH = list.data.filter(i => i.id === 'search').length === 0;
+                    this.typeBoolean.SEARCH = list.data.filter((i: any) => i.id === 'search').length === 0;
                 }
             }
 

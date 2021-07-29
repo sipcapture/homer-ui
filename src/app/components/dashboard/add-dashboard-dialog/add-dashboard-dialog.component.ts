@@ -27,14 +27,14 @@ export class AddDashboardDialogComponent implements OnInit, AfterViewInit, OnDes
     ) {
         this._ds.getDashboardInfo().toPromise().then((list: any) => {
             if ( list && list.data && list.data.length > 0) {
-                this.typeBoolean.HOME = list.data.filter(i => i.id === 'home').length === 0;
-                this.typeBoolean.SEARCH = list.data.filter(i => i.id === 'search').length === 0;
+                this.typeBoolean.HOME = list.data.filter((i: any) => i.id === 'home').length === 0;
+                this.typeBoolean.SEARCH = list.data.filter((i: any) => i.id === 'search').length === 0;
             }
 
             this.typeList = Object.keys(this.typeBoolean).map((v, k) => ({
                 index: k + 1,
                 name: v
-            })).filter(i => this.typeBoolean[i.name]);
+            })).filter((i: any) => this.typeBoolean[i.name]);
         });
     }
     ngOnInit() {

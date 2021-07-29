@@ -219,7 +219,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 return a < b ? -1 : a > b ? 1 : 0;
             });
 
-        const IpList: Array<any> = [].concat(...sortedArray.map(i => [i.srcId, i.dstId])).reduce((arr, b) => {
+        const IpList: Array<any> = [].concat(...sortedArray.map((i: any) => [i.srcId, i.dstId])).reduce((arr, b) => {
             const _ip = this._isSimplifyPort ? b.match(/\d+$|(\[.*\]|\d+\.\d+\.\d+\.\d+)/g)[0] : b;
             if (!arr.includes(_ip)) {
                 arr.push(_ip);
@@ -228,13 +228,13 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         }, []);
         if (this._isSimplifyPort) {
             const hostNoPortsArray: Array<any> = Object.keys(hosts).sort()
-                .map(i => i.match(/\d+$|(\[.*\]|\d+\.\d+\.\d+\.\d+)/g))
+                .map((i: any) => i.match(/\d+$|(\[.*\]|\d+\.\d+\.\d+\.\d+)/g))
                 .filter((i, k, a) => {
                     if (a[k - 1]) {
                         return a[k - 1][0] !== i[0];
                     }
                     return true;
-                }).map(i => i.join(':'));
+                }).map((i: any) => i.join(':'));
             const filterdHostd: any = hostNoPortsArray.reduce((a, b) => {
                 const _ip = this._isSimplifyPort ? b.match(/\d+$|(\[.*\]|\d+\.\d+\.\d+\.\d+)/g)[0] : b;
                 a[_ip] = hosts[b];
@@ -246,7 +246,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
 
         hosts = this.sortProperties(hosts, 'position', true, false);
         let increment = 0;
-        Object.keys(hosts).map(i => {
+        Object.keys(hosts).map((i: any) => {
             if (!IpList.includes(i)) {
                 delete hosts[i];
             } else {
@@ -255,7 +255,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             }
         });
 
-        this.aliasTitle = Object.keys(hosts).map(i => {
+        this.aliasTitle = Object.keys(hosts).map((i: any) => {
             const __alias = Object.entries(this.dataItem.data.alias).find(j => j[0].startsWith(i + ':'));
             const alias = this.dataItem.data.alias[i] || (__alias && __alias[1]);
             // This is where the GUI splits port from IP Address.
@@ -287,12 +287,12 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         });
 
         let diffTs = 0;
-        this.labels = data.calldata.map(i => i.sid).reduce((arr, b) => {
+        this.labels = data.calldata.map((i: any) => i.sid).reduce((arr, b) => {
             if (arr.indexOf(b) === -1) {
                 arr.push(b);
             }
             return arr;
-        }, []).map(i => {
+        }, []).map((i: any) => {
             return {
                 color_sid: Functions.getColorByString(i, 100, 40, 1),
                 callid: i
@@ -300,7 +300,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         });
 
         /** maping hosts Combinad aliases OR IPs */
-        const positionIPs = sortedArray.map(i => this._isSimplifyPort ? [i.srcIp, i.dstIp] : [i.srcId, i.dstId])
+        const positionIPs = sortedArray.map((i: any) => this._isSimplifyPort ? [i.srcIp, i.dstIp] : [i.srcId, i.dstId])
             .join(',').split(',').reduce((obj, b) => {
                 if (obj[b] === undefined) {
                     obj[b] = Object.keys(obj).length;
@@ -310,7 +310,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
 
         /** sort hosts */
         this.aliasTitle = Object.keys(positionIPs).reduce((arr, ip) => {
-            arr[positionIPs[ip]] = this.aliasTitle.find(i => i.ip === ip || i.shortIPtext1 === ip);
+            arr[positionIPs[ip]] = this.aliasTitle.find((i: any) => i.ip === ip || i.shortIPtext1 === ip);
             return arr;
         }, []);
         if (this._isCombineByAlias && this._isSimplifyPort && this.aliasTitle) {
@@ -342,13 +342,13 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             const [isC, isS] = [this._isCombineByAlias, this._isSimplifyPort];
             let num = 0;
             if (isC && isS) { // 1 1
-                num = this.aliasTitle.findIndex(i => i.arrip.includes(ip));
+                num = this.aliasTitle.findIndex((i: any) => i.arrip.includes(ip));
             } else
                 if (!isC && isS) { // 0 1
-                    num = this.aliasTitle.findIndex(i => isEqual(i.IP, ip, port));
+                    num = this.aliasTitle.findIndex((i: any) => isEqual(i.IP, ip, port));
                 } else
                     if (!isS) { // 1 0
-                        num = this.aliasTitle.findIndex(i => (isEqual(i.IP, ip, port) && i.PORT === port + '') || i.ip === ipId);
+                        num = this.aliasTitle.findIndex((i: any) => (isEqual(i.IP, ip, port) && i.PORT === port + '') || i.ip === ipId);
                     }
             return num;
         };
@@ -427,7 +427,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             }, Functions.cloneObject(item.source_data.RTPmessageData));
             this.messageWindow.emit(rtpROW);
         } else {
-            const row: any = this.dataSource.find(i => i.id === item.id) as any;
+            const row: any = this.dataSource.find((i: any) => i.id === item.id) as any;
             row.mouseEventData = event;
             this.messageWindow.emit(row);
         }
@@ -525,7 +525,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             panelClass: 'copysnack'
         });
     }
-    onScroll({ target: { scrollTop } }) {
+    onScroll({ target: { scrollTop } }: any) {
         if (this.ScrollTarget === 'virtualScrollbar') {
             this.virtualScroll.scrollToOffset(scrollTop);
             return;

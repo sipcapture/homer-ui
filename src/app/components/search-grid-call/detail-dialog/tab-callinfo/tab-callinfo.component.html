@@ -6,7 +6,7 @@ No Info
 <div *ngFor="let trans of callTransaction">
     <div class="panel panel-default padded">
         <div class="panel-heading">
-            <div class="toggle-header" [ngStyle]="{ 'border-bottom': '3px solid ' + color(trans.callid, true) }"
+            <div class="toggle-header" [ngStyle]="{ 'border-bottom': '3px solid ' + color(trans.callid) }"
                 (click)="toggleCallInfo(trans.callid)">
                 <div style="display: flex; align-items: center">
                     <mat-icon style="color: #749ad6" id="{{ trans.callid + '-icon' }}">keyboard_arrow_down
@@ -25,7 +25,7 @@ No Info
                 </div>
             </div>
             <div id="{{ trans.callid }}">
-                <div [ngStyle]="{ 'border-top': '1px solid ' + color(trans.callid, true) }" class="call-data-panel">
+                <div [ngStyle]="{ 'border-top': '1px solid ' + color(trans.callid) }" class="call-data-panel">
                     <div *ngIf="trans['ua_src']" class="__uac"> {{ trans["ua_src"].title }} -->
                         {{ trans["ua_dst"].title }}:
                         <strong>{{ trans["ua_src"].body }} --> {{ trans["ua_dst"].body }}</strong>

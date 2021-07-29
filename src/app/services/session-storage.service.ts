@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AuthenticationService } from './authentication.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import * as moment from 'moment';
 import { ConstValue } from '@app/models';
 
@@ -35,9 +35,9 @@ export class SessionStorageService {
     PROTO_SEARCH = 'proto-search';
     USER_SETTINGS = 'user-settings';
 
-    private localUserSettings: BehaviorSubject<any>;
+    private localUserSettings: any;
 
-    public sessionStorage: Observable<any>;
+    public sessionStorage: any;
 
     constructor(private authenticationService: AuthenticationService) {
         this.updateDataFromLocalStorage();
@@ -45,7 +45,7 @@ export class SessionStorageService {
     updateDataFromLocalStorage () {
         this.authenticationService.currentUser.subscribe(currentUser => {
             if (currentUser) {
-                SessionStorageService.userSettings = JSON.parse(localStorage.getItem(this.USER_SETTINGS)) ||
+                SessionStorageService.userSettings = JSON.parse('' + localStorage.getItem(this.USER_SETTINGS)) ||
                     SessionStorageService.userSettings;
 
                 if (SessionStorageService.userSettings.protosearchSettings instanceof Array) {

@@ -69,16 +69,21 @@ iframe {
 }
 .widget-warning{
 	position: absolute;
-	top: calc(25%);
-	left: calc(10%);
-	background-color: #ff6700;
-	height: 100px;
-	width: 80%;
+	top: 0px;
+	left: calc(5%);
+	background-color: hsl(24, 100%, 61%);
+	height: 40px;
+	width: 90%;
 	border-radius: .25rem;
-	padding: 1.25rem 1.25rem;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+	padding: 0.25rem 1.25rem;
+    overflow-x: hidden;
+    overflow-y: scroll;
 	p{
-		font-size: 0.75rem;
-		width: calc(100% - .75rem)
+		font-size: 0.70rem;
+		width: calc(100% - .75rem);
+        margin-bottom: 0;
 	}
 	.warning-dismiss{
 		position: absolute;

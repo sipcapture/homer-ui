@@ -108,7 +108,7 @@ export class SettingIframeWidgetComponent implements OnInit {
                 res.dashboard.panels.forEach(function(panelId) {
                     localPanelList.push({ title: panelId.title, pid: panelId.id, uid: res.dashboard.uid});
                 });
-                this.panelListValue = localPanelList.find(i => i.title === this.data.panelListValue);
+                this.panelListValue = localPanelList.find((i: any) => i.title === this.data.panelListValue);
                 this.panelList = localPanelList;
         });
     }

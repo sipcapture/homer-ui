@@ -9,7 +9,7 @@ export class PcapImportService {
   // @TODO add ws endpoint to settings
   //pcapws = 'ws://my-socket-service:8060'
 
-  connection;
+  connection: any;
 
   decoded = {
     ipv4: {
@@ -40,13 +40,13 @@ export class PcapImportService {
 
   constructor() { }
 
-  sendHep3(payload, rcinfo) {
+  sendHep3(payload: any, rcinfo: any) {
     if (rcinfo) {
       try {
         // Browser Support: make process, that emulates node's Process API, available globally in the browser
-        var global = global || window;
-        global.Buffer = global.Buffer || require("buffer").Buffer;
-        global.process = global.process || require("process");
+        var global: any = global || window;
+        global.Buffer = global.Buffer || Buffer;
+        global.process = global.process; //|| require("process");
         var hep_message = hep.encapsulate(payload, rcinfo);
         //console.log(hep_message);
         if (hep_message) {
@@ -60,7 +60,7 @@ export class PcapImportService {
     }
   }
 
-  processPacket(msg) {
+  processPacket(msg: any) {
     try {
       this.decoded = JSON.parse(msg);
     } catch {
@@ -101,22 +101,22 @@ export class PcapImportService {
       this.sendHep3(payload, this.hep_proto);
     }
   }
-  processFrames(frames, ws) {
+  processFrames(frames: any, ws: any) {
     let wspcap = ws;
     try {
       this.connection = new WebSocket(wspcap);
       // console.log(this.connection)
-      this.connection.onerror = (e) => {
+      this.connection.onerror = (e: any) => {
         //console.log(`Could not establish connection to WebSocket ${wspcap}`)
       }
-      this.connection.onmessage = (e) => {
+      this.connection.onmessage = (e: any) => {
         console.log(`Websocket message: ${e}`)
       }
 
       this.connection.onopen = () => {
 
         this.connection.binaryType = "Buffer";
-        frames.forEach((frame) => this.processPacket(frame));
+        frames.forEach((frame: any) => this.processPacket(frame));
 
         this.connection.close();
       };

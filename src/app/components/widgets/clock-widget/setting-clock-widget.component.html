@@ -42,7 +42,7 @@
     <input type="number" autocomplete="off" matInput [(ngModel)]="data.fontSizeDate">
   </mat-form-field>
 </div>
-<mat-checkbox [(ngModel)]="data.showDate" labelPosition="Before" (click)="onChange()">Show Date</mat-checkbox>
+<mat-checkbox [(ngModel)]="data.showDate" labelPosition="before" (click)="onChange()">Show Date</mat-checkbox>
 <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
   <button mat-raised-button (click)="onNoClick()">Cancel</button>
   <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Ok</button>

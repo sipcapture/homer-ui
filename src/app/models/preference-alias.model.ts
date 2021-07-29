@@ -1,6 +1,6 @@
 export interface PreferenceAlias {
     id: number;
-    guid: string;
+    guid?: string;
     alias: string;
     ip: string;
     port: number;

@@ -48,18 +48,18 @@ type SortType = 'SUM' | 'COUNT' | 'MIN' | 'MAX';
     // settingWindow: false
 })
 export class ResultChartWidgetComponent implements IWidget {
-    @Input() id: string;
+    @Input() id: any;
     @Input() config: any;
     @Output() changeSettings: EventEmitter<any> = new EventEmitter();
 
-    title: string;
-    columnKeysGroupColumn;
+    title: any;
+    columnKeysGroupColumn: any;
     localData: any;
-    protocol_profile;
-    isLokiQuery;
-    queryTextLoki;
-    comingRequest;
-    dataForChart;
+    protocol_profile: any;
+    isLokiQuery: any;
+    queryTextLoki: any;
+    comingRequest: any;
+    dataForChart: any;
     sortType: SortType = 'SUM';
     _isLoaded = true;
     chartTypeList = [
@@ -68,7 +68,7 @@ export class ResultChartWidgetComponent implements IWidget {
     ];
     isFormattedDateTime = true;
     dataColumns: Array<DataColumn> = [];
-    groupColumnAxis1: string;
+    groupColumnAxis1: any;
     noChartData = false;
     numberTypes = 'short';
     isShowPanelSettings = true;
@@ -103,7 +103,7 @@ export class ResultChartWidgetComponent implements IWidget {
         chartType: 'line',
     };
     columnKeys = [];
-    configQuery = {
+    configQuery: any = {
         param: {
             transaction: {},
             limit: 200,
@@ -117,8 +117,8 @@ export class ResultChartWidgetComponent implements IWidget {
         timestamp: { from: 0, to: 0 }
     };
 
-    subscriptionDashboardEvent: Subscription;
-    subscriptionCastRangeUpdateTimeout: Subscription;
+    subscriptionDashboardEvent: any;
+    subscriptionCastRangeUpdateTimeout: any;
 
     _lastTimestamp = 0;
 
@@ -175,7 +175,7 @@ export class ResultChartWidgetComponent implements IWidget {
 
     private async onDashboardEvent(data: any) {
         const dataId = data.resultWidget[this.id];
-               
+
         if (dataId && dataId.query) {
             if (this.lastTimestamp * 1 === dataId.timestamp * 1) {
                 return;
@@ -208,7 +208,7 @@ export class ResultChartWidgetComponent implements IWidget {
         this.protocol_profile = this.localData.protocol_id;
 
         if( this.localData.location && this.localData.location.value !== '' && this.localData.location.mapping !== '') {
-            this.configQuery.param.location[this.localData.location.mapping] = this.localData.location.value;
+            this.configQuery.param.location[this.localData.location.mapping as string] = this.localData.location.value;
         }
 
         this.configQuery.param.search[this.protocol_profile] = this.localData.fields;
@@ -216,8 +216,8 @@ export class ResultChartWidgetComponent implements IWidget {
 
         const dataMapping: any = await this._pmps.getAll().toPromise();
         const result = await this._scs.getData(this.configQuery).toPromise();
-     
-        const dataMappingItem = dataMapping.data.filter(i =>
+
+        const dataMappingItem = dataMapping.data.filter((i: any) =>
             i.profile === this.protocol_profile.split('_')[1]
         )[0];
 
@@ -225,25 +225,25 @@ export class ResultChartWidgetComponent implements IWidget {
             const fields_mapping = dataMappingItem.fields_mapping;
 
             this.columnKeysGroupColumn = result.keys;
-            this.columnKeys = fields_mapping.filter(i => i.type !== 'string').map(i => i.id.split('.')[1]);
+            this.columnKeys = fields_mapping.filter((i: any)=> i.type !== 'string').map((i: any) => i.id.split('.')[1]);
             this.dataForChart = result.data;
-            
+
             this.buildChart();
-        
-           
+
+
         }
     }
     private groupByData() {
         const sort_by = this.groupColumnAxis1;
 
-        return Object.values(Functions.cloneObject(this.dataForChart).reduce((a, b) => {
+        return Object.values(Functions.cloneObject(this.dataForChart).reduce((a: any, b: any) => {
             if (!a[b[sort_by]]) {
                 a[b[sort_by]] = [];
             }
             a[b[sort_by]].push(b);
             return a;
         }, {})).map((i: any) => {
-            return i.reduce((a, b, index) => {
+            return i.reduce((a: any, b: any, index: any) => {
                 if (!a) {
                     a = b;
                 }
@@ -279,33 +279,33 @@ export class ResultChartWidgetComponent implements IWidget {
             return;
         }
         const dataForChart = this.groupByData();
-       
+
         if (dataForChart.length === 1) {
             dataForChart[1] = dataForChart[0];
         }
 
-        const labels = dataForChart.map(i => i[this.groupColumnAxis1]);
+        const labels = dataForChart.map((i: any) => i[this.groupColumnAxis1]);
 
         this.objChart.chartLabels.length = 0;
         this.objChart.chartLabels = labels;
 
-        const d = dataForChart.map(i => {
-            const _i = {};
+        const d = dataForChart.map((i: any) => {
+            const _i: any = {};
             this.columnKeys.forEach(j => {
                 _i[j] = i[j];
             });
             return _i;
         });
 
-        const dc = this.dataColumns.filter(i => i.value !== '');
+        const dc = this.dataColumns.filter((i: any) => i.value !== '');
         if (dc.length > 0) {
             this.objChart.chartData = [];
             dc.forEach(item => {
                 const label = item.value;
-                const data = d.map(i => i[label]);
+                const data = d.map((i: any) => i[label]);
                 if (data) {
                     this.objChart.chartData.push({ label, data });
-                
+
                 }
             });
         }
@@ -361,19 +361,19 @@ export class ResultChartWidgetComponent implements IWidget {
         this.saveConfig();
     }
 
-    private yAxisFormatter (label) {
+    private yAxisFormatter (label: any) {
         try {
             switch (this.numberTypes) {
                 case 'short':
                     return ((num) => {
-                        const f = i => Math.pow(1024, i);
+                        const f = (i: any) => Math.pow(1024, i);
                         let n = 4;
                         while (n-- && !(f(n) < num)) { }
                         return (n === 0 ? num : Math.round(num / f(n)) + ('kmb'.split('')[n - 1])) || num.toFixed(2);
                     })(label);
                 case 'bytes':
                     return ((num) => {
-                        const f = i => Math.pow(1024, i);
+                        const f = (i: any) => Math.pow(1024, i);
                         let n = 6;
                         while (n-- && !(f(n) < num)) { }
                         return ((n === 0 ? num : Math.round(num / f(n)) + ('KMGTP'.split('')[n - 1])) || num.toFixed(0)) + 'b';

@@ -13,18 +13,18 @@ const moment: any = _moment;
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
-    private currentUserSubject: BehaviorSubject<User>;
-    public currentUser: Observable<User>;
+    private currentUserSubject: BehaviorSubject<User | null>;
+    public currentUser: Observable<User | null>;
 
     constructor(
         private http: HttpClient,
         private preferenceUserSettingsService: PreferenceUserSettingsService
     ) {
-        this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
+        this.currentUserSubject = new BehaviorSubject<User | null>(JSON.parse('' + localStorage.getItem('currentUser')));
         this.currentUser = this.currentUserSubject.asObservable();
     }
 
-    public get currentUserValue(): User {
+    public get currentUserValue(): User | null {
         return this.currentUserSubject.value;
     }
 
@@ -46,10 +46,10 @@ export class AuthenticationService {
             }));
     }
 
-    async getUserSettingTimeZone(user, username) {
+    async getUserSettingTimeZone(user: any, username: any) {
         try {
             const userSettingsData: any = await this.preferenceUserSettingsService.getCategory('system').toPromise();
-            const timezoneItem = userSettingsData.data.filter(i => 
+            const timezoneItem = userSettingsData.data.filter((i: any) =>
                 i.category === 'system' &&
                 i.username === username &&
                 i.param === 'timezone');
@@ -62,7 +62,7 @@ export class AuthenticationService {
         } catch (err) { }
     }
     getUserName(): string {
-        return Functions.JSON_parse(localStorage.getItem('currentUser')).user.username;
+        return Functions.JSON_parse('' + localStorage.getItem('currentUser')).user.username;
     }
     logout() {
         // remove user from local storage to log user out

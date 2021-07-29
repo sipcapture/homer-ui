@@ -23,11 +23,11 @@ import { Functions } from '@app/helpers/functions';
     minWidth: 500
 })
 export class ResultWidgetComponent implements IWidget {
-    @Input() id: string;
+    @Input() id: any;
     @Input() config: any;
     @Output() changeSettings: EventEmitter<any> = new EventEmitter();
 
-    lastTimestamp: number;
+    lastTimestamp: any;
     title: string;
     isLoaded = false;
     _interval: any;

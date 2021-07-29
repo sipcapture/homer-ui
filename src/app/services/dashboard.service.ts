@@ -33,7 +33,7 @@ export class DashboardService {
     private url = `${environment.apiUrl}/dashboard`;
 
     constructor(private _http: HttpClient) {
-        this.dbs = JSON.parse(localStorage.getItem(ConstValue.SQWR)) || this.dbs;
+        this.dbs = JSON.parse('' + localStorage.getItem(ConstValue.SQWR)) || this.dbs;
         this._behavior = new BehaviorSubject<any>(this.dbs);
         this.dashboardEvent = this._behavior.asObservable();
     }
@@ -72,15 +72,8 @@ export class DashboardService {
         return query;
     }
     getSliderQueryDataToWidgetResult(id: string) {
-        this.dbs = JSON.parse(localStorage.getItem(ConstValue.SQWR)) || this.dbs;
-        if (
-            this.dbs.resultWidget &&
-            this.dbs.resultWidget[id] &&
-            this.dbs.resultWidget[id].slider
-        ) {
-            return this.dbs.resultWidget[id].slider;
-        }
-        return null;
+        this.dbs = JSON.parse('' + localStorage.getItem(ConstValue.SQWR)) || this.dbs;
+        return this.dbs.resultWidget?.[id]?.slider || null;
     }
     update() {
         localStorage.setItem(ConstValue.SQWR, JSON.stringify(this.dbs));

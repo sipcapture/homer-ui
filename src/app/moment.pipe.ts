@@ -7,7 +7,7 @@ import * as moment from 'moment';
 })
 
 export class MomentPipe implements PipeTransform {
-transform(timestamp, format) {
+transform(timestamp: any, format: any) {
     return moment(timestamp).format(format)
     }
 }

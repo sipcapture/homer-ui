@@ -8,7 +8,7 @@ class InfluxProcessor {
     public getData(data) {
         const {columns, values, name} = data.data.Results[0].Series[0];
 
-                    let s = values.map(i => {
+                    let s = values.map((i: any) => {
                         const o = {};
                         columns.forEach((j, k) => {
                             o[j] = i[k];
@@ -16,7 +16,7 @@ class InfluxProcessor {
                         return o;
                     });
 
-                    s = s.map(i => {
+                    s = s.map((i: any) => {
                         i.main = name;
                         return i;
                     });
@@ -85,7 +85,7 @@ class InfluxProcessor {
         chartLabels = [];
         chartData = [];
         noChartData = data.length === 0;
-        const formattedData = data.map(i => ({
+        const formattedData = data.map((i: any) => ({
             label: i.table + '.' + i.countername,
             value: i.value
         })).reduce((a, b) => {
@@ -120,14 +120,14 @@ class InfluxProcessor {
         switch (this.config.format.value) {
             case 'short':
                 return ((num) => {
-                    const f = i => Math.pow(1024, i);
+                    const f = (i: any) => Math.pow(1024, i);
                     let n = 4;
                     while (n-- && !(f(n) < num)) {}
                     return (n === 0 ? num : Math.round(num / f(n)) + ('kmb'.split('')[n - 1])) || num.toFixed(2);
                 })(label);
             case 'bytes':
                 return ((num) => {
-                    const f = i => Math.pow(1024, i);
+                    const f = (i: any) => Math.pow(1024, i);
                     let n = 6;
                     while (n-- && !(f(n) < num)) {}
                     return ((n === 0 ? num : Math.round(num / f(n)) + ('KMGTP'.split('')[n - 1])) || num.toFixed(0)) + 'b';

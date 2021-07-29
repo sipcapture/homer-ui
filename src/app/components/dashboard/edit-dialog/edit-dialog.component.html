@@ -6,12 +6,12 @@
 </mat-toolbar>
 <div mat-dialog-content style="display: flex; flex-direction: column">
   <h4>Panel Details</h4>
-  
+
   <mat-form-field>
     <mat-label>Name your panel</mat-label>
     <input matInput [(ngModel)]="data.name">
   </mat-form-field>
-  
+
   <mat-form-field >
     <mat-label>Type</mat-label>
     <mat-select [(ngModel)]="data.type" [disabled]="isHomeOrSearch">
@@ -21,13 +21,13 @@
         [disabled]="itemlist.disabled">{{ itemlist.name }}</mat-option>
     </mat-select>
   </mat-form-field>
-  
+
   <mat-form-field>
     <mat-label>Param</mat-label>
     <input matInput [(ngModel)]="data.param">
   </mat-form-field>
-  
-  <mat-checkbox labelPosition="Before" [(ngModel)]="data.shared" *ngIf="!isHomeOrSearch">Shared</mat-checkbox>
+
+  <mat-checkbox labelPosition="before" [(ngModel)]="data.shared" *ngIf="!isHomeOrSearch">Shared</mat-checkbox>
   <div *ngIf="data.type !== 2" style="display: flex; flex-direction: column">
       <hr style="width: 100%;">
     <h4>Grid Configuration</h4>
@@ -52,7 +52,7 @@
         <mat-option [value]="'horizontalFixed'">Horizontal Fixed</mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-checkbox labelPosition="Before" [(ngModel)]="data.pushing">Pushing</mat-checkbox>
+    <mat-checkbox labelPosition="before" [(ngModel)]="data.pushing">Pushing</mat-checkbox>
 
 
   </div>
@@ -71,15 +71,15 @@
   <div *ngIf="data.type === 2" style="display: flex; flex-direction: column">
     <hr style="width: 100%;">
     <h4>Grafana Timestamp sync</h4>
-    <mat-checkbox labelPosition="Before" [(ngModel)]="data.grafanaTimestamp">Sync with Dashboard</mat-checkbox>
+    <mat-checkbox labelPosition="before" [(ngModel)]="data.grafanaTimestamp">Sync with Dashboard</mat-checkbox>
   </div>
   <hr style="width: 100%;">
   <div>
-    <button mat-raised-button color="primary" (click)="onExport()">Export dashboard settings</button>  
+    <button mat-raised-button color="primary" (click)="onExport()">Export dashboard settings</button>
   </div>
   <hr style="width: 100%;">
 </div>
 <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
   <button mat-raised-button (click)="onNoClick()">Cancel</button>
   <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
-</div> 
+</div>

@@ -23,7 +23,7 @@
 				[ngStyle]="{'background-color': this._ds.dbs.currentWidget !== undefined && item.id === this._ds.dbs.currentWidget.id   ? '#f8f8f8' : '#ffffff'  }">
 
 				<h3 *ngIf="item.name !== 'rsearch'" class="ng-binding">
-					{{ item.config ? item.config.title: item.title || item.id }}
+					{{ item.config ? item.config?.title: item.title || item.id }}
 				</h3>
 				<h3 *ngIf="item.name === 'rsearch'" class="ng-binding">LOKI Search</h3>
 
@@ -38,7 +38,7 @@
 			</div>
 			<div class="widget-warning"
 				*ngIf="this.dashboardCollection.data.config !== undefined && this.dashboardCollection.data.config.ignoreMinSize === 'warning' && item.isWarning && !item.isDismissed ">
-				<p>Widget is too small, we recommend increasing it's size to {{ getSize(item) }}</p>
+				<p>Widget is too small, we recommend increasing its size to {{ getSize(item) }}</p>
 				<button mat-icon-button class="warning-dismiss" matTooltip="Dismiss warning"
 					(click)="dismissWarning(item)">
 					<mat-icon>close</mat-icon>
@@ -57,7 +57,7 @@
 	<div *ngIf="!isIframe && (dashboardArray && dashboardArray.length === 0)" class="no-content">
 		<span style="text-align: center;">
 			<h1>Dashboard is empty</h1>
-			<button mat-raised-button color="primary" (click)="onDashboardAdd()" [disabled]='isShared || !isDashboardUpdate'>Add widget 
+			<button mat-raised-button color="primary" (click)="onDashboardAdd()" [disabled]='isShared || !isDashboardUpdate'>Add widget
                 <fa-icon icon="plus" [matTooltip]='isShared ? "Can&#39;t edit shared dashboard" : !isDashboardUpdate ? "Insufficient permissions to Update Dashboard" : "Add widget"'></fa-icon>
             </button>
 		</span>

@@ -24,7 +24,7 @@ export class TabExportComponent implements OnInit {
     ngOnInit() { }
     private getCallIdArray() {
         const data = this.dataItem.data;
-        const callidArray = data.calldata.map(i => i.sid).reduce((a, b) => {
+        const callidArray = data.calldata.map((i: any) => i.sid).reduce((a, b) => {
             if (a.indexOf(b) === -1) {
                 a.push(b);
             }
@@ -33,12 +33,12 @@ export class TabExportComponent implements OnInit {
         return callidArray;
     }
     private getDBNode() {
-        const data = 
-            this.dataItem && 
-            this.dataItem.data && 
-            this.dataItem.data.messages && 
-            this.dataItem.data.messages[0] && 
-            this.dataItem.data.messages[0].dbnode ? 
+        const data =
+            this.dataItem &&
+            this.dataItem.data &&
+            this.dataItem.data.messages &&
+            this.dataItem.data.messages[0] &&
+            this.dataItem.data.messages[0].dbnode ?
             this.dataItem.data.messages[0].dbnode : null;
         return data;
     }
