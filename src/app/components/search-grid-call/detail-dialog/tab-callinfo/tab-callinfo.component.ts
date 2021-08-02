@@ -49,7 +49,7 @@ export class TabCallinfoComponent {
         maintainAspectRatio: false,
     };
     toggleStatus;
-    public pieChartType = 'pie';
+    public pieChartType = 'doughnut';
     @Input() set dataItem(_dataItem) {
         const clone = Functions.cloneObject;
 
@@ -318,7 +318,7 @@ export class TabCallinfoComponent {
                     }
 
                     trans.task.push({
-                        title: 'Talk Duration',
+                        title: 'Duration',
                         color: COLOR.orange,
                         type: TASK_TYPE.number,
                         body: this.secFormatter(trans['Duration']),

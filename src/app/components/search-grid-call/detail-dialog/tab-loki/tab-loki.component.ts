@@ -95,7 +95,6 @@ export class TabLokiComponent implements OnInit {
                 return a;
             }, [])
             .join('|');
-            console.log(labels)
         this.lokiTemplate = {
             lineFilterOperator: '|~',
             logStreamSelector: '{job="heplify-server"}'
