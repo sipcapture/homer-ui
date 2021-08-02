@@ -249,6 +249,7 @@ gridster-item {
 	}
 	.ngx-json-viewer {
 		height: initial !important;
+		font-size: 12px !important;
 	}
 }
 
@@ -310,6 +311,7 @@ ace-editor {
 .message-container {
 	.ngx-json-viewer {
 		height: initial !important;
+		font-size: 12px !important;
 	}
 }
 .detail-container {
@@ -467,10 +469,11 @@ h3 {
 .ngx-json-viewer {
 	width: 100%;
 	height: 100%;
+	font-size:12px !important;
 	overflow: hidden;
 	position: relative;
 	.segment {
-    padding: 4px !important;
+padding:0;
     margin: 1px 1px 1px 12px;
     background: #fafafa55;
 		.segment-main {
@@ -479,8 +482,8 @@ h3 {
 				position: absolute;
 				margin-left: -14px;
 				margin-top: 3px;
-				font-size: .8em;
-				line-height: 1.2em;
+				font-size: 0.8em;
+		
 				vertical-align: middle;
 				color: #787878;
 				&::after {

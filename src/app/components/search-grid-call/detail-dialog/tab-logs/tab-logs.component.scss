@@ -2,8 +2,8 @@
 	padding: 10px;
 }
 .hep-logs > * {
-	font-family: "Roboto", Helvetica, Arial, sans-serif;
-	font-size: 14px;
+	font-family:monospace !important;
+	font-size: 12px;
 }
 
 .hep-logs-header {
@@ -19,7 +19,7 @@
 		font-weight: bold;
 	}
 	& .hep-logs-time-header {
-		width: 180px;
+		width: 189px;
 	}
 	& .hep-logs-messages-header {
 		width: calc(100% - 200px);
@@ -37,7 +37,7 @@
 			padding: 5px;
 		}
 		& .hep-logs-time {
-			width: 180px;
+			width: 189px;
 			border-left: 5px solid #dff1ff;
 			border-bottom: 5px solid transparent;
 			& p {
