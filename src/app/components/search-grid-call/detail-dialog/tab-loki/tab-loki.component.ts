@@ -87,7 +87,7 @@ export class TabLokiComponent implements OnInit {
             this.queryText = this.logQlText || '{type="call"}';
             return;
         }
-        console.log(this.dataItem)
+        
         const labels = this.dataItem?.data?.calldata?.map(m => m.sid)?.reduce((a, b) => {
                 if (a.indexOf(b) === -1) {
                     a.push(b);
