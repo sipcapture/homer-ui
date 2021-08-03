@@ -122,6 +122,8 @@ import { ColorChromeModule } from 'ngx-color/chrome';
 import { ColorCircleModule } from 'ngx-color/circle';
 import { TableVirtualScrollModule } from 'ng-table-virtual-scroll';
 import { FlowItemComponent } from './components/search-grid-call/detail-dialog/tab-flow/flow-item/flow-item.component';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { fas } from '@fortawesome/free-solid-svg-icons';
 
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {
 };
@@ -242,6 +244,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
         AceModule,
         AceEditorModule,
         MarkdownModule.forRoot(),
+        FontAwesomeModule,
         ColorChromeModule,
         ColorCircleModule,
         TableVirtualScrollModule
@@ -312,4 +315,8 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     bootstrap: [AppComponent]
 })
 
-export class AppModule { }
+export class AppModule {
+    constructor(library: FaIconLibrary) {
+        library.addIconPacks(fas);
+    }
+ }

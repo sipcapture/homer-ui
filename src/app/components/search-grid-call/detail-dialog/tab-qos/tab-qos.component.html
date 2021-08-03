@@ -11,10 +11,10 @@
 <div *ngIf="!isError">
     <div *ngIf="isRTP">
         <!-- RTP -->
-        <h5 *ngIf="isRTP">RTP</h5>
+        <p class="proto-header" *ngIf="isRTP">RTP</p>>
         <div class="responcive">
             <div [style.min-width.%]="widthChart"
-                [style.height.px]="400"
+                [style.height.px]="240"
                 style="overflow-x: auto;">
 
                 <div class="chart-container">
@@ -111,10 +111,10 @@
     </div>
     <div *ngIf="isRTCP">
         <!-- RTCP -->
-        <h5 *ngIf="isRTCP">RTCP</h5>
+        <p *ngIf="isRTCP" class="proto-header">RTCP</p>
         <div class="responcive">
             <div [style.min-width.%]="widthChartRTCP"
-                [style.height.px]="400"
+                [style.height.px]="240"
                 style="overflow-x: auto;">
                 <div class="chart-container">
                     <canvas *ngIf="!isNoDataRTCP"

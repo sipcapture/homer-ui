@@ -34,12 +34,9 @@
 		display: table-row;
 		& > div {
 			display: table-cell;
-			padding: 5px;
 		}
 		& .hep-logs-time {
 			width: 189px;
-			border-left: 5px solid #dff1ff;
-			border-bottom: 5px solid transparent;
 			& p {
 				padding-bottom: 0px;
 				margin-bottom: 0px;

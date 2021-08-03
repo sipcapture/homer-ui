@@ -49,7 +49,7 @@ export class TabCallinfoComponent {
         maintainAspectRatio: false,
     };
     toggleStatus;
-    public pieChartType = 'pie';
+    public pieChartType = 'doughnut';
     @Input() set dataItem(_dataItem) {
         const clone = Functions.cloneObject;
 
@@ -108,6 +108,7 @@ export class TabCallinfoComponent {
                         timeCancel: 0,
                         timeBye: 0,
                         methods: {},
+                        chart:{},
                         destination_ip: '127.0.0.1',
                         source_ip: '127.0.0.1',
                         destination_port: 0,
@@ -292,15 +293,15 @@ export class TabCallinfoComponent {
                         /* chart of messages */
                         const mKeys = Object.keys(trans.methods);
                         const mValues = mKeys.map(function (v) { return trans.methods[v]; });
-                        trans.task.push({
+                        trans.chart = {
                             type: TASK_TYPE.chart,
                             title: 'Methods',
-                            color: COLOR.bluelighter,
+                            color: COLOR.grey,
                             data: trans.methods,
                             /** body is chart data */
                             label: mKeys,
                             value: mValues
-                        });
+                        };
                     }
 
 
@@ -318,13 +319,12 @@ export class TabCallinfoComponent {
                     }
 
                     trans.task.push({
-                        title: 'Talk Duration',
+                        title: 'Duration',
                         color: COLOR.orange,
                         type: TASK_TYPE.number,
                         body: this.secFormatter(trans['Duration']),
                         prefix: '',
                     });
-
 
                     trans.task.push({
                         title: 'Last Bad Reply',
@@ -444,6 +444,7 @@ export class TabCallinfoComponent {
                         timeRegister: 0,
                         timeFailed: 0,
                         timeFinish: 0,
+                        chart: {},
                         methods: {},
                         destination_ip: '127.0.0.1',
                         source_ip: '127.0.0.1',
@@ -552,15 +553,15 @@ export class TabCallinfoComponent {
                         /* chart of messages */
                         const mKeys = Object.keys(trans.methods);
                         const mValues = mKeys.map(function (v) { return trans.methods[v]; });
-                        trans.task.push({
+                        trans.chart = {
                             type: TASK_TYPE.chart,
                             title: 'Methods',
-                            color: COLOR.bluelighter,
+                            color: COLOR.grey,
                             data: trans.methods,
                             /** body is chart data */
                             label: mKeys,
                             value: mValues
-                        });
+                        };
                     }
 
 

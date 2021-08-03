@@ -1,47 +1,69 @@
-<div style="display: flex;padding-top:10px;padding-left:10px;">
-    <div style="flex: 1">
-        <app-code-style-field
-            [queryText]="queryText"
+<div clas="loki-main-container"
+    style="display: flex;background:white">
+    <div style="flex:1;padding:12px;padding-bottom:5px;">
+        <app-code-style-field [queryText]="queryText"
             (updateData)="onUpdateData($event)"
-            (keyEnter)="doSerchResult()"
-        ></app-code-style-field>
+            (keyEnter)="doSerchResult()"></app-code-style-field>
     </div>
-
-    <div style="display: flex; align-items: center; padding: 0 0.5rem;padding-left:10px">
-        <button mat-raised-button (click)="doSerchResult()">Refresh search</button>
+    <div style="display: flex; align-items: flex-end; padding: 0 0.5rem;padding-top:12px;padding-left:0px;">
+        <button mat-button
+            class="refresh-search"
+            (click)="doSerchResult()"><fa-icon icon="sync"></fa-icon> Run Query</button>
     </div>
 </div>
-
 <div>
-    <div *ngIf="resultData.length === 0" style="padding-left:20px">
-        <strong>Ready to Search Logs!</strong> Fine tune your query and hit Refresh
-        <div *ngIf="!isFirstSearch">
-            <i>[ No Result Found ]</i>
+    <div class="search-logs" *ngIf="loading">
+        LOADING... PLEASE WAIT
+    </div>
+    <div *ngIf="!resultData || resultData.length < 1 && !loading"
+        class="search-logs">
+        <div>
+            <strong *ngIf="!resultsFound" class="logs-strong">No Results Found</strong>
+
+            <strong *ngIf="resultsFound" class="logs-strong">Ready to Search Logs!</strong>
+            
+            <p>Fine tune and hit <strong><fa-icon icon="sync"></fa-icon> Run Query</strong> </p>
+        </div>
+        <div *ngIf="!isFirstSearch && resultData === []">
+            <i> No Result Found </i>
         </div>
     </div>
-    
-    <div *ngIf="resultData.length > 0" class="loki-search">
+
+    <div *ngIf="resultData?.length && !loading"
+        [className]="'loki-search'+(isResultPage ? ' result-page' : '')">
         <div class="switches">
 
-            <div class="tags-display"> <mat-checkbox class="example-margin" [(ngModel)]="showTs">Timeseconds</mat-checkbox> </div>
-            <div class="tags-display"> <mat-checkbox class="example-margin" [(ngModel)]="showTags">Tags</mat-checkbox> </div>   
-          </div>
-
-        <div class="header-loki">
-            <div class="item-tex-loki lokitimeheader">Time</div>
-            <div class="item-tex-loki lokitags" *ngIf="showTags" style="color:grey">Tags</div>
-            <div class="item-tex-loki lokimessage" style="color:grey">Messages</div>
+            <div class="time-display">
+                <mat-checkbox color="primary"
+                    [checked]="showTime"
+                    class="example-margin"
+                    [(ngModel)]="showTime"><span style="font-family: monospace">Time</span></mat-checkbox>
+            </div>
         </div>
 
         <div class="loki-container">
-             <div *ngFor="let i of resultData trackBy : identify" class="loki-body item">
-            <div class="item-tex-loki hover lokitime">{{i.micro_ts | moment:'YYYY-MM-DD HH:mm:ss.SSS'}} <p *ngIf="showTs" class="timeseconds">{{i.micro_ts}}</p></div>
-            <div class="item-tex-loki hover lokitags" *ngIf="showTags">
-                 job: {{i.custom_2.job}}, method: {{i.custom_2.method}}, node: {{i.custom_2.node}}, response: {{i.custom_2.response}}, type: {{i.custom_2.type}} 
+            <div *ngFor="let i of resultData trackBy: identify;let idx = index"
+                >
+                <div class="loki-body item" (click)="showLabel(idx)">
+                    <span><mat-icon [id]="'icon-'+idx" style="font-size: 12px;height:12px;width:12px">navigate_next</mat-icon></span>
+                <div class="item-tex-loki hover lokitime"
+                    *ngIf="showTime">{{i.micro_ts | moment:'YYYY-MM-DD HH:mm:ss'}} <p *ngIf="showTs"
+                        class="timeseconds">{{i.micro_ts}}</p>
+                </div>
+
+                
+                <div class="item-tex-loki hover loki-highlight lokimessage"
+                    [innerHTML]="i.custom_1"></div>
+                    </div>
+                    <div class="loki-labels" style="width:100%" [id]="'label-' + idx" style="display:none">
+                        <span>Log labels</span>
+                        <span *ngFor="let tag of i.custom_2 | keyvalue" class="label-line">
+                        <span style="width:150px;">{{tag.key}}</span> <span>{{tag.value}}</span>
+   
+                       </span>  
+                    </div>
+
             </div>
-            <div class="item-tex-loki hover loki-highlight lokimessage"
-            [innerHTML]="i.custom_1"></div>
         </div>
-    </div>
     </div>
 </div>
