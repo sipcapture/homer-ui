@@ -21,7 +21,10 @@ table {
         }
     }
 }
-
+.squares-cont {
+    display: flex;
+    min-height: 115px;
+}
 .ag-chart-base {
     // position: absolute;
     top: 0;
@@ -33,9 +36,7 @@ table {
 }
 
 .panel {
-
     .panel-heading {
-
         margin: 1rem;
         padding: 3px;
         border-radius: 6px;
@@ -56,7 +57,7 @@ table {
 
         .rtp-agent-report {
             padding: 0.5rem 1.75rem;
-            padding-top:0.75rem;
+            padding-top: 0.75rem;
             margin: 3px;
             // background: #dcf7dc;
             border-radius: 3px;
@@ -70,50 +71,62 @@ table {
             }
         }
     }
-
 }
 
 .task-wrapper {
+    flex: 1;
     background-color: white;
     display: grid;
-    grid-template-columns: repeat(8, auto);
-
-    & :first-child {
-        grid-row: 1 / span 2;
-    }
-
-
+    grid-template-columns: repeat(auto-fit, minmax(186px, 1fr));
 
     table .call-info-data {
+        font-size: 12px;
         td {
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 1px;
-
         }
     }
 
     .task-item {
         flex: 1;
-        margin: 3px;
-        padding: 12px;
+        margin: 1px;
+        padding: 5px;
+        padding-left: 10px;
         padding-bottom: 10px;
+        display: flex;
+        align-items: center;
         background-color: #dcf7dc;
         font-size: 12px;
         border-radius: 3px;
         color: rgb(77, 77, 77);
 
         span {
-            font-size: 18px;
+            font-size: 12px;
             font-weight: bold;
         }
     }
 }
-
+.trans-chart {
+    margin: 1px;
+    border-radius: 3px;
+    padding: 8px;
+    background: #eeeeee;
+    min-width: 50px;
+    display: flex;
+    justify-content: center;
+}
+.chart-cont {
+    height: 80px;
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 8px;
+    align-items: center;
+}
 .__chart {
-
     grid-row: 2 / -1;
-
 }
 
 .__uac {
@@ -130,7 +143,6 @@ table {
     font-weight: bold;
     color: grey !important;
     font-size: 11px;
-
 }
 
 .rtp-data {
@@ -148,7 +160,7 @@ table {
     padding: 6px;
     font-size: 14px;
     padding-bottom: 6px;
-    padding-right:12px;
+    padding-right: 12px;
     display: flex;
     justify-content: space-between;
 }
@@ -176,7 +188,7 @@ table {
 }
 
 ngx-json-viewer {
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .mos-header {
@@ -184,16 +196,14 @@ ngx-json-viewer {
     border-radius: 3px;
 }
 .packet-stats {
-    display:flex;
-    font-size:14px;
-
+    display: flex;
+    font-size: 14px;
 }
 .packet-stats div {
-   
     text-transform: uppercase;
-    color:rgb(90, 90, 90);
-    padding:2px 6px;
-    border-radius:2px;
+    color: rgb(90, 90, 90);
+    padding: 2px 6px;
+    border-radius: 2px;
     font-size: 12px;
     & strong {
         color: #505050;
@@ -201,14 +211,12 @@ ngx-json-viewer {
     }
 }
 .codec-data {
-    border-top:1px solid lightgray;
-    display:flex;
+    border-top: 1px solid lightgray;
+    display: flex;
     justify-content: space-between;
     & p {
-        
-        margin:0;
-        padding:0;
-        margin-top:6px;
-        
+        margin: 0;
+        padding: 0;
+        margin-top: 6px;
     }
 }

@@ -1,13 +1,18 @@
 .message-container {
+
 	height: 100%;
 	.ngx-json-viewer {
 		height: initial !important;
+		font-size: 12px !important;
 	}
 }
 table {
 	tr {
 		height: 38px;
 	}
+}
+.detail-table{
+	font-family: Monospace;
 }
 .pre-content {
 	font-family: monospace;
@@ -31,9 +36,9 @@ table {
 }
 */
 .raw-json {
+	font-family: monospace;
 	white-space: pre-wrap;
-	font-size: 13px;
-	line-height: 24px;
+	font-size: 12px;
     margin-left: 6px;
 	margin-top: 6px;
 	color:#505050;

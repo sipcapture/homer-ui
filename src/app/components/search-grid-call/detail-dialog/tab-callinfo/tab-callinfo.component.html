@@ -30,7 +30,7 @@ No Info
                         {{ trans["ua_dst"].title }}:
                         <strong>{{ trans["ua_src"].body }} --> {{ trans["ua_dst"].body }}</strong>
                     </div>
-                    <table class="call-info-data">
+                    <table class="call-info-data" style="font-size: 12px;">
                         <tr style="opacity: 0.7">
                             <td><strong>duration</strong></td>
                             <td colspan="2"><strong>from</strong></td>
@@ -53,56 +53,65 @@ No Info
                         </tr>
                     </table>
                 </div>
+<div class="squares-cont">
+    <div *ngIf="trans.chart" class="trans-chart">
+                  
+                   
+        <!-- <div *ngFor="let item of task.data | keyvalue">
+            <div>{{item.key}}: <b>{{item.value}}</b></div>
+        </div>
+    -->
+    <div class="chart-cont">
+        <canvas baseChart [data]=" chartGetData(trans.chart, 'data') "
+        [labels]=" chartGetData(trans.chart, 'label') " [options]="pieChartOptions"
+        [legend]="false" [chartType]="pieChartType">
+    </canvas>
+    <div style="font-size: 12px;">{{ trans.chart.title }}</div>
+    </div>
 
-                <div class="task-wrapper">
-                    <ng-container *ngFor="let task of trans.task">
-                        <div class="task-item"
-                            *ngIf=" task.body !== 0 && task.body !== '' && task.abs !== 0 && task.type !== 404"
-                            [ngStyle]="{ 'background-color': task.color, 'grid-area': task.grid }"
-                            id="{{ task.title }}">
-                            <div *ngIf="task.type === 3" style="min-width: 50px">
-                                <div>{{ task.title }}</div>
-                                <div style=" height: 150px; width: 100px; display: block; ">
-                                    <!-- <div *ngFor="let item of task.data | keyvalue">
-                                        <div>{{item.key}}: <b>{{item.value}}</b></div>
-                                    </div>
-                                -->
 
-                                    <canvas baseChart [data]=" chartGetData(task, 'data') "
-                                        [labels]=" chartGetData(task, 'label') " [options]="pieChartOptions"
-                                        [legend]="false" [chartType]="pieChartType">
-                                    </canvas>
+    
+</div>
+    <div class="task-wrapper">
+        <ng-container *ngFor="let task of trans.task">
 
-                                </div>
-                            </div>
+            
+            <div class="task-item"
+            syle="display:flex;"
+                *ngIf=" task.body !== 0 && task.body !== '' && task.abs !== 0 && task.type !== 404"
+                [ngStyle]="{ 'background-color': task.color, 'grid-area': task.grid }"
+                id="{{ task.title }}">
+   
 
-                            <div *ngIf=" task.type === 1 && task.body !== 0 && task.body !== '' && task.abs !== 0 ">
-                                <div>{{ task.title }}</div>
-                                <div> <span>{{ task.body }}</span> {{ task.prefix }} </div>
-                            </div>
-                            <div *ngIf=" task.type === 6 && objectKeys(task.body).length > 0">
-                                <div>{{ task.title }}</div>
-                                <div style=" font-size: 16px; font-weight: bold; ">
-                                    <span> {{ task.body.in }} <fa-icon style=" color: #7c7c7c; font-size: 14px;"
-                                            icon="arrow-right"></fa-icon> {{ task.body.out }} </span>
-                                </div>
-                            </div>
-                            <div *ngIf="task.type === 9 && objectKeys(task.body).length > 0">
-                                <div>{{ task.title }}</div>
-                                <div style=" font-size: 16px; font-weight: bold; ">
-                                    <span> {{ task.body.in }} <fa-icon style=" color: #7c7c7c; font-size: 14px;"
-                                            icon="arrow-right"></fa-icon> {{ task.body.out }} </span>
-                                </div>
-                            </div>
-
-                            <div *ngIf="task.type === 4" [innerHTML]="task.body | html"></div>
-                            <div *ngIf="task.type === 5 && task.body !== 0 && task.body !== '' && task.abs !== 0 ">
-                                <div>{{ task.title }}</div>
-                                <div> <span>{{ task.body }}</span> {{ task.prefix }} </div>
-                            </div>
-                        </div>
-                    </ng-container>
+                <div *ngIf=" task.type === 1 && task.body !== 0 && task.body !== '' && task.abs !== 0 ">
+                    <div>{{ task.title }}</div>
+                    <div> <span>{{ task.body }}</span> {{ task.prefix }} </div>
                 </div>
+                <div *ngIf=" task.type === 6 && objectKeys(task.body).length > 0">
+                    <div>{{ task.title }}</div>
+                    <div style=" font-size: 16px; font-weight: bold; ">
+                        <span> {{ task.body.in }} <fa-icon style=" color: #7c7c7c; font-size: 14px;"
+                                icon="arrow-right"></fa-icon> {{ task.body.out }} </span>
+                    </div>
+                </div>
+                <div *ngIf="task.type === 9 && objectKeys(task.body).length > 0">
+                    <div>{{ task.title }}</div>
+                    <div style=" font-size: 16px; font-weight: bold; ">
+                        <span> {{ task.body.in }} <fa-icon style=" color: #7c7c7c; font-size: 14px;"
+                                icon="arrow-right"></fa-icon> {{ task.body.out }} </span>
+                    </div>
+                </div>
+
+                <div *ngIf="task.type === 4" [innerHTML]="task.body | html"></div>
+                <div *ngIf="task.type === 5 && task.body !== 0 && task.body !== '' && task.abs !== 0 ">
+                    <div>{{ task.title }}</div>
+                    <div> <span>{{ task.body }}</span> {{ task.prefix }} </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>
+               
             </div>
         </div>
         <hr />

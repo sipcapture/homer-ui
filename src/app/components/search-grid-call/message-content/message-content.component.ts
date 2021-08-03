@@ -52,17 +52,17 @@ export class MessageContentComponent implements OnInit, OnDestroy {
         this._JWTData = v
     }
     private _interval: any;
+
+
+    @ViewChild('matTabGroup', { static: false }) matTabGroup: MatTabGroup;
+    
     get data() {
         return this._data;
     }
-
-    @ViewChild('matTabGroup', { static: false }) matTabGroup: MatTabGroup;
-
     @Input('data') set data(val) {
         this._data = val;
-
-      /** parse SIP */if (val.raw) {
-            this.sipData = (parsip.getSIP(val.raw));
+      /** parse SIP */if (val?.raw && !val.raw.raw) {
+            this.sipData = (parsip?.getSIP(val?.raw));
 
             if ((this.sipData?.headers['Content-Type']?.[0]?.raw)?.toLowerCase() === 'application/sdp'
                 && this.sipData?.body) {
@@ -86,11 +86,11 @@ export class MessageContentComponent implements OnInit, OnDestroy {
         }
 
         this.type = val.type;
-        this.messageDetailTableData = this._data.messageDetailTableData;
+        this.messageDetailTableData = this._data?.messageDetailTableData;
         this.decoded = null;
 
-        if (this._data.decoded) {
-            if (this._data.decoded[0]) {
+        if (this._data?.decoded) {
+            if (this._data.decoded?.[0]) {
                 if (this._data.decoded[0]._source && this._data.decoded[0]._source.layers) {
                     this.decoded = this._data.decoded[0]._source.layers;
                 } else {
@@ -101,7 +101,7 @@ export class MessageContentComponent implements OnInit, OnDestroy {
             }
         }
 
-        this.raw = this._data.item.raw;
+        this.raw = this._data?.item?.raw;
 
         if (typeof this.raw === 'string') {
             try {

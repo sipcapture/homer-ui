@@ -49,7 +49,7 @@ export class TabCallinfoComponent {
         maintainAspectRatio: false,
     };
     toggleStatus;
-    public pieChartType = 'pie';
+    public pieChartType = 'doughnut';
     @Input() set dataItem(_dataItem) {
         const clone = Functions.cloneObject;
 
@@ -108,6 +108,7 @@ export class TabCallinfoComponent {
                         timeCancel: 0,
                         timeBye: 0,
                         methods: {},
+                        chart:{},
                         destination_ip: '127.0.0.1',
                         source_ip: '127.0.0.1',
                         destination_port: 0,
@@ -168,7 +169,7 @@ export class TabCallinfoComponent {
 
                             if (trans.CdrConnectTime !== 0 && trans.CdrConnectTime < trans.CdrStopTime) {
                                 trans.SuccessfulSessionDurationSDT = trans.CdrStopTime - trans.CdrStartTime;
-                                trans.Duration = Math.round(trans.SessionDurationTime / 1000);
+                                trans.Duration = Math.round((trans.CdrStopTime - trans.CdrConnectTime) / 1000);
                             }
 
                             /* woraround if UAC sends BYE and not CANCEL */
@@ -210,21 +211,20 @@ export class TabCallinfoComponent {
                                 }
                             }
 
-                            if (reply === 183) {
+                            if (reply === 183 && trans.CdrRingingTime === 0) {
                                 trans.Status = 3;
+                                trans.CdrRingingTime = messageTime;
                             }
-
-                            if (reply === 180 && trans.CdrRingingTime === 0) {
+                            else if (reply === 180 && (trans.CdrRingingTime === 0 || trans.Status == 3)) {
                                 trans.CdrRingingTime = messageTime;
                                 trans.Status = 4;
                             }
-
-                            if (reply === 200 && trans.CdrConnectTime === 0 && cSeqMethod === 'INVITE') {
+                            else if (reply === 200 && trans.CdrConnectTime === 0 && cSeqMethod === 'INVITE') {
                                 trans.CdrConnectTime = messageTime;
-                                // reset if we seen MOVE
+                                // reset if we have seen MOVE
                                 trans.CdrStopTime = 0;
                                 trans.Status = 5;
-                                if (trans.CdrRingingTime !== 0 && trans.RingingTime == 0 
+                                if (trans.CdrRingingTime !== 0 && trans.RingingTime == 0
                                     && trans.CdrRingingTime < trans.CdrConnectTime) {
                                     trans.RingingTime = trans.CdrConnectTime - trans.CdrRingingTime;
                                 }
@@ -232,8 +232,7 @@ export class TabCallinfoComponent {
                                     trans.UAS = message.user_agent;
                                 }
                             }
-
-                            if (reply > 400 && reply < 700 && reply !== 401 && reply !== 402 && reply !== 407 && reply !== 487
+                            else if (reply > 400 && reply < 700 && reply !== 401 && reply !== 402 && reply !== 407 && reply !== 487
                                 && trans.FailedSessionSetupDelay === 0 && cSeqMethod === 'INVITE') {
 
                                 if (reply === 486) {
@@ -294,15 +293,15 @@ export class TabCallinfoComponent {
                         /* chart of messages */
                         const mKeys = Object.keys(trans.methods);
                         const mValues = mKeys.map(function (v) { return trans.methods[v]; });
-                        trans.task.push({
+                        trans.chart = {
                             type: TASK_TYPE.chart,
                             title: 'Methods',
-                            color: COLOR.bluelighter,
+                            color: COLOR.grey,
                             data: trans.methods,
                             /** body is chart data */
                             label: mKeys,
                             value: mValues
-                        });
+                        };
                     }
 
 
@@ -320,13 +319,12 @@ export class TabCallinfoComponent {
                     }
 
                     trans.task.push({
-                        title: 'Talk Duration',
+                        title: 'Duration',
                         color: COLOR.orange,
                         type: TASK_TYPE.number,
                         body: this.secFormatter(trans['Duration']),
                         prefix: '',
                     });
-
 
                     trans.task.push({
                         title: 'Last Bad Reply',
@@ -446,6 +444,7 @@ export class TabCallinfoComponent {
                         timeRegister: 0,
                         timeFailed: 0,
                         timeFinish: 0,
+                        chart: {},
                         methods: {},
                         destination_ip: '127.0.0.1',
                         source_ip: '127.0.0.1',
@@ -554,15 +553,15 @@ export class TabCallinfoComponent {
                         /* chart of messages */
                         const mKeys = Object.keys(trans.methods);
                         const mValues = mKeys.map(function (v) { return trans.methods[v]; });
-                        trans.task.push({
+                        trans.chart = {
                             type: TASK_TYPE.chart,
                             title: 'Methods',
-                            color: COLOR.bluelighter,
+                            color: COLOR.grey,
                             data: trans.methods,
                             /** body is chart data */
                             label: mKeys,
                             value: mValues
-                        });
+                        };
                     }
 
 

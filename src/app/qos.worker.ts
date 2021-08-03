@@ -413,8 +413,10 @@ class QosProcessor {
                         if (mosFraction) {
                             if (block.fraction_lost <= 0) {
                                 numPL = 0;
+                            } else if (block.fraction_lost > 256) {
+                                numPL = 100;
                             } else {
-                                numPL = block.fraction_lost / 256 * 100;
+                                numPL = numPL / 256 * 100;
                             }
                         }
 
@@ -437,7 +439,7 @@ class QosProcessor {
                         k.packets_lostData.push(block.packets_lost);
 
                         // fraction_lost
-                        if (block.fraction_lost <= 0 ) {
+                        if (block.fraction_lost <= 0) {
                             k.fraction_lostData.push(0);
                         } else {
                             k.fraction_lostData.push(block.fraction_lost / 256);
@@ -690,9 +692,9 @@ class QosProcessor {
         /* lets make it more uniq */
         let hash = 0, i, chr;
         for (i = 0; i < str.length; i++) {
-             chr   = str.charCodeAt(i);
-             hash  = ((hash << 5) - hash) + chr;
-             hash |= 0; // Convert to 32bit integer
+            chr = str.charCodeAt(i);
+            hash = ((hash << 5) - hash) + chr;
+            hash |= 0; // Convert to 32bit integer
         }
 
         const rColor = this.getColorByStringHEX(hash.toString())
@@ -745,7 +747,7 @@ class QosProcessor {
 
         return src;
     }
-    private calculateJitterMos({ jitter, numpacketlost, rtt = 0}) {
+    private calculateJitterMos({ jitter, numpacketlost, rtt = 0 }) {
         if (rtt === 0) {
             rtt = 10;
         }

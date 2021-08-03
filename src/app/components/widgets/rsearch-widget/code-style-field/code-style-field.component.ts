@@ -53,11 +53,10 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
         private cdr: ChangeDetectorRef
     ) {
         this._pas.getAll().toPromise().then((data: any) => {
-            [this.serverLoki] = data.data
-                .filter(i => i.category === 'search' && i.param === 'lokiserver')
+            [this.serverLoki] = data.data?.filter(i => i.category === 'search' && i.param === 'lokiserver')
                 .map(i => i.data.host);
-            [this.lokiTemplate] = data.data
-            .filter(i => i.category === 'search' && i.param === 'lokiserver')
+            [this.lokiTemplate] = data.data?.filter
+            (i => i.category === 'search' && i.param === 'lokiserver')
             .map(i => i.data.template);
             this.updateEditor();
             this.cdr.detectChanges();
@@ -92,7 +91,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
 
             let labels: Array<string> = await this._srs.getLabel(this.serverLoki).toPromise();
             this.isLabel = true;
-            if (labels.length === 0) {
+            if (labels?.length === 0) {
                 this.lokiConnectionDisapper = true;
                 return;
             }
@@ -100,11 +99,11 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
 
             const readyAdded = this.getObject(this.editor.innerText);
 
-            this.popupList = labels.filter(i => {
+            this.popupList = labels?.filter(i => {
                 return Object.keys(readyAdded).indexOf(i) === -1;
             });
 
-            if ( this.popupList.length > 0) {
+            if ( this.popupList?.length > 0) {
                 this.trigger.openMenu();
                 this.setMenuXPosition();
                 this.editor.focus();
@@ -131,7 +130,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
             this.popupList = await this._srs.getValues(label, this.serverLoki).toPromise();
 
             this.isLabel = false;
-            if ( this.popupList.length > 0) {
+            if ( this.popupList?.length > 0) {
                 this.menuTitle = `Label value for "${label}"`;
                 this.trigger.openMenu();
                 this.setMenuXPosition();
@@ -232,8 +231,8 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
                 this.getVariabls();
             } else {
                 const o = this.getObject(this.editor.innerText);
-                const _label = Object.keys(o).filter(i => o[i] === null);
-                if (_label.length > 0) {
+                const _label = Object.keys(o)?.filter(i => o[i] === null);
+                if (_label?.length > 0) {
                     this.getVariabls(_label[0]);
                 } else {
                     this.getLabels();
@@ -291,13 +290,13 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
             if (this.isLabel ) {
                 this.typeInTextarea(item + '=');
                 this.updateEditor(null, true);
-                const c = this.editor.innerText.length - 1;
+                const c = this.editor?.innerText?.length - 1;
                 this.restoreSelection(c, c);
                 this.getVariabls();
             } else {
                 this.typeInTextarea(`"${item}"`);
                 this.updateEditor();
-                const c = this.editor.innerText.length - 1;
+                const c = this.editor?.innerText?.length - 1;
                 this.restoreSelection(c, c);
             }
         }
@@ -341,7 +340,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
                         break;
 
                     case Node.ELEMENT_NODE:
-                        textSegments.splice(textSegments.length, 0, ...(this.getTextSegments(node)));
+                        textSegments.splice(textSegments?.length, 0, ...(this.getTextSegments(node)));
                         break;
 
                     default:
@@ -366,7 +365,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
             if (node === sel.focusNode) {
                 focusIndex = currentIndex + sel.focusOffset;
             }
-            currentIndex += text.length;
+            currentIndex += text?.length;
         });
 
         try {
@@ -374,7 +373,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
         } catch (err) { }
 
         if (setEnd) {
-            this.restoreSelection(this.editor.innerText.length, this.editor.innerText.length);
+            this.restoreSelection(this.editor?.innerText?.length, this.editor?.innerText?.length);
         } else {
             this.restoreSelection(anchorIndex, focusIndex);
         }
@@ -404,7 +403,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
 
         textSegments.forEach(({text, node}) => {
             const startIndexOfNode = currentIndex;
-            const endIndexOfNode = startIndexOfNode + text.length;
+            const endIndexOfNode = startIndexOfNode + text?.length;
             if (startIndexOfNode <= absoluteAnchorIndex && absoluteAnchorIndex <= endIndexOfNode) {
                 anchorNode = node;
                 anchorIndex = absoluteAnchorIndex - startIndexOfNode;
@@ -413,7 +412,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
                 focusNode = node;
                 focusIndex = absoluteFocusIndex - startIndexOfNode;
             }
-            currentIndex += text.length;
+            currentIndex += text?.length;
         });
         try {
             sel.setBaseAndExtent(anchorNode, anchorIndex, focusNode, focusIndex);
@@ -426,7 +425,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
         const end = sel['extentOffset'] || 0;
         const text = el.innerText;
         const before = text.substring(0, start);
-        const after  = text.substring(end, text.length);
+        const after  = text.substring(end, text?.length);
         el.innerText = (before + str + after);
         el.focus();
         return false;

@@ -5,20 +5,20 @@
     <pre *ngIf="!raw_isJSON && type === 'INFO'" class="raw-json">{{raw}}</pre>
   </mat-tab>
 
-  <mat-tab label="Details" style="padding: 1rem;">
+  <mat-tab label="Details" style="padding: 1rem;font-size: 12px !important;">
     <div>
-      <table mat-table [dataSource]="messageDetailTableData" style="width: 100%">
+      <table class="detail-table" mat-table [dataSource]="messageDetailTableData" style="width: 100%">
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef> Name </th>
-          <td mat-cell *matCellDef="let element" style="font-weight: bold"> {{element.name}} </td>
+          <td mat-cell *matCellDef="let element" style="font-weight: bold;font-size: 12px;"> {{element.name}} </td>
         </ng-container>
-        <ng-container matColumnDef="value">
-          <th mat-header-cell *matHeaderCellDef> Value </th>
-          <td mat-cell *matCellDef="let element"> {{element.value}} </td>
+        <ng-container style="font-size:12px" matColumnDef="value">
+          <th mat-header-cell style="font-size:12px" *matHeaderCellDef> Value </th>
+          <td mat-cell style="font-size:12px" *matCellDef="let element"> {{element.value}} </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="['name', 'value']"></tr>
-        <tr mat-row *matRowDef="let row; columns: ['name', 'value']"></tr>
+        <tr mat-header-row  style="font-size:12px; height:30px"*matHeaderRowDef="['name', 'value']"></tr>
+        <tr mat-row style="font-size:12px; height:30px" *matRowDef="let row; columns: ['name', 'value']"></tr>
       </table>
     </div>
   </mat-tab>
