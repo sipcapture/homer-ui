@@ -12,6 +12,8 @@ import {
 import { Functions } from '@app/helpers/functions';
 import { PreferenceAdvancedService } from '@app/services';
 import { ChangeDetectorRef } from '@angular/core';
+import { SessionStorageService } from '../../../services/session-storage.service';
+import { SearchService } from '../../../services/search.service';
 
 @Component({
     selector: 'app-detail-dialog',
@@ -66,7 +68,7 @@ export class DetailDialogComponent implements OnInit {
         logs: true,
         export: false
     };
-    searchProtocol = JSON.parse(localStorage.getItem("searchQuery")).protocol_id
+    searchProtocol = '' //= JSON.parse(localStorage.getItem("searchQuery")).protocol_id
     public flowFilters: any;
     exportAsPNG = false;
     isBrowserWindow = false;
@@ -149,11 +151,14 @@ export class DetailDialogComponent implements OnInit {
 
     constructor(
         private _pas: PreferenceAdvancedService,
+        private _sss: SessionStorageService,
+        private searchService: SearchService,
         private changeDetectorRefs: ChangeDetectorRef
     ) { }
 
     ngOnInit() {
         this.setTabByAdvanced();
+        this.getSearchProtocol();
         if (this.sipDataItem) {
             this.dataLogs = this.sipDataItem.data.messages.filter(i => !i.method).map(i => ({ payload: i }));
             setTimeout(this.checkStatusTabs.bind(this));
@@ -161,6 +166,16 @@ export class DetailDialogComponent implements OnInit {
             this.doFilterMessages();
             this.changeDetectorRefs.detectChanges();
         }
+    }
+    async getSearchProtocol(){
+        const cached = this.searchService.cached
+        await this._sss.getLocalData('searchQuery').then( search =>{
+            if(search?.protocol_id){
+                this.searchProtocol = search?.protocol_id;
+            } else {
+                this.searchProtocol = cached['protocol_id']
+            }
+        })
     }
     saveFiltersToLocalStorage() {
         localStorage.setItem('localFilterState', JSON.stringify({

@@ -116,6 +116,7 @@ export class TabCallinfoComponent {
                         from_user: '',
                         to_user: '',
                         from_domain: '',
+                        from_tag:'',
                         ruri_domain: '',
                         ruri_user: '',
                         callid: callid,
@@ -125,16 +126,15 @@ export class TabCallinfoComponent {
                     const regexpCseq = new RegExp('CSeq:(.*) (INVITE|BYE|CANCEL|UPDATE|PRACK)', 'g');
 
                     messages.forEach((message) => {
-
                         const reply = parseInt(message.method, 10);
                         const messageTime = Math.round((message.timeSeconds * 1000000 + message.timeUseconds) / 1000);
-
                         if (!trans.methods[message.method]) {
                             trans.methods[message.method] = 0;
                         }
-
-                        trans.methods[message.method]++;
-
+                        if(message.method){
+                            trans.methods[message.method]++;
+                        }
+                        
                         if (trans.FirstMessage == 0 || trans.FirstMessage > messageTime) {
                             trans.FirstMessage = messageTime;
                         }
@@ -181,7 +181,6 @@ export class TabCallinfoComponent {
                         } else if (message.method === 'CANCEL' && trans.timeCancel === 0) {
                             trans.timeCancel = messageTime;
                             trans.CdrStopTime = trans.timeCancel;
-
                             /* UAC sends CANCEL - stop it */
                             if (trans.CdrRingingTime !== 0 && trans.RingingTime == 0
                                 && trans.CdrRingingTime < trans.CdrStopTime) {
@@ -285,11 +284,12 @@ export class TabCallinfoComponent {
                             }
                         }
                     });
-
+                  
                     /** tasks for each CallId */
 
                     /* messages array */
                     if (Object.keys(trans.methods).length > 0) {
+                        
                         /* chart of messages */
                         const mKeys = Object.keys(trans.methods);
                         const mValues = mKeys.map(function (v) { return trans.methods[v]; });

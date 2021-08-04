@@ -34,6 +34,7 @@ export class SessionStorageService {
     FULL = 'full';
     PROTO_SEARCH = 'proto-search';
     USER_SETTINGS = 'user-settings';
+    SEARCH_QUERY = 'searchQuery';
 
     private localUserSettings: BehaviorSubject<any>;
 
@@ -101,6 +102,8 @@ export class SessionStorageService {
         SessionStorageService.userSettings.protosearchSettings[widgetId] = fieldsValue;
         this.saveUserData(this.PROTO_SEARCH);
     }
-
+    async getLocalData(item) {
+        return await JSON.parse(localStorage.getItem(item))
+    }
 
 }
