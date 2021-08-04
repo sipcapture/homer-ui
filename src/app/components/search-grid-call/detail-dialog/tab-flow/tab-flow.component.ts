@@ -150,6 +150,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         const protoName = Functions.protoCheck(item.proto).toUpperCase();
         const eventName = item.proto === 'rtcp' ? 'RTCP' : 'RTP';
         const typeItem = item.proto === 'rtcp' ? 'RTCP' : 'RTP';
+
         return {
             id: item.id,
             callid: item.sid,
@@ -388,13 +389,20 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
                 arrowStyleSolid: item.method_text === 'RTCP' || item.method_text === 'RTP'
             };
             const typeItem = item.method_text === 'RTCP' || item.method_text === 'RTP' ? item.method_text : 'SIP';
+            const eventName = item.method_text;
+            const { raw } = data.messages.find(i => i.id === item.id);
+            console.log({item}, raw);
+
+            if (!item.sdp && raw?.includes('application/sdp')) {
+                item.sdp = true;
+            }
             return {
                 options,
                 course,
                 source_data: item,
                 srcPort: item.srcPort,
                 dstPort: item.dstPort,
-                method_text: item.method_text,
+                method_text: item.sdp ? eventName + ` (SDP)${item.msg_info ? ' ' + item.msg_info : ''}` : eventName,
                 packetType: item.method_text === 'RTCP' || item.method_text === 'RTP' ? item.method_text : 'SIP',
                 ruri_user: item.ruri_user,
                 id: item.id,
