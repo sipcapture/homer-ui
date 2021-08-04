@@ -5,17 +5,19 @@ import { Functions } from '@app/helpers/functions';
 import { DateTimeRangeService } from './data-time-range.service';
 import { AlertService } from './alert.service';
 
+
 @Injectable({
     providedIn: 'root'
 })
 export class SearchService {
     static currentQuery: any = {};
+    cached = {}
     isLoki = false;
     location: any;
     protocol: any;
     search: any;
     target: any;
-
+    cachedQuery = {}
     constructor (
         private dateTimeRangeService: DateTimeRangeService,
         private alertService: AlertService,
@@ -23,9 +25,10 @@ export class SearchService {
         const params = Functions.getUriJson();
 
         SearchService.currentQuery = this.getLocalStorageQuery() || {
-            protocol_id: null,
+            protocol_id: this.cachedQuery['protocol_id'] || null,
             location: this.location
-        };
+        }; 
+        this.cached = SearchService.currentQuery
         if (params && params.param && params.param.search) {
             this.protocol = SearchService.currentQuery.protocol_id = Object.keys(params.param.search)[0];
             this.location = SearchService.currentQuery.location = params.param.location;
@@ -49,7 +52,9 @@ export class SearchService {
         }
     }
 
-
+    public getCachedQuery(query){
+    this.cachedQuery = query;
+    }
     public setLocalStorageQuery(query: any) {
         SearchService.currentQuery = Functions.cloneObject(query);
         if (query.location) {

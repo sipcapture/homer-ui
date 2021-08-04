@@ -79,7 +79,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     lastTimestamp: number;
     localData: any;
     queryTextLoki: string;
-
+    storedQuery = {}
     lokiSorted = '';
     searchSliderConfig = {
         countFieldColumns: 4,
@@ -202,6 +202,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     ngOnInit() {
+        
         this.lokiSort = this.getLokiSort();
         if (this.isLokiQuery) {
             this.update(true);
@@ -339,13 +340,15 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     async initSearchSlider(isImportantClear = false) {
         this.isThisSelfQuery = false;
 
-
+        this.storedQuery = this._ds.getSliderQueryDataToWidgetResult(this.id)
+        this.searchService.getCachedQuery(this.storedQuery)
         const query = this._ds.getSliderQueryDataToWidgetResult(this.id)
             || this._ds.setSliderQueryDataToWidgetResult(this.id, this.searchService.getLocalStorageQuery());
 
         if (!query || !query.protocol_id) {
             return;
         }
+       
         const mappings: Array<any> = (await this._pmps.getAll().toPromise() as any).data as Array<any>;
         const [query_hepid, query_protocol_id]: [number, string] = query.protocol_id.replace('_', ',').split(',');
         const [mappingItem] = mappings.filter(i => i.profile === query_protocol_id && i.hepid === query_hepid * 1);
@@ -436,7 +439,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 delete this.config.param.id;
                 this.isLokiQuery = false;
             } else {
-                this.localData = this.searchService.getLocalStorageQuery();
+             
+                this.localData = this.searchService.getLocalStorageQuery() || this.storedQuery;
+                
                 if (this.lokiSort) {
                     this.localData.lokiSort = this.lokiSort;
                 }
