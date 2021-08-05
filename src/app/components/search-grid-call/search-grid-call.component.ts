@@ -65,6 +65,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     rowData: any = [];
     showPortal = false;
     loader = false;
+    onlyLoader = false;
     noRowsTemplate = `<span class="norowstemplate">Adjust params and do a search to show results</span>`;
     private isOpenDialog = false;
     title = 'Call Result';
@@ -79,7 +80,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     lastTimestamp: number;
     localData: any;
     queryTextLoki: string;
-    storedQuery = {}
+    storedQuery = {};
     lokiSorted = '';
     searchSliderConfig = {
         countFieldColumns: 4,
@@ -102,6 +103,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         },
         refresh: false,
     };
+    isFirstInit = true;
     agGridSizeControl = {
         selectedType: 'sizeToFit',
         pageSize: 100
@@ -142,6 +144,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         message_to: 5000, // + 1sec
 
     };
+    mappings: any;
     totalPages: number;
     private isThisSelfQuery = false;
     private _interval: any;
@@ -272,7 +275,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             }
             this.getHeaders();
         }
-        
         this.recoverAgGridSizeControl();
 
         this._pas.getAll().toPromise().then((result: any) => {
@@ -553,7 +555,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }
     }
     private async getHeaders() {
-        this.columnDefs = [];
+        const mappings: any = await this._pmps.getAll().toPromise();
         this.config.timestamp = this._dtrs.getDatesForQuery(true);
 
         this.getQueryData();
@@ -569,6 +571,22 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }
 
         let marData = [];
+        const { fields_mapping, hepid } = mappings.data.find(({ hepid, hep_alias, profile }) =>
+        (this.isLokiQuery && hepid === 2000 && hep_alias === 'LOKI') ||
+        (marData.length === 0 &&
+            this.config.param.search?.hasOwnProperty(`${hepid}_${profile}`)
+        )
+        ) || {};
+        const condition = JSON.stringify(fields_mapping) === JSON.stringify(this.mappings);
+        if (condition) {
+            this.onlyLoader = true;
+            this.changeDetectorRefs.detectChanges();
+            return;
+        } else {
+            this.columnDefs = [];
+            this.mappings = fields_mapping;
+        }
+        this.columnDefs = [];
         let hepVersion = 0;
         const data: any = await this._pmps.getAll().toPromise();
         const arrData: Array<any> = data && data.data;
@@ -698,9 +716,13 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     public update(isImportant = false) {
-        this.loader = true;
         if (this.isNewData() && !isImportant) {
             return;
+        }
+        if (this.isFirstInit) {
+            this.columnDefs = [];
+            this.loader = true;
+            this.isFirstInit = false;
         }
         this.config.timestamp = this._dtrs.getDatesForQuery(true);
         this.config.lokiSort = this.lokiSort;
@@ -711,12 +733,14 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         if (this.inContainer) { /* if ag-grid in result widget */
             this.getHeaders();
         } else {
+            this.loader = true;
             this.getQueryData();
         }
         this.rowData = null;
         if (this.isLokiQuery) {
             this._srs.getData(this.queryBuilderForLoki()).toPromise().then(result => {
                 this.loader = false;
+                this.onlyLoader = false;
                 this.rowData = result?.data?.sort((a, b) => {
                     a = new Date(a.micro_ts).getTime();
                     b = new Date(b.micro_ts).getTime();
@@ -730,7 +754,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.changeDetectorRefs.detectChanges();
                 if (this.rowData) { /** for grid updated autoHeight and sizeToFit */
                     this.rowData = Functions.cloneObject(this.rowData);
-                    if (this.rowData) { this.loader = false; }
+                    if (this.rowData) {
+                        this.loader = false;
+                        this.onlyLoader = false;
+                    }
                     this.dataReady.emit({});
                     if (this.gridApi) {
                         this.totalPages = this.gridApi.paginationGetRowCount();
@@ -752,7 +779,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 }
 
                 this.rowData = result.data;
-                if (this.rowData) { this.loader = false; }
+                if (this.rowData) {
+                    this.loader = false;
+                    this.onlyLoader = false;
+                }
                 for (let i = 0; i < this.rowData.length; i++) {
                     if (this.rowData[i].protocol !== undefined && this.rowData[i].protocol === 17) {
                         this.rowData[i].protocol = 'UDP';
