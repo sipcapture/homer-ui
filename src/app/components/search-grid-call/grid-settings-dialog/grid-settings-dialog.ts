@@ -21,16 +21,22 @@ export class DialogSettingsGridDialog {
     public apiColumn: any;
     apiPoint: any;
     id: string;
-    public checkboxSizeType = [
+    public radioSizeType = [
         {
             type: 'sizeToFit',
-            title: 'Size To Fit',
-            selected: false,
+            title: 'Size To Fit Columns on Load',
+        },
+        {
+            type: 'sizeToFitContinuos',
+            title: 'Size To Fit Columns',
         },
         {
             type: 'sizeColumnsToFit',
-            title: 'Size Columns To Fit',
-            selected: false,
+            title: 'Size To Fit Content',
+        },
+        {
+            type: 'none',
+            title: 'Manual sizing',
         }
     ];
     agGridSizeControl: any = {};
@@ -41,9 +47,6 @@ export class DialogSettingsGridDialog {
         @Inject(MAT_DIALOG_DATA) public data: DialogData
     ) {
         this.agGridSizeControl = data.agGridSizeControl;
-        this.checkboxSizeType.forEach((i) => {
-            i.selected = this.agGridSizeControl[i.type];
-        });
 
         this.apiColumn = data.apicol;
         this.apiPoint = data.apipoint;
@@ -116,9 +119,6 @@ export class DialogSettingsGridDialog {
             this.apiColumn.moveColumn(moved.field.field, moved.index);
         }
         this.apiColumn.setColumnVisible(field, event);
-        if (this.agGridSizeControl.sizeColumnsToFit) {
-            this.apiPoint.sizeColumnsToFit();
-        }
         this.getNewColumns();
     }
     getNewColumns() {
@@ -145,23 +145,6 @@ export class DialogSettingsGridDialog {
 
             this._bufferData = Functions.cloneObject(this.allColumnIds);
         }
-    }
-    onChangeSizeToFit(event, type?) {
-        this.agGridSizeControl[type] = event;
-
-        if (this.agGridSizeControl.sizeToFit) {
-            this.apiPoint.sizeColumnsToFit();
-        }
-        if (this.agGridSizeControl.sizeColumnsToFit) {
-            this.autoSizeAll(true);
-        }
-    }
-    private autoSizeAll(skipHeader) {
-        const allColumnIds = [];
-        this.apiColumn.getAllColumns().forEach(function (column) {
-            allColumnIds.push(column.colId);
-        });
-        this.apiColumn.autoSizeColumns(allColumnIds, skipHeader);
     }
     onNoClick(): void {
         this.dialogRef.close();

@@ -5,7 +5,7 @@ export enum ConstValue {
     LOKI_PREFIX = '2000_loki',
     serverLoki = 'serverLoki',
     CONTAINER = 'targetResultsContainer',
-    SQWR = 'searchQueryWidgetsResult',    
-    SIZE_CONTROL = 'resultsChartSetting'
-
+    SQWR = 'searchQueryWidgetsResult',
+    SIZE_CONTROL = 'resultsChartSetting',
+    RESULT_GRID_SETTING = 'resultsGridSetting'
 }
