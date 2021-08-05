@@ -67,10 +67,26 @@
     <ng-template #Loader>
         <div class="lds-container">
             <h3>
-                <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+                <div class="lds-ring">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
             </h3>
         </div>
     </ng-template>
+    <div class="lds-container onlyLoader"
+    *ngIf="onlyLoader === true && loader === false">
+        <h3 style="margin: 0">
+            <div class="lds-ring">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </h3>
+    </div>
 <!-- 
   search slider
 -->
