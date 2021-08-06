@@ -391,7 +391,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             const typeItem = item.method_text === 'RTCP' || item.method_text === 'RTP' ? item.method_text : 'SIP';
             const eventName = item.method_text;
             const { raw } = data?.messages?.find(i => i.id === item.id) || {};
-            console.log('FLOW', raw);
+
             if (!item.sdp && raw?.includes('Content-Type: application/sdp')) {
                 item.sdp = true;
             }
