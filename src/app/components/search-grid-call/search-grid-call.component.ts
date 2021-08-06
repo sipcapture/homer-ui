@@ -516,7 +516,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         if (params && params.param) {
             const sids: Array<string> = params.param.search[this.protocol_profile].callid;
             if (sids && sids.length > 1) {
-                if(typeof this.gridApi !== 'undefined'){
+                if (typeof this.gridApi !== 'undefined'){
                     this.gridApi.forEachLeafNode(node => {
                         if (sids.indexOf(node.data.sid) !== -1) {
                             node.setSelected(true, true);
@@ -754,10 +754,16 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.changeDetectorRefs.detectChanges();
                 if (this.rowData) { /** for grid updated autoHeight and sizeToFit */
                     this.rowData = Functions.cloneObject(this.rowData);
-                    if (this.rowData) {
+                    setTimeout(() => {
                         this.loader = false;
                         this.onlyLoader = false;
-                    }
+                        this.changeDetectorRefs.detectChanges();
+                    }, 100);
+                    setTimeout(() => {
+                        this.loader = false;
+                        this.onlyLoader = false;
+                        this.changeDetectorRefs.detectChanges();
+                    }, 1000);
                     this.dataReady.emit({});
                     if (this.gridApi) {
                         this.totalPages = this.gridApi.paginationGetRowCount();
@@ -765,6 +771,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     this.changeDetectorRefs.detectChanges();
                 };
             }, err => {
+                console.log('test')
                 this.rowData = [];
                 this.dataReady.emit({});
             });
@@ -774,14 +781,20 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     this.rowData = [];
                     this.dataReady.emit({});
                     this.changeDetectorRefs.detectChanges();
-
                     return;
                 }
-
                 this.rowData = result.data;
                 if (this.rowData) {
-                    this.loader = false;
-                    this.onlyLoader = false;
+                    setTimeout(() => {
+                        this.loader = false;
+                        this.onlyLoader = false;
+                        this.changeDetectorRefs.detectChanges();
+                    }, 100);
+                    setTimeout(() => {
+                        this.loader = false;
+                        this.onlyLoader = false;
+                        this.changeDetectorRefs.detectChanges();
+                    }, 1000);
                 }
                 for (let i = 0; i < this.rowData.length; i++) {
                     if (this.rowData[i].protocol !== undefined && this.rowData[i].protocol === 17) {
@@ -800,6 +813,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 }
                 this.changeDetectorRefs.detectChanges();
             }, err => {
+                console.log('test')
                 this.rowData = [];
                 this.dataReady.emit({});
             });
