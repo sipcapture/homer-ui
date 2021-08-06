@@ -33,20 +33,6 @@ export class TabMessagesComponent implements OnInit {
     @Input() set dataItem(val) {
         this._dataItem = val;
         const tableData = Functions.messageFormatter(this._dataItem.data.messages);
-
-        tableData.forEach((item) => {
-            const eventName = item.method;
-            const { raw } = item?.item || {};
-            // console.log({ item }, raw);
-
-            if (!item.sdp && raw?.includes('application/sdp')) {
-                item.sdp = true;
-            }
-            item.method_text = item.sdp ?
-                eventName + ` (SDP)${item.msg_info ? ' ' + item.msg_info : ''}` :
-                eventName;
-        });
-        console.log({ tableData });
         this.dataSource = new TableVirtualScrollDataSource<MesagesData>(tableData);
         this.cdr.detectChanges();
     }
@@ -122,8 +108,7 @@ export class TabMessagesComponent implements OnInit {
         tableData.forEach((item) => {
             const eventName = item.method;
             const { raw } = item?.item || {};
-
-            if (!item.sdp && raw?.includes('application/sdp')) {
+            if (!item.sdp && raw?.includes('Content-Type: application/sdp')) {
                 item.sdp = true;
             }
             item.method_text = item.sdp ?
