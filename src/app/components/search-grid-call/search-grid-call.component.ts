@@ -771,7 +771,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                     this.changeDetectorRefs.detectChanges();
                 };
             }, err => {
-                console.log('test')
                 this.rowData = [];
                 this.dataReady.emit({});
             });
@@ -813,7 +812,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 }
                 this.changeDetectorRefs.detectChanges();
             }, err => {
-                console.log('test')
                 this.rowData = [];
                 this.dataReady.emit({});
             });
