@@ -1,6 +1,6 @@
 import { GridOptions } from 'ag-grid-community';
 import { Subscription } from 'rxjs';
-import { Functions } from '@app/helpers/functions';
+import { Functions, getStorage, setStorage } from '@app/helpers/functions';
 import * as moment from 'moment';
 import { ConstValue } from '@app/models';
 import {
@@ -65,6 +65,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     rowData: any = [];
     showPortal = false;
     loader = false;
+    onlyLoader = false;
     noRowsTemplate = `<span class="norowstemplate">Adjust params and do a search to show results</span>`;
     private isOpenDialog = false;
     title = 'Call Result';
@@ -79,7 +80,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     lastTimestamp: number;
     localData: any;
     queryTextLoki: string;
-    storedQuery = {}
+    storedQuery = {};
     lokiSorted = '';
     searchSliderConfig = {
         countFieldColumns: 4,
@@ -102,10 +103,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         },
         refresh: false,
     };
+    isFirstInit = true;
     agGridSizeControl = {
-        sizeToFit: true,
-        sizeColumnsToFit: false,
-        autoSizeAllColumns: false,
+        selectedType: 'sizeToFit',
+        pageSize: 100
     };
     gridOptions: GridOptions = <GridOptions>{
         defaultColDef: {
@@ -143,7 +144,8 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         message_to: 5000, // + 1sec
 
     };
-
+    mappings: any;
+    totalPages: number;
     private isThisSelfQuery = false;
     private _interval: any;
     private subscriptionRangeUpdateTimeout: Subscription;
@@ -190,19 +192,17 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
 
     @HostListener('window:resize')
     onResize() {
-        if (!this.gridApi || !this.agGridSizeControl.sizeToFit) {
+        if (!this.gridApi || this.agGridSizeControl.selectedType !== 'sizeToFitContinuos') {
             return;
         }
-
         setTimeout(() => {
-            if (this.agGridSizeControl.sizeToFit) {
+            if (this.agGridSizeControl.selectedType === 'sizeToFitContinuos' && this.loader === false) {
                 this.gridApi.sizeColumnsToFit();
             }
         }, 300);
     }
 
     ngOnInit() {
-        
         this.lokiSort = this.getLokiSort();
         if (this.isLokiQuery) {
             this.update(true);
@@ -275,7 +275,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             }
             this.getHeaders();
         }
-        
         this.recoverAgGridSizeControl();
 
         this._pas.getAll().toPromise().then((result: any) => {
@@ -297,36 +296,40 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
             }
         });
     }
-    private recoverAgGridSizeControl() {
+    public recoverAgGridSizeControl() {
         /** recover agGridSizeControl settings from localStorage */
-        const agGridSettings =
-            localStorage.getItem(ConstValue.SIZE_CONTROL) || '{}';
-        const fromLocalStorage = Functions.JSON_parse(agGridSettings);
-        this.agGridSizeControl.sizeColumnsToFit =
-            fromLocalStorage.sizeColumnsToFit ||
-            this.agGridSizeControl.sizeColumnsToFit;
-        this.agGridSizeControl.sizeToFit =
-            fromLocalStorage.sizeToFit || this.agGridSizeControl.sizeToFit;
-        this.agGridSizeControl.autoSizeAllColumns =
-            fromLocalStorage.autoSizeAllColumns ||
-            this.agGridSizeControl.autoSizeAllColumns;
+        const { selectedType, sizeColumnsToFit, pageSize } =
+            getStorage(ConstValue.RESULT_GRID_SETTING) || {};
 
+        if (!selectedType && sizeColumnsToFit) {
+            Object.keys(this.agGridSizeControl).forEach(option => {
+                if (option !== 'pageSize' && option !== 'selectedType' && this.agGridSizeControl[option]) {
+                    this.agGridSizeControl.selectedType = option;
+                }
+            });
+            setStorage(ConstValue.RESULT_GRID_SETTING, this.agGridSizeControl);
+        } else {
+            this.agGridSizeControl.selectedType = selectedType || 'sizeToFit';
+        }
+        this.agGridSizeControl.pageSize = pageSize || 100;
         this.updateAgGridSizing();
     }
 
-    private updateAgGridSizing() {
-        if (this.agGridSizeControl.sizeToFit) {
+    public updateAgGridSizing() {
+        if (this.agGridSizeControl.selectedType === 'sizeToFitContinuos' || this.agGridSizeControl.selectedType === 'sizeToFit') {
             this.sizeToFit();
+            this.gridOptions?.api?.setColumnDefs(this.columnDefs);
+        } else {
+            this.gridOptions?.api?.setColumnDefs(this.columnDefs);
         }
-        if (this.agGridSizeControl.sizeColumnsToFit) {
+        if (this.agGridSizeControl.selectedType === 'sizeColumnsToFit') {
             setTimeout(() => {
                 this.autoSizeAll(true);
             }, 300);
         }
-        this.changeDetectorRefs.detectChanges();
     }
 
-    private autoSizeAll(skipHeader) {
+    public autoSizeAll(skipHeader) {
         if (!this.gridColumnApi) {
             return;
         }
@@ -348,7 +351,6 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         if (!query || !query.protocol_id) {
             return;
         }
-       
         const mappings: Array<any> = (await this._pmps.getAll().toPromise() as any).data as Array<any>;
         const [query_hepid, query_protocol_id]: [number, string] = query.protocol_id.replace('_', ',').split(',');
         const [mappingItem] = mappings.filter(i => i.profile === query_protocol_id && i.hepid === query_hepid * 1);
@@ -553,7 +555,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }
     }
     private async getHeaders() {
-        this.columnDefs = [];
+        const mappings: any = await this._pmps.getAll().toPromise();
         this.config.timestamp = this._dtrs.getDatesForQuery(true);
 
         this.getQueryData();
@@ -569,6 +571,22 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         }
 
         let marData = [];
+        const { fields_mapping, hepid } = mappings.data.find(({ hepid, hep_alias, profile }) =>
+        (this.isLokiQuery && hepid === 2000 && hep_alias === 'LOKI') ||
+        (marData.length === 0 &&
+            this.config.param.search?.hasOwnProperty(`${hepid}_${profile}`)
+        )
+        ) || {};
+        const condition = JSON.stringify(fields_mapping) === JSON.stringify(this.mappings);
+        if (condition) {
+            this.onlyLoader = true;
+            this.changeDetectorRefs.detectChanges();
+            return;
+        } else {
+            this.columnDefs = [];
+            this.mappings = fields_mapping;
+        }
+        this.columnDefs = [];
         let hepVersion = 0;
         const data: any = await this._pmps.getAll().toPromise();
         const arrData: Array<any> = data && data.data;
@@ -698,9 +716,13 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     public update(isImportant = false) {
-        this.loader = true;
         if (this.isNewData() && !isImportant) {
             return;
+        }
+        if (this.isFirstInit) {
+            this.columnDefs = [];
+            this.loader = true;
+            this.isFirstInit = false;
         }
         this.config.timestamp = this._dtrs.getDatesForQuery(true);
         this.config.lokiSort = this.lokiSort;
@@ -711,12 +733,14 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         if (this.inContainer) { /* if ag-grid in result widget */
             this.getHeaders();
         } else {
+            this.loader = true;
             this.getQueryData();
         }
         this.rowData = null;
         if (this.isLokiQuery) {
             this._srs.getData(this.queryBuilderForLoki()).toPromise().then(result => {
                 this.loader = false;
+                this.onlyLoader = false;
                 this.rowData = result?.data?.sort((a, b) => {
                     a = new Date(a.micro_ts).getTime();
                     b = new Date(b.micro_ts).getTime();
@@ -728,10 +752,16 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 });
                 this.sizeToFit();
                 this.changeDetectorRefs.detectChanges();
-                if(this.rowData) { /** for grid updated autoHeight and sizeToFit */
+                if (this.rowData) { /** for grid updated autoHeight and sizeToFit */
                     this.rowData = Functions.cloneObject(this.rowData);
-                    if (this.rowData) { this.loader = false; }
+                    if (this.rowData) {
+                        this.loader = false;
+                        this.onlyLoader = false;
+                    }
                     this.dataReady.emit({});
+                    if (this.gridApi) {
+                        this.totalPages = this.gridApi.paginationGetRowCount();
+                    }
                     this.changeDetectorRefs.detectChanges();
                 };
             }, err => {
@@ -749,7 +779,10 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 }
 
                 this.rowData = result.data;
-                if (this.rowData) { this.loader = false; }
+                if (this.rowData) {
+                    this.loader = false;
+                    this.onlyLoader = false;
+                }
                 for (let i = 0; i < this.rowData.length; i++) {
                     if (this.rowData[i].protocol !== undefined && this.rowData[i].protocol === 17) {
                         this.rowData[i].protocol = 'UDP';
@@ -762,7 +795,9 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
                 this.openTransactionByAdvancedSettings();
                 this.dataReady.emit({});
                 this.initSearchSlider();
-
+                if (this.gridApi) {
+                    this.totalPages = this.gridApi.paginationGetRowCount();
+                }
                 this.changeDetectorRefs.detectChanges();
             }, err => {
                 this.rowData = [];
@@ -777,7 +812,7 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     onSizeToFit() {
-        if (!this.gridApi) {
+        if (!this.gridApi || this.agGridSizeControl.selectedType !== 'sizeToFitContinuos') {
             return;
         }
         this.sizeToFit();
@@ -826,15 +861,15 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         };
     }
 
-    private sizeToFit() {
-        if (!this.agGridSizeControl.sizeToFit) {
+    public sizeToFit() {
+        if (this.agGridSizeControl.selectedType !== 'sizeToFitContinuos' && this.agGridSizeControl.selectedType !== 'sizeToFit') {
             return;
         }
         if (this._interval) {
             clearInterval(this._interval);
         }
         this._interval = setTimeout(() => {
-            if (this.gridApi && this.agGridSizeControl.sizeToFit) {
+            if (this.gridApi && (this.agGridSizeControl.selectedType === 'sizeToFitContinuos' || this.agGridSizeControl.selectedType === 'sizeToFit')) {
                 this.gridApi.sizeColumnsToFit();
             }
         }, 100);
@@ -848,8 +883,31 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
     public onGridReady(params) {
         this.gridApi = params.api;
         this.gridColumnApi = params.columnApi;
+        this.totalPages = this.gridApi.paginationGetRowCount();
     }
+    paginationControls(e) {
+        if (e.previousPageIndex > e.pageIndex) {
+            this.gridApi.paginationGoToPreviousPage();
+        } else if (e.previousPageIndex < e.pageIndex) {
+            this.gridApi.paginationGoToNextPage();
+        }
+        if (e.pageSize !== this.agGridSizeControl.pageSize) {
+            this.agGridSizeControl.pageSize = e.pageSize;
+            this.gridApi.paginationSetPageSize(e.pageSize);
+            let ls = getStorage(ConstValue.RESULT_GRID_SETTING);
 
+            if (ls) {
+                ls.pageSize = e.pageSize;
+                setStorage(ConstValue.RESULT_GRID_SETTING, ls);
+            } else {
+                ls = {
+                    pageSize: e.pageSize,
+                    selectedType: 'sizeToFit'
+                };
+                setStorage(ConstValue.RESULT_GRID_SETTING, ls);
+            }
+        }
+    }
     public openTransactionForSelectedRows(index, row, mouseEventData = null) {
         const data = { data: row };
         this.openTransactionDialog(data, mouseEventData);
@@ -1093,28 +1151,20 @@ export class SearchGridCallComponent implements OnInit, OnDestroy, AfterViewInit
         this.changeDetectorRefs.detectChanges();
     }
     onSettingButtonClick() {
-        const params = {
-            api: this.gridApi,
-            columnApi: this.gridColumnApi,
-            context: this.context,
-            lokiSort: this.lokiSort
-        } as any;
-
         this.dialog.open(DialogSettingsGridDialog, {
+            width: '500px',
             data: {
                 agGridSizeControl: this.agGridSizeControl,
-                apicol: params.columnApi,
-                apipoint: params.api,
-                columns: params.context.componentParent.columnDefs,
-                idParent: params.context.componentParent.id,
+                apicol: this.gridColumnApi,
+                apipoint: this.gridApi,
+                columns: this.context.componentParent.columnDefs,
+                idParent: this.context.componentParent.id,
+                protocol_id: this.localData.protocol_id
             },
         }).afterClosed().toPromise().then(() => {
-            localStorage.setItem(
-                'resultsChartSetting',
-                JSON.stringify(this.agGridSizeControl)
-            );
-        });;
-        this.changeDetectorRefs.detectChanges();
+            setStorage(ConstValue.RESULT_GRID_SETTING, this.agGridSizeControl);
+            this.updateAgGridSizing();
+        });
     }
     export() {
         const params = {

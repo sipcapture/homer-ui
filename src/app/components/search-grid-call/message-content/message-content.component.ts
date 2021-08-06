@@ -14,48 +14,48 @@ export class MessageContentComponent implements OnInit, OnDestroy {
     type;
     decoded: any = null;
     raw_isJSON = false;
-    _sipData
-    _sdpData
-    _vqrData
-    _xRTPData
-    _JWTData
+    _sipData;
+    _sdpData;
+    _vqrData;
+    _xRTPData;
+    _JWTData;
     get sipData() {
         return this._sipData;
     }
     set sipData(v) {
-        this._sipData = v
+        this._sipData = v;
     }
 
     get sdpData() {
-        return this._sdpData
+        return this._sdpData;
     }
 
     set sdpData(v) {
-        this._sdpData = v
+        this._sdpData = v;
     }
     get vqrData() {
-        return this._vqrData
+        return this._vqrData;
     }
     set vqrData(v) {
-        this._vqrData = v
+        this._vqrData = v;
     }
     get xRTPData() {
-        return this._xRTPData
+        return this._xRTPData;
     }
     set xRTPData(v) {
-        this._xRTPData = v
+        this._xRTPData = v;
     }
     get JWTData() {
-        return this._JWTData
+        return this._JWTData;
     }
     set JWTData(v) {
-        this._JWTData = v
+        this._JWTData = v;
     }
     private _interval: any;
 
 
     @ViewChild('matTabGroup', { static: false }) matTabGroup: MatTabGroup;
-    
+
     get data() {
         return this._data;
     }
