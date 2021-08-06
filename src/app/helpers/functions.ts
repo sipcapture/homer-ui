@@ -444,4 +444,14 @@ export class Functions {
         this.saveToFile(data, filename, 'txt/json');
 
     }
+
+}
+export function setStorage(key: string, value: any): void { // saving JSON from object data
+    // log('setStorage >>>', key, value);
+    localStorage.setItem(key, JSON.stringify(value));
+}
+
+export function getStorage(key: string): any {
+    // log('getStorage <<<', key, Functions.JSON_parse(localStorage.getItem(key)));
+    return Functions.JSON_parse(localStorage.getItem(key));
 }

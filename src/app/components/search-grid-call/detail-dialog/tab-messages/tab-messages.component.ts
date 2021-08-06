@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import * as moment from 'moment';
 import { Functions } from '@app/helpers/functions';
 import { TableVirtualScrollDataSource } from 'ng-table-virtual-scroll';
 
@@ -9,6 +8,7 @@ export interface MesagesData {
     timeSeconds: string;
     timeUseconds: string;
     method: string;
+    method_text: string;
     Msg_Size: string;
     srcIp_srcPort: string;
     srcPort: string;
@@ -32,7 +32,8 @@ export class TabMessagesComponent implements OnInit {
     RTCPflag = false;
     @Input() set dataItem(val) {
         this._dataItem = val;
-        this.dataSource = new TableVirtualScrollDataSource(Functions.messageFormatter(this._dataItem.data.messages));
+        const tableData = Functions.messageFormatter(this._dataItem.data.messages);
+        this.dataSource = new TableVirtualScrollDataSource<MesagesData>(tableData);
         this.cdr.detectChanges();
     }
     get dataItem() {
@@ -49,7 +50,7 @@ export class TabMessagesComponent implements OnInit {
         }
         this.initData();
     }
-    
+
     @Input() set qosData(val) {
         if (!val) {
             return;
@@ -81,6 +82,9 @@ export class TabMessagesComponent implements OnInit {
     getMethodColor(method) {
         return Functions.getMethodColor(method);
     }
+    getMethodText(item) {
+        return item.method_text || item.method;
+    }
     ngOnInit() {
         this.initData();
     }
@@ -99,7 +103,20 @@ export class TabMessagesComponent implements OnInit {
                 this.cdr.detectChanges();
             }, 35);
         }
-        this.dataSource = new TableVirtualScrollDataSource(Functions.messageFormatter(this.dataItem.data.messages));
+        const tableData = Functions.messageFormatter(this._dataItem.data.messages);
+
+        tableData.forEach((item) => {
+            const eventName = item.method;
+            const { raw } = item?.item || {};
+            if (!item.sdp && raw?.includes('Content-Type: application/sdp')) {
+                item.sdp = true;
+            }
+            item.method_text = item.sdp ?
+                eventName + ` (SDP)${item.msg_info ? ' ' + item.msg_info : ''}` :
+                eventName;
+        });
+        console.log({ tableData });
+        this.dataSource = new TableVirtualScrollDataSource<MesagesData>(tableData);
         setTimeout(() => {
             this.cdr.detectChanges();
         }, 35);

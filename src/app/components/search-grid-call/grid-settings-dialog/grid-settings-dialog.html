@@ -8,12 +8,10 @@
   <div mat-dialog-content>
     <p>Select settings</p>
     <div>
-      <mat-checkbox class="chack-list"
-        *ngFor="let checkbox of checkboxSizeType"
-        [(ngModel)]="checkbox.selected"
-        (change)="onChangeSizeToFit($event.checked, checkbox.type)"
-      >{{checkbox.title}}</mat-checkbox> 
-    </div>  
+        <mat-radio-group [(ngModel)]="data.agGridSizeControl.selectedType" class='radio-group'>
+            <mat-radio-button [value]='item.type' *ngFor="let item of radioSizeType">{{item.title}}</mat-radio-button>
+        </mat-radio-group>
+      </div>   
   
     <hr />
   

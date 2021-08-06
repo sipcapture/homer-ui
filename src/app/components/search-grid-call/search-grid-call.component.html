@@ -7,19 +7,34 @@
     <input [className]="'regex-filter' + (inContainer ? ' inContainer' : '')" placeholder="Regex Results Filter"
     type="search" [(ngModel)]="filterGridValue" (keyup)="setQuickFilter()">
     <ag-grid-angular 
-*ngIf="loader === false; else Loader"
-[ngStyle]="{
-        'height': inContainer ?
-          (isLokiQuery ? 'calc(100% - 67px)': '100%') :
-          (isLokiQuery ? 'calc(100vh - 112px)' : 'calc(100vh - 45px)'),
-        'width': '100%'
-    }" 
-    class="ag-theme-material" [defaultColDef]="defaultColDef" [gridOptions]="gridOptions" [rowData]="rowData"
-    [columnDefs]="columnDefs" [enableRangeSelection]="true" [rowMultiSelectWithClick]="true" [pagination]="true"
-    (gridReady)="onGridReady($event)" [context]="context" [enableCellTextSelection]="true"
-    [overlayNoRowsTemplate]="noRowsTemplate"
-    (columnMoved)="onColumnMoved($event)" [frameworkComponents]="frameworkComponents"></ag-grid-angular>
-
+        *ngIf="loader === false; else Loader"
+        [ngStyle]="{
+                'height': inContainer ?
+                (isLokiQuery ? 'calc(100% - 67px)': '100%') :
+                (isLokiQuery ? 'calc(100vh - 112px)' : 'calc(100vh - 45px)'),
+                'width': '100%'
+            }" 
+        class="ag-theme-material" 
+        [defaultColDef]="defaultColDef" 
+        [gridOptions]="gridOptions" 
+        [rowData]="rowData"
+        [columnDefs]="columnDefs" 
+        [enableRangeSelection]="true" 
+        [rowMultiSelectWithClick]="true" 
+        [pagination]="true"
+        (gridReady)="onGridReady($event)" 
+        [context]="context" 
+        [enableCellTextSelection]="true"
+        [overlayNoRowsTemplate]="noRowsTemplate"
+        (columnMoved)="onColumnMoved($event)" 
+        [frameworkComponents]="frameworkComponents">
+    </ag-grid-angular>
+    <mat-paginator class="paginator"
+        [length]="totalPages"
+        [pageSize]="agGridSizeControl.pageSize"
+        [pageSizeOptions]="[25, 50, 100, 200, 500]"
+        (page)='paginationControls($event)'>
+    </mat-paginator>
     <div *ngIf="!isLokiQuery && !inContainer" class="search-slider-footer"
     [ngStyle]="{'bottom': !isSearchPanel ? '-20rem': null}">
     <div style="float: right; opacity: 0.7">
@@ -52,10 +67,26 @@
     <ng-template #Loader>
         <div class="lds-container">
             <h3>
-                <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+                <div class="lds-ring">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
             </h3>
         </div>
     </ng-template>
+    <div class="lds-container onlyLoader"
+    *ngIf="onlyLoader === true && loader === false">
+        <h3 style="margin: 0">
+            <div class="lds-ring">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </h3>
+    </div>
 <!-- 
   search slider
 -->
