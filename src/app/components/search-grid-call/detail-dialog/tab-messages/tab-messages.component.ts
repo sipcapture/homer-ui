@@ -115,7 +115,7 @@ export class TabMessagesComponent implements OnInit {
                 eventName + ` (SDP)${item.msg_info ? ' ' + item.msg_info : ''}` :
                 eventName;
         });
-        console.log({ tableData });
+      
         this.dataSource = new TableVirtualScrollDataSource<MesagesData>(tableData);
         setTimeout(() => {
             this.cdr.detectChanges();
