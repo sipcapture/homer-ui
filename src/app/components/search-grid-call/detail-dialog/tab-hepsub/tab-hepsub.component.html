@@ -1,47 +1,23 @@
-<mat-tab-group [selectedIndex]="indexTabPosition" #matTabGroup>
+<mat-tab-group [selectedIndex]="indexTabPosition" [disablePagination]="true" #matTabGroup>
 
 
   <mat-tab *ngIf="isLogs" label="HEP Logs">
     <app-tab-logs [data]="dataLogs"></app-tab-logs>
   </mat-tab>
 
-
-  <mat-tab *ngFor="let item of subTabList" (click)="onTabClick(item.uuid, item.type)" [label]="'HEPSUB:' + item.title">
-
-  
-    <div *ngIf="isDownload" class="divTableCell">
-      <div class="divTable">
-        <div class="divTableBody">
-          <div *ngFor="let item of downloadArray | keyvalue">
-            <div class="divTableRow">
-              <div class="divTableCellLeft">
-                <ngx-json-viewer [json]="jsonDownload[item.key]" [expanded]="true"></ngx-json-viewer>
-              </div>
-              <div class="divTableCellRight">
-                <button mat-raised-button color="primary" (click)="downloadData(item.value)">Download:
-                  {{ item.key }}</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-<div *ngIf="jsonData">
-  <div class="json-display">
-    <ngx-json-viewer [json]="jsonData" [expanded]="false"></ngx-json-viewer>
-
-  </div>
-</div>
-
-
-  
    
-
+  <mat-tab *ngFor="let item of subTabList"
+    [label]="'HEPSUB:' + item.title">
+    
+    <ngx-json-viewer [json]="jsonData" [expanded]="true"></ngx-json-viewer>
   </mat-tab>
 
 
   <mat-tab label="Loki">
-    <app-tab-loki [id]="id" [dataItem]="dataItem"></app-tab-loki>
+    <app-loki-results
+      [id]="id"
+      [dataItem]="dataItem"
+    ></app-loki-results>
   </mat-tab>
 
 

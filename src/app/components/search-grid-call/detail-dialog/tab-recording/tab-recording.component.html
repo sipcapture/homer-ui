@@ -1,0 +1,56 @@
+<div>
+    <div class="audio-data-container header">
+
+        <div> <span>Id: </span></div>
+        <div> <span>Type: </span> </div>
+        <div style="flex: 3;"> <span>Correlation ID: </span></div>
+        <div style="flex: 3;"> <span>Filename: </span></div>
+        <div> <span>Direction: </span></div>
+        <div> <span>Node: </span></div>
+        <div> <span>Liid: </span></div>
+        <div> <span>sid: </span></div>
+
+    </div>
+
+    <mat-accordion multi>
+        <mat-expansion-panel *ngFor="let rec of recordlist">
+            <mat-expansion-panel-header>
+                <mat-panel-description class="audio-data-container">
+                    <div> {{ rec.index }} </div>
+                    <div> {{ rec.type }} </div>
+                    <div style="flex: 3;"> {{ rec.src.correlation_id }} </div>
+                    <div style="flex: 3;"> {{ rec.src.filename }} </div>
+                    <div> {{ rec.src.direction }} </div>
+                    <div> {{ rec.src.node }} </div>
+                    <div> {{ rec.src.liid }} </div>
+                    <div> {{ rec.src.sid }} </div>
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+            <div [hidden]="rec.src.type === 'sip'" [id]="rec.id"></div>
+
+            <mat-action-row>
+                <button [hidden]="rec.src.type === 'sip'" mat-button (click)="play(rec.id)">
+                    <mat-icon>{{rec.isPlay ? 'stop' : 'play_arrow'}}</mat-icon>
+                </button>
+                    <!-- download .mp3 -->
+                <button [hidden]="rec.src.type === 'sip'" mat-button (click)="downloadMP3(rec)">
+                    <mat-icon>get_app</mat-icon>mp3
+                </button>
+
+                    <!-- download .pcap -->
+                <button mat-button (click)="downloadPCAP(rec)">
+                    <mat-icon>get_app</mat-icon>pcap
+                </button>
+
+                <!-- <a [href]="rec.mp3" target="_blank" style="color: black;">
+                    <button mat-button>
+                        <mat-icon>get_app</mat-icon>
+                    </button>
+                </a> -->
+
+            </mat-action-row>
+        </mat-expansion-panel>
+
+    </mat-accordion>
+
+</div>

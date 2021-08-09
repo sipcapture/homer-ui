@@ -1,0 +1,17 @@
+.setting-button-container {
+    display: flex;
+    margin-top: 0px;
+    margin-bottom: 21px;
+  
+    & .setting-btn {
+      height: 35px;
+      background: #749ad622 !important;
+      color: #749ad6;
+      margin-right: 7px;
+  
+      &:disabled,
+      &[disabled] {
+        background: lightgray !important;
+      }
+    }
+  }

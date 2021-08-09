@@ -1,0 +1,14 @@
+<div class="setting-button-container">
+    <button mat-button *ngIf="isAccess?.add" class="setting-btn" (click)="addDialog.emit()">
+        <fa-icon icon="plus-circle"></fa-icon>
+        Add
+    </button>
+    <button mat-button class="setting-btn" *ngIf="isAccess?.import" (click)="importDialog.emit()">
+        <fa-icon icon="upload"></fa-icon>
+        Import
+    </button>
+    <button mat-button class="setting-btn" *ngIf="isAccess?.export" (click)="exportDialog.emit()">
+        <fa-icon icon="download"></fa-icon>
+        Export
+    </button>
+</div>

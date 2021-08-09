@@ -1,0 +1,161 @@
+<mat-toolbar class="title"
+  color="primary">
+  <div>{{ 'preference.interceptions.title' | translate }}</div>
+  <button mat-icon-button
+    (click)="onNoClick()">
+    <fa-icon icon="times"></fa-icon>
+  </button>
+</mat-toolbar>
+
+<strong>{{ 'preference.interceptions.title' | translate }}</strong>
+<div mat-dialog-content
+  id="interceptions">
+  <div>
+    <mat-form-field [style.width.px]="250"
+      style="padding-right: 1rem">
+      <mat-label>{{ 'preference.interceptions.callee' | translate }}</mat-label>
+      <input matInput
+        [(ngModel)]="data.data.search_callee"
+        [formControl]="search_callee"
+        (ngModelChange)="data.data.search_callee = searchChanged($event)"
+        autocomplete="off"
+        [disabled]="!isAdmin">
+    </mat-form-field>
+
+    <mat-form-field [style.width.px]="250"
+      style="padding-right: 1rem">
+      <mat-label>{{ 'preference.interceptions.caller' | translate }}</mat-label>
+      <input matInput
+        [(ngModel)]="data.data.search_caller"
+        [formControl]="search_caller"
+        (ngModelChange)="data.data.search_caller = searchChanged($event)"
+        autocomplete="off"
+        [disabled]="!isAdmin">
+    </mat-form-field>
+
+    <mat-form-field [style.width.px]="250"
+      style="padding-right: 1rem">
+      <mat-label>{{ 'preference.interceptions.ip' | translate }}</mat-label>
+      <input matInput
+        [(ngModel)]="data.data.search_ip"
+        [formControl]="search_ip"
+        (ngModelChange)="data.data.search_ip = searchChanged($event)"
+        autocomplete="off"
+        [disabled]="!isAdmin">
+    </mat-form-field>
+  </div>
+
+  <div>
+
+    <mat-form-field [style.width.px]="250"
+      style="padding-right: 1rem;">
+      <mat-label>{{ 'preference.interceptions.liid' | translate }} </mat-label>
+      <input matInput
+        type="number"
+        min="1"
+        max="512"
+        [formControl]="idControl"
+        [(ngModel)]="data.data.liid"
+        [disabled]="!isAdmin">
+      <mat-error style="color:red;">ID should be in between 1 and 512</mat-error>
+    </mat-form-field>
+
+    <mat-form-field [style.width.px]="250"
+      style="padding-right: 1rem">
+      <mat-label>{{ 'preference.interceptions.partition' | translate }}</mat-label>
+      <input matInput
+        [(ngModel)]="data.data.gid"
+        [formControl]="gid"
+        autocomplete="off"
+        [disabled]="!isAdmin">
+      <mat-error *ngIf="gid?.errors?.required">{{'validators.required' | translate }}</mat-error>
+      <mat-error *ngIf="gid?.errors?.min">{{'validators.minNumber' | translate }} 1</mat-error>
+      <mat-error *ngIf="gid?.errors?.max">{{'validators.maxNumber' | translate }} 100</mat-error>
+      <mat-error *ngIf="gid?.errors?.pattern">{{'validators.patternNumber' | translate }}</mat-error>
+    </mat-form-field>
+    <mat-form-field [style.width.px]="250"
+      style="padding-right: 1rem"
+      hidden>
+      <mat-label>{{ 'preference.interceptions.reference' | translate }}</mat-label>
+      <input matInput
+        [(ngModel)]="data.data.number"
+        [disabled]="!isAdmin">
+    </mat-form-field>
+  </div>
+
+  <div style="display: flex; align-items: center;">
+    <div>
+      <mat-form-field [style.width.px]="250"
+        style="padding-right: 1rem">
+        <input matInput
+          [matDatepicker]="pickerStart"
+          placeholder="Start Time"
+          [ngModel]="data.data.start_date"
+          [min]="setMinDate(data.data.start_date)"
+          (ngModelChange)="data.data.start_date = dateChanged($event)"
+          [disabled]="!isAdmin">
+        <mat-datepicker-toggle matSuffix
+          [for]="pickerStart"></mat-datepicker-toggle>
+        <mat-datepicker [showSeconds]="true"
+          #pickerStart></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field [style.width.px]="250"
+        style="padding-right: 1rem">
+        <input matInput
+          [matDatepicker]="pickerStop"
+          placeholder="Stop Time"
+          [ngModel]="data.data.stop_date"
+          [min]="setMinDate(data.data.start_date)"
+          (ngModelChange)="data.data.stop_date=dateChanged($event)"
+          [disabled]="!isAdmin">
+        <mat-datepicker-toggle matSuffix
+          [for]="pickerStop"></mat-datepicker-toggle>
+        <mat-datepicker [showSeconds]="true"
+          #pickerStop></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+  </div>
+
+  <div style="display: flex;">
+    <div>
+      <mat-form-field [style.width.px]="752"
+        style="padding-right: 1rem; width: 100%;">
+        <mat-label>{{ 'preference.interceptions.description' | translate }}</mat-label>
+        <input matInput
+          [(ngModel)]="data.data.description"
+          [formControl]="description"
+          (ngModelChange)="data.data.description = searchChanged($event)"
+          autocomplete="off"
+          [disabled]="!isAdmin">
+        <mat-error *ngIf="description?.errors?.required">{{'validators.required' | translate }}</mat-error>
+        <mat-error *ngIf="description?.errors?.minlength">
+          {{ description?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+        </mat-error>
+        <mat-error *ngIf="description?.errors?.maxlength">
+          {{ description?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+        </mat-error>
+
+      </mat-form-field>
+    </div>
+  </div>
+  <div>
+    <mat-checkbox [(ngModel)]="data.data.status"
+      [disabled]="!isAdmin">Active</mat-checkbox>
+  </div>
+</div>
+
+<div mat-dialog-actions
+  style="float: right; margin-bottom: 0rem">
+  <button mat-raised-button
+    (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
+  <button mat-raised-button
+    color="primary"
+    (click)="onSubmit()"
+    cdkFocusInitial>
+    {{'LINK.buttons.save' | translate}}
+  </button>
+</div>

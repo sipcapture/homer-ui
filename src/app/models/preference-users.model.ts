@@ -7,5 +7,7 @@ export interface PreferenceUsers {
     lastname: string;
     department: string;
     usergroup: string;
-    guid?: string;
+    guid: string;
+    version?: number;
+    params?: any;
 }

@@ -1,31 +1,78 @@
+<!-- adds new widget -->
 <mat-toolbar class="title" color="primary">
-  <div>Add Widget</div>
+  <div>{{ 'dashboard.addWidgetDialog.title' | translate }}</div>
   <button mat-icon-button (click)="onNoClick()">
-    <mat-icon>close</mat-icon>
+    <fa-icon icon="times"></fa-icon>
   </button>
 </mat-toolbar>
   
-<div mat-dialog-content style="text-align: center">
-  <mat-tab-group>
-    <mat-tab *ngFor="let category of objectKeys(widgets)" [label]="category"> 
-      <mat-grid-list cols="2" rowHeight="5:1">
-        <mat-grid-tile *ngFor="let wData of widgets[category]" rowspan="3">
+<div mat-dialog-content style="text-align: center" >
+  <mat-tab-group *ngIf="objectKeys(widgets).length > 0" [selectedIndex]="2">
+    <mat-tab *ngFor="let category of objectKeys(widgets); trackBy: identify" [label]="category"> 
+      <mat-grid-list cols="2" rowHeight="5:1" *ngIf="widgets[category].length">
+
+        <mat-grid-tile *ngFor="let wData of widgets[category]; trackBy: identify" rowspan="3">
+
           <div [ngStyle]="{'color': wData.enable ? '' : '#999'}">
-            <h3>{{wData.title}}</h3>
-            <p>{{wData.description}}</p>
+
+            <h3>{{( 'dashboard.addWidgetTitle.' + ( wData.type !== 'custom' 
+              ? wData.indexName : wData.title) | translate )
+              || wData.title }}</h3>
+
+            <p>{{(('dashboard.addWidgetText.' + ( wData.type !== 'custom' 
+              ? wData.indexName : wData.title)) | translate ) 
+              || wData.description }}</p>
+
             <button mat-raised-button color="primary"
               [mat-dialog-close]="{
                 indexName: wData.indexName,
                 strongIndex: wData.strongIndex,
-                title: wData.title
+                title: wData.title,
+                data: wData
               }"
               [disabled]="!wData.enable"
               class="add-widget-button"
               cdkFocusInitial
-              ><mat-icon>add</mat-icon>add</button>
+              ><fa-icon icon="plus"></fa-icon> add</button>
           </div>
+
         </mat-grid-tile>
       </mat-grid-list>
+     
+<mat-tab-group *ngIf="!widgets[category].length" [selectedIndex]="subCatActive">
+  <mat-tab *ngFor="let tab of objectKeys(widgets[category])" [label]="tab">
+    <mat-grid-list cols="2" rowHeight="5:1" >
+    <mat-grid-tile *ngFor="let wData of widgets[category][tab]; trackBy: identify" rowspan="3">
+
+      <div *ngIf="wData" [ngStyle]="{'color': wData.enable ? '' : '#999'}">
+
+        <h3>{{( 'dashboard.addWidgetTitle.' + ( wData.type !== 'custom' 
+          ? wData.indexName : wData.title) | translate )
+          ||(wData.title)}}</h3>
+
+        <p>{{(('dashboard.addWidgetText.' +( wData.type !== 'custom' 
+          ? wData.indexName : wData.title)) | translate) 
+          || wData.description}}</p>
+          
+        <button mat-raised-button color="primary"
+          [mat-dialog-close]="{
+            indexName: wData.indexName,
+            strongIndex: wData.strongIndex,
+            title: wData.title,
+            data: wData
+          }"
+          [disabled]="!wData.enable"
+          class="add-widget-button"
+          cdkFocusInitial
+          ><fa-icon icon="plus"></fa-icon> add</button>
+      </div>
+
+    </mat-grid-tile>
+  </mat-grid-list>
+  </mat-tab>
+</mat-tab-group>
+
+      
     </mat-tab>
   </mat-tab-group>
 </div>

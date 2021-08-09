@@ -1,8 +1,8 @@
 <div class="widget-container">
     <app-search-grid-call
         [id]="id"
-        [inContainer]="true"
+        [source]="source"
+        [isAutoRefrasher]="isAutoRefrasher"
         (dataReady)="onDataReady()"
-    ></app-search-grid-call>
+    #searchGridCall></app-search-grid-call>
 </div>
-

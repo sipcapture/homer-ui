@@ -1,13 +1,20 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { ErrorHandler, Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
 import { environment } from '@environments/environment';
+import { catchError } from 'rxjs/operators';
+
+export interface ResyncData {
+    node_src:string;
+    node_dst:string;
+    tables:Array<string>
+}
 
 @Injectable({ providedIn: 'root' })
 
 export class StatisticService {
     private url = `${environment.apiUrl}/statistic`;
-
+    private dbUrl = `${environment.apiUrl}/configdb`;
     constructor(private _http: HttpClient) {}
 
     // Statistic data
@@ -39,6 +46,36 @@ export class StatisticService {
     getStatisticTags(data: any): Observable<any> {
         return this._http.post<any>(`${this.url}/_tags`, data);
     }
+    // database statistic and latency info
+    getDbStats() {
+        return this._http.get(`${this.url}/database/info`);
+    }
+    getConfigStats() {
+        return this._http.get(`${this.url}/configdb/info`).pipe(catchError(this.errorHandler));
+    }
+    resync(data: any): Observable<any> {
+        return this._http.post<any>(`${this.dbUrl}/tables/resync`, data);
+    }
+
+    /** error handling method */
+    getTableList(): Observable<any> {
+
+        return this._http.get<any>(`${this.dbUrl}/tables/list`)
+    }
+
+    errorHandler(error: HttpErrorResponse) {
+        if (error.error instanceof ErrorEvent) {
+            console.log('An error ocurred: ', error.error.message);
+        } else {
+            console.log(
+                `API returned code ${error.status}, body was: ${error.error}`
+            );
+        }
+        return throwError(
+            `Something bad happened, please try again later`
+        );
+    }
+
 
 
 }

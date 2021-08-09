@@ -1,0 +1,11 @@
+<ng-container [matColumnDef]='column'>
+    <th mat-header-cell style="text-align: center; width:62px;" *matHeaderCellDef>
+        {{'LINK.data' | translate}}
+    </th>
+    <td mat-cell *matCellDef="let cell" style="text-align:center">
+        <button *ngIf="cell.item" class="dataBtn" [matTooltip]="('LINK.view' | translate)"
+            (click)="settingDialog.emit({item:cell.item, type:'data-preview'})">
+            <fa-icon icon="search-plus"></fa-icon>
+        </button>
+    </td>
+</ng-container>

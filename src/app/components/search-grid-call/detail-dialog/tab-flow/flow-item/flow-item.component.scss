@@ -22,15 +22,13 @@
     .item-flow-packet {
         position: relative;
         width: 150px;
-
-        //   transition: all 0.3s ease;
         &:hover {
             background-color: rgba(0, 0, 0, 0.2);
             border-radius: 4px;
             cursor: pointer;
         }
 
-        .redial-arrow {
+        .radial-arrow {
             position: relative;
             margin-left: 0;
             width: 25px;
@@ -39,47 +37,52 @@
             border-left: 0px;
             border-top-right-radius: 5rem;
             border-bottom-right-radius: 5rem;
+&::before {
+    content: "";
+    border: 7px solid transparent;
+    border-right: 14px solid;
+    position: absolute;
+    left: -9px;
+    top: 20px;
+            }
+        }
+.radial-arrow-end {
+    position: relative;
+    margin-left: auto;
+    margin-right: 0;
+    width: 25px;
+    height: 30px;
+
+    border: 2px solid;
+    border-right: 0px;
+    border-top-left-radius: 5rem;
+    border-bottom-left-radius: 5rem;
+
+            &::before {
+                content: "";
+                border: 7px solid transparent;
+                border-left: 14px solid;
+                position: absolute;
+                right: -9px;
+                top: 20px;
+            }
         }
 
-        .redial-arrow.rtp {
+        .radial-arrow-end.rtp,
+        .radial-arrow.rtp {
             border-style: dotted;
         }
 
-        .redial-arrow::before {
-            content: "";
-            border: 7px solid transparent;
-            border-right: 14px solid;
-            position: absolute;
-            left: -9px;
-            top: 20px;
-        }
 
         .blinkLamp {
             display: inline-block;
             padding: 6px;
             margin: 0;
             border-radius: 1rem;
-            box-shadow: inset -2px -2px 3px -2px #000;
-
-            &.red {
-                background-color: red;
-            }
-
-            &.gray {
-                background-color: gray;
-            }
-
-            &.orange {
-                background-color: orange;
-            }
-
-            &.green {
-                background-color: #00e600;
-            }
         }
 
         .call_text {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
             color: #24465f;
             padding: 0 4px;
@@ -91,8 +94,7 @@
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
-            max-width: 34ch;
-            // transition: height 0.3s ease;
+            // max-width: 34ch;
             padding: 0 4px;
 
             &.right {
@@ -130,12 +132,10 @@
             font-size: 12px;
             color: #7e7e7e !important;
             overflow: hidden;
-            // transition: max-height 0.3s ease;
             padding: 0 4px;
         }
 
         .arrow {
-            // border-bottom: 2px solid;
             padding-right: 3px;
             padding-left: 3px;
             position: relative;

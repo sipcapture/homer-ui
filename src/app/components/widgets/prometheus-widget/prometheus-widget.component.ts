@@ -1,5 +1,5 @@
 import { DateTimeRangeService, DateTimeTick, Timestamp } from '@app/services/data-time-range.service';
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { SettingPrometheusWidgetComponent } from './setting-prometheus-widget.component';
 import { PrometheusService } from '@app/services/prometheus.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -9,11 +9,12 @@ import { IWidget } from '../IWidget';
 import { Subscription } from 'rxjs';
 import { Label } from 'ng2-charts';
 import * as moment from 'moment';
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
     selector: 'app-prometheus-widget',
     templateUrl: './prometheus-widget.component.html',
-    styleUrls: ['./prometheus-widget.component.scss']
+    styleUrls: ['./prometheus-widget.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 @Widget({
     title: 'Prometheus',
@@ -23,12 +24,13 @@ import * as moment from 'moment';
     advancedName: 'promserver',
     className: 'PrometheusWidgetComponent',
     minHeight: 300,
-    minWidth: 300
+    minWidth: 300,
+
 })
 export class PrometheusWidgetComponent implements IWidget {
-    @Input() id: any;
+    @Input() id: string;
     @Input() config: any;
-    @Output() changeSettings = new EventEmitter<any> ();
+    @Output() changeSettings = new EventEmitter<any>();
 
     _isLoaded = false;
     public chartOptions: any = {
@@ -45,9 +47,10 @@ export class PrometheusWidgetComponent implements IWidget {
                     beginAtZero: true
                 }
             }]
-        }
+        },
+        legend: { position: 'bottom' }
     };
-    timeRange: any;
+    timeRange: Timestamp;
     public chartLabels: Label[] = [];
     public chartType: ChartType = 'line';
     public chartLegend = true;
@@ -63,13 +66,17 @@ export class PrometheusWidgetComponent implements IWidget {
     noChartData = true;
     multiDataArr: Array<any> = [];
     isConfig = true;
-    private subscription: any;
+    private subscription: Subscription;
 
     constructor(
         public dialog: MatDialog,
         private _dtrs: DateTimeRangeService,
-        private _ps: PrometheusService,
-    ) { }
+        private _ps: PrometheusService, 
+        public translateService: TranslateService
+    ) {
+        translateService.addLangs(['en'])
+        translateService.setDefaultLang('en')
+    }
 
     ngOnInit() {
         WidgetArrayInstance[this.id] = this as IWidget;
@@ -87,11 +94,13 @@ export class PrometheusWidgetComponent implements IWidget {
                         prometheusQuries: ''
                     }]
                 },
-                panel: { queries: [{
-                    name: 'A1',
-                    type: { name: 'prometheus', alias: 'prometheus' },
-                    value: 'query'
-                }]}
+                panel: {
+                    queries: [{
+                        name: 'A1',
+                        type: { name: 'prometheus', alias: 'prometheus' },
+                        value: 'query'
+                    }]
+                }
             };
             // this.changeSettings.emit({
             //     config: this.config,
@@ -104,7 +113,7 @@ export class PrometheusWidgetComponent implements IWidget {
             this.update(this.config.chart.type.value);
         });
     }
-    private update (chartType: any) {
+    private update(chartType: any) {
 
         if (!this.config) {
             return;
@@ -117,7 +126,7 @@ export class PrometheusWidgetComponent implements IWidget {
             this.noChartData = false;
 
             try {
-                let isFill: any;
+                let isFill;
                 this.chartData = [];
                 this.chartLabels = [];
 
@@ -130,18 +139,18 @@ export class PrometheusWidgetComponent implements IWidget {
                     this.chartOptions.scales.yAxes[0].stacked = false;
                 }
 
-                data.forEach((dataItem: any) => {
+                data.forEach(dataItem => {
                     if (!dataItem.data.result || dataItem.data.result.length === 0) {
                         this.noChartData = this.noChartData || false;
                         return;
                     }
-                    this.chartLabels = dataItem.data.result[0].values.map((i: any) => moment(i[0]).format('HH:mm:ss'));
+                    this.chartLabels = dataItem.data.result[0].values.map(i => moment(i[0]).format('HH:mm:ss'));
 
-                    dataItem.data.result.forEach((_result: any) => {
+                    dataItem.data.result.forEach(_result => {
                         this.chartData.push({
                             fill: isFill,
                             label: _result.metric.__name__,
-                            data: _result.values.map((i: any) => i[1] * 1)
+                            data: _result.values.map(i => i[1] * 1)
                         });
                         this.noChartData = this.noChartData || true;
                     });
@@ -162,11 +171,11 @@ export class PrometheusWidgetComponent implements IWidget {
 
 
     }
-    private querybuilder (config: any) { /** depricated, need use {SearchService} */
+    private querybuilder(config: any) { /** depricated, need use {SearchService} */
         const dataquery: Array<any> = config.dataquery.data;
         let formattedQuery: Array<any> = [];
         dataquery.forEach(item => {
-            formattedQuery = formattedQuery.concat( item.prometheusLabels.map((i: any) => i + encodeURIComponent(item.prometheusQuries) ) );
+            formattedQuery = formattedQuery.concat(item.prometheusLabels.map(i => i + encodeURIComponent(item.prometheusQuries)));
         });
         formattedQuery = formattedQuery[0] instanceof Array ? formattedQuery[0] : formattedQuery;
 
@@ -184,7 +193,7 @@ export class PrometheusWidgetComponent implements IWidget {
     openDialog(): void {
         const dialogRef = this.dialog.open(SettingPrometheusWidgetComponent, {
             width: '800px',
-            data: this.config || {empty: true}
+            data: this.config || { empty: true }
         });
 
         const dialogRefSubscription = dialogRef.afterClosed().subscribe(result => {
@@ -193,13 +202,13 @@ export class PrometheusWidgetComponent implements IWidget {
                 this.config.chart.type.value = result.chartType;
                 this.config.format.value = result.format;
 
-                this.config.dataquery.data = result.dataSource.map((item: any) => ({
+                this.config.dataquery.data = result.dataSource.map(item => ({
                     sum: item.detail.sum,
                     prometheusLabels: item.detail.prometheusLabels,
                     prometheusQuries: item.detail.prometheusQuries,
                 }));
 
-                this.config.panel.queries = result.dataSource.map((item: any) => ({
+                this.config.panel.queries = result.dataSource.map(item => ({
                     name: item.id,
                     type: {
                         name: item.panelDataSource,
@@ -218,20 +227,20 @@ export class PrometheusWidgetComponent implements IWidget {
         });
     }
 
-    yAxisFormatter (label: any) {
+    yAxisFormatter(label) {
         switch (this.config.format.value) {
             case 'short':
                 return ((num) => {
-                    const f = (i: any) => Math.pow(1024, i);
+                    const f = i => Math.pow(1024, i);
                     let n = 4;
-                    while (n-- && !(f(n) < num)) {}
+                    while (n-- && !(f(n) < num)) { }
                     return (n === 0 ? num : Math.round(num / f(n)) + ('kmb'.split('')[n - 1])) || num.toFixed(2);
                 })(label);
             case 'bytes':
                 return ((num) => {
-                    const f = (i: any) => Math.pow(1024, i);
+                    const f = i => Math.pow(1024, i);
                     let n = 6;
-                    while (n-- && !(f(n) < num)) {}
+                    while (n-- && !(f(n) < num)) { }
                     return ((n === 0 ? num : Math.round(num / f(n)) + ('KMGTP'.split('')[n - 1])) || num.toFixed(0)) + 'b';
                 })(label);
 
@@ -239,7 +248,7 @@ export class PrometheusWidgetComponent implements IWidget {
         return label;
     }
 
-    ngOnDestroy () {
+    ngOnDestroy() {
         this.subscription.unsubscribe();
     }
 }

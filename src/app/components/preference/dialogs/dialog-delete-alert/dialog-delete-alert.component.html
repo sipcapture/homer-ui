@@ -1,10 +1,16 @@
 <div mat-dialog-content style="text-align: center">
-  <mat-icon class="alarm">error_outline</mat-icon>
-  <h1 mat-dialog-title>Are you sure?</h1>
-  <p>Your will not be able to recover this!</p>
-</div>
+  <mat-icon [ngClass]="'alarm-' + message">error_outline</mat-icon>
+  <h2 style="text-align: center;text-transform:capitalize">
+  {{ 'preference.deleteDialog.title' | translate: {
+      'message': message,
+      'page': page
+  }
 
+}}</h2>
+  <h1 mat-dialog-title>{{'preference.deleteDialog.warningTitle' | translate }}</h1>
+  <p>{{ 'preference.deleteDialog.warning' | translate }}</p>
+</div>
 <div mat-dialog-actions style="display: flex; margin-bottom: 0; justify-content: space-between;">
-  <button mat-raised-button (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button color="accent" [mat-dialog-close]="true" cdkFocusInitial>Yes, delete it!</button>
+  <button mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
+  <button mat-raised-button [ngClass]="message" (click)="onAlert()" [mat-dialog-close]="true" cdkFocusInitial>Yes, {{message}} it!</button>
 </div>

@@ -13,7 +13,7 @@ import { LocaleService } from './locale.service';
 import { TimeZonePipe } from './timezone.pipe';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { HepicMaterialModule } from '@app/app.material-module';
+import { HomerMaterialModule } from '@app/app.material-module';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
@@ -32,7 +32,7 @@ import { TranslateModule } from '@ngx-translate/core';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MatTooltipModule,
-    HepicMaterialModule,
+    HomerMaterialModule,
     TranslateModule
   ],
   providers: [],

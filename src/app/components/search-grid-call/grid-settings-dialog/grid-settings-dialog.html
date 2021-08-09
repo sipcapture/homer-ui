@@ -1,32 +1,29 @@
-
 <mat-toolbar class="title" color="primary">
-    <div>Grid settings</div>
-    <button mat-icon-button (click)="onNoClick()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </mat-toolbar>
-  <div mat-dialog-content>
-    <p>Select settings</p>
-    <div>
-      <mat-checkbox class="chack-list"
-        *ngFor="let checkbox of checkboxSizeType"
-        [(ngModel)]="checkbox.selected"
-        (change)="onChangeSizeToFit($event.checked, checkbox.type)"
-      >{{checkbox.title}}</mat-checkbox> 
-    </div>  
-  
-    <hr />
-  
-    <app-drag-drop-list *ngIf="apiColumn.getAllColumns() !== 'undefined' && this.apiColumn.getAllColumns() !== null"
-      [list]="allColumnIds"
-      (order)="onUpdateProto($event)"
-    ></app-drag-drop-list>
-     <div *ngIf="apiColumn.getAllColumns() === 'undefined' || this.apiColumn.getAllColumns() === null">
-        Please make a search to access settings
-     </div>
-  </div>
-  
-  <div mat-dialog-actions style="float: right; margin-bottom: 0rem;"> 
-    <button  mat-raised-button (click)="onNoClick()">Cancel</button>
-    <button mat-raised-button color=primary [mat-dialog-close]="data" cdkFocusInitial [disabled]="apiColumn.getAllColumns() === 'undefined' || this.apiColumn.getAllColumns() === null">Ok</button>
-  </div>
+  <div>Grid settings</div>
+  <button mat-icon-button (click)="onNoClick()">
+    <fa-icon icon="times"></fa-icon>
+  </button>
+</mat-toolbar>
+<div mat-dialog-content>
+  <p>Select settings</p>
+  <div>
+    <mat-radio-group [(ngModel)]="data.agGridSizeControl.selectedType" class='radio-group'>
+        <mat-radio-button [value]='item.type' *ngFor="let item of radioSizeType">{{item.title}}</mat-radio-button>
+    </mat-radio-group>
+  </div>  
+
+  <hr />
+
+  <app-drag-drop-list *ngIf="apiColumn.getAllColumns() !== 'undefined' && this.apiColumn.getAllColumns() !== null"
+    [list]="allColumnIds"
+    (order)="onUpdateProto($event)"
+  ></app-drag-drop-list>
+   <div *ngIf="apiColumn.getAllColumns() === 'undefined' || this.apiColumn.getAllColumns() === null">
+      Please make a search to access settings
+   </div>
+</div>
+
+<div mat-dialog-actions style="float: right; margin-bottom: 0rem;"> 
+  <!-- <button  mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button> -->
+  <button mat-raised-button color=primary [mat-dialog-close]="data" cdkFocusInitial [disabled]="apiColumn.getAllColumns() === 'undefined' || this.apiColumn.getAllColumns() === null">{{'LINK.buttons.save' | translate}}</button>
+</div>

@@ -1,18 +1,18 @@
 <mat-toolbar class="title" color="primary">
-  <div>Settings</div>
+  <div>{{'LINK.settings' | translate}}</div>
   <button mat-icon-button (click)="onNoClick()">
-    <mat-icon>close</mat-icon>
+    <fa-icon icon="times"></fa-icon>
   </button>
 </mat-toolbar>
 <div mat-dialog-content>
   <mat-form-field>
-    <mat-label>Title</mat-label>
+    <mat-label>{{'LINK.title' | translate}}</mat-label>
     <input matInput [(ngModel)]="data.title">
   </mat-form-field>
 </div>
 <div mat-dialog-content>
   <mat-form-field>
-    <mat-label>Timezone</mat-label>
+    <mat-label>{{'widgets.clock.settings.timezone' | translate}}</mat-label>
     <mat-select [(value)]="data.desc">
       <mat-option *ngFor="let timeZone of arrayTimeZones" [value]="timeZone" (click)="onSelectTimeZone(timeZone)">
         {{timeZone}}
@@ -22,7 +22,7 @@
 </div>
 <div mat-dialog-content>
   <mat-form-field>
-    <mat-label>Clock type</mat-label>
+    <mat-label>{{'widgets.clock.settings.clockType' | translate}}</mat-label>
     <mat-select [(value)]="data.showAnalog">
       <mat-option *ngFor="let clockType of arrayClockType" [value]="clockType" (click)="onChange">
         {{clockType}}
@@ -32,18 +32,18 @@
 </div>
 <div mat-dialog-content>
   <mat-form-field>
-    <mat-label>Time font size</mat-label>
-    <input type="number" autocomplete="off" matInput [(ngModel)]="data.fontSizeClock">
+    <mat-label>{{'widgets.clock.settings.timeFontSize' | translate}}</mat-label>
+    <input type="number" autocomplete="off" [min]="minSize" [max]="maxSize" matInput [ngModel]="data.fontSizeClock" (ngModelChange)="data.fontSizeClock = validateValue($event)">
   </mat-form-field>
 </div>
 <div mat-dialog-content>
   <mat-form-field>
-    <mat-label>Date font size</mat-label>
-    <input type="number" autocomplete="off" matInput [(ngModel)]="data.fontSizeDate">
+    <mat-label>{{'widgets.clock.settings.dateFontSize' | translate}}</mat-label>
+    <input type="number" autocomplete="off" [min]="minSize" [max]="maxSize" matInput [ngModel]="data.fontSizeDate" (ngModelChange)="data.fontSizeDate = validateValue($event)">
   </mat-form-field>
 </div>
 <mat-checkbox [(ngModel)]="data.showDate" labelPosition="before" (click)="onChange()">Show Date</mat-checkbox>
 <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
-  <button mat-raised-button (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+  <button mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>{{'LINK.buttons.save' | translate}}</button>
 </div>

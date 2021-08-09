@@ -16,10 +16,6 @@ export enum SideEnum {
     right = 'right'
 }
 
-export interface ArrOfZones {
-  [key: string]: string[]
-}
-
 @Component({
     selector: 'ngx-daterangepicker-material',
     styleUrls: ['./daterangepicker.component.scss'],
@@ -43,7 +39,7 @@ export class DaterangepickerComponent implements OnInit {
     timepickerTimezone = moment.tz.guess(true);
     timepickerListZones = moment.tz.names();
     daterangepicker: { start: FormControl, end: FormControl } = { start: new FormControl(), end: new FormControl() };
-    parsedTimeZones: ArrOfZones;
+    parsedTimeZones: any;
 
     public form: FormGroup;
 
@@ -347,7 +343,8 @@ export class DaterangepickerComponent implements OnInit {
                 listTimeZones['ETC'].push(timeZone);
             }
         });
-      this.parsedTimeZones = listTimeZones;
+        this.parsedTimeZones = listTimeZones;
+
     }
 
     /** Hour */
@@ -398,7 +395,7 @@ export class DaterangepickerComponent implements OnInit {
 
     /**
     * Format input
-    * @param input
+    * @param input 
     */
     public formatInput(input: HTMLInputElement) {
         input.value = input.value.replace(this.NUMERIC_REGEX, '');
@@ -442,7 +439,7 @@ export class DaterangepickerComponent implements OnInit {
 
     /**
     * Get next value by property
-    * @param prop
+    * @param prop 
     * @param up
    */
     private _getNextValueByProp(prop: string, elem: string, up?: boolean): number {

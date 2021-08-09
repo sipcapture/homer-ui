@@ -1,30 +1,17 @@
 <mat-toolbar class="title" color="primary">
-  <div>Settings</div>
+  <div>{{'LINK.settings' | translate}}</div>
   <button mat-icon-button (click)="onNoClick()">
-    <mat-icon>close</mat-icon>
+    <fa-icon icon="times"></fa-icon>
   </button>
 </mat-toolbar>
 
 <div mat-dialog-content>
   <mat-form-field>
-    <mat-label>Title</mat-label>
-    <input matInput [(ngModel)]="data.title">
+    <mat-label>{{'LINK.title' | translate}}</mat-label>
+    <input matInput [(ngModel)]="data.title" (ngModelChange)='validate($event)'>
   </mat-form-field>
 </div>
-
-<div mat-dialog-content>
-  <mat-form-field>
-    <mat-label>Sort type</mat-label>
-    <mat-select [(value)]="data.sortType">
-      <mat-option [value]="'SUM'">SUM</mat-option>
-      <mat-option [value]="'COUNT'">COUNT</mat-option>
-      <mat-option [value]="'MIN'">MIN</mat-option>
-      <mat-option [value]="'MAX'">MAX</mat-option>
-    </mat-select>
-  </mat-form-field>
-</div>
-
 <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
-  <button mat-raised-button (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+  <button mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial [disabled]='isInvalid'>{{'LINK.buttons.save' | translate}}</button>
 </div>

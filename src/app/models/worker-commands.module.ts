@@ -1,0 +1,13 @@
+export enum WorkerCommands {
+    // transaction service / parsing transaction
+    FLOW_PARSING,
+    MEDIA_REPORT_PARSING,
+    TRANSACTION_SERVICE_TRNS,
+    TRANSACTION_SERVICE_DTMF,
+    TRANSACTION_SERVICE_QOS,
+    TRANSACTION_SERVICE_LOG,
+    TRANSACTION_SERVICE_FULL,
+    // clickhouse chart widget
+    CLICKHOUSE_PARSE_DATA,
+    CLICKHOUSE_PREPARE_RENDER_DATA
+}

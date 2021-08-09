@@ -1,80 +1,175 @@
-<app-modal-resizable [title]="'Call-ID: ' + titleId" [headerColor]="headerColor" (close)="onClose()"
-    [mouseEventData]="mouseEventData" [width]="1400" [height]="800" [minWidth]="600" [minHeight]="400"
-    (browserWindow)="onBrowserWindow($event)">
+<app-modal-resizable [title]="titleName + ': ' + titleId"
+    [isNonWindow]="!isWindow"
+    [isOutsideButton]="true"
+    [headerColor]="headerColor"
+    (close)="onClose()"
+    [mouseEventData]="mouseEventData"
+    [width]="1400"
+    [height]="600"
+    [minWidth]="600"
+    [minHeight]="400"
+    [sharedUrl]="'/transaction/' + sharedGUID"
+    [objectData]="objectData"
+    (browserWindow)="onBrowserWindow($event)"
+>
+    <tooltip [isForPopup]="true"></tooltip>
+    <app-loading-circle *ngIf="!_isLoaded || exportAsPNG || showLoader"></app-loading-circle>
+    <ng-template #noDataInDatabase>
+        <h1 *ngIf="_isLoaded"
+            style="text-align: center; padding: 8rem; color: #aaa;">
+            No data in Database
+        </h1>
+    </ng-template>
 
-    <div *ngIf="!_isLoaded || exportAsPNG" class="loading">
-        <mat-spinner></mat-spinner>
-    </div>
-    <button mat-icon-button class="button-icon-right-top" (click)="doOpenFilter()"
-        [ngStyle]="{'display': (activeTab <= 1) ? 'block' : 'none'}">
-        <mat-icon>filter_list</mat-icon>
-    </button>
-    <!-- filter -->
-    <div *ngIf="activeTab <= 1 && isFilterOpened" style="height: calc(100% - 75px);overflow-x: auto;"
-        class="button-icon-right-top filter-container" #filterContainer>
-        <mat-slide-toggle style="width: 200px;font-size: .8em;" color="warn" [(ngModel)]="isSimplify"
-            (click)="doFilterMessages()">
-            Extended Format
-        </mat-slide-toggle>
-        <br *ngIf="activeTab !== 0">
+    <ng-container *ngIf="_isLoaded && sipDataItem?.data?.data?.messages?.length > 0; else noDataInDatabase">
+        <app-transaction-graph-settings [options]='graphSettings' (optionsChanged)='updateGraphSettings($event)' [hidden]='activeTab !== graphId'>
+        </app-transaction-graph-settings>
+        <app-transaction-info [hidden]="!isFilterIcon()"
+            [dataItem]='sipDataItem'
+            [type]='tabStringIndex'>
+        </app-transaction-info>
+        <app-filter [hidden]="!isFilterIcon()"
+            [dataItem]="sipDataItem"
+            [type]="tabStringIndex">
+        </app-filter>
 
-        <mat-radio-group *ngIf="activeTab !== 0" [(ngModel)]='combineType' class="filter-radio-group"
-            (change)='doFilterMessages()'>
-            <mat-radio-button color="warn" class="filter-radio-button" *ngFor="let type of listCombineTypes | keyvalue"
-                [value]="type.key">
-                {{type.value}}
-            </mat-radio-button>
-        </mat-radio-group>
+        <!-- animationDuration="0ms" -->
 
-        <div class="filter-label">PayloadType:</div>
-        <mat-checkbox color="warn" style="font-size: .8em;" *ngFor="let checkboxItem of checkboxListFilterPayloadType"
-            class="example-margin" (click)="doFilterMessages()" [(ngModel)]="checkboxItem.selected">
-            {{ checkboxItem.title }}</mat-checkbox>
+        <mat-tab-group class="transaction-mat-tab-wrapper"
+            [disablePagination]="true"
+            (selectedIndexChange)="selectTab($event); (activeTab === 6 || activeTab === 5) && resizeMap()"
+            (selectedTabChange)="onSelectedTabChange($event)"
+            [selectedIndex]="this.tabIndexByDefault"
+            style="height: 100%;">
+            <mat-tab *ngFor="let name of getTabs"
+                [label]="name"
+                [ngSwitch]="name"></mat-tab>
+        </mat-tab-group>
 
-        <div class="filter-label">CallId:</div>
-        <div style="display: flex; flex-direction: column; ">
-            <mat-checkbox color="warn" style="font-size: .8em;" *ngFor="let checkboxItem of checkboxListFilterCallId"
-                class="example-margin" (click)="doFilterMessages()" [(ngModel)]="checkboxItem.selected">
-                {{ checkboxItem.title }}</mat-checkbox>
-        </div>
-    </div>
-    <mat-tab-group [animationDuration]="0" (selectedIndexChange)="selectedIndexChange($event)"
-        [selectedIndex]="this.tabIndexByDefault" *ngIf="_isLoaded" style="height: 100%;">
+        <div [ngSwitch]="tabStringIndex"
+            class="tab-content-container">
+            <div class="tab-content-container-wrapper"
+                [style.overflow-y]="tabStringIndex !== 'Flow' && tabStringIndex !== 'Media Reports' ? 'auto': 'hidden'"
+                [style.margin-right.px]="tabStringIndex === 'Flow' ? 16 : 0">
+                <!-- wrapper  -->
+                <ng-template ngSwitchCase="Webshark">
+                    <app-webshark
+                        [sipDataItem]="sipDataItem"
+                        (ready)="showLoader=false"
+                        (dblclick)="openMessage.emit($event)">
+                    ></app-webshark>
+                </ng-template>
+                <ng-template ngSwitchCase="Message">
+                    <app-tab-messages [dataItem]="sipDataItem"
+                        (ready)="showLoader=false">
+                    </app-tab-messages>
+                </ng-template>
+                <ng-template ngSwitchCase="Flow">
+                    <app-tab-flow
+                        [callid]="titleId"
+                        (ready)="showLoader=false"
+                        [dataItem]="sipDataItem"></app-tab-flow>
+                </ng-template>
+                <ng-template ngSwitchCase="Timeline">
+                    <app-tab-timeline [dataItem]="sipDataItem"
+                        (ready)="showLoader=false">
+                    </app-tab-timeline>
+                </ng-template>
+                <ng-template ngSwitchCase="Session Info">
+                    <app-tab-callinfo [dataItem]="sipDataItem"
+                        (ready)="showLoader=false"></app-tab-callinfo>
+                </ng-template>
+                <ng-template ngSwitchCase="Media Reports">
+                    <app-tab-media-reports [dataItem]="sipDataItem"
+                        (filterState)="isFilterOnMediaReport = $event"
+                        (ready)="showLoader=false">
+                    </app-tab-media-reports>
+                </ng-template>
+                <ng-template ngSwitchCase="Graph">
+                    <app-tab-graph [dataItem]="sipDataItem" [settings]='graphSettings'
+                        (ready)="showLoader=false; graphSettings=$event"></app-tab-graph>
+                </ng-template>
+                <ng-template ngSwitchCase="DTMF">
+                    <app-tab-dtmf [dataItem]="sipDataItem"
+                        (ready)="showLoader=false"></app-tab-dtmf>
+                </ng-template>
+                <ng-template ngSwitchCase="Geo">
+                    <app-tab-geo [dataItem]="sipDataItem"
+                        (ready)="showLoader=false"></app-tab-geo>
+                </ng-template>
+                <!-- Recording -->
+                <ng-template ngSwitchCase="Recording">
+                    <app-tab-recording [dataItem]="sipDataItem"
+                        (ready)="showLoader=false"></app-tab-recording>
+                </ng-template>
 
-        <mat-tab *ngIf="_isLoaded && tabs.messages" label="Messages">
-            <app-tab-messages *ngIf="activeTab === 0" [filter]="flowFilters" [dataItem]="sipDataItem" [qosData]="qosData"
-                (messageWindow)="addWindow($event)"></app-tab-messages>
-        </mat-tab>
-        <mat-tab *ngIf="_isLoaded && tabs.flow" label="Flow">
-            <app-tab-flow *ngIf="activeTab === 1" [isSimplify]="!isSimplify" [callid]="titleId" [flowFilters]="flowFilters"
-                [dataItem]="sipDataItem" [qosData]="qosData" [RTPFilterForFLOW]="RTPFilterForFLOW"
-                (messageWindow)="addWindow($event)"></app-tab-flow>
-        </mat-tab>
-
-        <mat-tab label="Session Info" *ngIf="_isLoaded && tabs.callinfo">
-            <app-tab-callinfo *ngIf="true || activeTab === 3" [dataItem]="sipDataItem"></app-tab-callinfo>
-        </mat-tab>
-
-        <mat-tab *ngIf="false || tabs.qos" label="QoS">
-            <app-tab-qos [callid]="titleId" [dataItem]="sipDataItem" [qosData]="qosData" [id]="IdFromCallID"
-                (haveData)="onTabQos($event)"></app-tab-qos>
-        </mat-tab>
-        <mat-tab *ngIf="_isLoaded && tabs.logs" label="Logs">
-            <app-tab-hepsub [snapShotTimeRange]="snapShotTimeRange" [dataItem]="sipDataItem" [callid]="titleId"
-                [dataLogs]="dataLogs" [id]="IdFromCallID"></app-tab-hepsub>
-        </mat-tab>
-        <mat-tab *ngIf="_isLoaded && tabs.export" label="Export">
-            <app-tab-export (exportFlowAsPNG)="onExportFlowAsPNG()" [snapShotTimeRange]="snapShotTimeRange" [dataItem]="sipDataItem"
-                [callid]="titleId" [id]="IdFromCallID"></app-tab-export>
-            
-            <div style="position: relative; overflow: hidden; height: 1px; width: 1px;">
-                <div style="position: absolute;">
-                    <app-tab-flow [callid]="titleId" [dataItem]="sipDataItem" [exportAsPNG]="exportAsPNG"
+                <ng-template ngSwitchCase="Events">
+                    <app-tab-events [dataItem]="sipDataItem"
+                        (ready)="showLoader=false"></app-tab-events>
+                </ng-template>
+                <ng-template ngSwitchCase="Sub">
+                    <app-tab-sub [dataItem]="agentsData"
                         (messageWindow)="addWindow($event)"
-                        (pngReady)="exportAsPNG=false"></app-tab-flow>
-                </div>
-            </div>
-        </mat-tab>
+                        (ready)="showLoader=false">
+                    </app-tab-sub>
+                </ng-template>
+                <ng-template ngSwitchCase="TDR">
+                    <app-tab-tdr [dataItem]="sipDataItem"
+                        (ready)="showLoader=false"></app-tab-tdr>
+                </ng-template>
+                <ng-template ngSwitchCase="Logs">
+                    <app-tab-hepsub [snapShotTimeRange]="snapShotTimeRange"
+                        [dataItem]="sipDataItem"
+                        [callid]="titleId"
+                        (ready)="showLoader=false"
+                        [id]="IdFromCallID"></app-tab-hepsub>
+                </ng-template>
 
-    </mat-tab-group>
+                <ng-template ngSwitchCase="Export">
+                    <app-tab-export (exportFlowAsPNG)="onExportFlowAsPNG()"
+                        [snapShotTimeRange]="snapShotTimeRange"
+                        (ready)="showLoader=false"
+                        [dataItem]="sipDataItem"
+                        [callid]="titleId"
+                        [request]="request"
+                        [id]="IdFromCallID">
+                    </app-tab-export>
+                    <div style="position: relative; overflow: hidden; height: 1px; width: 1px;">
+                        <div style="position: absolute;">
+                            <app-tab-flow [callid]="titleId"
+                                [dataItem]="sipDataItem"
+                                [exportAsPNG]="exportAsPNG"
+                                (pngReady)="exportAsPNG=false">
+                            </app-tab-flow>
+                        </div>
+                    </div>
+                </ng-template>
+
+
+            </div>
+        </div>
+    </ng-container>
+</app-modal-resizable>
+
+<app-modal-resizable *ngFor="let item of arrMessageDetail; let idx = index"
+    [isOutsideButton]="true"
+    [title]="'Message ID: ' + item.id"
+    [headerColor]="item.headerColor"
+    [mouseEventData]="item.mouseEventData"
+    [startZIndex]="2000"
+    [minWidth]="400"
+    [minHeight]="200"
+    [arrowMetaData]="item.arrowMetaData"
+    [isBrowserWindow]="item.isBrowserWindow"
+    [width]="650"
+    [height]="400"
+
+    (close)="closeWindowMessage(idx)">
+    <app-loading-circle *ngIf="!item.loaded">
+
+    </app-loading-circle>
+    <app-message-content *ngIf="item.loaded"
+        [rowData]="rowData"
+        [data]="item.data">
+    </app-message-content>
 </app-modal-resizable>

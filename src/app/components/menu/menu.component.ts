@@ -1,25 +1,51 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { AuthenticationService, DashboardService, DashboardEventData } from '@app/services';
-import { User, WidgetModel, DashboardModel } from '@app/models';
-import { Router, ActivationEnd, ActivatedRoute } from '@angular/router';
+import {
+    Component,
+    OnInit,
+    OnDestroy,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    ElementRef,
+    ViewChild,
+} from '@angular/core';
+import {
+    AuthenticationService,
+    DashboardService,
+    DashboardEventData,
+    PreferenceUserSettingsService,
+    SearchService,
+    PreferenceAdvancedService,
+    AlertService,
+    SessionStorageService,
+    UserSettings,
+    DateTimeRangeService,
+    UserSecurityService,
+    PreferenceUserService
+} from '@app/services';
+import {
+    User,
+    WidgetModel,
+    DashboardModel,
+    ConstValue,
+} from '@app/models';
 import { MatDialog } from '@angular/material/dialog';
-import { AddDashboardDialogComponent } from '../dashboard/add-dashboard-dialog/add-dashboard-dialog.component';
-import { filter } from 'rxjs/operators';
+import { AddDashboardDialogComponent } from '../dashboard/';
+import { Router, ActivationEnd } from '@angular/router';
 import * as moment from 'moment';
-import { DateTimeRangeService } from '../../services/data-time-range.service';
-import { SessionStorageService, UserSettings } from '../../services/session-storage.service';
-import { PreferenceAdvancedService } from '@app/services';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { environment } from '@environments/environment';
-import { UserSecurityService } from '@app/services/user-security.service';
-
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import * as widgets from '../widgets';
+import { Functions, setStorage } from '@app/helpers/functions';
+import { TranslateService } from '@ngx-translate/core';
+import { TimeFormattingService } from '@app/services/time-formatting.service';
 export interface DashboardData {
     cssclass: string;
     href: string;
     id: string;
     name: string;
     param: string;
-    shared: number;
+    shared: boolean;
     type: number;
     weight: number;
 }
@@ -47,30 +73,36 @@ export class MenuComponent implements OnInit, OnDestroy {
         { value: 300000, name: '5 min', title: 'Refresh @ 5 min' },
         { value: 600000, name: '10 min', title: 'Refresh @ 10 min' },
         { value: 1800000, name: '30 min', title: 'Refresh @ 30 min' },
-        { value: 3600000, name: '60 min', title: 'Refresh @ 60 min' }
+        { value: 3600000, name: '60 min', title: 'Refresh @ 60 min' },
     ];
+    isDashboardFavorite: boolean;
+    isRefreshClicked = true;
+    userSetting: UserSettings;
+    currentUserData;
     loadingAnim: string;
     animal: string;
     name: string;
     dashboardId: string;
     searchText: string;
-
+    favoriteDashboards = [];
+    favoriteDashboardsList = [];
+    searchTabsList = [];
     alwaysShowCalendars: boolean;
+    notify = false;
+    favUserDetail = {
+        user: '',
+        favorites: [],
+    };
     isRangeClicked = false;
     public get ranges() {
         return this._dtrs.getRangeByLabel(null, true);
     }
 
     selectedDateTimeRangeTitle: string;
-    selectedDateTimeRangeTitleValue: string;
     selectedDateTimeRange: any;
     selectedDateTimeRangeZone: string;
     currentPath: string;
 
-    startDate: moment.Moment = null;
-    endDate: moment.Moment = null;
-    timepickerTimezone: string = null;
-    grafana: any;
     // Components variables
     protected toggle: boolean;
     protected modal: boolean;
@@ -78,227 +110,380 @@ export class MenuComponent implements OnInit, OnDestroy {
     protected dashboardCollection: DashboardModel[];
 
     isDashboardAdd = true;
+    objectValues = Object.values;
     currentUser: User;
     dashboards: DashboardData[];
     sharedDashboards: DashboardData[];
-
+    searchTabsListFromLocal = [];
+    dashboardList: any;
+    dateFormat: string;
+    firstInit = true;
+    @ViewChild('favList', { static: true }) favList: ElementRef;
+    @ViewChild('tabList', { static: true }) tabList: ElementRef;
     constructor(
-        private _ds: DashboardService,
+        private dashboardService: DashboardService,
         private _dtrs: DateTimeRangeService,
         private router: Router,
         public dialog: MatDialog,
         private authenticationService: AuthenticationService,
         private _sss: SessionStorageService,
-        private _pas: PreferenceAdvancedService,
+        private cdr: ChangeDetectorRef,
+        private _puss: PreferenceUserSettingsService,
+        private _pus: PreferenceUserService,
         private userSecurityService: UserSecurityService,
-        private changeDetectorRefs: ChangeDetectorRef
+        private searchService: SearchService,
+        private _pas: PreferenceAdvancedService,
+        private alertService: AlertService,
+        private translateService: TranslateService,
+        private _tfs: TimeFormattingService
     ) {
-        this.startDate = null;
-        this.endDate = null;
-        this.selectedDateTimeRangeZone = null;
+        translateService.addLangs(['en'])
+        translateService.setDefaultLang('en')
         if (environment.environment !== '') {
             document.title += ' ' + environment.environment;
         }
-        this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
-        this._pas.getAll().subscribe(advancedObj => [this.grafana] = advancedObj.data.filter(advanced =>
-            advanced.category === 'search' && advanced.param === 'grafana'));
-        router.events.pipe(
-            filter(e => e instanceof ActivationEnd)
-        ).subscribe((evt: ActivationEnd) => {
-            this.currentPath = evt.snapshot.routeConfig.path;
-        });
-    }
-
-    // On component init we store Widget Marketplace in a WidgetModel array
-    async ngOnInit() {
-
-        this.isDashboardAdd = await this.userSecurityService.isDashboardAdd();
-        this.sessionStorageSubscription = this._sss.sessionStorage.subscribe((data: UserSettings) => {
-            if (data.updateType !== 'proto-search') {
-                if (data && data.dateTimeRange.dates) {
-                    this.selectedDateTimeRangeTitle = data.dateTimeRange.title;
-                    this.selectedDateTimeRangeTitleValue  = data.dateTimeRange.title;
-
-                    this.selectedDateTimeRange = (data.dateTimeRange.title)
-                        || data.dateTimeRange.dates.map((i: any) => moment(i));
+        this.authenticationService.currentUser.subscribe(
+            (x) => (this.currentUser = x)
+        );
+        router.events
+            .pipe(filter((e) => e instanceof ActivationEnd))
+            .subscribe((evt: ActivationEnd) => {
+                this.currentPath = evt.snapshot.routeConfig.path;
+                if (!this.firstInit) {
+                    this.updateTabList();
                 }
+            });
+        this.validateUser();
+        // console.log((<any>data).methods);
+    }
+    async validateUser() {
+        const guid = this.currentUser.scope;
+        this._pus.getAll().toPromise().then(result => {
+            const currentUser = result.data.find(user => user.guid === guid);
+            const isAdmin = currentUser.usergroup === 'admin' || currentUser.usergroup === 'admins';
+            const username = currentUser.username;
+            if (currentUser?.params?.force_password) {
+                setTimeout(() => {
+                    this.logout();
+                }, 2000);
+            } else if (isAdmin !== this.currentUser.user.admin || username !== this.currentUser.user.username) {
+                setTimeout(() => {
+                    this.logout();
+                    this.translateService.get('notifications.warning.userChanged').subscribe(res => { 
+                        this.alertService.warning(res);   
+                    })
+                }, 2000);
             }
         });
+    }
+    async ngOnInit() {
+        const wArr = widgets; /* hack for init all widget on prodaction mode - DON'T REMOVE IT!!!! */
+        await this.getFormat();
+        
+        this.isDashboardAdd = await this.userSecurityService.isDashboardAdd();
+        this.updateTabList();
 
         if (!this.selectedDateTimeRangeTitle) {
             this.selectedDateTimeRangeTitle = 'Today';
-            this.selectedDateTimeRangeTitleValue  = 'Today';
-            this.selectedDateTimeRange = this._dtrs.getRangeByLabel(this.selectedDateTimeRangeTitle);
+            this.selectedDateTimeRange = this._dtrs.getRangeByLabel(
+                this.selectedDateTimeRangeTitle
+            );
         }
-
-        if (!this.selectedDateTimeRangeZone) {
-            this.selectedDateTimeRangeZone = this._dtrs.getTimezoneForQuery();
-        }
-
-
-        this.timepickerTimezone = this._dtrs.getTimezoneForQuery();
-        moment.tz.setDefault(this.timepickerTimezone);
-
-        if (!this.startDate) {
-            const dateFor: any = this._dtrs.getDatesForQuery(true);
-            this.startDate = moment.unix(dateFor.from / 1000);
-            this.endDate = moment.unix(dateFor.to / 1000);
-        }
-
-        this._dtrs.castRangeUpdateTimeout.subscribe(dtr => {
-            this.loadingAnim = 'loading-anim';
-            this.changeDetectorRefs.detectChanges();
-            setTimeout(() => {
-                this.loadingAnim = '';
-
-                this.changeDetectorRefs.detectChanges();
-            }, 1500);
+        this.searchService.event.subscribe(() => {
+            this.notify = false;
+            this.cdr.detectChanges();
         });
-        this._ds.dashboardEvent.subscribe((data: DashboardEventData) => {
+        this._dtrs.castRangeUpdateTimeout.subscribe(() => {
+            this.renewNotify();
+            this.cdr.detectChanges();
+        });
+        this.dashboardService.dashboardEvent.subscribe((data: DashboardEventData) => {
+            this.notify = false;
             this.updateDashboardList();
         });
         this.updateDashboardList();
-        this.changeDetectorRefs.detectChanges();
+        this.cdr.detectChanges();
+        this.firstInit = false;
     }
-    updateDashboardList() {
-        this._ds.getDashboardInfo().toPromise().then((resData: any) => {
-            if (resData?.data) {
-                const currentUser = this.authenticationService.getUserName();
-                this.dashboards = resData.data.sort((...aa: any[]) => {
-                    const [a, b] = aa.map(({ name }: { name: string }) => name.charCodeAt(0));
-                    return a < b ? -1 : a > b ? 1 : 0;
-                }).filter(item =>
-                    item.shared === 0 || item.shared === false || item.owner === currentUser);
-                this.sharedDashboards = resData.data.sort((...aa: any[]) => {
-                    const [a, b] = aa.map(({ name }: { name: string }) => name.charCodeAt(0));
-                    return a < b ? -1 : a > b ? 1 : 0;
-                }).filter(item => (item.shared === 1 || item.shared === true) && item.owner !== currentUser);
-                this.panelList = this.dashboards.map(item => item.name);
-                try {
-                    this.panelName = this.dashboards.find(item => item.href === this._ds.getCurrentDashBoardId()).name;
-                    this.currentDashboardId = this._ds.getCurrentDashBoardId();
-                } catch (e) { }
-                this.changeDetectorRefs.detectChanges();
+    private updateTabList() {
+        const ranges = Object.keys(this.ranges);
+        this.sessionStorageSubscription = this._sss.sessionStorage.subscribe(
+            (data: UserSettings) => {
+                if (
+                    data.updateType !== 'proto-search' &&
+                    data &&
+                    data.dateTimeRange.dates
+                ) {
+                    this.selectedDateTimeRangeTitle = ranges.some(i => i === data.dateTimeRange.title) ?
+                        data.dateTimeRange.title : data.dateTimeRange.dates.map(i =>
+                            moment(i).format(this.dateFormat)).join(' - ');
+                    this.selectedDateTimeRange =
+                        data.dateTimeRange.title ||
+                        data.dateTimeRange.dates.map((i) => moment(i));
+                    this.cdr.detectChanges();
+                }
+                if (data.favorites) {
+                    this.favoriteDashboardsList = data.favorites;
+                }
+                if (data.searchTabs && data.searchTabs.length > 0) {
+                    const currentUser = this.authenticationService.getUserName() || '';
+                    data.searchTabs.forEach(tab => {
+                        if (!tab.hasOwnProperty('owner')) {
+                            this.deleteSearchTab(tab);
+                        }
+                    });
+                    this.searchTabsList = data.searchTabs.filter(f =>
+                        f.owner.username === currentUser);
+                    this.cdr.detectChanges();
+                }
             }
-        });
+        );
+    }
+    private renewNotify() {
+        if (this.isRefreshClicked) {
+            this.notify = false;
+        } else {
+            this.notify = this.dashboardService.dbs.currentWidgetList
+                .filter(({ name }) => name.toLowerCase() === 'result')
+                .map(
+                    ({ id }) => !this.dashboardService.loadWidgetParam(id, 'isAutoRefrasher'))
+                .reduce((a, b) => a || b, false);
+        }
+        this.isRefreshClicked = false;
+    }
+    private checkAnimationRefrash() {
+        this.loadingAnim = 'loading-anim';
+        setTimeout(() => {
+            this.isRefreshClicked = false;
+            this.loadingAnim = '';
+            this.cdr.detectChanges();
+        }, 1500);
+        this._sss.updateDataFromLocalStorage();
+        this.cdr.detectChanges();
+    }
+    async updateDashboardList() {
+        const resData: any = await this.dashboardService.getDashboardInfo(0).toPromise();
+        if (resData?.data) {
+            const currentUser = this.authenticationService.getUserName();
+            this.dashboards = resData.data.sort((...aa: any[]) => {
+                const [a, b] = aa.map(({ name }: { name: string }) => name.charCodeAt(0));
+                return a < b ? -1 : a > b ? 1 : 0;
+            }).filter(item => item.shared === false || item.owner === currentUser);
+            this.sharedDashboards = resData.data.sort((...aa: any[]) => {
+                const [a, b] = aa.map(({ name }: { name: string }) => name.charCodeAt(0));
+                return a < b ? -1 : a > b ? 1 : 0;
+            }).filter(item => item.shared === true && item.owner !== currentUser);
+            try {
+                this.currentDashboardId = this.dashboardService.getCurrentDashBoardId();
+                this.panelName = this.dashboards.find(
+                    ({ href }) => href === this.currentDashboardId
+                ).name;
+
+            } catch (e) { }
+        }
+        this.cdr.detectChanges();
+    }
+
+    onScroll({ deltaY }, type) {
+        const list = type === 'favList' ? this.favList : this.tabList;
+        if (typeof deltaY !== 'undefined') {
+            list.nativeElement.scrollLeft += deltaY;
+            return;
+        }
     }
     logout() {
         this.userSecurityService.removeUserSettings();
         this.authenticationService.logout();
         this.router.navigate([{ outlets: { primary: null, system: 'login' } }]);
-        this.changeDetectorRefs.detectChanges();
     }
 
     dashboardGo(id: string) {
         this.router.navigate(['dashboard/' + id.toLowerCase()]);
-        this.changeDetectorRefs.detectChanges();
+    }
+    tabGo(srcObj) {
+        this.router.navigate(['dashboard/' + srcObj.link]);
+        this.dashboardService.setQueryToWidgetResult(srcObj.id, srcObj.query);
+        this.cdr.detectChanges();
     }
 
     doSearchResult() {
         this.router.navigate(['search/result']);
-        this.changeDetectorRefs.detectChanges();
+    }
+
+    doSearchBigscreen(fav) {
+        this.dashboardGo(fav['href']);
+        setTimeout(() => {
+            this.doSearchResult();
+        }, 200);
+    }
+    async onTabRemove(id) {
+        const data = this._puss.delete(id).toPromise();
+        if (data) { 
+            this.translateService.get('notifications.success.tabRemoved').subscribe(res => { 
+                this.alertService.success(res);   
+            })
+        }
     }
     backLastToDashboard() {
-        // this.panelName = this._ds.getCurrentDashBoardId();
-        // this.dashboardGo('/' + this._ds.getCurrentDashBoardId());
-        this.panelName = 'home';
-        this.dashboardGo('/home');
-        this.changeDetectorRefs.detectChanges();
+        this.router.navigateByUrl('/');
     }
-    onAddDashboard() {
+    // add the search tab data here!
+    async onAddDashboard() {
         const dialogRef = this.dialog.open(AddDashboardDialogComponent, {
             width: '650px',
             data: {
                 nameNewPanel: '',
                 type: 1,
-                param: ''
-            }
+                param: '',
+            },
         });
-        const dialogRefSubscription = dialogRef.afterClosed().subscribe((data) => {
-            if (data) {
-                let id = '_' + new Date().getTime();
-                if (data.type === 3) {
-                    id = 'home';
-                } else if (data.type === 4) {
-                    id = 'search';
-                }
-                if (data.type === 2 && data.param === '') {
-                    data.param = this.grafana.data.host;
-                }
-
-
-                let dashboardData = {
-                    id: id,
-                    alias: id,
-                    name: data.nameNewPanel,
-                    selectedItem: '',
-                    type: data.type,
-                    param: data.param || data.nameNewPanel.toLowerCase(),
-                    shared: 0,
-                    weight: 10,
-                    widgets: [],
-                    config: {
-                        ignoreMinSize: 'warning',
-                        maxrows: 5,
-                        columns: 5,
-                        grafanaTimestamp: true
-                    }
-                };
-                if (data.dashboard) {
-                    dashboardData = data.dashboard;
-                    dashboardData.id = dashboardData.alias = id;
-                    dashboardData.name = data.nameNewPanel;
-                    dashboardData.param = data.param || data.nameNewPanel.toLowerCase();
-                }
-                this._ds.postDashboardStore(dashboardData.id, dashboardData).toPromise().then(res => {
-                    this.updateDashboardList();
-                    if (res && res.status === 'ok') {
-                        this.router.navigate([`/dashboard/${dashboardData.id}`]);
-                    }
-                });
-                this.changeDetectorRefs.detectChanges();
+        const data = await dialogRef.afterClosed().toPromise();
+        if (data) {
+            const id = data.type === 4 ? 'search' : '_' + new Date().getTime();
+            let dashboardData = {
+                id: id,
+                alias: id,
+                name: data.nameNewPanel,
+                selectedItem: '',
+                type: data.type,
+                param: data.param || data.nameNewPanel.toLowerCase(),
+                shared: false,
+                weight: 10,
+                widgets: [],
+                config: {
+                    ignoreMinSize: 'warning',
+                    maxrows: 6,
+                    columns: 8,
+                    grafanaProxy: data.type === 7 ? true : false,
+                    grafanaTimestamp: data.type === 7 ? true : false
+                },
+            };
+            if (data.dashboard) {
+                dashboardData = data.dashboard;
+                dashboardData.id = dashboardData.alias = id;
+                dashboardData.name = data.nameNewPanel;
+                dashboardData.param =
+                    data.param || data.nameNewPanel.toLowerCase();
             }
-            dialogRefSubscription.unsubscribe();
+            const res: any = await this.dashboardService
+                .postDashboardStore(dashboardData.id, dashboardData)
+                .toPromise();
+
+            this.updateDashboardList();
+            if (res && res.status === 'ok') {
+                this.router.navigate([`/dashboard/${dashboardData.id}`]);
+            }
+            this.cdr.detectChanges();
+        }
+    }
+
+    addDashboardFavorite(dashboardItem) {
+        if (
+            this.favoriteDashboardsList.some((f) => f.id === dashboardItem.id)
+        ) {
+            this.favoriteDashboardsList = this.favoriteDashboardsList.filter(
+                (f) => f.id !== dashboardItem.id
+            );
+        } else {
+            this.favoriteDashboardsList.push(dashboardItem);
+        }
+        this.favoriteDashboardsList = Array.from(
+            this.favoriteDashboardsList
+        ).sort((a: any, b: any) => {
+            const aname = a.name;
+            const bname = b.name;
+            return aname.localeCompare(bname, 'en', { sensitivity: 'base' });
         });
+
+        this._sss.saveFavoritesConfig(this.favoriteDashboardsList);
+        this.cdr.detectChanges();
+    }
+
+    async deleteSearchTab(searchTab) {
+        const sourceLink = searchTab.source_link;
+        const currentLocation = this.dashboardService.getCurrentDashBoardId();
+        const tabLocation = searchTab.link;
+
+        this.searchTabsList = this.searchTabsList.filter(
+            (f) => f.id !== searchTab.id
+        );
+
+        this._sss.saveSearchTabsConfig(this.searchTabsList);
+
+        await this.onTabRemove(searchTab.id);
+
+        const res: any = await this.dashboardService.deleteDashboardStore(searchTab.id);
+
+        if (res) {
+            this.dashboardService.update();
+            this.updateDashboardList();
+            if (sourceLink !== currentLocation && currentLocation === tabLocation) {
+                this.router.navigateByUrl(`/dashboard/${sourceLink}`);
+            }
+            this.cdr.detectChanges();
+        }
+    }
+
+    dropSearchTab(event: CdkDragDrop<string[]>) {
+        moveItemInArray(
+            this.searchTabsList,
+            event.previousIndex,
+            event.currentIndex
+        );
+        this._sss.saveSearchTabsConfig(this.searchTabsList);
+        this.cdr.detectChanges();
+    }
+
+    dropFav(event: CdkDragDrop<string[]>) {
+        moveItemInArray(
+            this.favoriteDashboardsList,
+            event.previousIndex,
+            event.currentIndex
+        );
+        this._sss.saveFavoritesConfig(this.favoriteDashboardsList);
+        this.cdr.detectChanges();
+    }
+    hasFav(item, fav) {
+        return fav.some((f) => f.id === item.id);
     }
     onRangeClicked(event: any) {
         this.isRangeClicked = true;
         this.selectedDateTimeRangeTitle = event.label;
-        this.changeDetectorRefs.detectChanges();
     }
     onDatesUpdated(event: any) {
-
         this.selectedDateTimeRange = [event.startDate, event.endDate];
         this.selectedDateTimeRangeZone = event.timezone;
         if (this.isRangeClicked) {
             this.isRangeClicked = false;
         } else {
-            this.selectedDateTimeRangeTitle = this.selectedDateTimeRange.map((i: any) => i.format('DD/MM/YYYY HH:mm:ss')).join(' - ');
+            this.selectedDateTimeRangeTitle = this.selectedDateTimeRange
+                .map((i) => i.format(this.dateFormat)).join(' - ');
         }
-
-        this._dtrs.updateDataRange(
-            {
+        this._dtrs.updateDataRange({
             title: this.selectedDateTimeRangeTitle,
             timezone: this.selectedDateTimeRangeZone,
             dates: this.selectedDateTimeRange
         });
-
-        this.changeDetectorRefs.detectChanges();
+    }
+    async getFormat() {
+        this.dateFormat = await this._tfs.getFormat().then(res => res.dateTime);
     }
     onRefrasher(delay: number) {
         this._dtrs.setDelay(delay);
-        this.changeDetectorRefs.detectChanges();
     }
 
     onPreference() {
         this.router.navigate(['preference/users']);
-        this.changeDetectorRefs.detectChanges();
     }
+
     refresh() {
-        this._dtrs.refrash();
-        this.changeDetectorRefs.detectChanges();
+        this.isRefreshClicked = true;
+        this.dashboardService.update(false, true); // true param is important refresh for all
+        this.checkAnimationRefrash();
     }
     ngOnDestroy() {
-        this.sessionStorageSubscription.unsubscribe();
+        if (this.sessionStorageSubscription) {
+            this.sessionStorageSubscription.unsubscribe();
+        }
     }
 }

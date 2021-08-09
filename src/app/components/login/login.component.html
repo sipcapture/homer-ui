@@ -1,36 +1,117 @@
-<mat-card>
-    <mat-card-header>
-        <mat-card-title>
-            <div class="login-page-header">
-                <img src="assets/images/homerseven.png" />
-                <h2>Homer Login</h2>
-            </div>
-        </mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-            <p>
-                <mat-form-field flex="50">
-                    <input matInput placeholder="Username" name="username" required formControlName="username">
-                </mat-form-field>
-            </p>
-            <p>
-                <mat-form-field>
-                    <input type="password" matInput placeholder="Password"
-                        (keydown)="onCapsLock($event)"
-                        (keyup)="onCapsLock($event)"
-                        formControlName="password" required>
-                    <mat-icon *ngIf="caps_lock" title="CAPS LOCK" alt="CAPS LOCK" matSuffix>warning</mat-icon>
-                </mat-form-field>
-            </p>
+<div class="login-container">
+  <header class="homer-header">
+    <div class="logo logo-text">homer.</div>
+  </header>
+  <mat-card>
+    <mat-card-title *ngIf="types">
+      <div class="login-page-header">
+        <p class="login-head"
+          *ngIf="!translateError">
+          <fa-icon icon="sign-in-alt"></fa-icon> {{ 'login.header' | translate }}
+        </p>
+      </div>
+    </mat-card-title>
 
-            <p *ngIf="error" class="error">
-                {{ error }}
-            </p>
-            
-            <mat-card-actions align="end">
-                <button mat-raised-button color="primary">Login</button>
-            </mat-card-actions>
-        </form>
+    <mat-card-content ngClass="login-form"
+      *ngIf="isReady">
+      <form [formGroup]="loginForm"
+        (ngSubmit)="onSubmit()"
+        *ngIf="types && !translateError && !typesError">
+
+
+        <input type="text"
+          autocomplete="username"
+          [placeholder]="'login.username' | translate"
+          name="username"
+          required
+          formControlName="username"
+          class="form-control" />
+
+
+        <input class="form-control"
+          autocomplete="current-password"
+          type="password"
+          [placeholder]="'login.password' | translate"
+          (keydown)="onCapsLock($event)"
+          (keyup)="onCapsLock($event)"
+          formControlName="password"
+          required />
+
+
+        <p *ngIf="error"
+          class="error">
+          {{ error }}
+        </p>
+
+        <div class="input-group mb-3"
+          *ngIf="enabledTypes && enabledTypes.length > 1">
+          <div class="input-group-prepend">
+            <label class="input-group-text">{{ 'login.authentication' | translate }}</label>
+          </div>
+          <select class="custom-select"
+            formControlName="type"
+            [(value)]="type">
+            <option *ngFor="let type of types"
+              value="{{ type.type }}">
+              {{ type.name}}
+            </option>
+          </select>
+        </div>
+
+        <button mat-flat-button
+          class="login-submit">{{ 'login.signInButton' | translate }}</button>
+      </form>
+      <!-- <ng-template #noApiResponse> -->
+      <div *ngIf="typesError && !translateError"
+        style="
+            max-width: 250px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 20px;
+            display: grid;
+            align-items: center;
+            height: 250px;
+          ">
+        <div style="text-align: center">
+          <mat-icon style="
+                color: rgb(155, 155, 155);
+                height: 70px;
+                width: 70px;
+                font-size: 70px;
+              ">error_outline</mat-icon>
+        </div>
+
+        <h3 style="color: black; font-weight: lighter">{{ "login.error.apiNotFound.header" | translate }}</h3>
+        <p style="color: grey">
+          {{ "login.error.apiNotFound.message" | translate }}
+        </p>
+      </div>
+      <div *ngIf="translateError"
+        style="
+          max-width: 250px;
+          margin: 0 auto;
+          text-align: center;
+          padding: 20px;
+          display: grid;
+          align-items: center;
+          height: 250px;
+        ">
+        <div style="text-align: center">
+          <mat-icon style="
+          color: rgb(155, 155, 155);
+          height: 70px;
+          width: 70px;
+          font-size: 70px;
+        ">error_outline</mat-icon>
+        </div>
+
+        <h3 style="color: black; font-weight: lighter">Translation File Error</h3>
+        <p style="color: grey">
+          Please Contact Customer Service
+        </p>
+      </div>
+      <!-- </ng-template> -->
     </mat-card-content>
-</mat-card>
+  </mat-card>
+  <footer class="homer-footer">{{ 'login.copyright' | translate }}</footer>
+</div>

@@ -1,0 +1,38 @@
+.about-content {
+ 
+  height: 100%;
+  padding:20px;
+  margin:0 auto;
+
+}
+.about-content img{
+    padding-left: 20px;
+
+
+  
+}
+.about-content h4 {
+    margin-top:20px;
+    margin-bottom:20px;
+  font-size: 14px;
+  font-weight: bold;
+ 
+  line-height:32px;
+  color:grey;
+ max-width:650px;
+  text-align: left;
+}
+
+.about-body {
+    text-align: left;
+  margin-top: 20px;
+  max-width:650px;
+  font-size: 13px;
+  padding: 15px;
+  background: #fafafa;
+  color: grey;
+  border-radius: 3px;
+  border: 1px solid lightgray;
+  height:70%;
+  overflow-y: auto;
+}

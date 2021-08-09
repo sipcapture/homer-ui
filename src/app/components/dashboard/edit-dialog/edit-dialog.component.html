@@ -1,85 +1,95 @@
 <mat-toolbar class="title" color="primary">
-  <div>Edit Panel</div>
+  <div>{{'dashboard.editDialog.title' | translate}}</div>
   <button mat-icon-button (click)="onNoClick()">
-    <mat-icon>close</mat-icon>
+    <fa-icon icon="times"></fa-icon>
   </button>
 </mat-toolbar>
+
 <div mat-dialog-content style="display: flex; flex-direction: column">
-  <h4>Panel Details</h4>
+  <h4>{{'dashboard.editDialog.dashboardSettingsSection.title' | translate}}</h4>
 
   <mat-form-field>
-    <mat-label>Name your panel</mat-label>
-    <input matInput [(ngModel)]="data.name">
+    <mat-label>{{'dashboard.editDialog.dashboardSettingsSection.dashboardName' | translate}}</mat-label>
+    <input matInput [(ngModel)]="data.name" (ngModelChange)='validate($event)' [formControl]="name">
+    <mat-error *ngIf="name?.errors?.required">{{'validators.required' | translate }}</mat-error>
+    <mat-error *ngIf="name?.errors?.minlength">
+      {{ name?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+    </mat-error>
+    <mat-error *ngIf="name?.errors?.maxlength">
+      {{ name?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+    </mat-error>
+    <mat-error *ngIf="name?.errors?.pattern && !name?.errors?.minlength">
+      {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-" or "_"
+    </mat-error>
+    <mat-error *ngIf="name?.errors?.dashboardNameNotAvailable">
+      Dashboard name not available
+    </mat-error>
   </mat-form-field>
 
   <mat-form-field >
-    <mat-label>Type</mat-label>
+    <mat-label>{{'dashboard.editDialog.dashboardSettingsSection.dashboardType' | translate}}</mat-label>
     <mat-select [(ngModel)]="data.type" [disabled]="isHomeOrSearch">
       <mat-option
-        *ngFor="let itemlist of typeList"
-        [value]="itemlist.index"
+        *ngFor="let itemlist of typeList; trackBy: identify"
+        [value]="itemlist.type"
         [disabled]="itemlist.disabled">{{ itemlist.name }}</mat-option>
     </mat-select>
   </mat-form-field>
 
   <mat-form-field>
-    <mat-label>Param</mat-label>
+    <mat-label>{{data.type === 2 || data.type === 7 ? 'URL' : 'Param'}}</mat-label>
     <input matInput [(ngModel)]="data.param">
   </mat-form-field>
 
   <mat-checkbox labelPosition="before" [(ngModel)]="data.shared" *ngIf="!isHomeOrSearch">Shared</mat-checkbox>
-  <div *ngIf="data.type !== 2" style="display: flex; flex-direction: column">
+  <div *ngIf="data.type !== 2 && data.type !== 7" style="display: flex; flex-direction: column">
       <hr style="width: 100%;">
-    <h4>Grid Configuration</h4>
+    <h4>{{'dashboard.editDialog.dashboardGridConfigurations.title' | translate}}</h4>
     <div>
       <mat-form-field style="display: inline-block; min-width: 100px;">
-        <mat-label>Columns</mat-label>
+        <mat-label>{{'dashboard.editDialog.dashboardGridConfigurations.columns' | translate}}</mat-label>
         <input matInput type="number" min="1" [(ngModel)]="data.columns">
       </mat-form-field>
       <mat-form-field style="display: inline-block; min-width: 100px; padding-left: 1rem;">
-        <mat-label>MaxRows</mat-label>
+        <mat-label>{{'dashboard.editDialog.dashboardGridConfigurations.rows' | translate}}</mat-label>
         <input matInput type="number" min="1" [(ngModel)]="data.maxrows">
       </mat-form-field>
     </div>
     <mat-form-field>
-      <mat-label>Grid Type</mat-label>
+      <mat-label>{{'dashboard.editDialog.dashboardGridConfigurations.gridTypeTitle' | translate}}</mat-label>
       <mat-select [(ngModel)]="data.gridType">
-        <mat-option [value]="'fit'">Fit to screen</mat-option>
-        <mat-option [value]="'scrollVertical'">Scroll Vertical</mat-option>
-        <mat-option [value]="'scrollHorizontal'">Scroll Horizontal</mat-option>
-        <mat-option [value]="'fixed'">Fixed</mat-option>
-        <mat-option [value]="'verticalFixed'">Vertical Fixed</mat-option>
-        <mat-option [value]="'horizontalFixed'">Horizontal Fixed</mat-option>
+        <mat-option [value]="'fit'">{{'dashboard.editDialog.dashboardGridConfigurations.gridTypes.fitToScreen' | translate}}</mat-option>
+        <mat-option [value]="'scrollVertical'">{{'dashboard.editDialog.dashboardGridConfigurations.gridTypes.scrollVertical' | translate}}</mat-option>
+        <mat-option [value]="'scrollHorizontal'">{{'dashboard.editDialog.dashboardGridConfigurations.gridTypes.scrollHorizontal' | translate}}</mat-option>
+        <mat-option [value]="'fixed'">{{'dashboard.editDialog.dashboardGridConfigurations.gridTypes.fixed' | translate}}</mat-option>
+        <mat-option [value]="'verticalFixed'">{{'dashboard.editDialog.dashboardGridConfigurations.gridTypes.verticalFixed' | translate}}</mat-option>
+        <mat-option [value]="'horizontalFixed'">{{'dashboard.editDialog.dashboardGridConfigurations.gridTypes.horizontalFixed' | translate}}</mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-checkbox labelPosition="before" [(ngModel)]="data.pushing">Pushing</mat-checkbox>
-
-
+    <mat-checkbox labelPosition="before" [(ngModel)]="data.pushing">{{'dashboard.editDialog.dashboardGridConfigurations.pushing' | translate}}</mat-checkbox>
   </div>
-  <div *ngIf="data.type !== 2" style="display: flex; flex-direction: column">
-      <hr style="width: 100%;">
-    <h4>Widget overflow</h4>
-    <mat-form-field>
-      <mat-label>Widget minimum size mode</mat-label>
-      <mat-select [(value)]="data.ignoreMinSize" >
-        <mat-option *ngFor="let mode of ignoreMinSizeList | keyvalue" [value]="mode.value">
-          {{mode.key}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
-  <div *ngIf="data.type === 2" style="display: flex; flex-direction: column">
+  <div *ngIf="data.type !== 2 && data.type !== 7" style="display: flex; flex-direction: column">
     <hr style="width: 100%;">
-    <h4>Grafana Timestamp sync</h4>
-    <mat-checkbox labelPosition="before" [(ngModel)]="data.grafanaTimestamp">Sync with Dashboard</mat-checkbox>
+    <h4>{{'dashboard.editDialog.widgetControl.title' | translate}}</h4>
+    <div>
+        <button mat-raised-button color="primary" (click)="tileWidgets()" [disabled]='data.gridType === "verticalFixed" || data.gridType === "horizontalFixed"'>{{'dashboard.editDialog.widgetControl.tileWidgets' | translate}}</button>
+        <button mat-raised-button color="accent" (click)="deleteWidgets()" style="margin-left: 10px;">{{'dashboard.editDialog.widgetControl.deleteWidgets' | translate}}</button>
+    </div>
+  </div>
+  <div *ngIf="data.type === 7" style="display: flex; flex-direction: column">
+    <hr style="width: 100%;">
+    <h4>{{'dashboard.editDialog.grafanaControl.title' | translate}}</h4>
+    <mat-checkbox labelPosition="before" [(ngModel)]="data.grafanaTimestamp">{{'dashboard.editDialog.grafanaControl.grafanaTimestamp' | translate}}</mat-checkbox>
+    <mat-checkbox labelPosition="before" [(ngModel)]="data.grafanaProxy">{{'dashboard.editDialog.grafanaControl.grafanaProxy' | translate}}</mat-checkbox>
   </div>
   <hr style="width: 100%;">
   <div>
-    <button mat-raised-button color="primary" (click)="onExport()">Export dashboard settings</button>
+    <button mat-raised-button color="primary" (click)="onExport()">{{'dashboard.editDialog.export' | translate}}</button>
   </div>
   <hr style="width: 100%;">
 </div>
+
 <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
-  <button mat-raised-button (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+  <button mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="data" (click)="onSubmit()" cdkFocusInitial [disabled]='isInvalid'>{{'LINK.buttons.save' | translate}}</button>
 </div>

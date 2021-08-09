@@ -28,7 +28,7 @@ export class UserSecurityService {
     }
     public getAdmin() {
         const userData = this.authenticationService.currentUserValue;
-        this.isAdmin = userData?.user?.admin === true;
+        this.isAdmin = userData && userData.user && userData.user.admin && userData.user.admin === true;
     }
     private getUserSettings() {
         let output: any;
@@ -38,7 +38,7 @@ export class UserSecurityService {
                 this.preferenceUserSettingsService.getAll().toPromise().then((userSettings: any) => {
                     const { data } = userSettings || {};
                     if (data) {
-                        this.userSettings = data.find((i: any) =>
+                        this.userSettings = data.find(i =>
                             i.category === Security.CATEGORY
                             && i.param === Security.PARAM
                             && i.username === username

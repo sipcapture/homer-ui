@@ -12,5 +12,6 @@ export interface DashboardModel {
     param: string;
     partid: number;
     username: string;
+    owner: string;
     widgets?: any;
 }

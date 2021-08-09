@@ -1,0 +1,22 @@
+.dbstats {
+    background: transparent;
+    padding: 6px 12px;
+    border-radius: 3px;
+    border: none;
+    cursor: pointer;
+    transition: .3s all;
+  
+    & fa-icon {
+      color: rgb(186, 186, 186);
+      transition: .2s all;
+      font-size: 16px;
+    }
+  
+    &:hover {
+      background: #475faf22;
+  
+      & fa-icon {
+        color: #475faf;
+      }
+    }
+  }

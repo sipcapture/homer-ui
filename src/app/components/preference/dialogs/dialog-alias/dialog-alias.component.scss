@@ -1,20 +1,23 @@
 .chack-list {
-    margin-right: 1.3rem;
+	margin-right: 1.3rem;
 }
 .title {
-    margin: -1.5rem -1.5rem 2rem -1.5rem;
-    width: initial !important;
-    display: flex;
-    justify-content: space-between;
+	margin: -1.5rem -1.5rem 2rem -1.5rem;
+	width: initial !important;
+	font-size: 14px;
+	display: flex;
+	justify-content: space-between;
+	text-transform: uppercase;
+	//font-weight: 400;
+	letter-spacing: 1px;
 }
 .example-container {
-    display: flex;
-    flex-direction: column;
-}
-
-.example-container > * {
-    width: 100%;
+	display: flex;
+	flex-direction: column;
+	& > * {
+		width: 100%;
+	}
 }
 .hide {
-    display: none !important;
+	display: none !important;
 }

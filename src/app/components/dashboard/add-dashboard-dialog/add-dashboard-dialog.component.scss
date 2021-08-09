@@ -22,6 +22,9 @@
 		border-radius: 50rem;
 	}
 }
+::ng-deep .mat-select-panel {
+    max-height: unset;
+}
 .file-upload-container {
 	position: relative;
 	& > .fileselect {

@@ -1,0 +1,225 @@
+// @import '~@angular/material/theming';
+// @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+h1 {
+    padding: 2rem;
+    text-align: center;
+    color: grey;
+}
+
+table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+hep-chart-gantt {
+    width: 100%;
+    display: inline-block;
+
+}
+
+.container-tm-open {
+    width: 100%;
+}
+
+.menuOpen {
+    width: 80%;
+}
+
+#metric-select {
+    width: 100%;
+    display: flex;
+
+    align-items: center;
+    justify-content: space-around;
+
+}
+
+.filter-radio-group {
+
+    display: flex;
+
+    .filter-radio-button {
+
+        font-size: 12px;
+        margin-bottom: -5px;
+
+        mat-radio-label {
+            margin-bottom: 0px;
+        }
+    }
+
+    mat-radio-button {
+        margin: 6px;
+
+        label {
+            margin-bottom: 0px;
+        }
+    }
+}
+
+
+:host ::ng-deep {
+    .mat-radio-outer-circle {
+        width: 16px;
+        height: 16px;
+        border-width: 1px;
+        border-radius: 0%;
+    }
+
+    .mat-radio-checked {
+        .mat-radio-outer-circle {
+            border-color: #0076f9;
+        }
+
+        .mat-radio-inner-circle {
+            width: 16px;
+            height: 16px;
+            border-width: 1px;
+            border-radius: 0%;
+            transform: scale(0.5);
+            background: #0076f9;
+        }
+    }
+}
+
+.metric-select {
+    display: flex;
+    margin-right: 20px;
+}
+
+.metrics-setting-button {
+    width: 32px;
+    height: 32px;
+    right: 14px;
+    left: auto;
+    background: #eeeeee;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    float: right;
+    margin-left: auto;
+
+    .mat-icon {
+        background-repeat: no-repeat;
+        display: inline-block;
+        fill: currentColor;
+        font-size: 18px;
+        line-height: 1.86;
+        height: 24px;
+        width: 24px;
+    }
+
+    &:hover {
+        background: #e0e0e0;
+    }
+}
+
+.responcive {
+    width: 100%;
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: baseline;
+    min-height: 500px;
+
+    .chart-container {
+        position: relative;
+        width: 100%;
+        min-width: 500px;
+        min-height: 400px;
+        flex: 2;
+    }
+}
+
+.labels-callid-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+
+    .label-callid {
+        padding: 4px;
+    }
+}
+
+.rtp-buttons-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .rtp-button {
+        flex: 1;
+        border: 5px solid rgba(0, 0, 0, 0.2);
+        margin: 2px;
+        text-align: center;
+        font-size: 12px;
+        padding: 1rem 0;
+        border-radius: 1rem;
+        color: white;
+        cursor: pointer;
+
+        &.off {
+            opacity: 0.5;
+        }
+    }
+}
+
+.tab-group-metric-chart {
+    flex: 1;
+    min-height: 1px;
+}
+
+.chart-selector-panel {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.radio-selection {
+    margin-top: -12px;
+    display: flex;
+    width: 100%;
+    height: 32px;
+
+    >div {
+        display: flex;
+        width: 100%;
+
+        .chart-type-display {
+            margin-left: 40px;
+            display: flex;
+        }
+    }
+}
+
+#chart-bar-cont {
+    flex-grow: 1;
+}
+
+.chart-selector {
+    height: 32px;
+    line-height: 0px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+
+#chart-selector-container {
+    height: 100%;
+    min-height: 100%;
+    flex: 1;
+    display: flex;
+    flex-flow: column;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.container-inner-position {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: space-between;
+}

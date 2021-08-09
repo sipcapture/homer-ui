@@ -1,0 +1,24 @@
+<div class="chart-wrapper"
+  *ngIf="isData; else hasNotData"
+  (mouseout)="hideTooltip()">
+  <canvas baseChart
+    width="inherit"
+    height="inherit"
+    [datasets]="datasets"
+    [chartType]="chartType"
+    [options]="options"
+    [colors]="colors"
+    [labels]="labels"
+    [legend]="false"
+    [style]="style"></canvas>
+</div>
+<ng-template #hasNotData>
+  <div class="nodata chart-wrapper">
+    <div class="nodata-card">
+      <div class="text-container">
+        <h1>No Data</h1>
+
+      </div>
+    </div>
+  </div>
+</ng-template>

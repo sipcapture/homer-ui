@@ -61,7 +61,7 @@
         },
         "widget": "Widget",
         "grafana": "Grafana",
-        "hepic": "HEPIC", 
+        "homer": "homer",
         "words": {
             "success": {
                 "successfully": "successfully",
@@ -127,7 +127,7 @@
             "sum": "Sum"
         }
     },
-   
+
     "alert": {
         "copyFullErrorMessage": "Copy Full Error Message",
         "hide": "Hide",
@@ -301,7 +301,7 @@
             "grafanaControl": {
                 "title": "@LINK.grafana@ Settings",
                 "grafanaTimestamp": "Sync with @LINK.dashboard@",
-                "grafanaProxy": "Use @LINK.hepic@ proxy for @LINK.grafana@ iFrame"
+                "grafanaProxy": "Use @LINK.homer@ proxy for @LINK.grafana@ iFrame"
             },
             "export": "Export @LINK.dashboard@ Settings"
         },
@@ -477,9 +477,9 @@
         "gridDataIntoChart": "Aggregate Grid Data into a Chart"
     },
     "preference": {
-        "settings": "Settings",                
+        "settings": "Settings",
         "invalidJSON": "The Server returned an invalid JSON response.",
-        "filter": "Filter",        
+        "filter": "Filter",
         "roles": {
             "admin": "admin",
             "support": "support",
@@ -529,8 +529,8 @@
         },
         "system-overview": {
             "dialog": {
-                "title": "@LINK.hepic@ Config Nodes synchronisation",
-                "warning": "You are about to sync Configs between two @LINK.hepic@ nodes. Are you SURE?",
+                "title": "@LINK.homer@ Config Nodes synchronisation",
+                "warning": "You are about to sync Configs between two @LINK.homer@ nodes. Are you SURE?",
                 "destination": "@LINK.callTerms.destination@",
                 "source": "@LINK.callTerms.source@",
                 "tables": "Tables"
@@ -655,7 +655,7 @@
                 "setting": "Setting",
                 "statistics": "Statistics",
                 "lastLogin": "Last Login:",
-                "lastPassword": "Last Password Change:" 
+                "lastPassword": "Last Password Change:"
             }
         },
         "pageReset":{
@@ -672,7 +672,7 @@
             "make_rtp_agent_dump": "Dump Rtpagent Config",
             "make_pic_server_dump": "Dump Picserver Config",
             "make_logs_dump": "Dump Logs Config",
-            "make_hepic_app_dump": "Dump HepicAPP Config",
+            "make_homer_app_dump": "Dump HomerAPP Config",
             "button_export": "EXPORT",
             "button_dump": "DUMP"
 
@@ -745,7 +745,7 @@
                 "description": "Description",
                 "panel": "Panel",
                 "loginError": "Invalid Login Or Password, please correct it in Advanced Settings"
-            
+
             }
         },
         "influxDBChart": {
@@ -802,7 +802,7 @@
                 "title": "Panel title",
                 "columns": "Columns",
                 "mapping": "@LINK.mapping@"
-                
+
             },
             "enterOrPickIP":"Enter {{item.selection}} or Pick List"
         },

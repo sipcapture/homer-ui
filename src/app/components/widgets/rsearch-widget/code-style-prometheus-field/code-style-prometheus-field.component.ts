@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, AfterViewInit, Output, EventEmitter, Input } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { SearchRemoteService, PreferenceAdvancedService } from '@app/services';
 
 @Component({
   selector: 'app-code-style-prometheus-field',
@@ -8,17 +7,17 @@ import { SearchRemoteService, PreferenceAdvancedService } from '@app/services';
   styleUrls: ['./code-style-prometheus-field.component.scss']
 })
 export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit {
-  divHTML: any;
-  divText: any;
-  serverLoki: any;
-  editor: any;
+  divHTML: string;
+  divText: string;
+  serverLoki: string;
+  editor: HTMLElement;
   isLabel = true;
-  _queryText: any;
+  _queryText: string;
 
   lokiConnectionDisapper = false;
 
-  menuTitle: any;
-  private _menuDOM: any;
+  menuTitle: string;
+  private _menuDOM: HTMLElement;
   private lastMenuXPosition = 0;
 
   @Input() set queryText(val) {
@@ -31,10 +30,10 @@ export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit 
   @Input() arrayForMenu: Array<any> = [];
   @Output() updateData: EventEmitter<any> = new EventEmitter();
   @Output() keyEnter: EventEmitter<any> = new EventEmitter();
-  @ViewChild('divContainer', { static: false }) divContainer: any;
-  @ViewChild(MatMenuTrigger, { static: false }) trigger: any;
+  @ViewChild('divContainer', { static: false }) divContainer;
+  @ViewChild(MatMenuTrigger, { static: false }) trigger: MatMenuTrigger;
 
-  popupList: any;
+  popupList: Array<string>;
 
   constructor() { }
 
@@ -50,7 +49,7 @@ export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit 
     // this.arrayForMenu = [];
   }
 
-  triggerNavMenu(action: any = null) {
+  triggerNavMenu(action: string = null) {
     switch (action) {
       case 'ArrowUp': case 'ArrowDown':
         this.trigger.menu.focusFirstItem();
@@ -63,8 +62,8 @@ export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit 
     }
 
   }
-  onKeyDownDiv(event: any) {
-    if (!!({ ArrowDown: 1, ArrowUp: 1, Enter: 1 })[event.key as string]) {
+  onKeyDownDiv(event) {
+    if (!!({ ArrowDown: 1, ArrowUp: 1, Enter: 1 })[event.key]) {
       this.triggerNavMenu(event.key);
       event.preventDefault();
       return;
@@ -88,7 +87,7 @@ export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit 
   }
   private getCaretPosition() {
     try {
-      const d = window.getSelection()?.anchorNode?.parentNode as HTMLElement;
+      const d = window.getSelection().anchorNode.parentNode as HTMLElement;
       this.lastMenuXPosition = Math.round(d.getBoundingClientRect().left);
       return Math.round(d.getBoundingClientRect().left);
     } catch (e) {
@@ -96,20 +95,21 @@ export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit 
     }
   }
   gatObjectLabels() {
-    const labels = this.arrayForMenu.map((i: any) => {
-      return i.match(/\{(.+)\}/g)[0]
+    const labels = this.arrayForMenu.map(i => {
+      return i.match(/\{(.+)\}/g).find(i => !!i)
         .replace(/[\{\}\s\"]{1}/g, '')
         .split(',')
-        .map((j: any) => j.split('='));
+        .map(j => j.split('='));
     }).reduce((a, b) => {
       a = a.concat(b);
       return a;
-    }, []).reduce((a: any, b: any) => {
-      if (!a[b[0]]) {
-        a[b[0]] = [];
+    }, []).reduce((a, b) => {
+      const [first, seccond] = b;
+      if (!a[first]) {
+        a[first] = [];
       }
-      if (a[b[0]].indexOf(b[1]) === -1) {
-        a[b[0]].push(b[1]);
+      if (a[first].indexOf(seccond) === -1) {
+        a[first].push(seccond);
       }
       return a;
     }, {});
@@ -117,7 +117,7 @@ export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit 
   }
   getLabels() {
     const readyAdded = this.getObject(this.editor.innerText);
-    this.popupList = Object.keys(this.gatObjectLabels()).filter((i: any) => {
+    this.popupList = Object.keys(this.gatObjectLabels()).filter(i => {
       return Object.keys(readyAdded).indexOf(i) === -1;
     });
 
@@ -129,7 +129,7 @@ export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit 
       this.editor.focus();
     }
   }
-  getVariabls(label: any = null) {
+  getVariabls(label: string = null) {
     setTimeout(() => {
       label = label || this.editor.innerText.split(',').pop().replace(/[\=\"\,\{\}]+/g, '');
       this.isLabel = false;
@@ -144,14 +144,14 @@ export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit 
       }
     }, 10);
   }
-  onKeyUpDiv(event: any) {
+  onKeyUpDiv(event):void {
     if (this.editor.innerText === '' || [17, 16].indexOf(event.keyCode) !== -1) {
-      return true;
+      return;
     }
-    if (!!({ ArrowDown: 1, ArrowUp: 1, Enter: 1 })[event.key as string]) {
+    if (!!({ ArrowDown: 1, ArrowUp: 1, Enter: 1 })[event.key]) {
       this.triggerNavMenu(event.key);
       event.preventDefault();
-      return true;
+      return;
     }
 
     if ([8, 221].indexOf(event.keyCode) !== -1) {
@@ -160,13 +160,13 @@ export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit 
       }
       if (this.editor.innerText === '') {
         this.trigger.closeMenu();
-        return true;
+        return;
       }
       event.preventDefault();
-      return false;
+      return;
     }
     if ([219, 222, 188, 187, 192].indexOf(event.keyCode) !== -1) {
-      const [getLastLetter] = window.getSelection()?.anchorNode?.textContent?.split('') || [];
+      const [getLastLetter] = window.getSelection().anchorNode.textContent.split('');
 
       if ('(' === getLastLetter) { // ()
         this.editor.innerText = '()';
@@ -187,7 +187,7 @@ export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit 
         this.getVariabls();
       } else {
         const o = this.getObject(this.editor.innerText);
-        const _label = Object.keys(o).filter((i: any) => o[i] === null);
+        const _label = Object.keys(o).filter(i => o[i] === null);
         if (_label.length > 0) {
           this.getVariabls(_label[0]);
         } else {
@@ -198,25 +198,25 @@ export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit 
     } else {
       this.trigger.closeMenu();
     }
-    return true;
+    return;
   }
-  getObject(str: any) {
+  getObject(str: string) {
     if (str.match(/\{.*\}/g)) {
-      str = str.match(/\{.*\}/g)[0];
+      str = str.match(/\{.*\}/g).find(i => !!i);
     }
     const json = str.replace(/\{|\}/g, '')
       .split(',')
-      .map((i: any) => {
+      .map(i => {
         if (i.indexOf('=') === -1) {
           i += ':';
         }
         return i;
       }).join(',')
       .replace(/\=/g, ':')
-      .replace(/[a-zA-Z-]+/g, (a: any, b: any) => `"${a}"`)
+      .replace(/[a-zA-Z-]+/g, (a, b) => `"${a}"`)
       .replace(/\"\"/g, '"')
       .replace(/\s/g, '')
-      .replace(/^.*$/g, (a: any) => `{${a}}`)
+      .replace(/^.*$/g, a => `{${a}}`)
       .replace(',}', '}')
       .replace(':}', ': null}')
       .replace('":"}', '": null}')
@@ -230,10 +230,10 @@ export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit 
       return json;
     }
   }
-  getRegExpString(str: any) {
+  getRegExpString(str) {
     return str.split(/\{.*\}\s*/g)[1] || '';
   }
-  onMenuMessage(item: any, event: any = null) {
+  onMenuMessage(item, event: any = null) {
     if (!event || (event.keyCode === 13 || event.keyCode === 32)) {
       if (this.isLabel) {
         this.typeInTextarea(item + '=');
@@ -248,17 +248,17 @@ export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit 
         this.restoreSelection(c, c);
       }
     }
-    if (event?.keyCode === 27) {
+    if (event && event.keyCode === 27) {
       this.trigger.closeMenu();
     }
   }
 
-  private setStyleCodeColors(str: any) {
+  private setStyleCodeColors(str) {
     const s = str.match(/[\{\}\=, ]{1}|[^\{\}\=, ]+/g);
     if (!s) {
       return '';
     }
-    return s.map((i: any) => {
+    return s.map(i => {
       let cssClass = 'Pwhite';
       if ('{}'.indexOf(i) !== -1) {
         cssClass = 'Pbracket';
@@ -277,10 +277,10 @@ export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit 
     }).join('');
   }
 
-  private getTextSegments(element: any) {
-    const textSegments: any = [];
+  private getTextSegments(element) {
+    const textSegments = [];
     try {
-      Array.from(element.childNodes).forEach((node: any) => {
+      Array.from(element.childNodes).forEach((node: Node) => {
         switch (node.nodeType) {
           case Node.TEXT_NODE:
             textSegments.push({ text: node.nodeValue, node });
@@ -298,14 +298,14 @@ export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit 
     return textSegments;
   }
 
-  private updateEditor(event: any, setEnd = false) {
-    const sel: any = window.getSelection();
+  private updateEditor(event, setEnd = false) {
+    const sel = window.getSelection();
     const textSegments = this.getTextSegments(this.editor);
-    const textContent = textSegments.map(({ text }: any) => text).join('');
+    const textContent = textSegments.map(({ text }) => text).join('');
     let anchorIndex = null;
     let focusIndex = null;
     let currentIndex = 0;
-    textSegments.forEach(({ text, node }: any) => {
+    textSegments.forEach(({ text, node }) => {
       if (node === sel.anchorNode) {
         anchorIndex = currentIndex + sel.anchorOffset;
       }
@@ -332,8 +332,8 @@ export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit 
     });
   }
 
-  private restoreSelection(absoluteAnchorIndex: any, absoluteFocusIndex: any) {
-    const sel: any = window.getSelection();
+  private restoreSelection(absoluteAnchorIndex, absoluteFocusIndex) {
+    const sel = window.getSelection();
     const textSegments = this.getTextSegments(this.editor);
     let anchorNode = this.editor;
     let anchorIndex = 0;
@@ -341,7 +341,7 @@ export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit 
     let focusIndex = 0;
     let currentIndex = 0;
 
-    textSegments.forEach(({ text, node }: any) => {
+    textSegments.forEach(({ text, node }) => {
       const startIndexOfNode = currentIndex;
       const endIndexOfNode = startIndexOfNode + text.length;
       if (startIndexOfNode <= absoluteAnchorIndex && absoluteAnchorIndex <= endIndexOfNode) {
@@ -358,8 +358,8 @@ export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit 
       sel.setBaseAndExtent(anchorNode, anchorIndex, focusNode, focusIndex);
     } catch (err) { }
   }
-  private typeInTextarea(str: any) {
-    const sel: any = window.getSelection() as Selection;
+  private typeInTextarea(str) {
+    const sel = window.getSelection() as Selection;
     const el = sel.anchorNode.parentNode as HTMLElement;
     const start = sel['baseOffset'] || 0;
     const end = sel['extentOffset'] || 0;

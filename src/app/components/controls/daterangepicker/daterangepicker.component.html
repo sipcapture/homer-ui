@@ -132,7 +132,7 @@
                                             (keydown.ArrowUp)="change($event, 'hour', 'left', true); $event.preventDefault()"
                                             (keydown.ArrowDown)="change($event,'hour', 'left', false); $event.preventDefault()"
                                             (blur)="change($event, 'hour','left')"
-                                            [value]="timepickerVariables.left.selectedHour">
+                                            [(ngModel)]="timepickerVariables.left.selectedHour">
                                     </mat-form-field>
 
                                 </td>
@@ -147,7 +147,7 @@
                                             (keydown.ArrowUp)="change($event, 'minute', 'left', true); $event.preventDefault()"
                                             (keydown.ArrowDown)="change($event, 'minute', 'left', false); $event.preventDefault()"
                                             (blur)="change($event,'minute','left')"
-                                            [value]="timepickerVariables.left.selectedMinute">
+                                            [(ngModel)]="timepickerVariables.left.selectedMinute">
                                     </mat-form-field>
                                 </td>
                                 <td>
@@ -161,7 +161,7 @@
                                             (keydown.ArrowUp)="change($event, 'second', 'left', true); $event.preventDefault()"
                                             (keydown.ArrowDown)="change($event, 'second', 'left', false); $event.preventDefault()"
                                             (blur)="change($event, 'second', 'left')"
-                                            [value]="timepickerVariables.left.selectedSecond">
+                                            [(ngModel)]="timepickerVariables.left.selectedSecond">
                                     </mat-form-field>
                                 </td>
                                 <td>
@@ -187,8 +187,8 @@
                         [(ngModel)]="timepickerTimezone"
                         (ngModelChange)="timeZoneChanged($event)">
                         <mat-optgroup *ngFor="let region of parsedTimeZones | keyvalue"
-                            [label]="'' + region.key || ''">
-                            <mat-option *ngFor="let timeZone of region.value"
+                            [label]="region.key +''">
+                            <mat-option *ngFor='let timeZone of region.value | keyvalue'
                                 [value]="timeZone">
                                 {{timeZone | timeZone:'location'}} {{timeZone | timeZone:'offset'}}
                             </mat-option>
@@ -310,7 +310,7 @@
                                             (keydown.ArrowUp)="change($event, 'hour', 'right', true); $event.preventDefault()"
                                             (keydown.ArrowDown)="change($event,'hour', 'right', false); $event.preventDefault()"
                                             (blur)="change($event, 'hour','right')"
-                                            [value]="timepickerVariables.right.selectedHour">
+                                            [(ngModel)]="timepickerVariables.right.selectedHour">
                                     </mat-form-field>
                                 </td>
                                 <td>
@@ -324,7 +324,7 @@
                                             (keydown.ArrowUp)="change($event, 'minute', 'right', true); $event.preventDefault()"
                                             (keydown.ArrowDown)="change($event, 'minute', 'right', false); $event.preventDefault()"
                                             (blur)="change($event,'minute','right')"
-                                            [value]="timepickerVariables.right.selectedMinute">
+                                            [(ngModel)]="timepickerVariables.right.selectedMinute">
                                     </mat-form-field>
                                 </td>
                                 <td>
@@ -338,7 +338,7 @@
                                             (keydown.ArrowUp)="change($event, 'second', 'right', true); $event.preventDefault()"
                                             (keydown.ArrowDown)="change($event, 'second', 'right', false); $event.preventDefault()"
                                             (blur)="change($event, 'second', 'right')"
-                                            [value]="timepickerVariables.right.selectedSecond">
+                                            [(ngModel)]="timepickerVariables.right.selectedSecond">
                                     </mat-form-field>
                                 </td>
                                 <td>

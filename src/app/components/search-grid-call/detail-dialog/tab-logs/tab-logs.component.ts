@@ -1,47 +1,52 @@
-import { Component, OnInit, Input } from '@angular/core';
-export interface HepLog {
-    timestamp: string;
-    message: string;
-}
+import { Component, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef, EventEmitter, Output, AfterViewInit } from '@angular/core';
+import { Functions } from '@app/helpers/functions';
+
 @Component({
   selector: 'app-tab-logs',
   templateUrl: './tab-logs.component.html',
-  styleUrls: ['./tab-logs.component.scss']
+  styleUrls: ['./tab-logs.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TabLogsComponent {
-    showTs = false;
+export class TabLogsComponent implements OnInit, AfterViewInit {
     _data: any;
-    _d: any;
-    dataSource: Array<HepLog> = [];
-    displayedColumns: string[] = ['timestamp', 'message'];
+
     get data() {
         return this._data;
     }
     @Input('data') set data(val) {
-        this._d = JSON.parse(JSON.stringify(val));
-        this._data = this.filterPayload([...this._d]);
+        if (!val) {
+            return;
+        }
+        this._data = Functions.cloneObject(val);
 
         // Compact Objects
-
-        this._data.forEach((i: any) =>  {
+        this._data.forEach(i => {
             try {
-                i.payload.raw = JSON.parse(i.payload.raw);
+                i.payload.raw = Functions.JSON_parse(i.payload.raw);
             } catch (e) { }
 
             try {
-                if (i.payload.raw) {
-                    i.payload = {
-                        timestamp: i.payload.create_date,
-                        message: i.payload.raw
-                    };
-                    this.dataSource.push(i.payload);
-                }
+                i.payload = {
+                    message: i.payload.raw,
+                    timestamp: new Date(i.payload.create_date),
+                    raw: i.payload
+                };
                 delete i.payload.raw.raw;
             } catch (e) { }
         });
+        this.cdr.detectChanges();
+    }
+    @Output() ready: EventEmitter<any> = new EventEmitter();
+    constructor(private cdr: ChangeDetectorRef) { }
+
+    ngOnInit() {
+    }
+    ngAfterViewInit() {
+
+        setTimeout(() => {
+            this.ready.emit({});
+        }, 100)
     }
 
-    filterPayload(arr) {
-        return arr.filter(f => f.payload.payloadType === 100);
-    }
+
 }

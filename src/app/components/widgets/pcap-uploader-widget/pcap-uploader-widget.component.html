@@ -1,0 +1,34 @@
+<app-loading-circle *ngIf="inProgress">
+</app-loading-circle>
+<form [hidden]="!!filename"
+    style="height: 100%;">
+    <div class="file-upload-container">
+        <label for="fileSelect"
+            [className]="'fileselect' + (idDrugOver ? ' drugOver' : '')"></label>
+        <input placeholder=""
+            value=""
+            type="file"
+            id="fileSelect"
+            #fileSelect>
+        <!-- <fa-icon icon="upload"></fa-icon> -->
+    </div>
+</form>
+<ng-container *ngIf="filename && !inProgress">
+    <p>
+        {{ 'widgets.pcapUploader.widget.file' | translate }}<strong>{{ filename }}</strong>
+        <br />
+        {{ 'widgets.pcapUploader.widget.size' | translate }}<strong>{{ filesize }}Kb</strong>
+    </p>
+    <hr />
+    <mat-checkbox [(ngModel)]="isDataTimeNow">
+        {{ 'widgets.pcapUploader.widget.setDateTime' | translate }}
+    </mat-checkbox>
+    <hr />
+    <button mat-raised-button
+        (click)="filename = ''"
+        cdkFocusInitial>{{'LINK.buttons.clear' | translate}}</button>
+    <button mat-raised-button
+        color="primary"
+        (click)="onSubmit()"
+        cdkFocusInitial>Upload</button>
+</ng-container>

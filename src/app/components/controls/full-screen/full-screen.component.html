@@ -1,0 +1,39 @@
+
+    <div [style.min-height.px]="350"
+    [style.position]="'relative'"
+    #innerContainer
+    >
+    <div class="content-wrapper"
+        #content>
+        <button mat-icon-button
+            class="button-inside"
+            (click)="onFullPage()">
+            <mat-icon *ngIf="!isFullPage">fullscreen</mat-icon>
+            <mat-icon *ngIf="isFullPage">fullscreen_exit</mat-icon>
+        </button>
+          <mat-expansion-panel hideToggle class="menu-button">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <button mat-icon-button 
+                class="button-inside-menu">
+                
+                <mat-icon>menu</mat-icon>
+                </button>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <button mat-icon-button *ngIf="data.json !== undefined"
+            class="button-inside-menu"
+            (click)="download()">
+            
+            <mat-icon>file_download</mat-icon>
+            </button>
+            <form class="button-inside-menu upload">
+                <div class="file-upload-container">
+                <label for="fileSelect" class="fileselect"><mat-icon>file_upload</mat-icon></label>
+                <input placeholder="" value="" type="file" id="fileSelect" #fileSelect></div>
+            </form>
+          </mat-expansion-panel>
+        <ng-content></ng-content>
+    </div>
+    
+</div>

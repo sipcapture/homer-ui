@@ -1,0 +1,70 @@
+<div class="flex-container">
+    <div [style.flex]="rowData && 1 || 0" #tableDiv>
+        <input matInput
+            class="field-sticky"
+            type="text"
+            placeholder="Apply a display filter"
+            [(ngModel)]="textFilterGrid"
+            (keyup)="onKeyUpFilterTree()" />
+        <app-custom-table [details]="filterGrid(detailsTable)"
+            [columns]="columnsTable"
+            [isPaginator]="false"
+            (rowClick)="showMessage($event)"
+            (rowDblClick)="openDetails($event)"
+            ></app-custom-table>
+    </div>
+    <div [style.flex]="dataTree && 1 || (rowData ? 0: 1)" #frameDiv>
+        <input matInput
+            type="text"
+            class="field-sticky"
+            type="text"
+            placeholder="Apply a field filter"
+            [(ngModel)]="textFilterTree"
+            (keyup)="onKeyUpFilterTree()">
+        <mat-tree [dataSource]="dataSource"
+            [treeControl]="treeControl">
+            <mat-tree-node *matTreeNodeDef="let node"
+                [hidden]="!treeFilter(node)"
+                (mouseover)="tooltipService.show(node.description)"
+                (mouseout)="tooltipService.hide()"
+                matTreeNodePaddingIndent="20"
+                matTreeNodePadding>
+                <button mat-icon-button
+                    disabled></button>
+                <span class="line-html"
+                    [innerHTML]=" highlight(node.name) | html "></span>
+                <button mat-icon-button [hidden]="!rowData"
+                    (click)="setFilterGrid(node.description)">
+                    <mat-icon class="mat-icon-rtl-mirror">filter_list</mat-icon>
+                </button>
+
+            </mat-tree-node>
+
+            <mat-tree-node *matTreeNodeDef="let node;when: hasChild"
+                style="background-color: rgba(0,0,0,0.03);"
+                [hidden]="!treeFilter(node)"
+                (mouseover)="tooltipService.show(node.description)"
+                (mouseout)="tooltipService.hide()"
+                matTreeNodePaddingIndent="20"
+                matTreeNodePadding>
+                <button mat-icon-button
+                    matTreeNodeToggle
+                    [attr.aria-label]="'Toggle ' + node.name">
+                    <mat-icon class="mat-icon-rtl-mirror">
+                        {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                    </mat-icon>
+                </button>
+
+                <span class="line-html"
+                    [innerHTML]=" highlight(node.name) | html "></span>
+                <button mat-icon-button [hidden]="!rowData"
+                    (click)="setFilterGrid(node.description)">
+                    <mat-icon class="mat-icon-rtl-mirror">filter_list</mat-icon>
+                </button>
+
+            </mat-tree-node>
+
+        </mat-tree>
+    </div>
+</div>
+

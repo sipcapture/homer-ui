@@ -1,0 +1,103 @@
+<mat-toolbar class="title" color="primary">
+    <div>
+        {{ "preference.system-overview.dialog.title" | translate }}
+    </div>
+    <button mat-icon-button (click)="onNoClick()">
+        <fa-icon icon="times"></fa-icon>
+    </button>
+</mat-toolbar>
+<div mat-dialog-content>
+    <span style="color: red" class="blink_me">
+        
+        {{ "preference.system-overview.dialog.warning" | translate }}
+    </span>
+    <hr />
+    <div>
+        <mat-form-field style="padding-right: 1rem">
+            <mat-label>
+                {{ "preference.system-overview.dialog.source" | translate }}
+            </mat-label>
+            <mat-select
+                [formControl]="node_src"
+                (selectionChange)="onSelectionChange($event)"
+                id="node_src"
+            >
+                <mat-option
+                    *ngFor="let opt of nodeSelection"
+                    [disabled]="isDst(opt)"
+                    [value]="opt"
+                >
+                    {{ opt }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field style="padding-right: 1rem">
+            <mat-label>
+                {{ "preference.system-overview.dialog.destination" | translate }}
+            </mat-label>
+            <mat-select
+                [formControl]="node_dst"
+                (selectionChange)="onSelectionChange($event)"
+                id="node_dst"
+            >
+                <mat-option
+                    *ngFor="let opt of nodeSelection"
+                    [disabled]="isSrc(opt)"
+                    [value]="opt"
+                >
+                    {{ opt }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+  
+  <hr />
+  <div>
+    <mat-form-field style="padding-right: 1rem;">
+      <mat-label>Source</mat-label>
+      <mat-select [formControl]="node_src" (selectionChange)="onSelectionChange($event)" id="node_src">
+        <mat-option *ngFor="let opt of nodeSelection" [disabled]="isDst(opt)" [value]="opt">
+          {{opt}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field style="padding-right: 1rem;">
+      <mat-label>Destination</mat-label>
+      <mat-select [formControl]="node_dst" (selectionChange)="onSelectionChange($event)" id="node_dst">
+        <mat-option *ngFor="let opt of nodeSelection" [disabled]="isSrc(opt)" [value]="opt">
+          {{opt}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+
+    <mat-form-field style="padding-right: 1rem;">
+
+      <mat-label>{{ "preference.system-overview.dialog.tables" | translate }}</mat-label>
+      <mat-select multiple [formControl]="tables" (selectionChange)="onSelectionChange($event)" id="tables">
+        <mat-option class="sync-opt" *ngFor="let opt of tableSelection" [value]="opt">
+          {{opt }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+
+</div>
+
+<div mat-dialog-actions style="float: right; margin-bottom: 0rem">
+    <button mat-raised-button (click)="onNoClick()">
+        {{ "LINK.buttons.cancel" | translate }}
+    </button>
+    <button
+        mat-raised-button
+        class="setting-btn-ok"
+        cdkFocusInitial
+        [disabled]="!canSave"
+        (click)="onSubmit()"
+    >
+        {{ "LINK.buttons.sync" | translate }}
+    </button>
+</div>

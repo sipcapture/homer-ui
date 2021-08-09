@@ -1,0 +1,82 @@
+.timeline {
+    width: 100%;
+    max-height: calc(100vh - 8rem);
+    border: 0px solid lightgray;
+    font-size: 12px;
+}
+
+::ng-deep .vis-timeline.vis-bottom {
+    visibility: initial !important;
+}
+
+::ng-deep .vis-item {
+    &.vis-box {
+        border-right: 0px;
+    }
+
+    .vis-item-content {
+        padding: 0px;
+        background: white;
+
+        .timeline-card {
+            font-size: 11px;
+            text-align: left;
+            position: relative;
+            padding: 5px;
+
+            .back-color {
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                opacity: 0.3;
+                padding: 5px;
+                filter: drop-shadow(2px 1px 0px #4444dd);
+
+                .arrow {
+                    width: 0;
+                    height: 0;
+                    top: -1px;
+                    bottom: 0;
+                    right: -17px;
+                    position: absolute;
+                    border-style: solid;
+                    border-width: 15px 10px;
+                    border-top-color: transparent;
+                    border-right-color: transparent;
+                    border-bottom-color: transparent;
+                    
+                }
+            }
+
+            .header {
+                font-weight: bold;
+                font-size: 12px;
+                color: black;
+
+                big {
+                    width: 10px;
+                    height: 10px;
+                    background: green;
+                    padding: 5px;
+                    display: inline-block;
+                    border-radius: 10px;
+                    margin: 0px 5px;
+                }
+            }
+
+            .description {
+                color: green;
+            }
+
+            .info_date {
+                color: #333;
+            }
+
+            .diff {
+                color: #333;
+            }
+        }
+    }
+}

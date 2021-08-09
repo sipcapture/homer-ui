@@ -1,0 +1,144 @@
+<div *ngIf="!noData" style="height: 100%;">
+<mat-toolbar class="sidenav-toolbar chart-toolbar">
+    <button mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+    </button>
+</mat-toolbar>
+<mat-sidenav-container class="mat-sidenav-container" [hasBackdrop]="false">
+    <mat-sidenav-content>
+        <ag-charts-angular *ngIf="chartReady && options" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0;"
+            [options]="options">
+        </ag-charts-angular>
+    </mat-sidenav-content>
+    <mat-sidenav #sidenav mode="side" position="end">
+        <mat-tab-group mat-align-tabs="start">
+            <mat-tab label="Data" class="chart-selection-body">
+                <div class="settngs-chart-content">
+                <mat-form-field appearance="outline">
+                    <mat-label>{{ chartSideX }} Axis</mat-label>
+                    <mat-select [(ngModel)]="axisX" (ngModelChange)='updateChartType(chartSubType);'>
+                        <mat-option *ngFor="let item of this.allColumnIds" [value]='item.field'>
+                            {{item.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>{{ chartSideY }} Axis</mat-label>
+                    <mat-select [(ngModel)]="axisY" (ngModelChange)='updateChartType(chartSubType);'>
+                        <mat-option *ngFor="let item of this.allColumnIds" [value]='item.field'>
+                            {{item.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>{{ chartSideX }} Axis Label</mat-label>
+                    <input matInput [(ngModel)]="axisLabelX" (ngModelChange)="updateTitle()">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>{{ chartSideY }} Axis Label</mat-label>
+                    <input matInput [(ngModel)]="axisLabelY" (ngModelChange)="updateTitle()">
+                </mat-form-field>
+                </div>
+            </mat-tab>
+            <mat-tab label="Settings" class="chart-selection-body">
+                <div class="settngs-chart-content">
+                    <mat-form-field appearance="fill" style="width: 100%;">
+                        <mat-label>{{'LINK.title' | translate}}</mat-label>
+                        <input matInput [(ngModel)]="chartTitle" (ngModelChange)="updateTitle()">
+                    </mat-form-field>
+                    <section>
+                        <div class="chart-label">Column</div>
+                        <div class="chart-button-row">
+                            <div class="chart-flex-container">
+                                <div class="chart-button-container">
+                                    <button mat-button class="stacked" aria-label="Stacked" (click)="updateChartType('column_stacked');">
+                                        <img src="./assets/images/chart-samples/column-force-stacked.svg" height="30px" /> Stacked
+                                    </button>
+                                    
+                                </div>
+                                <div class="chart-button-container">
+                                    <button mat-button aria-label="Grouped" class="grouped" (click)="updateChartType('column_grouped');">
+                                      <img src="./assets/images/chart-samples/column-grouped.svg" height="30px" /> Grouped
+                                    </button>
+                                    
+                                </div>
+                
+                            </div>
+                        </div>
+                    </section>
+               
+                    <section>
+                        <div class="chart-label">Bar</div>
+                        <div class="chart-button-row">
+                            <div class="chart-flex-container">
+                                <div class="chart-button-container">
+                                    <button mat-button class="stacked" aria-label="Stacked" (click)="updateChartType('bar_stacked');">
+                                        <img src="./assets/images/chart-samples/bar-force-stacked.svg" height="30px" /> Stacked
+                                    </button>
+                               
+                                </div>
+                                <div class="chart-button-container">
+                                    <button mat-button class="grouped" aria-label="Grouped" (click)="updateChartType('bar_grouped');">
+                                        <img src="./assets/images/chart-samples/bar-grouped.svg" height="30px" /> Grouped  
+                                    </button>
+                                  
+                                </div>
+                       
+                            </div>
+                        </div>
+                    </section>
+                  
+                    <section>
+                        <div class="chart-label">Other</div>
+                        <div class="chart-button-row">
+                            <div class="chart-flex-container">
+                                <div class="chart-button-container">
+                                    <button mat-button class="stacked" aria-label="PIE" (click)="updateChartType('pie_normal');">
+                                        <img src="./assets/images/chart-samples/pie-chart.svg" height="30px" /> Pie
+                                    </button>
+                                </div>
+                           
+                      
+                                <div class="chart-button-container">
+                                    <button mat-button class="grouped" aria-label="Grouped" (click)="updateChartType('line_grouped');">
+                                        <mat-icon style="color:rgb(148, 186, 11)">show_chart</mat-icon> Line
+                                    </button>
+                                    </div>
+                               </div>
+                        </div>
+                    </section>
+                  
+             
+                
+                </div>
+            </mat-tab>
+       
+            <mat-tab label="Format" class="chart-selection-body">
+                <div class="settngs-chart-content">
+                <mat-form-field appearance="outline" *ngIf="this.chartType !== 'line'">
+                    <mat-label>{{ chartSideX }} Axis Format</mat-label>
+                    <mat-select [(ngModel)]="axisTypeX" (ngModelChange)='updateChartType(chartSubType);'>
+                        <mat-option *ngFor="let item of this.axisTypeList" [value]='item.value'>
+                            {{item.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>{{ chartSideY }} Axis Format</mat-label>
+                    <mat-select [(ngModel)]="axisTypeY" (ngModelChange)='updateChartType(chartSubType);'>
+                        <mat-option *ngFor="let item of this.axisTypeList" [value]='item.value'>
+                            {{item.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-sidenav>
+</mat-sidenav-container>
+</div>
+<div class="widget-warning"
+                *ngIf="noData">
+                <p>No query</p>
+				<p>Please make a search with Results Container targeting this widget</p>
+</div>

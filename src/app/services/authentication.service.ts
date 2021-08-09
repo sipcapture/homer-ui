@@ -7,66 +7,88 @@ import { environment } from '@environments/environment';
 import { User } from '@app/models';
 import { PreferenceUserSettingsService } from './preferences/user-settings.service';
 import * as _moment from 'moment';
-import { Functions } from '@app/helpers/functions';
+import { ConstValue } from '../models/const-value.model';
+import { AlertService } from './alert.service';
+import { Functions, setStorage } from '@app/helpers/functions';
+import { TranslateService } from '@ngx-translate/core';
 
 const moment: any = _moment;
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
-    private currentUserSubject: BehaviorSubject<User | null>;
-    public currentUser: Observable<User | null>;
+    private currentUserSubject: BehaviorSubject<User>;
+    public currentUser: Observable<User>;
 
     constructor(
         private http: HttpClient,
-        private preferenceUserSettingsService: PreferenceUserSettingsService
+        private preferenceUserSettingsService: PreferenceUserSettingsService,
+        private alertService: AlertService,
+        private translateService: TranslateService
     ) {
-        this.currentUserSubject = new BehaviorSubject<User | null>(JSON.parse('' + localStorage.getItem('currentUser')));
+        let ls: any;
+        try {
+            ls = JSON.parse(localStorage.getItem(ConstValue.CURRENT_USER));
+        } catch (err) {
+            console.error(err);
+            setTimeout(() => {
+                this.translateService.get('notifications.error.invalidJWT').subscribe(res => { 
+                    this.alertService.error(res);
+                })
+            }, 100);
+        }
+        this.currentUserSubject = new BehaviorSubject<User>(ls);
         this.currentUser = this.currentUserSubject.asObservable();
     }
 
-    public get currentUserValue(): User | null {
+    public get currentUserValue(): User {
         return this.currentUserSubject.value;
     }
-
-    login(username: string, password: string) {
-        return this.http.post<any>(`${environment.apiUrl}/auth`, { username, password })
+    getUserName(): string {
+        return Functions.JSON_parse(localStorage.getItem(ConstValue.CURRENT_USER))?.user?.username;
+    }
+    getAuthList() {
+        return this.http.get<any>(`${environment.apiUrl}/auth/type/list`);
+    }
+    login(username: string, password: string, type: string) {
+        return this.http.post<any>(`${environment.apiUrl}/auth`, { username, password, type })
             .pipe(map(user => {
                 // login successful if there's a jwt token in the response
-                if (user && user.token) {
-                    // store user details and jwt token in local storage to keep user logged in between page refreshes
+                if (user && user.token && !user.force_password) {
                     user.user.username = username;
-                    moment.tz.setDefault(moment.tz.guess());
-                    localStorage.setItem('currentUser', JSON.stringify(user));
+                    // store user details and jwt token in local storage to keep user logged in between page refreshes
+                    setStorage(ConstValue.CURRENT_USER, user);
                     this.currentUserSubject.next(user);
+                    setTimeout(() => {
+                        this.getUserSettingTimeZone(user, username);
+                    });
+                } else {
+                    user.user.username = username;
+                    this.currentUserSubject.next(user);
+                    setTimeout(() => {
+                        this.getUserSettingTimeZone(user, username);
+                    });
                 }
-                setTimeout(() => {
-                    this.getUserSettingTimeZone(user, username);
-                });
                 return user;
             }));
     }
-
-    async getUserSettingTimeZone(user: any, username: any) {
+    async getUserSettingTimeZone(user, username) {
         try {
             const userSettingsData: any = await this.preferenceUserSettingsService.getCategory('system').toPromise();
-            const timezoneItem = userSettingsData.data.filter((i: any) =>
+            const timezoneItem = userSettingsData.data.filter(i =>
                 i.category === 'system' &&
                 i.username === username &&
                 i.param === 'timezone');
-
-            if (timezoneItem && timezoneItem[0] && timezoneItem[0].data && timezoneItem[0].data.name) {
-                user.timezone = timezoneItem[0].data;
-                moment.tz.setDefault(user.timezone.name);
-                localStorage.setItem('currentUser', JSON.stringify(user));
+            const [{ data }] = timezoneItem || [{}];
+            if (data?.name) {
+                user.timezone = data;
+                moment.tz.setDefault(data.name);
+                setStorage(ConstValue.CURRENT_USER, user);
             }
         } catch (err) { }
     }
-    getUserName(): string {
-        return Functions.JSON_parse('' + localStorage.getItem('currentUser')).user.username;
-    }
     logout() {
         // remove user from local storage to log user out
-        localStorage.removeItem('currentUser');
+        localStorage.removeItem(ConstValue.CURRENT_USER);
         this.currentUserSubject.next(null);
     }
 }

@@ -22,7 +22,6 @@ export class AuthGuard implements CanActivate {
                 returnUrl: state.url
             }
         });
-
         return false;
     }
 }

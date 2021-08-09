@@ -1,0 +1,11 @@
+<div class="agent-container" *ngIf="dataItem.data; else noAgents">
+  <h3>Agents</h3>
+  <div>
+    <ngx-json-viewer [json]="dataItem.data" [expanded]="false"></ngx-json-viewer>
+  </div>
+</div>
+<ng-template #noAgents> 
+  <div class="no-agents">
+    <h3>No Agents Active</h3>
+  </div>
+</ng-template>

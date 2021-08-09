@@ -88,4 +88,4 @@ import {Overlay, OverlayModule} from '@angular/cdk/overlay';
     OverlayModule
   ]
 })
-export class HepicMaterialModule {}
+export class HomerMaterialModule {}

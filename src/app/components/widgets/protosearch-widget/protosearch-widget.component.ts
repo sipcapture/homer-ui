@@ -1,24 +1,22 @@
 import {
+  Component,
   Input,
   Output,
-  Component,
-  ViewChild,
   EventEmitter,
-  AfterViewInit,
-  ChangeDetectorRef,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   OnInit,
   OnDestroy,
+  ViewEncapsulation,
+  AfterViewInit,
 } from '@angular/core';
+
 import { MatDialog } from '@angular/material/dialog';
 import { SettingProtosearchWidgetComponent } from './setting-protosearch-widget.component';
 import { Router } from '@angular/router';
 import { IWidget } from '../IWidget';
-import {
-  Subscription,
-  Observable
-} from 'rxjs';
-import { Functions } from '@app/helpers/functions';
+import { Subscription, Observable } from 'rxjs';
+import { Functions, log } from '@app/helpers/functions';
 import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 import { map, startWith } from 'rxjs/operators';
 
@@ -28,13 +26,18 @@ import {
   SessionStorageService,
   UserSettings,
   PreferenceMappingProtocolService,
-  SearchService
+  SearchService,
+  PreferenceAdvancedService,
+  PreferenceIpAliasService,
+  AlertService,
+  AuthenticationService,
 } from '@app/services';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { ConstValue } from '@app/models';
 import { FormControl } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 
-
-
+export declare type AddTagFn = ((term: string) => any | Promise<any>);
 interface SearchFieldItem {
   field_name: string;
   form_type: string;
@@ -42,6 +45,7 @@ interface SearchFieldItem {
   name: string;
   profile: string;
   selection: string;
+  selector?: Array<any>;
   type: string;
   value?: string;
 }
@@ -50,74 +54,114 @@ interface SearchFieldItem {
   selector: 'app-protosearch-widget',
   templateUrl: './protosearch-widget.component.html',
   styleUrls: ['./protosearch-widget.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
 })
 @Widget({
   title: 'Proto Search',
   description: 'Display Protocol Search Form',
   category: 'Search',
+  subCategory: 'Protocol',
   indexName: 'display-results',
   className: 'ProtosearchWidgetComponent',
   submit: true,
   minHeight: 300,
-  minWidth: 300
+  minWidth: 300,
 })
-export class ProtosearchWidgetComponent implements IWidget, OnInit, AfterViewInit, OnDestroy {
-  @Input() id: any;
-  _config: any;
-  @Input() set config(value: any) {
-    this._config = value;
-  }
-  get config() {
-    return this._config;
-  }
-  _fields = [];
-  @Input() set fields(val: any) {
-    this._fields = Functions.cloneObject(val);
-    this.cdr.detectChanges();
-  }
-  get fields(): any {
-    return this._fields;
-  }
+export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, AfterViewInit {
 
+  @Input() id: string;
+  @Input() config: any;
+  @Input() fields = [];
   @Input() autoline = false;
   @Input() targetResultId = null;
   @Output() changeSettings = new EventEmitter<any>();
   @Output() dosearch = new EventEmitter<any>();
+  private subscriptionStorage: Subscription;
+  private dashboardEventSubscriber: Subscription;
+  isReset = false;
 
-
-  private subscriptionStorage: any;
-  private dashboardEventSubscriber: any;
-
-  /* LOKI */
-  lokiQueryText: any;
+  defaultContainer = {
+    id: 'Default',
+    title: 'Default',
+    type: 'page',
+  };
+  locationNode: any = null;
+  profileFields: [];
+  lokiQueryText: string;
   searchQueryLoki: any;
-
+  isDefaultSearchType;
+  defaultSearchTypes: any;
   countFieldColumns = 1;
+  searchTabs: any;
   _cache: any;
+  orLogic = false;
   buttonState = true;
   searchQuery: any;
-
-  widgetId: any;
-  widgetResultList: any;
-  widgetResultListLastSelect: any;
+  profile_fields;
+  profileList;
+  widgetId: string;
+  widgetResultList: Array<any>;
+  widgetResultListLastSelect: string;
   isConfig = false;
+  // status chips config
   mapping: any;
+
+  currentProtocol: string;
+  chipsObj: {};
+  aliasObj: {};
+  visible = true;
+  selectable = true;
+  removable = true;
+  addOnBlur = true;
+  readonly separatorKeysCodes: number[] = [ENTER, COMMA];
+  aliasSelection = 'alias';
+  aliases = [];
+  searchFunctions: any;
   targetResultsContainerValue = new FormControl();
-  _lastInterval: any;
+  firstWidgetContainer: any;
+  noFunctions = false;
+  isWidgetInited = false;
   constructor(
     public dialog: MatDialog,
     private router: Router,
     private searchService: SearchService,
+    private _pas: PreferenceAdvancedService,
     private _sss: SessionStorageService,
-    private _ds: DashboardService,
+    private dashboardService: DashboardService,
+    private _ipas: PreferenceIpAliasService,
     private cdr: ChangeDetectorRef,
-    private preferenceMappingProtocolService: PreferenceMappingProtocolService) { }
+
+    private preferenceMappingProtocolService: PreferenceMappingProtocolService,
+    private alertService: AlertService,
+    private authenticationService: AuthenticationService,
+    private translateService: TranslateService
+  ) {
+    translateService.addLangs(['en'])
+    translateService.setDefaultLang('en')
+  }
+
+  ngAfterViewInit() {
+    this.chipsObj = {};
+    this.aliasObj = {};
+  }
 
   async ngOnInit() {
+    // SET DEFAULT CONTAINER
+    this.targetResultsContainerValue.setValue([
+      this.defaultContainer,
+    ]);
+    // log('setValue', this.targetResultsContainerValue.value);
+
+    // await this.getIpAliases();
+
+    this.aliasObj = Functions.getAliasFields(this.aliases);
     WidgetArrayInstance[this.id] = this as IWidget;
+
+
     if (!this.config) {
       this.isConfig = false;
+
       this.config = {
         id: this.id,
         title: 'Proto Search',
@@ -128,168 +172,475 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, AfterViewIni
         sizeX: 2,
         sizeY: 2,
         config: {
-          title: 'Call SIP Search',
-          searchbutton: false,
+          title: 'TDR CALL SEARCH',
+          searchbutton: true,
           protocol_id: {
-            name: 'SIP',
-            value: 1
+            name: 'TDR',
+            value: 60,
           },
           protocol_profile: {
-            name: 'call',
-            value: 'call'
-          }
+            name: 'call_h20',
+            value: 'call_h20',
+          },
+          fields: [{
+            field_name: 'callid',
+            form_default: null,
+            form_type: 'input',
+            hepid: 60,
+            name: '60:call_h20:callid',
+            selection: 'Call-ID',
+            type: 'string',
+            value: ''
+          },
+          {
+            field_name: 'targetResultsContainer',
+            form_default: null,
+            hepid: 60,
+            name: '60:call_h20:targetResultsContainer',
+            selection: 'Results Container',
+            type: 'string'
+          }],
+
         },
-        uuid: 'ed426bd0-ff21-40f7-8852-58700abc3762',
-        fields: [],
+        uuid: Functions.newGuid(),
+        fields: [{
+          field_name: 'callid',
+          form_default: null,
+          form_type: 'input',
+          hepid: 60,
+          name: '60:call_h20:callid',
+          selection: 'Call-ID',
+          type: 'string',
+          value: ''
+        },
+        {
+          field_name: 'targetResultsContainer',
+          form_default: null,
+          hepid: 60,
+          name: '60:call_h20:targetResultsContainer',
+          selection: 'Results Container',
+          type: 'string'
+        }],
         countFieldColumns: this.countFieldColumns,
         row: 0,
         col: 1,
         cols: 2,
         rows: 2,
         x: 0,
-        y: 1
+        y: 0,
       };
+      this.isConfig = true;
+      this.isWidgetInited = true;
+      this.cdr.detectChanges()
     } else {
       this.isConfig = true;
+      this.isWidgetInited = true;
     }
-
-    this.widgetId = this.id || '_' + Functions.md5(JSON.stringify(this.config));
-
+    this.widgetId =
+      this.id || '_' + Functions.md5(JSON.stringify(this.config));
+    this.config.id = this.id;
     this.config.config = this.config.config || {};
-    this.config.fields = (this.config.fields || []).map((item: any) => {
+    this.config.fields = (this.config.fields || []).map((item) => {
       item.value = '';
       return item;
     });
-    this.mapping = await this.preferenceMappingProtocolService.getAll().toPromise();
+    this.fields = this.config.fields || [];
+    this.mapping = await this.preferenceMappingProtocolService
+      .getMerged()
+      .toPromise();
+    this.searchFunctions = await this._pas.getAll().toPromise();
+    this.searchFunctions = this.searchFunctions?.data?.filter(
+      ({ category, param }) => category === 'search' && param === 'functions'
+    );
+    if (this.searchFunctions?.[0]?.data?.length) {
+      this.searchFunctions = this.searchFunctions[0].data;
+    } else {
+      this.noFunctions = true;
+    }
     this.updateButtonState();
+
     this.initSubscribes();
+
+    this.cdr.detectChanges();
+
   }
-  ngAfterViewInit() {
+
+  async getIpAliases() {
+    try {
+      const alias: any = await this._ipas.getAll();
+      if (alias?.data) {
+        this.aliases = alias.data;
+      }
+    } catch (err) { }
+  }
+
+  isAliasField(field) {
+    return Functions.isAMF(field);
   }
   getFieldColumns() {
     if (this.autoline) {
       this.countFieldColumns = Math.min(4, this.fields.length);
     } else {
-      this.countFieldColumns = this.config.countFieldColumns || this.countFieldColumns;
+      this.countFieldColumns =
+        this.config && this.config.countFieldColumns
+          ? this.config.countFieldColumns
+          : this.countFieldColumns;
     }
-    return Array.from({ length: this.countFieldColumns }, (i: any) => '1fr').join(' ');
+    return Array.from(
+      { length: this.countFieldColumns },
+      (i) => `${100 / this.countFieldColumns}%`
+    ).join(' ');
+  }
+  async getDefaultSearchTypes() {
+    return await this._pas
+      .getSetting('search-types', 'custom-widget')
+      .then((types) => types[0].data);
+  }
+
+  private locationNodeRestore() {
+    const location = this.locationNode;
+    const cacheQuery = this.searchService.getLocalStorageQuery(true);
+    const item = this.fields?.find(
+      (i) =>
+        i.field_name === cacheQuery?.location?.mapping && i.form_default
+    );
+    if (!item || !location) {
+      return;
+    }
+    item.value = this.locationNode.value.map(
+      (i) => item.form_default.find((j) => j.value === i)?.name
+    );
+
+    this.cdr.detectChanges();
   }
 
   private initSubscribes() {
-    this.subscriptionStorage = this._sss.sessionStorage.subscribe((data: UserSettings) => {
-      this._cache = data.protosearchSettings[this.widgetId];
-      if (this._cache && this._cache.hasOwnProperty(ConstValue.serverLoki)) {
-        this.fields.forEach((item: any) => {
-          if (item.field_name === ConstValue.LIMIT) {
-            item.value = this._cache.limit;
-          }
-          if (item.field_name === ConstValue.CONTAINER) {
-            this.lokiQueryText = this._cache.text;
-          }
-        });
-      } else if (this._cache && this._cache.fields) {
-        const cacheQuery = this.searchService.getLocalStorageQuery();
-        this.fields.forEach((item: any) => {
-          if (item.hasOwnProperty('system_param') && item.mapping) {
-            const [constParam, collectionName, propertyName] = item.mapping.split('.');
-            if (constParam === 'param' &&
-              this._cache[collectionName] &&
-              this._cache[collectionName].mapping === propertyName
-            ) {
-              item.value = this._cache[collectionName].value;
+    this.subscriptionStorage = this._sss.sessionStorage.subscribe(
+      (data: UserSettings) => {
+        if (data.searchTabs?.length) {
+          log('this._sss.sessionStorage.subscribe:::', data);
+          this.searchTabs = data.searchTabs;
+          if (this.widgetResultList) {
+            this.widgetResultList = this.widgetResultList.filter(
+              (f) => f.type !== 'searchResultTab'
+            );
+            this.searchTabs.forEach((tab) => {
+              this.widgetResultList.push({
+                id: tab.id,
+                title: tab.name,
+                type: 'searchResultTab',
+              });
+            });
+            const firstWidget = this.widgetResultList.find(
+              (f) => f.isDisplayGrid
+            );
+            if (firstWidget && !this.isLoki) {
+              this.targetResultsContainerValue.setValue([
+                firstWidget,
+              ]);
+              // log('setValue', this.targetResultsContainerValue.value)
             }
-          } else if (item.hasOwnProperty('profile')) {
-            const [f_field] = this._cache.fields.filter((i: any) => i.name === item.field_name);
-            item.value = f_field && f_field.value || '';
-          } else {
-            const [f_field] = this._cache.fields.filter((i: any) => i.name === item.field_name);
-            item.value = f_field && f_field.value || '';
-          }
-
-          if (item.formControl) {
-            item.formControl.setValue(item.value);
-          }
-          if (item.field_name === ConstValue.CONTAINER && item.value !== '') {
-            if (!Array.isArray(item.value)) {
-              this.targetResultsContainerValue.setValue([item.value]);
-            } else {
-              this.targetResultsContainerValue.setValue(item.value);
-            }
-          }
-
-          if (item.type &&
-            (item.type === 'integer' || item.type === 'number') &&
-            item.value !== '' && item.value !== null && !isNaN(item.value * 1)
-          ) {
-            item.value = item.value * 1;
-          }
-
-          if (item.type &&
-            item.type === 'boolean' &&
-            (item.value === 'true' || item.value === 'false')
-          ) {
-            item.value = item.value === 'true';
-          }
-
-          if (cacheQuery && cacheQuery.location &&
-            cacheQuery.location.mapping &&
-            item.field_name === cacheQuery.location.mapping &&
-            item.form_default
-          ) {
-            item.value = cacheQuery.location.value.map((i: any) => item.form_default.find((j: any) => j.value === i).name);
-          }
-        });
-      }
-      this.cdr.detectChanges();
-    });
-
-    this.dashboardEventSubscriber = this._ds.dashboardEvent.subscribe((data: DashboardEventData) => {
-      this.widgetResultList = data.currentWidgetList
-        .filter((i: any) => i.name === 'result' || i.name === 'display-results-chart')
-        .map((i: any) => ({
-          id: i.id,
-          title: i.config ? i.config.title : i.id,
-          type: 'widget'
-        }));
-      this.widgetResultList.push({
-        id: 'Default',
-        title: 'Default',
-        type: 'page'
-      });
-
-      this.fields.forEach((item: any) => {
-        if (item.field_name === ConstValue.CONTAINER) {
-          const _c = this._cache ? this._cache.fields.find((i: any) => i.name === ConstValue.CONTAINER) : null;
-          if (_c) {
-            if (!Array.isArray(_c.value)) {
-              this.targetResultsContainerValue.setValue([_c.value]);
-            } else {
-              this.targetResultsContainerValue.setValue(_c.value);
-            }
-            item.value = _c.value;
-          } else {
-            item.value = Functions.cloneObject(this.widgetResultList[0]);
-            if (!Array.isArray(item.value)) {
-              this.targetResultsContainerValue.setValue([item.value]);
-            } else {
-              this.targetResultsContainerValue.setValue(item.value);
-            }
+            this.cdr.detectChanges();
           }
         }
-      });
-    });
+        this._cache = data.protosearchSettings[this.widgetId];
+
+        // log("this._cache", this._cache);
+
+        if (this._cache) {
+          const { fields, location } = this._cache || {};
+
+          /** restore LOCATION NODE */
+          this.locationNode = location;
+
+          if (fields) {
+            const arrfields = [].concat(
+              fields.find((f) => f.type === 'array_string') || []
+            );
+            arrfields?.forEach((field) => {
+              if (field.value.length > 0) {
+                this.chipsObj[
+                  field.name
+                ] = field.value.map((m) => ({ val: m }));
+              }
+            });
+          }
+        }
+
+        if (data.searchTabs) {
+          this.searchTabs = data.searchTabs;
+        }
+        if (data.profile_fields) {
+          this.profileFields = data.profile_fields;
+        }
+
+        if (
+          this._cache?.hasOwnProperty(ConstValue.serverLoki)
+        ) {
+          this.fields?.forEach((item) => {
+            if (item.field_name === ConstValue.LIMIT) {
+              item.value = this._cache.limit;
+            }
+            if (item.field_name === ConstValue.CONTAINER) {
+              this.lokiQueryText = this._cache.text;
+            }
+          });
+        } else if (this._cache?.fields) {
+          const cacheQuery = this.searchService.getLocalStorageQuery(
+            true
+          );
+          this.fields?.forEach((item) => {
+            if (
+              item.type === 'array_string' &&
+              !this.chipsObj[item.selection]
+            ) {
+              this.chipsObj[item.selection] = [];
+            }
+            if (
+              item.hasOwnProperty('system_param') && item?.mapping
+            ) {
+              const [
+                constParam,
+                collectionName,
+                propertyName,
+              ] = item.mapping.split('.');
+
+              if (
+                constParam === 'param' &&
+                this._cache?.[collectionName]?.mapping === propertyName
+              ) {
+                item.value = this._cache[collectionName].value;
+              }
+            } else if (item.hasOwnProperty('profile')) {
+              const f_field = this._cache.fields.find(
+                i => i.name === item.field_name
+              );
+              item.value = (f_field?.value) || '';
+            } else {
+              const f_field = this._cache.fields.find(
+                i => i.name === item.field_name
+              );
+              const func = (f_field?.func) || '';
+              if (!this.noFunctions && func !== '') {
+                item.func = this.searchFunctions.find(
+                  (_func) => _func.name === func.name
+                );
+              } else {
+                item.func = func;
+              }
+              item.value = (f_field && (f_field.source_value || f_field.value)) || '';
+            }
+
+            if (item.formControl) {
+              item.formControl.setValue(item.value);
+            }
+
+            if (
+              item.field_name === ConstValue.CONTAINER &&
+              item.value !== ''
+            ) {
+              if (!Array.isArray(item.value)) {
+                this.targetResultsContainerValue.setValue([
+                  item.value,
+                ]);
+                // log('setValue', this.targetResultsContainerValue.value)
+              } else {
+                this.targetResultsContainerValue.setValue(
+                  item.value
+                );
+                // log('setValue', this.targetResultsContainerValue.value)
+              }
+
+            }
+
+            if (
+              item.type &&
+              (item.type === 'integer' ||
+                item.type === 'number') &&
+              item.value !== '' &&
+              item.value !== null &&
+              !isNaN(item.value * 1)
+            ) {
+              item.value = item.value * 1;
+            }
+
+            if (
+              item.type &&
+              item.type === 'boolean' &&
+              (item.value === 'true' || item.value === 'false')
+            ) {
+              item.value = item.value === 'true';
+            }
+            this.locationNodeRestore();
+          });
+        }
+        this.cdr.detectChanges();
+      }
+    );
+    this.dashboardEventSubscriber = this.dashboardService.dashboardEvent.subscribe(
+      (data: DashboardEventData) => {
+        const dbs = DashboardService.dbSetting;
+        if (dbs.currentWidgetList.length > 0) {
+          this.widgetResultList = dbs.currentWidgetList
+            .filter(
+              (i) =>
+                (i?.name &&
+                  i?.name?.toLowerCase() === 'result') ||
+                (i?.name && i?.name === 'display-results-chart')
+            )
+            .map((i) => ({
+              id: i.id,
+              title: (i.config ? i.config.title : i.title ? i.title : i.id) || i.id,
+              type: 'widget',
+              isDisplayGrid:
+                i.strongIndex === 'ResultWidgetComponent',
+            }));
+        } else {
+          this.widgetResultList = [];
+        }
+        this.firstWidgetContainer = [
+          this.widgetResultList.length
+            ? this.widgetResultList.find(f => f.isDisplayGrid)
+            : this.defaultContainer
+        ];
+        this.widgetResultList.push({
+          id: 'Default',
+          title: 'Default',
+          type: 'page',
+        });
+        if (
+          typeof this.searchTabs !== 'undefined' &&
+          this.searchTabs.length > 0
+        ) {
+          this.searchTabs.forEach(f => {
+            this.widgetResultList.push({
+              id: f.id,
+              title: f.name,
+              type: 'searchResultTab',
+            });
+          });
+        }
+        if (
+          data.currentProfileList &&
+          data.currentProfileList.length > 0
+        ) {
+          this.profileList = data.currentProfileList.map((i) => ({
+            alias: i.alias,
+            profile: i.profile,
+            hepid: i.hepid,
+          }));
+        }
+        this.fields.forEach((item) => {
+          if (item.field_name === ConstValue.CONTAINER) {
+            const _c = this._cache
+              ? this._cache.fields.find(
+                (i) => i.name === ConstValue.CONTAINER
+              )
+              : null;
+            if (_c) {
+              if (!Array.isArray(_c.value)) {
+                this.targetResultsContainerValue.setValue([
+                  _c.value,
+                ]);
+                // log('setValue', this.targetResultsContainerValue.value)
+              } else {
+                this.targetResultsContainerValue.setValue(
+                  _c.value
+                );
+                // log('setValue', this.targetResultsContainerValue.value)
+              }
+              item.value = _c.value;
+            } else {
+              item.value = Functions.cloneObject(
+                this.widgetResultList[0] ||
+                this.defaultContainer
+              );
+              if (!Array.isArray(item.value)) {
+                this.targetResultsContainerValue.setValue([
+                  item.value,
+                ]);
+                // log('setValue', this.targetResultsContainerValue.value)
+              } else {
+                this.targetResultsContainerValue.setValue(
+                  item.value
+                );
+                // log('setValue', this.targetResultsContainerValue.value)
+              }
+            }
+            // log('[DB>]this.targetResultsContainerValue.value', this.targetResultsContainerValue.value);
+          }
+        });
+        if (this.widgetResultList.length <= 1) {
+          this.targetResultsContainerValue.setValue([this.defaultContainer])
+          this.targetResultsContainerValue.updateValueAndValidity();
+        }
+        this.cdr.detectChanges();
+      }
+    );
   }
+
+  addFunction(func: any, field: string) {
+    const fieldObj = this.fields[
+      this.fields.findIndex((object) => object.field_name === field)
+    ];
+    if (func.name === 'none') {
+      func.name = '';
+    }
+    if (func.isEmpty) {
+      if (fieldObj.formControl) {
+        fieldObj.formControl.setValue('');
+      }
+      if (
+        fieldObj.form_type === 'multiselect' ||
+        fieldObj.value instanceof Array
+      ) {
+        fieldObj.value = [];
+      } else {
+        fieldObj.value = '';
+      }
+    }
+    fieldObj.func = func;
+    this.saveState();
+    this.cdr.detectChanges();
+  }
+  isMulti(item) {
+    return [
+      'server_type_in',
+      'server_type_out',
+      'ipgroup_in',
+      'ipgroup_out',
+    ].includes(item);
+  }
+  getFunctionTooltip(func) {
+    if (func.description && func.guide) {
+      return func.description + ' Click to get more info';
+    } else if (func.guide) {
+      return 'Click to get more info';
+    } else {
+      return func.description;
+    }
+  }
+
   private updateButtonState() {
     this.buttonState = this.config.config.searchbutton;
 
-    /* clone Object */
     this.fields = Functions.cloneObject(this.config.fields);
-    if (!(this.config && this.config.config && this.config.config.protocol_profile)) {
+
+    if (
+      !(
+        this.config &&
+        this.config.config &&
+        this.config.config.protocol_profile
+      )
+    ) {
       return;
     }
-    const m = this.mapping.data.find((i: any) =>
-      i.profile === this.config.config.protocol_profile.value &&
-      i.hep_alias === this.config.config.protocol_id.name);
+
+    const m = this.mapping?.find(
+      (i) =>
+        i.profile === this.config.config.protocol_profile.value &&
+        i.hep_alias === this.config.config.protocol_id.name
+    );
 
     if (m && m.fields_mapping) {
       /* patch */
@@ -300,45 +651,71 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, AfterViewIni
           m.fields_mapping = [];
         }
       }
-      this.fields.forEach((i: any) => {
-        const f = m.fields_mapping.find((j: any) => j.id === i.field_name);
-        if (f && f.type) {
+      this.fields.forEach((i) => {
+        const f = m.fields_mapping.find((j) => j.id === i.field_name);
+
+        i.__mapping = f;
+
+        if (f?.type) {
           i.type = f.type;
         }
-        if (f && f.form_type) {
+        if (f?.form_type) {
           i.form_type = f.form_type;
           // if (i.form_type === 'number' || i.form_type === 'integer') {
           //     i.value = isNaN(i.value * 1) ? 0 : i.value * 1;
           // }
         }
-        if (f && f.system_param) {
+        if (f?.system_param) {
           i.system_param = f.system_param;
+        }
+        if (f?.system_param) {
           i.mapping = f.mapping;
         }
-
-        if (f && f.profile) {
-          i.profile = f.profile;
-        }
-
-        if (f && f.form_api) {
+        if (f?.form_api) {
           i.form_api = f.form_api;
         }
 
-        if (f && f.form_default) { /* high priority */
-          i.form_default = f.form_default;
-        } else if (i.form_api) { /* seccond priority */
-          this.preferenceMappingProtocolService.getListByUrl(i.form_api).toPromise().then((list: any) => {
-            if (list && list.data) {
-              i.form_default = list.data;
-            } else {
-              i.form_default = null;
-            }
-          });
-
-        } else {
-          i.form_default = null;
+        if (f?.profile) {
+          /**custom profiles inside search */
+          i.profile = f.profile;
         }
-        if (i && i.form_default !== null && i.form_type === 'input') {
+
+        if (f?.form_api) {
+          i.form_api = f.form_api;
+          this.preferenceMappingProtocolService
+            .getListByUrl(i.form_api)
+            .toPromise()
+            .then((list: any) => {
+              if (list && list.data) {
+                i.form_default = list.data;
+              } else {
+                if (f.form_default) {
+                  i.form_default = f.form_default;
+                }
+                i.form_default = null;
+              }
+              this.locationNodeRestore();
+            });
+        }
+        if (f?.form_default) {
+          /* high priority */
+          i.form_default = f.form_default;
+        } else if (i.form_api) {
+          /* seccond priority */
+          this.preferenceMappingProtocolService
+            .getListByUrl(i.form_api)
+            .toPromise()
+            .then((list: any) => {
+              if (list?.data) {
+                i.form_default = list.data;
+              } else {
+                i.form_default = null;
+              }
+            });
+        } else {
+          i.form_default = f?.form_default;
+        }
+        if (i?.form_default && i.form_type === 'input') {
           i.formControl = new FormControl();
           i.formControl.setValue(i.value);
           this.autocompliteFiltring(i);
@@ -347,6 +724,7 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, AfterViewIni
     }
     this.cdr.detectChanges();
   }
+
   private autocompliteFiltring(item: any) {
     const options: Array<any> = item.form_default;
     const _filter = (value: string): string[] => {
@@ -361,36 +739,52 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, AfterViewIni
       });
     };
 
-    const filteredOptions: Observable<string[]> =
-      item.formControl.valueChanges.pipe(
-        startWith(''),
-        map((value: string) => _filter(value))
-      );
+    const filteredOptions: Observable<
+      string[]
+    > = item.formControl.valueChanges.pipe(
+      startWith(''),
+      map((value: string) => _filter(value))
+    );
 
     item.filteredOptions = filteredOptions;
     this.cdr.detectChanges();
   }
+
   private saveState() {
     if (this.isLoki) {
+      this.searchQuery.fields = this.fields;
+      this.searchService.setLocalStorageQuery(
+        Functions.cloneObject(this.searchQuery)
+      )
       this._sss.saveProtoSearchConfig(this.widgetId, this.searchQuery);
       return;
     }
-    /*if(this.onlySmartField){
-     this.config = this._config
-    } */
+    let protocol = this.config.config.protocol_id.value;
+    const profile = this.config.config.protocol_profile.value;
     this.searchQuery = {
       fields: this.fields
         .filter((item: any) => {
           let b;
           if (typeof item.value === 'string') {
-            b = item.value !== '';
+            b =
+              item.value !== '' ||
+              (item.func && item.func.name !== 'None') ||
+              false;
           } else if (item.form_type === 'select') {
             b = true;
+          } else if (
+            item.type === 'array_string' &&
+            item.value instanceof Array
+          ) {
+            b = item.value.length > 0;
           } else if (['boolean'].includes(item.type)) {
             item.value = item.value === true;
             b = true;
           } else if (['number', 'integer'].includes(item.type)) {
-            b = item.value !== null && item.value !== undefined && !isNaN(item.value * 1);
+            b =
+              item.value !== null &&
+              item.value !== undefined &&
+              !isNaN(item.value * 1);
           } else if (item.value instanceof Array) {
             b = item.value.length > 0;
           } else if (item.field_name === ConstValue.CONTAINER) {
@@ -398,80 +792,148 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, AfterViewIni
           } else {
             b = false;
           }
-          return b && !item.hasOwnProperty('system_param') && !item.hasOwnProperty('profile');
+          return (
+            b &&
+            !item.hasOwnProperty('system_param') &&
+            !item.hasOwnProperty('profile')
+          );
         })
         .map((item: any) => ({
           name: item.field_name,
-          value: typeof item.value === 'object' ? item.value : String(item.value),
+          value:
+            typeof item.value === 'object'
+              ? item.value
+              : String(item.value),
+          func: item.func ? item.func : null,
           type: item.type,
-          hepid: item.hepid
+          hepid: item.hepid,
         })),
-      protocol_id: this.config.config.protocol_id.value + '_' + this.config.config.protocol_profile.value
-      // 1_call | 1_ default | 1_registration
+      protocol_id: protocol + '_' + profile, // 1_call | 1_ default | 1_registration
     };
 
     /* system params */
     this.fields.forEach((item: any) => {
       if (
         item.value &&
-        item.value !== '' &&
         item.hasOwnProperty('system_param') &&
         item.mapping !== ''
       ) {
-        const [constParam, collectionName, propertyName] = item.mapping.split('.');
+        const [
+          constParam,
+          collectionName,
+          propertyName,
+        ] = item.mapping.split('.');
+
         if (constParam === 'param' && collectionName) {
           if (item.value instanceof Array && item.form_default) {
             this.searchQuery[collectionName] = {
-              value: item.value.map((i: any) => item.form_default.find((j: any) => i === j.name).value),
-              mapping: propertyName || ''
+              value: item?.value?.map(
+                (i: any) =>
+                  item?.form_default?.find(
+                    (j: any) => i === j?.name
+                  )?.value
+              ),
+              mapping: propertyName || '',
             };
           } else if (typeof item.value !== 'object') {
             this.searchQuery[collectionName] = {
               value: item.value,
-              mapping: propertyName || ''
+              mapping: propertyName || '',
             };
           }
         }
-      } else if (item.value && item.value !== '' && item.hasOwnProperty('profile')) {
+      } else if (
+        item.value &&
+        item.value !== '' &&
+        item.hasOwnProperty('profile')
+      ) {
         this.config.config.protocol_profile.value = item.value;
-        this.searchQuery['protocol_id'] = this.config.config.protocol_id.value + '_' + this.config.config.protocol_profile.value;
-        // 1_call | 1_ default | 1_registration
+        protocol = item.value;
+        this.searchQuery['protocol_id'] = protocol + '_' + profile;
       }
     });
-    this.searchService.setLocalStorageQuery(Functions.cloneObject(this.searchQuery));
-    this._sss.saveProtoSearchConfig(this.widgetId, Functions.cloneObject(this.searchQuery));
 
-    this.searchQuery.fields = this.searchQuery.fields.filter((i: any) => i.name !== ConstValue.CONTAINER);
+    /** if mapping has m.transform */
+    const rx = {
+      PARENT: '::input.parent::',
+      ID: '::input.id::',
+      VALUE: '::value::'
+    };
+
+    this.fields.forEach((item: any) => {
+      const { virtual, transform, parent, id } = item.__mapping || {};
+      if (virtual && transform && parent) {
+        const sqf = this.searchQuery.fields.find(i => i.name === item.field_name) || {};
+        sqf.source_value = item.value;
+        sqf.value = transform
+          .replace(rx.PARENT, parent)
+          .replace(rx.ID, id)
+          .replace(rx.VALUE, item.value);
+      }
+    });
+
+    this.searchQuery['orlogic'] = this.orLogic;
+
+    this.searchService.setLocalStorageQuery(
+      Functions.cloneObject(this.searchQuery)
+    );
+
+    this._sss.saveProtoSearchConfig(
+      this.widgetId,
+      Functions.cloneObject(this.searchQuery)
+    );
+
+    this.searchQuery.fields = this.searchQuery.fields.filter(
+      (i) => i.name !== ConstValue.CONTAINER
+    );
+    this.cdr.detectChanges();
+  }
+
+  onTogleOrButton() {
+    this.orLogic = this.orLogic ? false : true;
     this.cdr.detectChanges();
   }
 
   onClearFields() {
-    this.fields.forEach((item: any) => {
+    this.fields.forEach((item) => {
+      if (item.field_name === ConstValue.CONTAINER) {
+        return;
+      }
       if (item.formControl) {
         item.formControl.setValue('');
       }
-      if (item.form_type === 'multiselect' || item.value instanceof Array) {
+      if (
+        item.form_type === 'multiselect' ||
+        item.value instanceof Array
+      ) {
+        item.func = '';
         item.value = [];
+        this.chipsObj[item.selection] = [];
       } else {
+        item.func = '';
         item.value = '';
       }
-
     });
+
     this._sss.removeProtoSearchConfig(this.widgetId);
+    // this.searchService.clearLocalStorageSEARCH_QUERY();
     this.cdr.detectChanges();
   }
 
   public async openDialog() {
-    const mapping = await this.preferenceMappingProtocolService.getAll().toPromise();
-    this.config.countFieldColumns = this.config.countFieldColumns || this.countFieldColumns;
+    this.config.countFieldColumns =
+      this.config && this.config.countFieldColumns
+        ? this.config.countFieldColumns
+        : this.countFieldColumns;
     const dialogRef = this.dialog.open(SettingProtosearchWidgetComponent, {
       width: '600px',
       data: {
         isContainer: this.autoline,
         config: this.config,
-        mapping: mapping,
-        isButton: this.buttonState
-      }
+        mapping: this.mapping,
+        isButton: this.buttonState,
+        isReset: this.isReset
+      },
     });
 
     const result = await dialogRef.afterClosed().toPromise();
@@ -484,30 +946,48 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, AfterViewIni
         name: result.profile,
         value: result.profile,
       };
-      this.config.fields = result.fields.map((item: any) => {
-        const res: SearchFieldItem = {
-          field_name: item.id,
-          form_type: item.proto.hep_alias,
-          hepid: result.protocol_id.value,
-          name: `${result.protocol_id.value}:${result.profile}:${item.id}`,
-          profile: item.proto.profile,
-          selection: item.name,
-          type: 'string',
-        };
-        return res;
-      });
+      if (result.isReset) {
+        this.config.fields = result.fields.map((item) => {
+          const res: SearchFieldItem = {
+            field_name: item.field_name,
+            form_type: item?.proto?.hep_alias,
+            hepid: result.protocol_id.value,
+            name: `${result.protocol_id.value}:${result.profile}:${item.id}`,
+            profile: item?.proto?.profile,
+            selection: item.selection,
+            selector: item.selector || [],
+            type: item.type,
+          };
+          return res;
+        });
+        this.isReset = true;
+      } else {
+        this.config.fields = result.fields.map((item) => {
+          const res: SearchFieldItem = {
+            field_name: item.id,
+            form_type: item?.proto?.hep_alias,
+            hepid: result.protocol_id.value,
+            name: `${result.protocol_id.value}:${result.profile}:${item.id}`,
+            profile: item?.proto?.profile,
+            selection: item.name,
+            selector: item.selector || [],
+            type: item.type,
+          };
+          return res;
+        });
+      }
     }
     this.config.title = result.title;
     this.config.config.title = result.title;
     this.config.config.searchbutton = !!result.isButton;
-
     this.config.countFieldColumns = result.countFieldColumns;
-
     this._sss.removeProtoSearchConfig(this.widgetId);
     const _forRestoreFieldsValue = Functions.cloneObject(this.fields);
     this.updateButtonState();
-    this.fields.forEach((i: any) => {
-      const restore = _forRestoreFieldsValue.find((j: any) => j.field_name === i.field_name);
+    this.fields.forEach((i) => {
+      const restore = _forRestoreFieldsValue?.find(
+        (j) => j?.field_name === i?.field_name
+      );
       if (restore) {
         i.value = restore.value;
         if (i.formControl) {
@@ -518,64 +998,364 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, AfterViewIni
 
     this.changeSettings.emit({
       config: this.config,
-      id: this.id
+      id: this.id,
     });
     this.isConfig = true;
+    this.isWidgetInited = true;
     this.cdr.detectChanges();
   }
 
-  onChangeField(event?: any, item?: any) {
-    if (event && item && item.form_type === 'multiselect') {
+  getSearchFunctions(type) {
+    return this.searchFunctions?.filter((func) => {
+      if (Array.isArray(func.types)) {
+        return func?.types?.some((funcType) => funcType === type);
+      } else {
+        return func.types === 'all' || func.types === type;
+      }
+    });
+  }
+
+  onChangeField(event = null, item = null) {
+    if (event && item?.form_type === 'multiselect') {
       item.value = event.value;
     }
-    this.fields.forEach((i: any) => {
+
+    this.fields.forEach((i) => {
+
       if (i.field_name === ConstValue.CONTAINER) {
         i.value = this.targetResultsContainerValue.value;
       }
-      if (item && item.field_name === i.field_name && i.form_type === 'multiselect') {
+      if (
+        item?.field_name === i?.field_name &&
+        i?.form_type === 'multiselect'
+      ) {
         i.value = item.value;
       }
-    });
-    this.saveState();
-    this.cdr.detectChanges();
-  }
-  onChangeTargetResultsContainer() {
-    this.fields.forEach((i: any) => {
-      if (i.field_name === ConstValue.CONTAINER) {
-        i.value = this.targetResultsContainerValue.value;
+      if (
+        (i?.field_name === item?.field_name &&
+          i?.form_type === 'input_multi_select') ||
+        (i?.field_name === item?.field_name &&
+          this.isMulti(item?.field_name))
+      ) {
+        if (
+          i.field_name === 'status' &&
+          i?.value?.length === 1 &&
+          i.value[0] === 0
+        ) {
+          i.value = '';
+        }
+        i.value = item.value;
+      }
+      if (
+        i?.field_name === item?.field_name &&
+        i?.field_name === ConstValue.LIMIT
+      ) {
+        i.value = parseInt(item.value?.replace(/\D/, ''), 10);
       }
     });
     this.saveState();
     this.cdr.detectChanges();
   }
-  doSearchResult() {
+
+  addCustomItem(item: { value: string; name: string }): boolean {
+    return false; //{ value: item, name: item };
+  }
+
+  onChangeTargetResultsContainer() {
+    log('PSch::>:onChangeTargetResultsContainer');
+    const Default = 'Default';
+    const selectedFields = (this.fields.find(
+      (f) => f.field_name === ConstValue.CONTAINER
+    ) || {})['value'];
+    if (
+      selectedFields?.length > 0 &&
+      (selectedFields[0] || {}).id === Default &&
+      this.targetResultsContainerValue.value.length === 0
+    ) {
+      const firstWidget = this.widgetResultList.find(
+        (f) => f.isDisplayGrid
+      );
+      this.targetResultsContainerValue.setValue([firstWidget]);
+    } else if (
+      selectedFields.length === 1 &&
+      selectedFields.some((s) => s.id === Default)
+    ) {
+      this.targetResultsContainerValue.setValue(
+        this.targetResultsContainerValue.value.filter(
+          (f) => f.id !== Default
+        )
+      );
+      // log('setValue', this.targetResultsContainerValue.value)
+    } else if (
+      this.targetResultsContainerValue.value.find((f) => f.id === Default)
+    ) {
+      this.targetResultsContainerValue.setValue([this.defaultContainer]);
+    } else if (!this.targetResultsContainerValue.value.length) {
+      const firstWidget = this.widgetResultList.find(
+        (f) => f.isDisplayGrid
+      );
+      this.targetResultsContainerValue.setValue(
+        !selectedFields.length
+          ? [firstWidget]
+          : [this.defaultContainer] || [firstWidget]
+      );
+    }
+    this.fields.forEach((i) => {
+      if (i.field_name === ConstValue.CONTAINER) {
+        i.value = this.targetResultsContainerValue.value;
+      }
+    });
+    log('PSch::>this.targetResultsContainerValue.value', this.targetResultsContainerValue.value, 'this.isLoki=', this.isLoki)
+
+    this.saveState();
+    this.cdr.detectChanges();
+  }
+  doSearchResult(type = 'normal') {
     const targetResultSelf = {
       id: this.targetResultId,
       title: '',
-      type: this.targetResultId ? 'widget' : 'page'
+      type: this.targetResultId ? 'widget' : 'page',
     };
-    const isResultContainer = this.fields.filter((i: any) => i.field_name === ConstValue.CONTAINER).length > 0;
-    let targetResult = {};
-    targetResult = this.targetResultId ? targetResultSelf : this.targetResultsContainerValue.value;
+
+    const containerValue = (this.fields?.find(
+      (i) => i?.field_name === ConstValue?.CONTAINER
+    )?.value) || 'Default';
+    if (containerValue === null ||
+      (Array.isArray(containerValue) && containerValue[0] === null) ||
+      (Array.isArray(containerValue) && !this.widgetResultList.some(
+        widget => widget.id === (containerValue?.[0] || {}).id
+      ))
+    ) {
+      const firstWidget = this.widgetResultList.find(
+        (f) => f.isDisplayGrid
+      );
+      this.targetResultsContainerValue.reset();
+      this.targetResultsContainerValue.setValue([firstWidget || this.defaultContainer]);
+
+      log('setValue', this.targetResultsContainerValue.value);
+      this.translateService.get('notifications.notice.resultContainerReset').subscribe(res => {
+        this.alertService.notice(res);
+      })
+      this.onChangeTargetResultsContainer();
+    }
+    const isResultContainer = !!this.fields.find(
+      (i) => i.field_name === ConstValue.CONTAINER
+    );
+    const targetResult = this.targetResultId
+      ? targetResultSelf
+      : this.targetResultsContainerValue.value;
 
     let _targetResult: any;
     this.saveState();
-    if (this.targetResultId || (targetResult && isResultContainer)) {
+
+    if (this.targetResultId || (targetResult && isResultContainer) || type !== 'normal') {
       _targetResult = Functions.cloneObject(targetResult);
-      if (_targetResult.some((target: any) => target.type === 'page')) {
-        this.router.navigate(['search/result']);
-      } else {
-        _targetResult.forEach((target: any) => {
-          this._ds.setQueryToWidgetResult(target.id, this.searchQuery);
+      if (_targetResult !== null && type === 'normal') {
+        _targetResult.forEach((target) => {
+          if (target.type === 'page') {
+            this.router.navigate(['search/result']);
+          } else if (target.type === 'searchResultTab') {
+            const sourceLink = this.dashboardService.getCurrentDashBoardId();
+            const updatedObject = {
+              id: target.id,
+              title: ConstValue.SEARCH_TABS,
+              owner: this.authenticationService.currentUserValue.user,
+              sourceLink: sourceLink,
+              link: target.id,
+              type: 6,
+              query: this.searchQuery,
+              slider: this.searchQuery,
+              config: this.config.config,
+              name: target.title,
+            };
+            const updatedSearchObject = this.searchTabs.filter(
+              (f) => f.id !== target.id
+            );
+            updatedSearchObject.push(updatedObject);
+            this._sss.saveSearchTabsConfig(updatedSearchObject);
+            this.onSearchTabAdd(updatedObject);
+
+            this.dashboardService.setSliderQueryDataToWidgetResult(
+              updatedObject.id,
+              updatedObject.query
+            );
+
+            this.dashboardService.setQueryToWidgetResult(
+              updatedObject.id,
+              updatedObject.query
+            );
+
+            this.cdr.detectChanges();
+          } else {
+            this.dashboardService.setQueryToWidgetResult(
+              target.id,
+              this.searchQuery
+            );
+          }
+        });
+      }
+      if (type === 'searchTab') {
+        const uuid = Functions.newGuid();
+        // here search for the current config of tab?
+        if (this.searchTabs) {
+          const sourceLink = this.dashboardService.getCurrentDashBoardId();
+          const tabSearchObj = {
+            id: uuid,
+            title: ConstValue.SEARCH_TABS,
+            source_link: sourceLink,
+            owner: this.authenticationService.currentUserValue.user,
+            link: uuid,
+            type: 6,
+            query: this.searchQuery,
+            slider: this.searchQuery,
+            config: this.config.config,
+            name: 'Tab-' + (this.searchTabs.length + 1),
+          };
+
+          this.searchTabs.push(tabSearchObj);
+
+          this._sss.saveSearchTabsConfig(this.searchTabs);
+
+          this.onSearchTabAdd(tabSearchObj); // look for this one
+          this.dashboardService.setSliderQueryDataToWidgetResult(
+            tabSearchObj.id,
+            tabSearchObj.query
+          );
+
+          this.dashboardService.setQueryToWidgetResult(
+            tabSearchObj.id,
+            tabSearchObj.query
+          );
+
+          this.cdr.detectChanges();
+        }
+      } else if (type === 'tab') {
+        const tabId = Functions.newGuid();
+
+        const tabLink = 'search/result/' + tabId;
+
+        this.router.navigate([]).then((result) => {
+          window.open(tabLink, '_blank');
         });
       }
       this.dosearch.emit({});
-      this.cdr.detectChanges();
+
       return;
     }
-    this.router.navigate(['search/result']);
-    this.dosearch.emit({});
+
     this.cdr.detectChanges();
+
+    this.router.navigate(['search/result']);
+
+    this.dosearch.emit({});
+  }
+
+  async onSearchTabAdd(searchObj) {
+    const { id, title, query, name, config } = searchObj;
+    const searchTab: any = {};
+
+    searchTab.data = {
+      auth: 'ok',
+      nameNewPanel: name,
+      data: {
+        alias: name,
+        config: {
+          columns: 8,
+          gridType: 'fit',
+          ignoreMinSize: 'warning',
+          maxrows: 5,
+          pushing: false,
+        },
+        dashboardId: id || name,
+        id: id,
+        name: name,
+        param: 'search_tab', //NAME?
+        isTab: true,
+        type: 6,
+        selectedItem: '',
+        shared: false,
+        weight: 10,
+        widgets: [
+          {
+            id: id,
+            cols: 8,
+            config: {
+              title: name,
+              profile: config.profile || 'call_h20',
+              protocol_id: {
+                name: config.protocol_id.name || 'TDR',
+                value: config.protocol_id.value || 60,
+              },
+              protocol_profile: {
+                name:
+                  config.protocol_profile.name || 'call_h20',
+                value:
+                  config.protocol_profile.value || 'call_h20',
+              },
+              searchbutton: config.searchbutton || true,
+              type: config.type || 'TDR',
+            },
+            fields: searchTab['fields'] || [],
+            sWarning: false,
+            minItemCols: 1,
+            minItemRows: 1,
+            output: {},
+            rows: 5,
+            strongIndex: 'ResultWidgetComponent',
+            title: name,
+            x: 0,
+            y: 0,
+          },
+        ],
+      },
+      status: 'ok',
+      total: 1,
+    };
+
+    const { data } = searchTab || {};
+    if (data) {
+      let dashboardData = {
+        id: id,
+        alias: id,
+        name: name,
+        selectedItem: '',
+        type: 6,
+        isTab: true,
+        param: 'search_tab', // data.param || name,
+        shared: 0,
+        weight: 10,
+        config: {
+          ignoreMinSize: 'warning',
+          maxrows: 5,
+          columns: 5,
+        },
+      };
+      if (data?.data) {
+        dashboardData = data.data;
+        dashboardData.id = dashboardData.alias = id;
+        dashboardData.name = data.nameNewPanel;
+        dashboardData.param = 'search_tab'
+        //   data.param || data.nameNewPanel.toLowerCase();
+      }
+      // use this service to create new dashboard
+
+      const res: any = await this.dashboardService
+        .postDashboardStore(dashboardData.id, dashboardData)
+        .toPromise();
+      if (res && res.status === 'ok') {
+        this.router.navigate([`/dashboard/${dashboardData.id}`]);
+      }
+      this.dashboardService.update();
+      this.cdr.detectChanges();
+    }
+  }
+
+  handleEnterKeyPress(event) {
+    const tagName = event.target.tagName.toLowerCase();
+    if (tagName !== 'textarea') {
+      setTimeout(this.doSearchResult.bind(this), 100);
+    }
+    return false;
   }
 
   compareResultListItem(a: any, b: any) {
@@ -584,29 +1364,77 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, AfterViewIni
     }
     return a.id === b.id;
   }
-
-  onLokiCodeData(event:any) {
+  selectedStatusFn(item, selected) {
+    if (selected.value && item.value) {
+      return item.value === selected.value;
+    }
+    return false;
+  }
+  onLokiCodeData(event) {
     this.searchQuery = event;
-    this.searchQuery.limit = (this.fields.find((i: any) => i.field_name === ConstValue.LIMIT) || { value: 100 }).value;
+    this.searchQuery.limit = (
+      this.fields.find((i) => i.field_name === ConstValue.LIMIT) || {
+        value: 100,
+      }
+    ).value;
     this.searchQuery.protocol_id = ConstValue.LOKI_PREFIX;
     this.searchQuery.fields = [];
-    this.cdr.detectChanges();
   }
+
   private get isLoki(): boolean {
-    return this.fields.filter((i: any) => i.field_name === 'loki').length !== 0;
+    return this.fields.filter((i) => i.field_name === 'loki').length !== 0;
   }
+
   public getFields() {
     return Functions.cloneObject(this.fields);
   }
+
+  addChip(event, item): void {
+    const input = event.input;
+    const value = event.value;
+    const field_name = item.field_name;
+
+    if ((value || '').trim()) {
+      if (this.chipsObj[field_name]) {
+        this.chipsObj[field_name].push({ val: value.trim() });
+      }
+    }
+    if (input) {
+      input.value = '';
+    }
+    this.fields.forEach((f) => {
+      if (f.field_name === field_name && this.chipsObj[field_name]) {
+        f.value = this.chipsObj[field_name].map((m) => m.val) || [];
+      }
+    });
+    this.saveState();
+    this.cdr.detectChanges();
+  }
+
+  removeChip(chip, selection): void {
+    let index = 0;
+    if (this.chipsObj[selection] && chip) {
+      index = this.chipsObj[selection].indexOf(chip);
+    }
+
+    if (index >= 0 && this.chipsObj[selection]) {
+      this.chipsObj[selection].splice(index, 1);
+      this.fields.forEach((f) => {
+        if (f.selection === selection && this.chipsObj[selection]) {
+          f.value = this.chipsObj[selection].map((m) => m.val || []);
+        }
+      });
+      this.saveState();
+      this.cdr.detectChanges();
+    }
+  }
+
   ngOnDestroy() {
     if (this.subscriptionStorage) {
       this.subscriptionStorage.unsubscribe();
     }
     if (this.subscriptionStorage) {
       this.dashboardEventSubscriber.unsubscribe();
-    }
-    if (this._lastInterval) {
-      clearInterval(this._lastInterval);
     }
   }
 }

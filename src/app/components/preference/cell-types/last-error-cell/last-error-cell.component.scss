@@ -1,0 +1,35 @@
+td.mat-cell {
+    padding-left: 5px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    word-break: break-all;
+}
+.lastError {
+    background: orange;
+    padding: 3px;
+    border-radius: 3px;
+    margin: 10px;
+    cursor: pointer;
+  
+    & fa-icon {
+        color: white;
+        font-size: 14px;
+    }
+}
+ 
+.noError {
+    background: #72ad6422;
+    padding: 3px;
+    border-radius: 3px;
+    margin: 10px;
+    height: 36px;
+    line-height: 2;
+    cursor: pointer;
+  
+    & fa-icon {
+      color: #72ad64;
+      font-size: 14px;
+  
+    }
+  }

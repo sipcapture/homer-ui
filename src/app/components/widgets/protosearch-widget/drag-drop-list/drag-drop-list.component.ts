@@ -9,18 +9,18 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag
 })
 
 export class DragDropListComponent implements OnInit {
-    _list: any;
+    _list: Array<any>;
     inactiveList: Array<any> = [];
     activeList: Array<any> = [];
 
     @Output() change = new EventEmitter<any> ();
     @Output() order = new EventEmitter<any> ();
-    @Input() sortlistactive: any;
+    @Input() sortlistactive: Array<any>;
     @Input('list') set list(val) {
         this._list = val;
         this.activeList = [];
         this.inactiveList = [];
-        this.list.forEach((item: any) => {
+        this.list.forEach(item => {
             if (item.selected) {
                 this.activeList.push(item);
             } else {
@@ -34,10 +34,10 @@ export class DragDropListComponent implements OnInit {
     }
 
     ngOnInit () {
-        if (this.sortlistactive?.length) {
-            const _activeList: any = [];
-            this.sortlistactive.forEach((item: any) => {
-                _activeList.push(this.activeList.find((i: any) => i.id === item.field_name));
+        if (this.sortlistactive && this.sortlistactive.length > 0) {
+            const _activeList = [];
+            this.sortlistactive.forEach(item => {
+                _activeList.push(this.activeList.find(i => i.id === item.field_name));
 
             });
             this.activeList = _activeList;
@@ -66,8 +66,8 @@ export class DragDropListComponent implements OnInit {
         this.activeList.forEach(item => {
             item.selected = true;
         });
-        const newProto = [].concat(...this.activeList, ...this.inactiveList);
-        const sortedProto = newProto.sort((a: any, b: any) => a.idx - b.idx)
+        const newProto = [].concat(this.activeList, this.inactiveList);
+        const sortedProto = newProto.sort((a, b) => a.idx - b.idx);
         this.change.emit(newProto);
         this.order.emit({
             sortedProto: sortedProto,

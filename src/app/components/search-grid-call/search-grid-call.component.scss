@@ -20,25 +20,63 @@
 	z-index: 9999999;
 }
 
-.regex-filter {
+.regex-container {
+	font-size: 13px;
 	position: fixed;
-	top: 5px;
-	background: white;
-	width: 250px;
-	margin: auto;
-	right: 311px;
-	left: 0;
-	border: 0;
-	padding: 5px 10px;
-	border-radius: 6px;
-	outline: none;
-	box-shadow: inset 1px 1px 14px -6px rgba(0, 0, 0, 0.4);
+	top: 2px;
+	right: 46px;
+	max-width: 275px;
+	display: flex;
+	justify-content: flex-end;
+	&.inContainer {
+		justify-content: flex-start;
+	}
+
+	.regex-filter {
+		background: white;
+		width: 175px;
+		border: 0;
+		padding: 3px 6px;
+		border-radius: 3px 0px 0px 3px;
+		
+		outline: none;
+		height: 20px;
+		background: #eeeeee;
+		transition: 2s all;
+
+	}
+
+	.regex-button {
+		height: 24px;
+		width: 24px;
+		border-radius: 25%;
+		color: #949494;
+		font-size: 11px;
+		background: none;
+		border: none;
+
+	}
+
+
 
 	&.inContainer {
-		left: initial;
-		right: 3rem;
+		top:9px;
+		left: 200px;
+		.regex-filter {
+			
+			height: 30px !important;
+		}
+		.regex-button {
+			height: 30px;
+			width: 30px;
+			margin: 0px 6px;
+			font-size: 18px;
+			color: #afafaf;
+		}
+		
 	}
 }
+
 
 .search-slider-footer {
 	position: absolute;
@@ -58,7 +96,13 @@
 		}
 	}
 }
-
+.paginator {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    height: 56px;
+}
 .no-smart-warn {
 	padding: 10px;
 	background: grey;
@@ -66,7 +110,28 @@
 	font-size: 14px;
 	text-align: center;
 }
+::ng-deep .mat-icon-button {
+    overflow: hidden;
+}
+ 
+::ng-deep .mat-icon-button.smart-input {
+    overflow: visible !important;
+    border-radius: 0;
+}
+.export-container {
+	display: inline-block;
+	width: 300px;
+	z-index: 10;
 
+	button {
+		height: 36px;
+		margin-right: 10px;
+	}
+
+	&.inContainer {
+		left: 4rem;
+	}
+}
 
 .lds-container {
 	width: 100%;
@@ -76,6 +141,15 @@
 	justify-content: center;
 	align-items: center;
 	border-radius: 6px;
+	z-index: 1000;
+}
+.onlyLoader {
+	position: absolute;
+	height: 80px;
+	width: 80px;
+	top: calc(50% - 40px);
+	left: calc(50% - 40px);
+	background-color: rgba(0, 0, 0, 0.25);
 }
 
 .lds-ring {
@@ -92,10 +166,10 @@
 	width: 64px;
 	height: 64px;
 	margin: 8px;
-	border: 8px solid #878787;
+	border: 8px solid #26bfbc;
 	border-radius: 50%;
 	animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-	border-color: #878787 transparent transparent transparent;
+	border-color: #26bfbc transparent transparent transparent;
 }
 
 .lds-ring div:nth-child(1) {
@@ -118,12 +192,4 @@
 	100% {
 		transform: rotate(360deg);
 	}
-}
-
-.norowstemplate {
-	background: #c1c1c1;
-	color: white;
-	padding: 20px;
-	border-radius: 3px;
-	font-weight: bold;
 }

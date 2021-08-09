@@ -4,34 +4,62 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    min-height: 400px;
+
+    // &>cdk-virtual-scroll-viewport {
+    //     min-height: 400px;
+    // }
+    .example-table-container {
+        position: relative;
+        height: 100%;
+        overflow: auto;
+    }
+
     table {
         width: 100%;
         overflow-x: hidden;
         border-bottom: 1px solid #d3d3d3;
+        table-layout: auto;
+
         tr {
             transition: background-color 0.3s;
             height: 38px;
             color: rgb(27, 27, 41);
+            width: 9%;
 
             &:hover {
                 cursor: pointer;
                 background-color: rgb(174, 216, 253) !important;
             }
+
+            td {
+                white-space: nowrap;
+                min-width: 4rem;
+            }
         }
     }
-.mat-tab-body-content {
-    overflow-x: hidden !important;
+
+    .mat-tab-body-content {
+        overflow-x: hidden !important;
     }
-td.mat-cell {
-    border-bottom-style: unset !important;
+
+    td.mat-cell {
+        border-bottom-style: unset !important;
         border-right-style: solid !important;
         border-right-width: 1px !important;
         border-right-color: lightgray !important;
         padding-left: 5px !important;
         color: rgb(33, 51, 71);
-
+        max-width:125px;
+        overflow:hidden;
+        text-overflow: ellipsis !important; 
         &:last-child.mat-cell {
             border-right-style: unset !important;
+        }
+        & .ellipsis-text {
+            overflow: hidden !important; 
+            text-overflow: ellipsis !important;
+           max-width:100% !important;
         }
     }
 
@@ -43,9 +71,18 @@ td.mat-cell {
         &:nth-child(2n+1) {
             background-color: #DFF1FF;
         }
-&:not(:nth-child(2n+1)) {
-    background-color: #EFF8FF;
+
+        &:not(:nth-child(2n+1)) {
+            background-color: #EFF8FF;
 
         }
     }
+}
+
+.footer-panel {
+    flex: 1;
+    display: flex;
+    min-height: 51px;
+    overflow: hidden;
+    padding-left: 1rem;
 }

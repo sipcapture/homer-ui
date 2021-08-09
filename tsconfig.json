@@ -11,7 +11,10 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "typeRoots": ["node_modules/@types", "../src/typings.d.ts"],
+    "typeRoots": [
+      "node_modules/@types",
+      "../src/typings.d.ts"
+    ],
     "forceConsistentCasingInFileNames": true,
     "strict": false,
     "noImplicitReturns": true,
@@ -23,8 +26,24 @@
       "dom"
     ],
     "paths": {
-      "@app/*": ["src/app/*"],
-      "@environments/*": ["src/environments/*"]
+      "@app/*": [
+        "src/app/*"
+      ],
+      "@it-app/*": [
+        "src/app/*"
+      ],
+      "@environments/*": [
+        "src/environments/*"
+      ],
+      "@services": [
+        "src/app/services/index.ts"
+      ],
+      "@services/*": [
+        "src/app/services/*"
+      ],
+      "@widgets/*": [
+        "src/app/components/widgets/*"
+      ]
     }
   },
   "angularCompilerOptions": {

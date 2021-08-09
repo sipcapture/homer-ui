@@ -8,8 +8,11 @@ export interface User {
     department: string;
     id?: number;
     guid?: string;
+    scope?: string;
     token?: string;
-    user? : {
+    user?: {
         admin: boolean;
+        force_password: boolean;
+        username: string;
     }
 }

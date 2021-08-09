@@ -10,6 +10,7 @@ export interface SearchCallModel {
     param: {
         transaction: { };
         limit: number;
+        orlogic: boolean;
         search?: {},
         location: { };
         timezone: {

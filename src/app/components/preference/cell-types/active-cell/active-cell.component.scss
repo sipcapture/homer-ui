@@ -1,0 +1,32 @@
+
+.online {
+    background: #72ad6422;
+    color: #72ad64;
+    border-radius: 3px;
+  
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 12px;
+    line-height: 3;
+}
+
+  
+.offline {
+    height: 36px;
+    background: #e6513722;
+    color: #e65137;
+    border-radius: 3px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 12px;
+    line-height: 3;
+}
+td.mat-cell {
+    padding-left: 5px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    word-break: break-all;
+}

@@ -1,43 +1,40 @@
 <mat-toolbar class="title" color="primary">
-  <div>AgentSub Settings</div>
+  <div>{{ 'preference.agentsub.dialog.title' | translate }}</div>
   <button mat-icon-button (click)="onNoClick()">
-    <mat-icon>close</mat-icon>
+    <fa-icon icon="times"></fa-icon>
   </button>
 </mat-toolbar>
 <div mat-dialog-content>
-  
-    <strong>AgentSub Settings</strong>
-    <p>Defines the identifier, format and lifetime of protocol data</p><hr />
-    <div>
-      <mat-form-field style="padding-right: 1rem;">
-        <mat-label>HEP Alias</mat-label>
-        <input matInput [(ngModel)]="data.data.hep_alias">
-      </mat-form-field>
-      <mat-form-field style="padding-right: 1rem;">
-        <mat-label>HEP ID</mat-label>
-        <input matInput [(ngModel)]="data.data.hepid">
-      </mat-form-field>
-      <mat-form-field style="padding-right: 1rem;">
-        <mat-label>Profile</mat-label>
-        <input matInput [(ngModel)]="data.data.profile">
-      </mat-form-field>
-    </div>
-    <strong>AgentSub Mapping</strong>
-    <p>Defines any cross-protocol correlation mechanism</p><hr />
-    <ace-editor
-      [mode]="'json'"
-      [theme]="'eclipse'"
-      [readOnly]="false"
-      [(text)]="data.data.mapping"
-      (textChanged)="validate()"
-      [durationBeforeCallback]="500"
-      #data_view style="min-height:150px;"></ace-editor>
+
+  <strong>{{ 'preference.agentsub.dialog.title' | translate }}</strong>
+  <p>{{ 'preference.agentsub.dialog.description' | translate }}</p>
+  <hr />
+  <div>
+    <mat-form-field style="padding-right: 1rem;">
+      <mat-label>HEP Alias</mat-label>
+      <input matInput [(ngModel)]="data.data.hep_alias" autocomplete="off">
+    </mat-form-field>
+    <mat-form-field style="padding-right: 1rem;">
+      <mat-label>HEP ID</mat-label>
+      <input matInput [(ngModel)]="data.data.hepid" autocomplete="off">
+    </mat-form-field>
+    <mat-form-field style="padding-right: 1rem;">
+      <mat-label>Profile</mat-label>
+      <input matInput [(ngModel)]="data.data.profile" autocomplete="off">
+    </mat-form-field>
+
   </div>
-  
-  
-  
-  <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
-    <button mat-raised-button (click)="onNoClick()">Cancel</button>
-    <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial [disabled]='isDisabled'>Save</button>
-  </div>
-  
+  <strong>AgentSub Mapping</strong>
+  <p>Defines any cross-protocol correlation mechanism</p>
+  <hr />
+  <full-screen (fullPage)='disableClose($event)' [data]='{json:data.data.data, title: "Agentsub", type: "json"}'>
+    <ace-editor [mode]="'json'" [theme]="'monokai'" [readOnly]="false" [(text)]="data.data.mapping"
+      (textChanged)="validate()" [durationBeforeCallback]="500" #data_view [style.height.%]="100"></ace-editor>
+  </full-screen>
+</div>
+
+<div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
+  <button mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
+  <button mat-raised-button class="setting-btn-ok" [mat-dialog-close]="data" cdkFocusInitial
+    [disabled]='isDisabled'>{{'LINK.buttons.save' | translate}}</button>
+</div>

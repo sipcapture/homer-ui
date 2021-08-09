@@ -1,44 +1,215 @@
 :host {
-	display: flex;
-    justify-content: center;
-    margin: 100px 0px;
+  height: 100%;
+  width: 100%;
+  margin: 0px;
+  & > * {
+    font-family: Roboto;
+  }
 }
 
-.mat-form-field {
-	width: 100%;
-    min-width: 300px;
-}
+.homer-header {
+  height: 80px;
 
-mat-card-title,
-mat-card-content {
-	display: flex;
-    justify-content: center;
-    .login-page-header {
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        & h2 {
-            margin-top: 2rem;
-        }
-        & > img {
-            width: 190px;
-        }
-    }
-}
-.caps-lock {
-    background-color: gainsboro;
-    color: red;
-    padding: 3px;
-    border-radius: 4px;
-}
-.error {
-	padding: 16px;
-    width: 300px;
+  & .logo {
+    position: absolute;
+    left: 15px;
+    top: 10px;
+    line-height:40px;
     color: white;
-    background-color: red;
+    font-family: "Helvetica-Neue-Bold", Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 32px;
+
+    & :first-letter {
+      color: #1dc27c;
+    }
+  }
+}
+.logo-text {
+	border-bottom-color: rgb(255, 255, 255);
+	border-bottom-style: none;
+	border-bottom-width: 0px;
+	border-image-outset: 0px;
+	border-image-repeat: stretch;
+	border-image-slice: 100%;
+	border-image-source: none;
+	border-image-width: 1;
+	border-left-color: rgb(255, 255, 255);
+	border-left-style: none;
+	border-left-width: 0px;
+	border-right-color: rgb(255, 255, 255);
+	border-right-style: none;
+	border-right-width: 0px;
+	border-top-color: rgb(255, 255, 255);
+	border-top-style: none;
+	border-top-width: 0px;
+	box-sizing: border-box;
+	color: rgb(255, 255, 255);
+	display: inline-block;
+	font-family: Helvetica;
+	font-weight: Bold;
+	font-size: 30px;
+	height: 42px;
+	line-height: 32px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: -5px;
+	outline-color: rgb(255, 255, 255);
+	outline-style: none;
+	outline-width: 0px;
+	padding-bottom: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-top: 5px;
+	text-size-adjust: 100%;
+	vertical-align: baseline;
+	width: 120.906px;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	&:first-letter {
+		color: #1dc27c;
+	}
+}
+.homer-footer {
+  position: absolute;
+  color: white;
+  bottom: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.login-submit {
+  border: none;
+  background: #3a89e6;
+  border-radius: 3px;
+  width: 100% !important;
+  height: 35px;
+  margin-top: 20px;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  float: right;
+}
+
+.login-page-header {
+  color: rgb(87, 87, 87);
+  font-weight: bold;
+  text-align: center;
+  margin-left: -15px;
+margin-bottom: 20px;
+  & fa-icon {
+    color: grey;
+
+    font-size: 18px;
+  }
+}
+
+.login-container {
+  & form {
+    padding-top: 0px;
+   display: grid;
+   height:225px;
+  }
+
+  & .mat-form-field-wrapper {
+    //height: 60px;
+
+    & .mat-form-field-flex {
+      height: 35px;
+
+      & .mat-form-field-outline {
+        height: 35px;
+      }
+
+      & .mat-form-field-infix {
+        top: -12px;
+
+        & .mat-form-field-label,
+        & .mat-input-element {
+          font-size: 15px;
+        }
+
+        & .mat-form-field-label-wrapper {
+          & .mat-form-field-label {
+            height: 14px;
+          }
+        }
+      }
+    }
+
+    & .mat-form-field-outline {
+      background: #fafafa;
+    }
+
+    & .mat-form-field-appearance-outline.mat-form-field-invalid.mat-form-field-invalid .mat-form-field-outline-thick {
+      color: grey !important;
+    }
+
+    & .mat-select-arrow-wrapper {
+     transform: translateY(5%) !important;
+    }
+
+    & .mat-select-placeholder {
+      position: relative;
+      height: 40px;
+    }
+  }
+
+  height: 100%;
+  width: 100%;
+  background: #2b5d81;
+  background-image: linear-gradient(-180deg, #2b5d81 0%, #24465f 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & mat-card {
+    width: 480px;
+    padding:40px;
+    //padding: 35px;
+
+    color: #3b3b3b !important;
+    background: white;
+  }
+}
+
+.caps-lock {
+  background-color: gainsboro;
+  color: red;
+  padding: 3px;
+  border-radius: 4px;
+}
+
+.error {
+  padding: 16px;
+  width: 300px;
+  color: white;
+  background-color: red;
 }
 
 .button {
-	display: flex;
-    justify-content: flex-end;
+  display: flex;
+  justify-content: flex-end;
 }
+
+.login-input {
+  height: 12px;
+}
+.input-group-prepend {
+  display:block !important;
+  font-size: 13px;
+
+}
+.form-control {
+  background:#fafafa;
+}
+
+.input-group-text {
+  font-size: 13px;
+  padding: .532rem .75rem;
+  color:grey;
+}
+  input > *{
+    font-family: Roboto !important;
+  }
+

@@ -1,31 +1,36 @@
-import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '@environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
-export class CallRecordingService {
-
+export class RecordingService {
     private url = `${environment.apiUrl}/call/recording`;
 
     constructor(private http: HttpClient) { }
-
-    // Return call recording info
-    getInfo(): Observable<any> {
-        return this.http.get<any>(`${this.url}/info`);
+    getData(id) {
+        return this.http.get<any>(`${this.url}/data/${id}`);
     }
-
-    // Return call recording data
-    getData(): Observable<any> {
-        return this.http.get<any>(`${this.url}/data`);
+    postData(request: any) {
+        return this.http.post<any>(`${this.url}/data`, request);
     }
-
-    // Return call recording download
-    getDownload(): Observable<any> {
-        return this.http.get<any>(`${this.url}/download`);
+    getMp3Link(id): string {
+        return `${this.url}/play/${id}`;
     }
-
-
+    getMp3Data(id): Observable<any> {
+        // return this.http.get<any>(`${this.url}/play/${id}`);
+        return this.http.post(`${this.url}/play/${id}`, {}, {
+            responseType: 'blob',
+            headers: new HttpHeaders().append('Content-Type', 'application/json')
+        });
+    }
+    getDownloadRtp(type, id): Observable<any> {
+        // return this.http.get<any>(`${this.url}/download/${type}/${id}`);
+        return this.http.post(`${this.url}/download/${type}/${id}`, {}, {
+            responseType: 'blob',
+            headers: new HttpHeaders().append('Content-Type', 'application/json')
+        });
+    }
 }

@@ -1,17 +1,66 @@
-<mat-toolbar class="title" color="primary">
-    <div>Settings</div>
-    <button mat-icon-button (click)="onNoClick()">
-        <mat-icon>close</mat-icon>
-    </button>
-</mat-toolbar>
-
-<div mat-dialog-content style="text-align: center">
-    <mat-icon class="alarm">error_outline</mat-icon>
-    <h1 mat-dialog-title>OOPS!</h1>
-    <p>It seems that the settings are corrupted.</p>
-    <p>We recommend that you remove the widget and recreate it.</p>
+<div *ngIf="isSearch">
+    <div *ngIf="!data.isReset">
+        <mat-toolbar class="title" color="primary">
+            <div>{{'LINK.settings' | translate}}</div>
+            <button mat-icon-button (click)="onNoClick()">
+                <fa-icon icon="times"></fa-icon>
+            </button>
+        </mat-toolbar>
+    
+        <div mat-dialog-content style="text-align: center">
+            <mat-icon class="alarm">error_outline</mat-icon>
+            <p>{{ 'widgets.alarmComponent.errorMessageReset' | translate }}</p>
+            <p>{{ 'widgets.alarmComponent.suggestionReset' | translate }}</p>
+            <mat-form-field appearance="fill">
+                <mat-label>{{ 'widgets.alarmComponent.choosePreset' | translate }}</mat-label>
+                <mat-select [(ngModel)]='selectedPreset' (selectionChange)='changePreset()'>
+                    <mat-option *ngFor="let preset of presetList" [value]='preset'>
+                        {{ preset.title }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    
+        <div mat-dialog-actions class='action-buttons-setting'>
+            <button mat-raised-button class='clear-btn' (click)="onNoClick()">{{'LINK.buttons.close' | translate}}</button>
+            <button mat-raised-button class='search-btn' color="primary" [mat-dialog-close]="data">Fix</button>
+        </div> 
+    </div>
+    <div *ngIf="data.isReset">
+        <mat-toolbar class="title" color="primary">
+            <div>{{'LINK.settings' | translate}}</div>
+            <button mat-icon-button (click)="onNoClick()">
+                <fa-icon icon="times"></fa-icon>
+            </button>
+        </mat-toolbar>
+    
+        <div mat-dialog-content style="text-align: center">
+            <mat-icon class="alarm">error_outline</mat-icon>
+            <p>{{ 'widgets.alarmComponent.errorMessageContact' | translate }}</p>
+            <p>{{ 'widgets.alarmComponent.suggestionContact' | translate }}</p>
+        </div>
+    
+        <div mat-dialog-actions style="margin: 0">
+            <button mat-raised-button style="left: 0; right: 0; margin: auto;" (click)="onNoClick()">{{'LINK.buttons.close' | translate}}</button>
+        </div> 
+    </div>
 </div>
+<div *ngIf="!isSearch">
+    <mat-toolbar class="title" color="primary">
+        <div>{{'LINK.settings' | translate}}</div>
+        <button mat-icon-button (click)="onNoClick()">
+            <fa-icon icon="times"></fa-icon>
+        </button>
+    </mat-toolbar>
 
-<div mat-dialog-actions style="margin: 0">
-    <button mat-raised-button style="left: 0; right: 0; margin: auto;" (click)="onNoClick()">Close</button>
-</div> 
+    <div mat-dialog-content style="text-align: center">
+        <mat-icon class="alarm">error_outline</mat-icon>
+        <h1 mat-dialog-title>OOPS!</h1>
+        <p>{{ 'widgets.alarmComponent.errorMessage' | translate }}</p>
+        <p>{{ 'widgets.alarmComponent.suggestion' | translate }}</p>
+    </div>
+
+    <div mat-dialog-actions style="margin: 0">
+        <button mat-raised-button style="left: 0; right: 0; margin: auto;" (click)="onNoClick()">{{'LINK.buttons.close' | translate}}</button>
+    </div> 
+</div>

@@ -9,7 +9,7 @@ export class ProxyService {
   private url = `${environment.apiUrl}/proxy`;
 
   constructor(private _http: HttpClient) {}
-  
+
   // Get Folders list
   getProxyGrafanaFolders(): Observable<any> {
     return this._http.get<any>(`${this.url}/grafana/folders`);
@@ -26,10 +26,11 @@ export class ProxyService {
   getProxyGrafanaUrl(): Observable<any> {
     return this._http.get<any>(`${this.url}/grafana/url`);
   }
-
   // Get Grafana OrgID
   getProxyGrafanaOrg(): Observable<any> {
     return this._http.get<any>(`${this.url}/grafana/org`);
   }
-
+  getProxyGrafanaStatus(): Observable<any> {
+    return this._http.get<any>(`${this.url}/grafana/status`);
+  }
 }

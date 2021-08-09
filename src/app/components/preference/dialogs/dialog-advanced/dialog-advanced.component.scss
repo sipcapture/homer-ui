@@ -4,8 +4,12 @@
 .title {
 	margin: -1.5rem -1.5rem 2rem -1.5rem;
 	width: initial !important;
+	font-size: 14px;
 	display: flex;
 	justify-content: space-between;
+	text-transform: uppercase;
+	//font-weight: 400;
+	letter-spacing: 1px;
 }
 .example-container {
 	display: flex;
@@ -16,4 +20,11 @@
 }
 .hide {
 	display: none !important;
+}
+::ng-deep .mat-input-element:disabled {
+    color: black;
+}
+::ng-deep .mat-form-field-appearance-legacy.mat-form-field-disabled .mat-form-field-underline {
+    background-image: unset;    
+    background-color: rgba(0,0,0,.42);
 }

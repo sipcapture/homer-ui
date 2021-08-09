@@ -1,14 +1,34 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../out-tsc/app",
-    "experimentalDecorators": true,
-    "allowJs": true,
-    "types": []
+      "outDir": "../out-tsc/app",
+      "experimentalDecorators": true,
+      "allowJs": true,
+      "types": [],
+      "paths": {
+          "@app/*": [
+              "src/app/*"
+          ],
+          "@it-app/*": [
+              "src/app/*"
+          ],
+          "@environments/*": [
+              "src/environments/*"
+          ],
+          "@services": [
+              "src/app/services/index.ts"
+          ],
+          "@services/*": [
+              "src/app/services/*"
+          ],
+          "@widgets/*": [
+              "src/app/components/widgets/*"
+          ]
+      }
   },
   "exclude": [
-    "test.ts",
-    "**/*.spec.ts",
-    "**/*.worker.ts"
+      "test.ts",
+      "**/*.spec.ts",
+      "**/*.worker.ts"
   ]
 }

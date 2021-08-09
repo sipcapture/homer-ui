@@ -1,0 +1,176 @@
+:host {
+	background: white;
+	opacity: 1;
+}
+.loki-main-container {
+	margin: 10px;
+	padding: 10px;
+	background:white;
+}
+
+.loki-search {
+	padding: 5px;
+
+	&.result-page {
+		max-height: calc(100vh - 110px);
+		padding:20px;
+		padding-top:5px;
+		overflow-y: auto;
+		background:white;
+	}
+}
+
+.loki-container {
+	display: table;
+	height: 100%;
+	overflow-y: auto;
+	font-family: "Roboto Mono", monospace;
+	font-size: 12px;
+}
+
+.loki-body {
+	padding: 1rem;
+	margin: 0.3rem;
+	display: table-row;
+	cursor:pointer;
+	&>div {
+		display: table-cell;
+	}
+}
+
+.header-loki {
+	padding: 1rem;
+	margin: 0.3rem;
+	width: 100%;
+	display: table-row;
+	font-weight: bold;
+
+	&>div {
+		display: table-cell;
+	}
+}
+
+.item-header {
+
+	color: #1d1d1d;
+}
+
+.item-tex-loki {
+	word-break: break-word;
+
+	font-size: 12px;
+	color: #1d1d1d;
+}
+
+.hover {
+	opacity: 1;
+
+	&:hover {
+		color: #303030;
+	}
+}
+
+.switches {
+	display: flex;
+
+	width: 100%;
+	font-size: 12px;
+
+	padding-top: 10px;
+}
+
+.swithces {
+	p {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		align-items: center;
+	}
+}
+
+.lokitime {
+	width: 150px;
+	padding: 5px;
+}
+
+.lokitags {
+	width: 200px;
+	padding: 5px;
+}
+.loki-labels{
+    font-size: 12px;
+    display: grid;
+    border: 1px solid #f0f0f0;
+    margin: 0px 10px;
+	margin-bottom:5px;
+    padding: 5px;
+    border-radius: 3px;
+}
+.label-line {
+
+	display:flex;
+
+	padding:1px 2px;
+
+}
+.label-line:hover {
+	background:#f3f3f3;
+}
+.lokimessage {
+	padding: 5px;
+	max-width: 60%;
+}
+
+.timeseconds {
+	margin-top: 10px;
+	color: #24465f;
+	opacity: .75;
+
+	&:hover {
+		opacity: 1;
+	}
+}
+
+.homerblue {
+	color: #24465f;
+}
+
+.loki-match {
+	display: flex;
+	justify-content: space-evenly;
+	letter-spacing: 1px;
+}
+
+.loki-em {
+	background: #749ad6;
+	color: white;
+	padding: 3px 6px;
+	margin: 2px;
+	border-radius: 3px;
+
+}
+
+.search-logs {
+	margin: 0 auto;
+	padding: 20px;
+	text-align: center;
+	background: #f7f7f7;
+	color: rgb(157, 157, 157);
+	border-radius: 9px;
+	margin-top: 40px;
+	width: 300px;
+	border: 1px solid lightgray;
+}
+
+.logs-strong {
+	font-size: 24px;
+}
+
+.refresh-search {
+	flex: 1;
+	background: #749ad6;
+	color: white;
+	height:35px;
+	font-weight: bold;
+	font-size: 12px;
+	margin-bottom: 16px;
+}

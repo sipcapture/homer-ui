@@ -1,0 +1,54 @@
+
+<div (mouseover) = "resetTimer.emit()" (mouseout) = "clearMessageTimer.emit()" [ngClass]="{ 'alert': message, 
+    'alert-success': message.type === 'success', 
+    'alert-danger': message.type === 'error', 
+    'alert-warning': message.type === 'warning', 
+    'alert-notice': message.type === 'notice' }">
+    <div class="alert-type">
+        <div class="circle">
+        <fa-icon *ngIf="message.type==='error'" icon="times"></fa-icon>
+        <fa-icon *ngIf="message.type==='success'" icon="check"></fa-icon>
+        <fa-icon *ngIf="message.type==='warning'" icon="exclamation-triangle"></fa-icon>
+        <fa-icon *ngIf="message.type==='notice'" icon="info"></fa-icon>
+        </div>
+    </div>
+
+    <div class="message-text">{{message.text}}</div> 
+
+    <div *ngIf="isOpen" 
+    [ngClass]="{ 'message-object': isOpen, 
+    'alert-success': message.type === 'success', 
+    'alert-danger': message.type === 'error', 
+    'alert-warning': message.type === 'warning', 
+    'alert-notice': message.type === 'notice' }">
+        <mat-icon style="margin-left: 10px;" 
+        class='close-message copy' [matTooltip]="('alert.copyFullErrorMessage' | translate)"
+        matTooltipPosition='above' 
+        (click) = 'copy();'>content_copy</mat-icon>
+        <div class="message-object-text">{{message.object}}</div>
+    </div>
+
+    <div style='height: 20px; width: 100px; display: flex; justify-content: flex-end;'>
+
+    <mat-icon style="margin-left: 10px;" class='close-message' 
+        (click) = 'toggleFull()' 
+        *ngIf="message.object" 
+        [matTooltip]="(isOpen ? 
+        ('alert.hide' | translate) 
+        : ('alert.show' | translate)) + ' '
+        + ('alert.fullNotificationMessage' | translate)">
+
+            {{isOpen ? 'expand_more' : 'expand_less'}}
+
+    </mat-icon>	
+    <mat-icon style="margin-left: 10px;" 
+        class='close-message' 
+        (click) = 'clearMessage()' #tooltip="matTooltip"
+        [matTooltip]="('alert.closeNotification' | translate)">
+
+            close
+
+    </mat-icon>	
+
+    </div>
+</div>

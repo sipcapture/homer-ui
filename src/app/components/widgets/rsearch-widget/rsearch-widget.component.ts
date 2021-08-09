@@ -1,12 +1,13 @@
-import { Component, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { IWidget } from '../IWidget';
 import { Router } from '@angular/router';
-import { SearchGridCallComponent } from '@app/components/search-grid-call/search-grid-call.component';
+// import { SearchGridCallComponent } from '@app/components/search-grid-call/search-grid-call.component';
 import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
-import { ConstValue } from '@app/models';
+import { ConstValue, UserConstValue } from '@app/models';
 import { SearchService } from '@app/services';
-
+import { Functions, setStorage } from '@app/helpers/functions';
+import { TranslateService } from '@ngx-translate/core'
 @Component({
   selector: 'app-rsearch-widget',
   templateUrl: './rsearch-widget.component.html',
@@ -17,6 +18,7 @@ import { SearchService } from '@app/services';
   title: 'Loki Search',
   description: 'Display Loki Search Form',
   category: 'Search',
+  subCategory: 'Other',
   indexName: 'rsearch',
   settingWindow: false,
   className: 'RsearchWidgetComponent',
@@ -25,51 +27,54 @@ import { SearchService } from '@app/services';
   minWidth: 300
 })
 export class RsearchWidgetComponent implements IWidget {
-  @Input() id: string = '';
+  @Input() id: string;
 
-  lokiQuery: string | null = null;
-  limit: number = 0;
+  lokiQuery: string;
+  limit = 100;
   searchQueryLoki: any;
-  queryText: string | null = null;
+  queryText: string;
   constructor(
     public dialog: MatDialog,
+    public translateService: TranslateService,
     private router: Router,
-    private searchService: SearchService,
-    private cdr: ChangeDetectorRef
+    private searchService: SearchService
   ) {
+    translateService.addLangs(['en'])
+    translateService.setDefaultLang('en')
   }
 
   ngOnInit() {
     WidgetArrayInstance[this.id] = this as IWidget;
-    const data = JSON.parse('' + localStorage.getItem(ConstValue.SEARCH_QUERY_LOKI));
+    const data = Functions.JSON_parse(localStorage.getItem(UserConstValue.SEARCH_QUERY_LOKI)) ||
+      Functions.JSON_parse(localStorage.getItem(ConstValue.SEARCH_QUERY_LOKI));
     if (data) {
       this.queryText = data.text;
       this.limit = data.limit * 1 || 100;
     }
   }
-  onCodeData(event: any) {
+  onCodeData(event) {
     this.searchQueryLoki = event;
     this.searchQueryLoki.limit = this.limit * 1 || 100;
     this.searchQueryLoki.protocol_id = ConstValue.LOKI_PREFIX;
     this.searchQueryLoki.fields = [];
-    this.cdr.detectChanges();
   }
   doSearchResult() {
     this.searchService.setLocalStorageQuery(this.searchQueryLoki);
-    // localStorage.setItem(ConstValue.SEARCH_QUERY, JSON.stringify(this.searchQueryLoki));
-    this.cdr.detectChanges();
+    // setStorage(ConstValue.SEARCH_QUERY, this.searchQueryLoki);
     this.router.navigate(['search/result']);
+
   }
   onChangeField(event: any) {
-    this.cdr.detectChanges();
+
   }
-  handleEnterKeyPress(event: any) {
+  handleEnterKeyPress(event) {
     const tagName = event.target.tagName.toLowerCase();
+
     if (tagName !== 'textarea') {
       setTimeout(this.doSearchResult.bind(this), 100);
-      return false;
     }
-    return true;
+    return false;
+
   }
   onClearFields() {
     this.lokiQuery = '';

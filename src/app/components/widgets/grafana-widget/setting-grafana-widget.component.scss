@@ -1,10 +1,11 @@
 .title {
-    margin: -1.5rem -1.5rem 2rem -1.5rem;
-    width: initial !important;
-    display: flex;
-    justify-content: space-between;
+	margin: -1.5rem -1.5rem 2rem -1.5rem;
+	width: initial !important;
+	display: flex;
+	justify-content: space-between;
 }
-
-.example-container > * {
-    width: 100%;
+.example-container {
+	& > * {
+		width: 100%;
+	}
 }

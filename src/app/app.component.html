@@ -1,5 +1,8 @@
 <div class="main-container">
   <app-menu *ngIf="currentUser"></app-menu> 
   <alert></alert>
+  <app-copy></app-copy>
+  <tooltip></tooltip>
+  <app-update-alert *ngIf="currentUser"></app-update-alert>
   <router-outlet name="system"></router-outlet>
 </div>

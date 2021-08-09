@@ -1,65 +1,190 @@
 <div class="top-tool">
-	<h3>{{ dashboardTitle | uppercase }}</h3>
-	<div style="float: right;">
-		<button mat-icon-button *ngIf="!isIframe" [disabled]='isShared || !isDashboardUpdate' (click)="onDashboardAdd()" onclick="this.blur()">
-            <mat-icon [matTooltip]='isShared ? "Can&#39;t edit shared dashboard" : !isDashboardUpdate ? "Insufficient permissions to Update Dashboard" : "Add widget"'  icon="plus">add</mat-icon>
+    <div class="dash-brand">
+        <!--company brand-->
+        <img *ngIf="brandSrc" [src]="brandSrc" height="18px" />
+        <fa-icon color="primary" icon="h-square" *ngIf="!brandSrc"></fa-icon> <span class="dash-title">{{ dashboardTitle }}</span>
+        <span class='shared'
+            *ngIf="isShared">{{'dashboard.sharedBy'| translate}}{{ dashboardOwner}}</span>
+        <mat-icon class='shared-owner'
+            *ngIf="isSharedOwner"
+            [matTooltip]="('dashboard.sharedByYou'| translate)">screen_share
+        </mat-icon>
+    </div>
+    <div style="float: right;">
+        <button
+            mat-icon-button
+            *ngIf="!isHome"
+            (click)="onShareQrLink()">
+            <fa-icon icon="qrcode" [matTooltip]="('dashboard.shareQR' | translate)"
+                onclick="this.blur()"></fa-icon>
         </button>
-		<button mat-icon-button [disabled]='isShared || !isDashboardUpdate' (click)="onDashboardSettings()" onclick="this.blur()" >
-            <mat-icon icon="cog" [matTooltip]='isShared ? "Can&#39;t edit shared dashboard" : !isDashboardUpdate ? "Insufficient permissions to Update Dashboard" : "Dashboard settings"'>settings</mat-icon>
+        <button mat-icon-button
+            *ngIf="!isIframe"
+            [disabled]='isShared'
+            (click)="lockDashboard()"
+            onclick="this.blur()">
+            <fa-icon
+                [matTooltip]="isShared ?
+                ('dashboard.isShared.cantEdit' | translate )
+                : !isDashboardUpdate ?
+                ('dashboard.isShared.noPermissionUpdate' | translate )
+                : gridLocked ? ('dashboard.isShared.unlock' | translate ) : ('dashboard.isShared.lock' | translate )"
+                [icon]="gridLocked || isShared ? 'lock' : 'lock-open'"></fa-icon>
         </button>
-		<button mat-icon-button *ngIf="!isHome" [disabled]='isHome || isShared || !isDashboardDelete' (click)="onDashboardDelete()" onclick="this.blur()">
-            <mat-icon [matTooltip]='isShared ? "Can&#39;t edit shared dashboard" : !isDashboardUpdate ? "Insufficient permissions to Delete Dashboard" : "Delete dashboard"' icon="trash-alt">delete</mat-icon>
+        <button mat-icon-button
+            *ngIf="!isIframe"
+            [disabled]='isShared'
+            (click)="onDashboardAdd()"
+            onclick="this.blur()">
+            <fa-icon
+                [matTooltip]="isShared ?
+                ('dashboard.isShared.cantEdit' | translate )
+                : !isDashboardUpdate ?
+                ('dashboard.isShared.noPermissionUpdate' | translate )
+                : ('dashboard.isShared.addWidget' | translate )"
+                icon="plus"></fa-icon>
         </button>
-	</div>
+        <button mat-icon-button
+            [disabled]='isShared'
+            (click)="onDashboardSettings()"
+            onclick="this.blur()">
+            <fa-icon icon="cog"
+                [matTooltip]="isShared ?
+                ('dashboard.isShared.cantEdit' | translate )
+                : !isDashboardUpdate ?
+                ('dashboard.isShared.noPermissionUpdate' | translate )
+                : ('dashboard.isShared.dashSetting' | translate ) ">
+            </fa-icon>
+        </button>
+        <button mat-icon-button
+            *ngIf="!isHome"
+            [disabled]='isHome || isShared'
+            (click)="onDashboardDelete()"
+            onclick="this.blur()">
+            <fa-icon
+                [matTooltip]="isShared ?
+                 ('dashboard.isShared.cantEdit' | translate )
+                : !isDashboardUpdate ?
+                ('dashboard.isShared.noPermissionDelete' | translate )
+                : ('dashboard.isShared.deleteDash' | translate )"
+                icon="trash-alt"></fa-icon>
+        </button>
+    </div>
 </div>
 <!-- container height -->
-<div style="height: calc(100vh - 85px);">
-	<div *ngIf="isIframe">
-		<iframe [src]="iframeUrl | safe" style="visibility:hidden;" onload="this.style.visibility='visible';"></iframe>
-	</div>
-	<gridster *ngIf="!isIframe" [options]="gridOptions" id="gridster">
-		<gridster-item [item]="item" *ngFor="let item of dashboardArray; let i = index;" class="widget-item" (mouseover)="changeCurrent(item.id)" id={{item.id}}>
-			<div class="box-header drag-handler" (mouseenter)="hoverme=true" (mouseleave)="hoverme=false"
-				[ngStyle]="{'background-color': this._ds.dbs.currentWidget !== undefined && item.id === this._ds.dbs.currentWidget.id   ? '#f8f8f8' : '#ffffff'  }">
+<div style="height:calc(100% - 95px)"
+    cdkDropListGroup>
+    <div *ngIf="isIframe">
+        <iframe [src]="iframeUrl | safe"></iframe>
+    </div>
+    <gridster *ngIf="!isIframe"
+        [options]="gridOptions"
+        class="gridster-cont"
+        id="gridster"
+        #gridster>
+        <gridster-item class="widget-item"
+            [item]="getLayerIndex(itemCollection[0])"
+            *ngFor="let itemCollection of dashboardArrayTabs; let i = index;"
+            (mouseenter)="changeCurrent(itemCollection[0].id)"
+            [id]="itemCollection[0].id">
+            <div class="box-header drag--handler"
+                [style.background-color]="itemCollection[0].id === this.dashboardService.dbs?.currentWidget?.id ? '#f8f8f8' : '#ffffff' ">
+                <div>
+                    <!-- DRAG WIDGET CONTAINER -->
+                </div>
+                <div class="tab-widgets"
+                    cdkDropList
+                    cdkDropListOrientation="horizontal"
+                    (cdkDropListDropped)="drop($event)"
+                    [id]="itemCollection[0].tabGroup">
+                    <!-- cdkDrag -->
+                    <div cdkDrag
+                        class="tab-widgets-item"
+                        *ngFor="let item of itemCollection"
+                        [id]="item.id"
+                        [ngStyle]="item.id === getActive(itemCollection).id && {'background-color': 'white'}"
+                        (click)="setActive(item, itemCollection)">
+                        <h3 (dragstart)="dragStartHandler($event)"
+                            [matTooltip]="item.config ? item.config.title: item.title || item.id">
+                            {{item.config ? item.config.title: item.title || item.id}}
+                        </h3>
+                        <span matTooltip="{{'dashboard.widgetTab.delete' | translate}}">
+                            <fa-icon (click)="removeItem($event, item)"
+                                aria-label="delete"
+                                icon="times"></fa-icon>
+                        </span>
+                    </div>
+                    <div class="tab-widgets-item"
+                        matTooltip="{{'dashboard.widgetTab.add' | translate}}"
+                        (click)="onDashboardAdd(getActive(itemCollection).tabGroup)"
+                        style="background-color: transparent; min-width: 35px; opacity: 0.5;">
+                        <h3>
+                            <fa-icon icon="plus-circle"></fa-icon>
+                        </h3>
+                    </div>
+                    <div style="flex:1; min-width: 10px;"
+                        class="drag-handler">
+                        <!-- space -->
+                    </div>
+                    <div class="box-icon-header">
+                        <fa-icon matTooltip="{{'dashboard.widget.setting' | translate}}" style="cursor: pointer;"
+                            *ngIf="hasSettings(getActive(itemCollection))"
+                            (click)="openSettings(getActive(itemCollection))"
+                            aria-label="settings"
+                            icon="cog">
+                        </fa-icon>
+                        <fa-icon matTooltip="{{'dashboard.widget.delete' | translate}}" style="cursor: pointer;"
+                            (click)="removeItem($event, itemCollection)"
+                            aria-label="delete"
+                            icon="trash-alt"></fa-icon>
+                    </div>
+                </div>
+            </div>
+            <div *ngFor="let item of itemCollection"
+                [hidden]="item.id !== getActive(itemCollection).id"
+                class="widget-data-container"
+                [ngClass]='{"iframe-container": item.strongIndex === "IframeWidgetComponent" || item.strongIndex === "GeneralIframeWidgetComponent"}'
+                >
+                <div class="widget-block">
+                    <div class="shadow-polygon"
+                        style="display: none;"
+                        *ngIf='item.strongIndex === "IframeWidgetComponent" || item.strongIndex === "GeneralIframeWidgetComponent"'>
+                    </div>
+                    <ndc-dynamic class="no-drag"
+                        [ndcDynamicComponent]="getComponentWidget(item)"
+                        [ndcDynamicInputs]="{ id: item.id, config: item.config }"
+                        [ndcDynamicOutputs]="item.output">
+                    </ndc-dynamic>
+                </div>
 
-				<h3 *ngIf="item.name !== 'rsearch'" class="ng-binding">
-					{{ item.config ? item.config?.title: item.title || item.id }}
-				</h3>
-				<h3 *ngIf="item.name === 'rsearch'" class="ng-binding">LOKI Search</h3>
+            </div>
 
-				<div class="box-header-btns pull-right">
-					<div class="box-icon-header">
-						<mat-icon *ngIf="hesSettings(item)" [inline]="true" (click)="openSettings(item)"
-							aria-label="settings">settings</mat-icon>
-						<mat-icon [inline]="true" (mousedown)="removeItem($event, item)" aria-label="delete">delete
-						</mat-icon>
-					</div>
-				</div>
-			</div>
-			<div class="widget-warning"
-				*ngIf="this.dashboardCollection.data.config !== undefined && this.dashboardCollection.data.config.ignoreMinSize === 'warning' && item.isWarning && !item.isDismissed ">
-				<p>Widget is too small, we recommend increasing its size to {{ getSize(item) }}</p>
-				<button mat-icon-button class="warning-dismiss" matTooltip="Dismiss warning"
-					(click)="dismissWarning(item)">
-					<mat-icon>close</mat-icon>
-				</button>
-			</div>
-			<div class="widget-block"
-				*ngIf="this.dashboardCollection.data.config !== undefined && this.dashboardCollection.data.config.ignoreMinSize != 'warning' || !item.isWarning || item.isDismissed">
-				<div class="shadow-polygon" style="display: none;"></div>
-				<ndc-dynamic class="no-drag" [ndcDynamicComponent]="getComponentWidget(item)"
-					[ndcDynamicInputs]="{ id: item.id, config: item.config }" [ndcDynamicOutputs]="item.output">
-				</ndc-dynamic>
-			</div>
 
-		</gridster-item>
-	</gridster>
-	<div *ngIf="!isIframe && (dashboardArray && dashboardArray.length === 0)" class="no-content">
-		<span style="text-align: center;">
-			<h1>Dashboard is empty</h1>
-			<button mat-raised-button color="primary" (click)="onDashboardAdd()" [disabled]='isShared || !isDashboardUpdate'>Add widget
-                <fa-icon icon="plus" [matTooltip]='isShared ? "Can&#39;t edit shared dashboard" : !isDashboardUpdate ? "Insufficient permissions to Update Dashboard" : "Add widget"'></fa-icon>
+        </gridster-item>
+
+        <div class="gridster-item-template"
+            id="template"
+            cdkDropList
+            (cdkDropListDropped)="drop($event, true)">
+            <!-- DRAG WIDGET SPACE -->
+        </div>
+    </gridster>
+    <div *ngIf="!isIframe && dashboardArray?.length === 0"
+        class="no-content">
+        <span style="text-align: center;">
+            <h1> {{'dashboard.isEmpty' | translate}} </h1>
+            <button mat-raised-button
+                color="primary"
+                (click)="onDashboardAdd()"
+                [disabled]='isShared'>Add widget
+                <fa-icon icon="plus"
+                [matTooltip]="isShared ?
+                ('dashboard.isShared.cantEdit' | translate )
+                : !isDashboardUpdate ?
+                ('dashboard.isShared.noPermissionUpdate' | translate )
+                : ('dashboard.isShared.addWidget' | translate )">
+                </fa-icon>
             </button>
-		</span>
-	</div>
+        </span>
+    </div>
 </div>

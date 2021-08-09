@@ -4,8 +4,12 @@
 .title {
 	margin: -1.5rem -1.5rem 2rem -1.5rem;
 	width: initial !important;
+	font-size: 14px;
 	display: flex;
 	justify-content: space-between;
+	text-transform: uppercase;
+	//font-weight: 400;
+	letter-spacing: 1px;
 }
 .example-container {
 	display: flex;
@@ -16,4 +20,24 @@
 }
 .hide {
 	display: none !important;
+}
+
+.input-copy-warning {
+    color:red;
+    font-weight: bold;
+}
+.copy-warning {
+    padding:5px;
+   background: #ff000022;
+    color:red;
+    width:100%;
+  
+}
+.stats-label {
+    display: inline-block;
+    font-weight: 500;
+    padding: 10px;
+}
+.stats-data {
+    display: inline-block;
 }

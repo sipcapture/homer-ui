@@ -1,0 +1,104 @@
+<div class="admin-wrapper">
+    <div class="setting-button-container">
+    </div>
+    <div class="tab-name">
+        <h3>{{ page | titlecase }}</h3>
+    </div>
+    <hr />
+    <div class="page-admin">
+        <!-- content page -->
+        <mat-card class="admin-card">
+            <mat-card-header class="flex-between">
+                <mat-card-title>
+                    <div class="icon-header">
+                        <fa-icon class="main-icon" icon="download"></fa-icon>
+                     </div>
+                    {{'preference.pageAdmin.rtp_agent' | translate }}</mat-card-title>
+                <mat-card-subtitle>
+                    {{'preference.pageAdmin.make_rtp_agent_dump' | translate }}
+                </mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-body>
+                <div class="setting-button-container">
+                    <button mat-button
+                        class="setting-btn"
+                        style="float: right"
+                        (click)="dumpRequest('rtpagent')">
+                        {{'preference.pageAdmin.button_dump' | translate }} {{'preference.pageAdmin.rtp_agent' | translate }}
+                    </button>
+                </div>
+            </mat-card-body>
+        </mat-card>
+        <mat-card class="admin-card">
+            <mat-card-header class="flex-between">
+                <mat-card-title>
+                    <div class="icon-header">
+                        <fa-icon class="main-icon" icon="hdd"></fa-icon>
+                     </div>
+                    {{'preference.pageAdmin.pic_server' | translate }}</mat-card-title>
+<mat-card-subtitle>
+    {{'preference.pageAdmin.make_pic_server_dump' | translate }}
+</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-body>
+                <div class="setting-button-container">
+                    <button mat-button
+                        class="setting-btn"
+                        style="float: right"
+                        (click)="dumpRequest('picserver');">
+                        {{'preference.pageAdmin.button_dump' | translate }} {{'preference.pageAdmin.pic_server' | translate }}
+                    </button>
+                </div>
+            </mat-card-body>
+        </mat-card>
+        <hr />
+
+        <mat-card class="admin-card">
+            <mat-card-header class="flex-between">
+                <mat-card-title>
+                    <div class="icon-header">
+                        <fa-icon class="main-icon" icon="server"></fa-icon>
+                     </div>
+                    {{'preference.pageAdmin.homer_app' | translate }}</mat-card-title>
+                <mat-card-subtitle>
+                    {{'preference.pageAdmin.make_homer_app_dump' | translate }}
+                </mat-card-subtitle>
+
+            </mat-card-header>
+
+            <mat-card-body>
+                <div class="setting-button-container">
+                    <button mat-button
+                        class="setting-btn"
+                        style="float: right"
+                        (click)="dumpRequest('homerapp');">
+                        {{'preference.pageAdmin.button_dump' | translate }} {{'preference.pageAdmin.homer_app' | translate }}
+                    </button>
+                </div>
+            </mat-card-body>
+        </mat-card>
+        <mat-card class="admin-card">
+            <mat-card-header class="flex-between">
+                <mat-card-title>
+                    <div class="icon-header">
+                        <fa-icon class="main-icon" icon="list"></fa-icon>
+                     </div>
+                    {{'preference.pageAdmin.logs' | translate }}</mat-card-title>
+                <mat-card-subtitle>
+                    {{'preference.pageAdmin.make_logs_dump' | translate }}
+                </mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-body>
+                <div class="setting-button-container">
+                    <button mat-button
+                        class="setting-btn"
+                        style="float: right"
+                        (click)="download();">
+                        {{'preference.pageAdmin.button_export' | translate }} {{'preference.pageAdmin.logs' | translate }}
+                    </button>
+                </div>
+            </mat-card-body>
+        </mat-card>
+    </div>
+</div>

@@ -1,48 +1,44 @@
 <mat-toolbar class="title" color="primary">
-  <div>Alias: {{ data.isnew ? '': data.data.alias }}</div>
+
+  <div>IP Lookups: {{ data.isnew ? '': data.data.alias }}</div>
   <button mat-icon-button (click)="onNoClick()">
-    <mat-icon>close</mat-icon>
+    <fa-icon icon="times"></fa-icon>
   </button>
 </mat-toolbar>
+
 <div mat-dialog-content>
+
   <strong>Alias Settings</strong><hr />
-<div style="display:flex">
- <mat-form-field style="padding-right: 1rem;">
+  <div><mat-form-field style="padding-right: 1rem;">
     <mat-label>Alias Name</mat-label>
     <input matInput [(ngModel)]="data.data.alias">
-  </mat-form-field>
+  </mat-form-field></div>
   
-<mat-form-field style="padding-right: 1rem;">
+  <div><mat-form-field style="padding-right: 1rem;">
     <mat-label>IP Address</mat-label>
     <input matInput [(ngModel)]="data.data.ip">
-  </mat-form-field>
+  </mat-form-field></div>
   
-  <mat-form-field style="padding-right: 1rem;">
+  <div><mat-form-field style="padding-right: 1rem;">
     <mat-label>Port</mat-label>
     <input matInput [(ngModel)]="data.data.port">
-  </mat-form-field>
-
-</div>
-  <div style="display: flex;align-items: center;">
-
- 
-  <mat-form-field style="padding-right: 1rem;">
+  </mat-form-field></div>
+  
+  <div><mat-form-field style="padding-right: 1rem;">
     <mat-label>Mask</mat-label>
     <input matInput [(ngModel)]="data.data.mask">
-  </mat-form-field>
+  </mat-form-field></div>
   
-  <mat-form-field style="padding-right: 1rem;">
+  <div><mat-form-field style="padding-right: 1rem;">
     <mat-label>CaptureID</mat-label>
     <input matInput [(ngModel)]="data.data.captureID">
-  </mat-form-field>
-  <mat-checkbox style="padding-left:2rem" [(ngModel)]="data.data.status">Status</mat-checkbox>
-</div>
+  </mat-form-field></div>
   
- 
-
-
+  <div><mat-checkbox [(ngModel)]="data.data.status">{{'LINK.status' | translate}}</mat-checkbox></div>
+  
+</div>
 
 <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
-  <button mat-raised-button (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Save</button>
+  <button mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
+  <button mat-raised-button class="setting-btn-ok" [mat-dialog-close]="data" cdkFocusInitial [disabled]='isDisabled'>{{'LINK.buttons.save' | translate}}</button>
 </div>

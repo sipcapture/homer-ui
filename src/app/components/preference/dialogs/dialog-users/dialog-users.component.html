@@ -1,114 +1,251 @@
-<mat-toolbar class="title" color="primary">
-  <div>User settings</div>
-  <button mat-icon-button (click)="onNoClick()">
-    <mat-icon>close</mat-icon>
+<mat-toolbar class="title"
+  color="primary">
+  <div>{{ 'preference.users.dialog.title' | translate:{username:data.data.username} }}</div>
+  <button mat-icon-button
+    (click)="onNoClick()">
+    <fa-icon icon="times"></fa-icon>
   </button>
 </mat-toolbar>
 <div mat-dialog-content>
+  <mat-tab-group>
+    <mat-tab [label]="'preference.users.dialog.title' | translate:{username: 'User'}">
+      <p [ngClass]="isCopy && isNotChanged ? 'copy-warning': ''">
+        <span *ngIf="isCopy && isNotChanged">{{ 'preference.users.dialog.userCopy' | translate }}</span>
+      </p>
+      <div style="display: grid; grid-template-columns: 30% 30% 30%; width: 100%; grid-gap: 10px; ">
+        <mat-form-field *ngIf="username">
+          <mat-label>{{ 'preference.users.dialog.username' | translate }}</mat-label>
+          <input matInput
+            autocomplete="off"
+            [formControl]="username"
+            [disabled]="!isAdmin"
+            (change)="isNotChanged=false"
+            required />
 
-  <div>
-    
-    <mat-form-field style="padding-right: 1rem;">
-      <mat-label>Username</mat-label>
-      <input matInput autocomplete="none"
-        [formControl]="username"
-        [disabled]="!isAdmin"
-        required>
-      <mat-error *ngIf="username.invalid">Should not be empty</mat-error>
-    </mat-form-field>
-    
-    <mat-form-field style="padding-right: 1rem;">
-      <mat-label>Group</mat-label>
-      <input matInput autocomplete="none"
-        [formControl]="usergroup"
-        [disabled]="!isAdmin"
-        required>
-      <mat-error *ngIf="usergroup.invalid">Should not be empty</mat-error>
-    </mat-form-field>
-    
-    <!-- <mat-form-field style="padding-right: 1rem;">
-      <mat-label>Partition ID</mat-label>
-      <input matInput autocomplete="none"
-        [formControl]="partid"
-        [disabled]="!isAdmin"
-        required>
-      <mat-error *ngIf="partid.invalid">Should not be empty</mat-error>
-    </mat-form-field> -->
-  </div>
-  <div>
-    
-    <mat-form-field style="padding-right: 1rem;">
-      <input matInput autocomplete="new-password"
-        placeholder="Password"
-        [type]="hidePass1 ? 'password' : 'text'"
-        [formControl]="password"
-        required>
-      
-      <!-- data.isnew -->
-      <mat-error *ngIf="data.isNew && password.invalid">The password should not be empty</mat-error>
-    </mat-form-field>
-    
-    <mat-form-field style="padding-right: 1rem;">
-      <input matInput autocomplete="new-password"
-        placeholder="Confirm"
-        [type]="hidePass1 ? 'password' : 'text'"
-        [formControl]="password2"
-        required>
-      
-      <mat-error *ngIf="password.value !== password2.value">The password and its confirmation do not coincide</mat-error>
-    </mat-form-field>
-    <button mat-icon-button 
-        (click)="hidePass1 = !hidePass1"
-        [attr.aria-label]="'Hide password'"
-        [attr.aria-pressed]="hidePass1"
-        [matTooltip]="hidePass1 ? 'Show password' : 'Hide password'">
-        <mat-icon>{{hidePass1 ? 'visibility_off' : 'visibility'}}</mat-icon>
-    </button>
-  </div>
-  
-  <strong>Personal information</strong><hr />
-  <div>
-    
-    <mat-form-field style="padding-right: 1rem;">
-      <mat-label>First name</mat-label>
-      <input matInput autocomplete="none"
-        [formControl]="firstname"
-        required>
-        <mat-error *ngIf="firstname.invalid">Should not be empty</mat-error>
-    </mat-form-field>
-    
-    
-    <mat-form-field style="padding-right: 1rem;">
-      <mat-label>Email</mat-label>
-      <input matInput autocomplete="none"
-        [formControl]="email"
-        required>
-      <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
-    </mat-form-field>
-  </div>
-  <div>
-    
-    <mat-form-field style="padding-right: 1rem;">
-      <mat-label>Last name</mat-label>
-      <input matInput autocomplete="none"
-      [formControl]="lastname"
-      required>
-      <mat-error *ngIf="lastname.invalid">Should not be empty</mat-error>
-    </mat-form-field>
-    
-    <mat-form-field style="padding-right: 1rem;">
-      <mat-label>Department</mat-label>
-      <input matInput autocomplete="none"
-      [formControl]="department"
-      required>
-      <mat-error *ngIf="department.invalid">Should not be empty</mat-error>
-    </mat-form-field>
-  </div>
+          <mat-error *ngIf="username?.errors?.required">{{'validators.required' | translate }}</mat-error>
+          <mat-error *ngIf="username?.errors?.minlength">
+            {{ username?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+          </mat-error>
+          <mat-error *ngIf="username?.errors?.maxlength">
+            {{ username?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+          </mat-error>
+          <mat-error *ngIf="username?.errors?.pattern && !username?.errors?.minlength">
+            {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or "."
+          </mat-error>
+          <mat-error *ngIf="username?.errors?.userNameNotAvailable">
+            Username not available
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ 'preference.users.dialog.group' | translate }}</mat-label>
+          <input matInput
+            autocomplete="off"
+            [formControl]="usergroup"
+            [disabled]="!isAdmin"
+            (click)='groupSelect.open()'
+            (keydown)='groupSelect.close()'
+            (input)='updateGroup($event)'
+            #groupInput
+            required />
+          <mat-select matSuffix [formControl]="usergroup" 
+          [disabled]="!isAdmin" #groupSelect (selectionChange)='usergroup.setValue($event.value)'>
+              <mat-option *ngFor="let item of groupList"  [value]='item'>
+                    {{item}}
+              </mat-option>
+          </mat-select>
+          <mat-error *ngIf="usergroup?.errors?.required">{{'validators.required' | translate }}</mat-error>
+          <mat-error *ngIf="usergroup?.errors?.minlength">
+            {{ usergroup?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+          </mat-error>
+          <mat-error *ngIf="usergroup?.errors?.maxlength">
+            {{ usergroup?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+          </mat-error>
+          <mat-error *ngIf="usergroup?.errors?.pattern && !usergroup?.errors?.minlength">
+            {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or "."]
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>{{ 'preference.users.dialog.partition' | translate }}</mat-label>
+          <input matInput
+            autocomplete="off"
+            [formControl]="partid"
+            [disabled]="!isAdmin"
+            required />
+          <mat-error *ngIf="partid?.errors?.required">{{'validators.required' | translate }}</mat-error>
+          <mat-error *ngIf="partid?.errors?.min">{{'validators.minNumber' | translate }} 1</mat-error>
+          <mat-error *ngIf="partid?.errors?.max">{{'validators.maxNumber' | translate }} 99</mat-error>
+          <mat-error *ngIf="partid?.errors?.pattern">{{'validators.patternNumber' | translate }}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 30% 30%; width: 100%; grid-gap: 10px; ">
+        <mat-form-field>
+          <input matInput
+            autocomplete="new-password"
+            [placeholder]="'preference.users.dialog.password' | translate"
+            [type]="hidePass1 ? 'password' : 'text'"
+            [formControl]="password"
+            required />
+          <mat-error *ngIf="data.isNew && password?.errors?.required">The password {{'validators.required' | translate }}</mat-error>
+          <mat-error *ngIf="password?.errors?.minlength">
+            {{ password?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+          </mat-error>
+          <mat-error *ngIf="password?.errors?.maxlength">
+            {{ password?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+          </mat-error>
+         
+          <mat-icon matSuffix
+            style="cursor: pointer"
+            (click)="hidePass1 = !hidePass1"
+            [attr.aria-label]="'Hide password'"
+            [attr.aria-pressed]="hidePass1"
+            [matTooltip]="hidePass1 ? 'Show password' : 'Hide password'">
+            {{ hidePass1 ? "visibility_off" : "visibility" }}
+          </mat-icon>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput
+            autocomplete="new-password"
+            [placeholder]="'preference.users.dialog.confirm' | translate"
+            [type]="hidePass1 ? 'password' : 'text'"
+            [formControl]="password2"
+            required />
+          <mat-error *ngIf="password?.value !== password2?.value">
+            The password and its confirmation do not coincide
+          </mat-error>
+          <mat-error *ngIf="password2?.errors?.minlength">
+            {{ password2?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+            min
+          </mat-error>
+          <mat-error *ngIf="password2?.errors?.maxlength">
+            {{ password2?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+          </mat-error>
+        </mat-form-field>
+        <mat-checkbox color="primary" *ngIf="isAdmin"
+                    [checked]="forcePassword"
+                    class="example-margin" 
+                    [(ngModel)]="forcePassword">Force this user to change their password</mat-checkbox>
+      </div>
+
+      <strong>{{ 'preference.users.dialog.personalInfo' | translate }}</strong>
+      <hr />
+      <div style="display: grid; grid-template-columns: 30% 30%; width: 100%; grid-gap: 10px;">
+        <mat-form-field>
+          <mat-label>{{ 'preference.users.dialog.firstName' | translate }}</mat-label>
+          <input matInput
+            autocomplete="off"
+            [formControl]="firstname"
+            required />
+          <mat-error *ngIf="firstname?.errors?.required">{{'validators.required' | translate }}</mat-error>
+          <mat-error *ngIf="firstname?.errors?.minlength">
+            {{ firstname?.errors?.minlength?.requiredLength }} Characters
+            min
+          </mat-error>
+          <mat-error *ngIf="firstname?.errors?.maxlength">
+            {{ firstname?.errors?.maxlength?.requiredLength }} Characters
+            max
+          </mat-error>
+          <mat-error *ngIf="firstname?.errors?.pattern && !firstname?.errors?.minlength">
+            {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or "."]
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>{{ 'preference.users.dialog.lastName' | translate }}</mat-label>
+          <input matInput
+            autocomplete="off"
+            [formControl]="lastname"
+            />
+          <mat-error *ngIf="lastname?.errors?.maxlength">
+            {{ lastname?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+          </mat-error>
+          <mat-error *ngIf="lastname?.errors?.pattern && !lastname?.errors?.maxlength">
+            {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or "."]
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+
+      <div style="display: grid; grid-template-columns: 30% 30%; width: 100%; grid-gap: 10px;">
+        <mat-form-field>
+          <mat-label>{{ 'preference.users.dialog.email' | translate }}</mat-label>
+          <input matInput
+            autocomplete="off"
+            [formControl]="email"
+            required />
+          <mat-error *ngIf="email?.invalid">{{
+            getErrorMessage()
+            }}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>{{ 'preference.users.dialog.department' | translate }}</mat-label>
+          <input matInput
+            autocomplete="off"
+            [formControl]="department"
+            required />
+          <mat-error *ngIf="department?.errors?.required">{{'validators.required' | translate }}</mat-error>
+          <mat-error *ngIf="department?.errors?.minlength">
+            {{ department?.errors?.minlength?.requiredLength }} Characters
+            min
+          </mat-error>
+          <mat-error *ngIf="department?.errors?.maxlength">
+            {{ department?.errors?.maxlength?.requiredLength }} Characters
+            max
+          </mat-error>
+          <mat-error *ngIf="department?.errors?.pattern && !department?.errors?.minlength">
+            {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" , "." or empty space]
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </mat-tab>
+    <mat-tab label="Setting">
+      <div style="height: 1rem"></div>
+      <strong>{{ 'preference.users.dialog.setting' | translate }}</strong>
+      <div style="height: 1rem"></div>
+      <full-screen (fullPage)='disableClose($event)'  
+                    (import)='import($event)' 
+                    [data]='{json:data.data.setting, title: data.data.username, type: "json"}'>
+        <ace-editor [mode]="'json'"
+          [theme]="'monokai'"
+          [readOnly]="false"
+          [(text)]="data.data.setting"
+          [style.min-height.%]="100"
+          #data_view
+        ></ace-editor>
+      </full-screen>
+    </mat-tab>
+    <mat-tab [label]="'preference.users.dialog.statistics' | translate" *ngIf="hasStatistics">
+        <div style="height: 1rem"></div>
+        <div *ngIf='data.data.params.last_login' class='stats-label'>
+            {{ 'preference.users.dialog.lastLogin' | translate }}
+        </div>
+        <div class='stats-data'>
+            {{lastLogin}}
+        </div>
+        <mat-divider *ngIf='data.data.params.last_login && data.data.params.timestamp_change_password'></mat-divider>
+        <div *ngIf='data.data.params.timestamp_change_password' class='stats-label'>
+            {{ 'preference.users.dialog.lastPassowrd' | translate }}
+        </div>
+        <div class='stats-data'>
+            {{lastPasswordChange}}
+        </div>
+      </mat-tab>
+  </mat-tab-group>
 </div>
+<mat-divider></mat-divider>
 
 
-<div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
-  <button mat-raised-button (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button color="primary" (click)="onSubmit()"
-    cdkFocusInitial>Save</button>
+<div mat-dialog-actions
+  style="float: right; margin-bottom: 0rem">
+  <button mat-raised-button
+    (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
+  <button mat-raised-button
+    color="primary"
+    (click)="onSubmit()"
+    cdkFocusInitial
+    [disabled]="isCopy && isNotChanged">
+    {{'LINK.buttons.save' | translate}}
+  </button>
 </div>

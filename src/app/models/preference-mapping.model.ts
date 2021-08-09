@@ -6,6 +6,8 @@ export interface PreferenceMapping {
     partid: number;
     version: number;
     retention: number;
+    table_name: string;
+    apply_ttl_all: boolean;
     partition_step: number;
     create_index: any;
     create_table: string;

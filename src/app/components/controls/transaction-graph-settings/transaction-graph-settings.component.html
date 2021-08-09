@@ -1,0 +1,104 @@
+<button mat-icon-button
+    class="button-icon-right-top"
+    (click)="openInfo()">
+    <fa-icon icon="cog"></fa-icon>
+</button>
+<!-- filter -->
+<div class="hidden-back"
+    [hidden]="!isInfoOpened"
+    (click)="hideInfo()" *ngIf='options !== undefined'></div>
+    <div class="button-icon-right-top info-container"
+    [hidden]="!isInfoOpened"
+    #filterContainer>
+
+    <div style="margin: 0 -10px 5px -10px;">
+        <mat-accordion>
+            <mat-expansion-panel >
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Physics
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-label>Repulsion</mat-label>
+                <mat-slider 
+                color='primary'
+                thumbLabel
+                [displayWith]="formatLabel"
+                [max]='0.05'
+                [min]='maxValue'
+                [invert]='true'
+                [(ngModel)]="options?.physics?.barnesHut.gravitationalConstant"
+                (ngModelChange)="changeOptions()"
+                [disabled]='isRepulsion'
+                >
+
+                </mat-slider>
+                <br>
+                <mat-checkbox 
+                    [(ngModel)]="isRepulsion"
+                    (ngModelChange)='toggleRepulsion()'
+                > Disable repulsion
+                </mat-checkbox>
+
+                <br>
+                <mat-label>Max Velocity</mat-label>
+                <mat-slider 
+                color='primary'
+                thumbLabel
+                [max]='500'
+                [min]='0'
+                [(ngModel)]="options?.physics.maxVelocity"
+                (ngModelChange)="changeOptions()"
+                >
+
+                </mat-slider>
+                <br>
+                
+                <mat-label>Min Velocity</mat-label>
+                <mat-slider 
+                color='primary'
+                thumbLabel
+                [max]='500'
+                [min]='0'
+                [(ngModel)]="options?.physics.minVelocity"
+                (ngModelChange)="changeOptions()"
+                >
+
+                </mat-slider>
+                <br>
+            </mat-expansion-panel>
+            <!-- <mat-expansion-panel >
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Visuals
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-label>Node size</mat-label>
+                <mat-slider 
+                color='primary'
+                thumbLabel
+                [max]='200'
+                [min]='0'
+                [(ngModel)]="options?.nodes.size"
+                (ngModelChange)="changeOptions()"
+                [disabled]='isRepulsion'
+                >
+
+                </mat-slider>
+
+                <br>
+                <mat-label>Line thicknes</mat-label>
+                <mat-slider 
+                color='primary'
+                thumbLabel
+                [max]='5'
+                [min]='0'
+                [(ngModel)]="options?.edges.width"
+                (ngModelChange)="changeOptions()"
+                >
+
+                </mat-slider>
+            </mat-expansion-panel> -->
+        </mat-accordion>
+    </div>
+</div>

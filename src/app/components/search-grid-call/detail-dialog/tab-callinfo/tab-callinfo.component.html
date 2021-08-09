@@ -1,110 +1,307 @@
-<!-- table -->
-<div *ngIf="!callTransaction && callTransaction.length === 0">
-No Info
-</div>
-
-<div *ngFor="let trans of callTransaction">
-    <div class="panel panel-default padded">
-        <div class="panel-heading">
-            <div class="toggle-header" [ngStyle]="{ 'border-bottom': '3px solid ' + color(trans.callid) }"
-                (click)="toggleCallInfo(trans.callid)">
-                <div style="display: flex; align-items: center">
-                    <mat-icon style="color: #749ad6" id="{{ trans.callid + '-icon' }}">keyboard_arrow_down
-                    </mat-icon>
-                    <strong class="call-header-item">Call-ID:</strong> {{ trans.callid }}
-                </div>
-                <div class="header-data-items">
-                    <div>
-                        <strong class="call-header-item">Duration:</strong>
-                        {{ findTaskData(trans.task, "Duration")["body"] }}
-                    </div>
-                    <div>
-                        <strong class="call-header-item">Status:</strong>
-                        {{ findTaskData(trans.task, "Status")["body"] }}
-                    </div>
-                </div>
-            </div>
-            <div id="{{ trans.callid }}">
-                <div [ngStyle]="{ 'border-top': '1px solid ' + color(trans.callid) }" class="call-data-panel">
-                    <div *ngIf="trans['ua_src']" class="__uac"> {{ trans["ua_src"].title }} -->
-                        {{ trans["ua_dst"].title }}:
-                        <strong>{{ trans["ua_src"].body }} --> {{ trans["ua_dst"].body }}</strong>
-                    </div>
-                    <table class="call-info-data">
-                        <tr style="opacity: 0.7">
-                            <td><strong>duration</strong></td>
-                            <td colspan="2"><strong>from</strong></td>
-                            <td colspan="2"><strong>ruri</strong></td>
-                            <td colspan="2"> <strong>src ip:port</strong> </td>
-                            <td colspan="2"> <strong>dst ip:port</strong> </td>
-                        </tr>
-                        <tr>
-                            <td>{{ secFormatter(trans.Duration) }}</td>
-                            <td colspan="2"> {{ trans.from_user }}@{{trans.from_domain}} </td>
-                            <td colspan="2">
-                                {{ trans.ruri_user || trans.to_user }}@{{trans.ruri_domain || ""}}
-                            </td>
-                            <td colspan="2">
-                                {{trans.source_ip + ":" + trans.source_port }}
-                            </td>
-                            <td colspan="2">
-                                {{ trans.destination_ip  + ":" + trans.destination_port }}
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div class="task-wrapper">
-                    <ng-container *ngFor="let task of trans.task">
-                        <div class="task-item"
-                            *ngIf=" task.body !== 0 && task.body !== '' && task.abs !== 0 && task.type !== 404"
-                            [ngStyle]="{ 'background-color': task.color, 'grid-area': task.grid }"
-                            id="{{ task.title }}">
-                            <div *ngIf="task.type === 3" style="min-width: 50px">
-                                <div>{{ task.title }}</div>
-                                <div style=" height: 150px; width: 100px; display: block; ">
-                                    <!-- <div *ngFor="let item of task.data | keyvalue">
-                                        <div>{{item.key}}: <b>{{item.value}}</b></div>
-                                    </div>
-                                -->
-
-                                    <canvas baseChart [data]=" chartGetData(task, 'data') "
-                                        [labels]=" chartGetData(task, 'label') " [options]="pieChartOptions"
-                                        [legend]="false" [chartType]="pieChartType">
-                                    </canvas>
-
+<mat-tab-group [disablePagination]="true">
+    <mat-tab label="{{'tabCallInfo.session' | translate }} ({{callTransaction.length}})">
+        <!-- table -->
+        <div *ngFor="let trans of callTransaction">
+            <div class="panel panel-default padded">
+                <div class="panel-heading">
+                    <div class="toggle-header" [ngStyle]="{ 'border-bottom': '3px solid ' + color(trans.callid) }"
+                        (click)="toggleCallInfo(trans.create_date)">
+                        <div style="display: flex; align-items: center" [id]="trans.callid">
+                            <mat-icon [ngStyle]="{'color': color(trans.callid)}"
+                                id="{{ trans.create_date + '-icon' }}">keyboard_arrow_down
+                            </mat-icon>
+                            <strong class="call-header-item">{{'LINK.callTerms.callid' | translate}}</strong>
+                            {{trans.callid}}
+                            <button (click)="onCopyCall($event, trans.callid)" class="copy-call-button"
+                                [matTooltip]="('tabCallInfo.copyCall' | translate)">
+                                <mat-icon>content_copy</mat-icon>
+                            </button>
+                        </div>
+                        <div class="header-data-items">
+                            <div class="from-to-users"
+                                *ngIf="(trans.from_user && trans.to_user) || trans.from_user || trans.ruri_user || trans.to_user">
+                                <p class="from-header">
+                                    <span class="from-title">{{'tabCallInfo.caller' | translate }}:</span>
+                                    {{ trans.from_user }}
+                                </p>
+                                <p><span>
+                                        <fa-icon *ngIf="trans.ruri_user || trans.to_user " icon="arrow-right"></fa-icon>
+                                    </span></p>
+                                <p class="to-header">
+                                    <span class="ruri-title">{{'tabCallInfo.callee' | translate }}:</span>
+                                    {{ trans.ruri_user || trans.to_user }}
+                                </p>
+                            </div>
+                            <div class="header-item"
+                                *ngIf="findTaskData(trans.task, 'Duration')['body'] && findTaskData(trans.task, 'Duration')['body'] !== 'Invalid date'">
+                                <strong class="call-header-item">{{'tabCallInfo.Duration' | translate}}:</strong>
+                                {{ findTaskData(trans.task, "Duration")["body"] }}
+                            </div>
+                            <div *ngIf="findTaskData(trans.task, 'MOS')['body'] !=='' && findTaskData(trans.task, 'MOS')['body'] !== '0.00' "
+                                class="mos-header header-item" [ngStyle]="{
+                                    'background': colorByMeanMos( findTaskData(trans.task, 'MOS')['body'] )['background']
+                                }">
+                                <strong class="call-header-item">{{'tabCallInfo.MOS' | translate}}:</strong>
+                                {{ findTaskData(trans.task, "MOS")["body"] }}
+                            </div>
+                            <div class="header-item">
+                                <strong class="call-header-item">{{'tabCallInfo.Status' | translate}}:</strong>
+                                <div class="status-badge">
+                                    {{ findTaskData(trans.task, "Status")["body"] }}
                                 </div>
-                            </div>
-
-                            <div *ngIf=" task.type === 1 && task.body !== 0 && task.body !== '' && task.abs !== 0 ">
-                                <div>{{ task.title }}</div>
-                                <div> <span>{{ task.body }}</span> {{ task.prefix }} </div>
-                            </div>
-                            <div *ngIf=" task.type === 6 && objectKeys(task.body).length > 0">
-                                <div>{{ task.title }}</div>
-                                <div style=" font-size: 16px; font-weight: bold; ">
-                                    <span> {{ task.body.in }} <fa-icon style=" color: #7c7c7c; font-size: 14px;"
-                                            icon="arrow-right"></fa-icon> {{ task.body.out }} </span>
-                                </div>
-                            </div>
-                            <div *ngIf="task.type === 9 && objectKeys(task.body).length > 0">
-                                <div>{{ task.title }}</div>
-                                <div style=" font-size: 16px; font-weight: bold; ">
-                                    <span> {{ task.body.in }} <fa-icon style=" color: #7c7c7c; font-size: 14px;"
-                                            icon="arrow-right"></fa-icon> {{ task.body.out }} </span>
-                                </div>
-                            </div>
-
-                            <div *ngIf="task.type === 4" [innerHTML]="task.body | html"></div>
-                            <div *ngIf="task.type === 5 && task.body !== 0 && task.body !== '' && task.abs !== 0 ">
-                                <div>{{ task.title }}</div>
-                                <div> <span>{{ task.body }}</span> {{ task.prefix }} </div>
                             </div>
                         </div>
-                    </ng-container>
+                    </div>
+                    <div id="{{ trans.create_date }}"
+                        [ngClass]="{isCanceled : findTaskData(trans.task, 'Status')['body'] !== 'Finished'}">
+                        <div [ngStyle]="{ 'border-top': '1px solid ' + color(trans.callid) }"
+                            class="call-data-panel">
+
+                            <!-- here starts the info-->
+                            <div *ngIf="trans['uac']" class="__uac"> {{ trans["uac"].title }}:
+                                <strong>{{ trans["uac"].body }}</strong>
+                            </div>
+                            <table class="call-info-data">
+                                <tr style="opacity: 0.7">
+                                    <td><strong>{{'tabCallInfo.type' | translate}}</strong></td>
+                                    <td *ngIf="trans.duration && secFormatter(trans.duration) !== 'Invalid date'">
+                                        <strong>{{'tabCallInfo.duration' | translate}}</strong>
+                                    </td>
+                                    <td><strong>{{'tabCallInfo.contact' | translate}}</strong></td>
+                                    <td colspan="2"><strong>{{'tabCallInfo.from' | translate}}</strong></td>
+                                    <td colspan="2"><strong>{{'tabCallInfo.ruri' | translate}}</strong></td>
+                                    <td colspan="2"> <strong>{{'tabCallInfo.srcIpPort' | translate}}</strong> </td>
+                                    <td colspan="2"> <strong>{{'tabCallInfo.dstIpPort' | translate}}</strong> </td>
+                                </tr>
+                                <tr>
+                                    <td> {{ trans.segment_type || trans.transaction }} </td>
+                                    <td *ngIf="trans.duration &&secFormatter(trans.duration) !== 'Invalid date'">
+                                        {{ secFormatter(trans.duration) }}</td>
+                                    <td>{{ trans.contact_user }}</td>
+                                    <td colspan="2" class="ellipsis"> {{ trans.from_user }}@{{trans.from_domain}} </td>
+                                    <td colspan="2" class="ellipsis"> {{ trans.ruri_user || trans.to_user
+                                        }}@{{trans.ruri_domain ||
+                                        trans.to_domain}} </td>
+                                    <td colspan="2" *ngIf="trans.source_ip">
+                                        <span [matTooltip]="ellipsed(trans.source_ip)">{{
+                                            ellipsisFormat(trans.source_ip) }}</span>
+                                    </td>
+
+                                    <td colspan="2" *ngIf="trans.destination_ip">
+                                        <span [matTooltip]="ellipsed(trans.destination_ip)">{{
+                                            ellipsisFormat(trans.destination_ip)}}</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="squares-cont">
+
+
+                         <div *ngIf="trans.chart" class="trans-chart">
+                                <div class="chart-cont">
+
+                                    <canvas baseChart [data]=" chartGetData(trans.chart, 'data')"
+                                        [labels]=" chartGetData(trans.chart, 'label') " [options]="pieChartOptions"
+                                        [legend]="false" [chartType]="pieChartType">
+                                    </canvas>
+                                    <div class="chart-legend">
+
+                                        {{ trans.chart.title }} <a *ngIf="trans.chart.link" class="info-link"
+                                        [matTooltip]="('tabCallInfo.linkTo' | translate) + ' ' + trans.chart.title + ' ' + ('tabCallInfo.info' | translate)"
+                                        [href]="trans.chart.link" target="_blank">
+                                        <mat-icon>info</mat-icon>
+                                    </a>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                           <div class="task-wrapper">
+                            <ng-container *ngFor="let task of trans.task">
+
+
+
+                                <div class="task-item"
+                                    *ngIf=" task.body !== 0 && task.body !== '' && task.abs !== 0 && task.type !== 404"
+                                    [ngStyle]="{ 'background-color': task.color, 'grid-area': task.grid }"
+                                    id="{{ task.title }}">
+
+                                    <div *ngIf=" task.type === 1 && task.body !== 0 && task.body !== '' && task.abs !== 0 " style="flex:1"
+                                    >
+
+                                        <!-- task data-->
+
+                                        <div>{{ task.title }}
+                                            <a *ngIf="task.link" class="info-link"
+                                                [matTooltip]="('tabCallInfo.linkTo' | translate) + ' ' + task.title + ' ' + ('tabCallInfo.info' | translate)"
+                                                [href]="task.link" target="_blank">
+                                                <mat-icon>info</mat-icon>
+                                            </a></div>
+                                        <div [ngStyle]="task.font ?  { 'color':task.font } : {}">
+                                            <span>{{ task.body }}</span> {{ task.prefix }}
+                                        </div>
+                                    </div>
+                                    <div *ngIf=" task.type === 6 && objectKeys(task.body).length > 0">
+
+                                        <div>{{ task.title }}    <a *ngIf="task.link" class="info-link"
+                                            [matTooltip]="('tabCallInfo.linkTo' | translate) + ' ' + task.title + ' ' + ('tabCallInfo.info' | translate)"
+                                            [href]="task.link" target="_blank">
+                                            <mat-icon>info</mat-icon>
+                                        </a></div>
+                                        <div style=" font-size: 14px; font-weight: bold; ">
+                                            <span> {{ task.body.in }} <fa-icon style=" color: #7c7c7c; font-size: 14px;"
+                                                    icon="arrow-right"></fa-icon>
+                                                {{ task.body.out }} </span>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="task.type === 9 && objectKeys(task.body).length > 0">
+
+                                        <div>{{ task.title }}     <a *ngIf="task.link" class="info-link"
+                                            [matTooltip]="('tabCallInfo.linkTo' | translate) + ' ' + task.title + ' ' + ('tabCallInfo.info' | translate)"
+                                            [href]="task.link" target="_blank">
+                                            <mat-icon>info</mat-icon>
+                                        </a></div>
+                                        <div style=" font-size: 14px; font-weight: bold; ">
+                                            <span> {{ task.body.in }} <fa-icon style=" color: #7c7c7c; font-size: 14px;"
+                                                    icon="arrow-right"></fa-icon>
+                                                {{ task.body.out }} </span>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="task.type === 4" [innerHTML]="task.body | html"></div>
+                                    <div class="info-container"
+                                        *ngIf="task.type === 5 && task.body !== 0 && task.body !== '' && task.abs !== 0 ">
+
+                                        <div>{{ task.title }}          <a *ngIf="task.link" class="info-link"
+                                            [matTooltip]="('tabCallInfo.linkTo' | translate) + ' ' + task.title + ' ' + ('tabCallInfo.info' | translate)"
+                                            [href]="task.link" target="_blank">
+                                            <mat-icon>info</mat-icon>
+                                        </a></div>
+                                        <div [ngStyle]="task.font ?  { 'color':task.font } : {}">
+                                            <span>{{ task.body }}</span> {{ task.prefix }}
+                                        </div>
+                                    </div>
+                                    <div *ngIf=" task.type === 7 && objectKeys(task.body).length > 0 ">
+                                        <div> {{'tabCallInfo.packetsTotalLost' | translate}}
+                                        </div>
+                                        <div class="packet-stats">
+                                            <strong>{{ task.body.expected }} / {{ task.body.lost }}
+                                                ({{task.body.total}}%)</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+
+
+                           </div>
+
+
+                        </div>
+                        <div class="rtp-agent-report" *ngFor="let stats of rtpagentReports[trans.callid]"
+                            [ngStyle]="{ background: colorByMeanMos(stats.data.MEAN_MOS)['background'] + '88' }">
+                            <table>
+                                <tr class="rtp-head">
+                                    <td rowspan="2" class="big">
+                                        {{ (stats.data.DIR === 0 ? trans.from_user : trans.ruri_user) || "--" }} </td>
+                                    <td colspan="2">{{(stats.data.SOURCE || 'RTP')}}</td>
+                                    <td style="width: 200px;">Codecs</td>
+                                    <td>{{'tabCallInfo.MOS' | translate}}</td>
+                                    <td>{{'tabCallInfo.Jitter' | translate}}</td>
+                                    <td>{{'tabCallInfo.packetLoss' | translate}}</td>
+                                    <td>{{'tabCallInfo.totalBytes' | translate}}</td>
+                                    <td>{{'tabCallInfo.totalPackets' | translate}}</td>
+                                    <td *ngIf="stats.hasWarning" style="text-align:center">Warnings</td>
+                                </tr>
+                                <tr class="rtp-data">
+                                    <td colspan="2">
+                                        <div class="ellipsis" [matTooltip]="ellipsed(stats.src_ip)"><strong>Src:
+                                            </strong> {{ellipsisFormat(stats.src_ip) + ":" + stats.src_port || "--"}}
+                                        </div>
+                                        <div class="ellipsis" [matTooltip]="ellipsed(stats.dest_ip)"><strong>Dst:
+                                            </strong>{{ellipsisFormat(stats.dest_ip) +":" + stats.dest_port || "--"}}
+                                        </div>
+                                    </td>
+                                    <td style="width: 200px;">
+                                        <div style="display: grid;">
+                                            <div>
+                                                <strong>{{'tabCallInfo.Name' | translate}}:</strong>
+                                                {{ stats.data.CODEC_NAME || stats.data.SOURCE || '--'}}
+                                            </div>
+                                            <div>
+                                                <strong>{{'tabCallInfo.PTRate' | translate}}:</strong>
+                                                {{stats.data.CODEC_PT !=='undefined' && stats.data.CODEC_PT !==''  ? stats.data.CODEC_PT : "--"}} /
+                                                {{stats.data.CLOCK || "--"}}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="display: grid;">
+                                            <div>
+                                                <span>{{'tabCallInfo.MEAN' | translate}}: </span>
+                                                {{ stats.data.MEAN_MOS || 0 }}
+                                            </div>
+                                            <div>
+                                                <span>{{'tabCallInfo.MIN' | translate}}: </span>
+                                                {{ stats.data.MIN_MOS || 0 }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="display: grid;">
+                                            <div>
+                                                <span>{{'tabCallInfo.MEAN' | translate}}:</span>
+                                                {{ stats.data.INTERARRIVAL_JITTER || stats.data.INTERARRIVAL_JITTER ||
+                                                (stats.data.MEAN_JITTER || 0) }}
+                                            </div>
+                                            <div>
+                                                <span>{{'tabCallInfo.MAX' | translate}}:</span>
+                                                {{ stats.data.MAX_INTERARRIVAL_JITTER || (stats.data.MAX_JITTER || 0) }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{stats.data.TOTAL_PACKET_LOSS || stats.data.CUM_PACKET_LOSS || 0}}</td>
+                                    <td>{{stats.data.TOTAL_BYTES || stats.data.OCTET_COUNT || 0 }}</td>
+                                    <td>{{stats.data.TOTAL_PK || stats.data.TOTAL_PACKETS || 0 }}</td>
+                                    <td>
+                                        <div *ngIf="stats.hasWarning" class="warning-cont">
+                                            <div class="legs-warnings">
+                                                <p *ngIf="stats?.warnings?.nat"
+                                                    [matTooltip]="('tabCallInfo.publicToPrivate' | translate)">
+                                                    <mat-icon>error_outline</mat-icon> <span>{{'tabCallInfo.NAT' | translate}}</span>
+                                                </p>
+                                                <p *ngIf="stats?.warnings?.jitt" [matTooltip]="('tabCallInfo.jitterWarning' | translate)">
+                                                    <mat-icon>error_outline</mat-icon> <span>{{'tabCallInfo.Jitter' | translate}}</span>
+                                                </p>
+                                                <p *ngIf="stats?.warnings?.mos" [matTooltip]="('tabCallInfo.mosWarning' | translate)">
+                                                    <mat-icon>error_outline</mat-icon> <span>{{'tabCallInfo.MOS' | translate}}</span>
+                                                </p>
+                                                <p *ngIf="stats?.warnings?.video" [matTooltip]="('tabCallInfo.videoWarning' | translate)">
+                                                    <mat-icon>videocam</mat-icon> <span>Video</span>
+                                                </p>
+                                                <p *ngIf="stats?.warnings?.out_order" [matTooltip]="('tabCallInfo.outOfOrderWarning' | translate)">
+                                                    <mat-icon>error_outline</mat-icon> <span>Out Of Order</span>
+                                                </p>
+                                                <p *ngIf="stats?.warnings?.ssrc_chg" [matTooltip]="('tabCallInfo.SSRCWarning' | translate)">
+                                                    <mat-icon>error_outline</mat-icon> <span>SSRC</span>
+                                                </p>
+                                                <p *ngIf="stats?.warnings?.big_down_jump" [matTooltip]="('tabCallInfo.bigDownJumpWarning' | translate)">
+                                                    <mat-icon>error_outline</mat-icon> <span>Big Down Jump</span>
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
                 </div>
+                <hr />
             </div>
         </div>
-        <hr />
-    </div>
-</div>
+    </mat-tab>
+    <mat-tab label="Known Host" *ngIf="hostinfo && hostinfo !== 0">
+        <div style="padding-left: 12px">
+            <ngx-json-viewer [json]="hostinfo" [expanded]="true"></ngx-json-viewer>
+        </div>
+    </mat-tab>
+</mat-tab-group>

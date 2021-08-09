@@ -94,8 +94,8 @@ import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
         </div>
      
         <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
-            <button mat-raised-button (click)="onNoClick()">Cancel</button>
-            <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+            <button mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
+            <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>{{'LINK.buttons.ok' | translate}}</button>
         </div>
     `,
     styleUrls: ['./my-clock-widget.component.scss']

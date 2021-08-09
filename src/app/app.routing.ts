@@ -6,6 +6,7 @@ import {
     DashboardComponent,
     PreferenceComponent
 } from '@app/components';
+import { DetailDialogComponent } from './components/search-grid-call';
 
 
 const appRoutes: Routes = [{
@@ -21,6 +22,14 @@ const appRoutes: Routes = [{
     component: SearchGridCallComponent,
     canActivate: [AuthGuard]
 }, {
+    path: 'search/result/:id',
+    component: SearchGridCallComponent,
+    canActivate: [AuthGuard]
+}, {
+    path: 'transaction/:uuid',
+    component: DetailDialogComponent,
+    canActivate: [AuthGuard]
+}, {
     path: 'login',
     component: LoginComponent,
     outlet: 'system'
@@ -28,6 +37,10 @@ const appRoutes: Routes = [{
     path: '',
     redirectTo: 'dashboard/home',
     pathMatch: 'full'
+}, {
+    path: '**', redirectTo: 'dashboard/home'
+}, {
+    path: 'dashboard/home/**', redirectTo: 'dashboard/home'
 }];
 
 export const routing = RouterModule.forRoot(appRoutes, { enableTracing: false });

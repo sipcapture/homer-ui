@@ -2,6 +2,7 @@ import { WidgetModel } from './widget.model';
 
 export interface UserSettings {
     guid?: string;
+    uuid?: string;
     username: string;
     partid: number;
     category: string;
