@@ -12,22 +12,22 @@
       border: none;
       cursor: pointer;
       transition: .3s all;
-    
+
       & fa-icon {
         color: rgb(186, 186, 186);
         font-size: 16px;
         transition: .2s all;
       }
-    
+
       &:hover {
         background: #26bfbc22;
-    
+
         & fa-icon {
           color: #26bfbc;
         }
       }
     }
-    
+
     .copyBtn {
       background: none;
       padding: 6px 12px;
@@ -35,22 +35,22 @@
       border: none;
       cursor: pointer;
       transition: .3s all;
-    
+
       & fa-icon {
         color: rgb(186, 186, 186);
         transition: .2s all;
         font-size: 16px;
       }
-    
+
       &:hover {
-        background: #749ad622;
-    
+        background: #10c1cf22;
+
         & fa-icon {
-          color: #749ad6;
+          color: #10c1cf;
         }
       }
     }
-    
+
     .eraseBtn {
       background: none;
       padding: 6px 12px;
@@ -58,23 +58,23 @@
       border: none;
       cursor: pointer;
       transition: .3s all;
-    
+
       & fa-icon {
         color: rgb(186, 186, 186);
         transition: .2s all;
         font-size: 16px;
-    
+
       }
-    
+
       &:hover {
         background: #e6513722;
-    
+
         & fa-icon {
           color: #e65137;
         }
       }
     }
-    
+
     .resetBtn {
       background: none;
       padding: 6px 12px;
@@ -82,17 +82,17 @@
       border: none;
       cursor: pointer;
       transition: .3s all;
-    
+
       & fa-icon {
         color: rgb(186, 186, 186);
         transition: .2s all;
         font-size: 16px;
-    
+
       }
-    
+
       &:hover {
         background: #ff8c1122;
-    
+
         & fa-icon {
           color: #ff8c11;
         }

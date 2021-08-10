@@ -11,35 +11,35 @@
     </div>
     <!-- Pages -->
     <ng-container [ngSwitch]="pageId">
-        <app-page-about 
+        <app-page-about
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"about"'></app-page-about>
-        <app-page-api-doc 
+        <app-page-api-doc
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"api documentation"'></app-page-api-doc>
-        <app-page-users 
+        <app-page-users
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"users"'></app-page-users>
-        <app-page-user-settings 
+        <app-page-user-settings
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"user settings"'></app-page-user-settings>
-        <app-page-ipalias 
+        <app-page-ipalias
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"ip alias"'></app-page-ipalias>
-        <app-page-advanced-settings 
+        <app-page-advanced-settings
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"advanced"'></app-page-advanced-settings>
-        <app-page-mapping 
+        <app-page-mapping
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"mapping"'></app-page-mapping>
-        <app-page-hepsub 
+        <app-page-hepsub
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"hepsub"'></app-page-hepsub>
-        <app-page-api-auth 
+        <app-page-api-auth
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"auth token"'></app-page-api-auth>
-        <app-page-scripts 
+        <app-page-scripts
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"scripts"'></app-page-scripts>
-        <app-page-interceptions 
+        <app-page-interceptions
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"interceptions"'></app-page-interceptions>
-        <app-page-agent-subscriptions 
+        <app-page-agent-subscriptions
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"agentsub"'></app-page-agent-subscriptions>
-        <app-page-system-overview 
+        <app-page-system-overview
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"system overview"'></app-page-system-overview>
-        <app-page-reset 
+        <app-page-reset
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"reset"'></app-page-reset>
-        <app-page-admin 
+        <app-page-admin
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"admin"'></app-page-admin>
     </ng-container>
 </div>

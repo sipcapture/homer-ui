@@ -2,7 +2,8 @@
     <div class="dash-brand">
         <!--company brand-->
         <img *ngIf="brandSrc" [src]="brandSrc" height="18px" />
-        <fa-icon color="primary" icon="h-square" *ngIf="!brandSrc"></fa-icon> <span class="dash-title">{{ dashboardTitle }}</span>
+        <!-- <fa-icon color="primary" icon="h-square" *ngIf="!brandSrc"></fa-icon> -->
+        <span class="dash-title" style="padding-left: 0.5rem;">{{ dashboardTitle }}</span>
         <span class='shared'
             *ngIf="isShared">{{'dashboard.sharedBy'| translate}}{{ dashboardOwner}}</span>
         <mat-icon class='shared-owner'

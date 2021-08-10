@@ -3,8 +3,8 @@
   padding-top: 1rem;
   text-transform: uppercase;
   letter-spacing: 2px;
-  background: rgb(104, 143, 225);
-  color: white;
+  background: transparent;
+  // color: white;
   padding-bottom: 10px;
   border-radius: 0px 0px 0px 6px;
 }
@@ -73,8 +73,8 @@ table {
 
   & .setting-btn {
     height: 35px;
-    background: #749ad622 !important;
-    color: #749ad6;
+    background: #10c1cf22 !important;
+    color: #10c1cf;
     margin-right: 7px;
 
     &:disabled,
@@ -211,10 +211,10 @@ table {
   }
 
   &:hover {
-    background: #749ad622;
+    background: #10c1cf22;
 
     & fa-icon {
-      color: #749ad6;
+      color: #10c1cf;
     }
   }
 }
@@ -300,13 +300,13 @@ table {
 
 a:active,
 a:hover {
-  color: #749ad6 !important;
+  color: #10c1cf !important;
 
 }
 
 .activated {
   background: rgb(220, 220, 220);
-  color: #749ad6;
+  color: #10c1cf;
   border-radius: 3px 0px 0px 3px;
 }
 
@@ -416,7 +416,7 @@ td.mat-cell {
     border-bottom-left-radius: 0px !important;
     border-left: 1px black solid;
     box-shadow: none !important;
-    background-color: #749ad622;
+    background-color: #10c1cf22;
 
     ::ng-deep.mat-select-value {
       position: absolute;
@@ -434,8 +434,8 @@ td.mat-cell {
 .in-select {
   width: 100%;
   margin: unset;
-  background-color: #749ad622;
-  color: #749ad6;
+  background-color: #10c1cf22;
+  color: #10c1cf;
 
 }
 

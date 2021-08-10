@@ -15,31 +15,31 @@
         flex-direction:column;
     }
 }
-  
+
 
 .icon-header {
     .main-icon{
         font-size: 40px;
         padding:5px;
-        color:#749ad6 ;
+        color:#10c1cf ;
     }
     .reset-icon{
         color:rgb(158, 158, 158);
         font-size: 24px;
     }
 }
-  
+
 .setting-button-container {
     display: flex;
     margin-top: 0px;
     margin-bottom: 21px;
-  
+
     & .setting-btn {
         height: 35px;
-        background: #749ad6 !important;
+        background: #10c1cf !important;
         color: white;
         margin-right: 7px;
-    
+
         &:disabled,
         &[disabled] {
             background: lightgray !important;
@@ -49,7 +49,7 @@
 
 .in-widget {
     margin-left: 0;
-  
+
     .setting-btn {
         border-top-right-radius: 0px !important;
         border-bottom-right-radius: 0px !important;
@@ -57,7 +57,7 @@
         width: 80%;
         margin-right: 0px;
     }
-  
+
     .setting-select {
         position: relative;
         width: 10px;
@@ -67,12 +67,12 @@
         border-bottom-left-radius: 0px !important;
         border-left: 2px #6687bd solid;
         box-shadow: none !important;
-        background-color: #749ad6;
-    
+        background-color: #10c1cf;
+
         ::ng-deep.mat-select-value {
             position: absolute;
         }
-  
+
         ::ng-deep.mat-select-arrow-wrapper {
             display: block;
             .mat-select-arrow {
@@ -83,14 +83,14 @@
         }
     }
 }
-  
+
 .in-select {
     width: 100%;
     margin: unset;
-    background-color: #749ad622;
-    color: #749ad6;
+    background-color: #10c1cf22;
+    color: #10c1cf;
 }
-  
+
 .page-reset {
     display: flex;
     justify-content: stretch;
@@ -106,7 +106,7 @@
   align-items: center;
   .reset-icon{
     color: #adadad;
-    
+
     margin-bottom: 6px;
   }
     & h3 {
@@ -115,7 +115,7 @@
       color: grey;
      padding:5px;
     }
-  
+
     & small {
       color: grey;
     }

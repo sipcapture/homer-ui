@@ -313,8 +313,8 @@ export class PreferencesComponentMapping {
 
     static links = {
         admin: [
-            'about',
-            'api documentation',
+            // 'about',
+            // 'api documentation',
             'users',
             'user settings',
             'ip alias',
@@ -322,10 +322,10 @@ export class PreferencesComponentMapping {
             'mapping',
             'hepsub',
             'auth token',
-            'scripts',
-            'interceptions',
+            // 'scripts',
+            // 'interceptions',
             'agentsub',
-            'system overview',
+            // 'system overview',
             'reset'
         ],
         commonUser: ['users', 'user settings', 'advanced', 'reset'],
