@@ -32,7 +32,7 @@ export class AlertSourceComponent implements OnInit, OnDestroy {
     }
     ngOnInit() {
         this.subscription = this.alertService.getMessage().subscribe(message => {
-            if (typeof message === 'undefined' || message.text === '') {
+            if (Object.keys(message).length === 0 || message.text === '' ) {
                 return;
             }
             this.dialogRef = this.alertOverlay.open({
