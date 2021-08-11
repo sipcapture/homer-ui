@@ -41,7 +41,7 @@
     <input matInput [(ngModel)]="data.param">
   </mat-form-field>
 
-  <mat-checkbox labelPosition="before" [(ngModel)]="data.shared" *ngIf="!isHomeOrSearch">Shared</mat-checkbox>
+  <mat-checkbox labelPosition="before" color="primary" [(ngModel)]="data.shared" *ngIf="!isHomeOrSearch">Shared</mat-checkbox>
   <div *ngIf="data.type !== 2 && data.type !== 7" style="display: flex; flex-direction: column">
       <hr style="width: 100%;">
     <h4>{{'dashboard.editDialog.dashboardGridConfigurations.title' | translate}}</h4>
@@ -72,7 +72,7 @@
     <hr style="width: 100%;">
     <h4>{{'dashboard.editDialog.widgetControl.title' | translate}}</h4>
     <div>
-        <button mat-raised-button color="primary" (click)="tileWidgets()" [disabled]='data.gridType === "verticalFixed" || data.gridType === "horizontalFixed"'>{{'dashboard.editDialog.widgetControl.tileWidgets' | translate}}</button>
+        <button mat-raised-button class="setting-btn-ok" (click)="tileWidgets()" [disabled]='data.gridType === "verticalFixed" || data.gridType === "horizontalFixed"'>{{'dashboard.editDialog.widgetControl.tileWidgets' | translate}}</button>
         <button mat-raised-button color="accent" (click)="deleteWidgets()" style="margin-left: 10px;">{{'dashboard.editDialog.widgetControl.deleteWidgets' | translate}}</button>
     </div>
   </div>
@@ -84,12 +84,12 @@
   </div>
   <hr style="width: 100%;">
   <div>
-    <button mat-raised-button color="primary" (click)="onExport()">{{'dashboard.editDialog.export' | translate}}</button>
+    <button mat-raised-button class="setting-btn-ok" (click)="onExport()">{{'dashboard.editDialog.export' | translate}}</button>
   </div>
   <hr style="width: 100%;">
 </div>
 
 <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
   <button mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="data" (click)="onSubmit()" cdkFocusInitial [disabled]='isInvalid'>{{'LINK.buttons.save' | translate}}</button>
+  <button mat-raised-button class="setting-btn-ok" [mat-dialog-close]="data" (click)="onSubmit()" cdkFocusInitial [disabled]='isInvalid'>{{'LINK.buttons.save' | translate}}</button>
 </div>

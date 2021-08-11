@@ -1,13 +1,14 @@
 <div class="login-container">
-  <header class="homer-header">
-    <div class="logo logo-text">homer.</div>
-  </header>
+
   <mat-card>
     <mat-card-title *ngIf="types">
       <div class="login-page-header">
+        <div class="login-logo">
+          <img src="assets/images/homerseven.png" alt="Homer">
+        </div>
         <p class="login-head"
           *ngIf="!translateError">
-          <fa-icon icon="sign-in-alt"></fa-icon> {{ 'login.header' | translate }}
+          {{ 'login.header' | translate }}
         </p>
       </div>
     </mat-card-title>

@@ -9,67 +9,8 @@
 
 .homer-header {
   height: 80px;
-
-  & .logo {
-    position: absolute;
-    left: 15px;
-    top: 10px;
-    line-height:40px;
-    color: white;
-    font-family: "Helvetica-Neue-Bold", Helvetica, sans-serif;
-    font-weight: bold;
-    font-size: 32px;
-
-    & :first-letter {
-      color: #1dc27c;
-    }
-  }
 }
-.logo-text {
-	border-bottom-color: rgb(255, 255, 255);
-	border-bottom-style: none;
-	border-bottom-width: 0px;
-	border-image-outset: 0px;
-	border-image-repeat: stretch;
-	border-image-slice: 100%;
-	border-image-source: none;
-	border-image-width: 1;
-	border-left-color: rgb(255, 255, 255);
-	border-left-style: none;
-	border-left-width: 0px;
-	border-right-color: rgb(255, 255, 255);
-	border-right-style: none;
-	border-right-width: 0px;
-	border-top-color: rgb(255, 255, 255);
-	border-top-style: none;
-	border-top-width: 0px;
-	box-sizing: border-box;
-	color: rgb(255, 255, 255);
-	display: inline-block;
-	font-family: Helvetica;
-	font-weight: Bold;
-	font-size: 30px;
-	height: 42px;
-	line-height: 32px;
-	margin-bottom: 0px;
-	margin-left: 0px;
-	margin-right: 0px;
-	margin-top: -5px;
-	outline-color: rgb(255, 255, 255);
-	outline-style: none;
-	outline-width: 0px;
-	padding-bottom: 5px;
-	padding-left: 5px;
-	padding-right: 5px;
-	padding-top: 5px;
-	text-size-adjust: 100%;
-	vertical-align: baseline;
-	width: 120.906px;
-	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-	&:first-letter {
-		color: #1dc27c;
-	}
-}
+
 .homer-footer {
   position: absolute;
   color: white;
@@ -80,7 +21,7 @@
 
 .login-submit {
   border: none;
-  background: #3a89e6;
+  background: #484848;
   border-radius: 3px;
   width: 100% !important;
   height: 35px;
@@ -90,13 +31,18 @@
   cursor: pointer;
   float: right;
 }
-
+.login-logo {
+  margin-bottom: 36px;
+  img {
+    width: 135px;
+  }
+}
 .login-page-header {
   color: rgb(87, 87, 87);
   font-weight: bold;
   text-align: center;
   margin-left: -15px;
-margin-bottom: 20px;
+  margin-bottom: 36px;
   & fa-icon {
     color: grey;
 
@@ -107,8 +53,8 @@ margin-bottom: 20px;
 .login-container {
   & form {
     padding-top: 0px;
-   display: grid;
-   height:225px;
+    display: grid;
+    height: 225px;
   }
 
   & .mat-form-field-wrapper {
@@ -146,7 +92,7 @@ margin-bottom: 20px;
     }
 
     & .mat-select-arrow-wrapper {
-     transform: translateY(5%) !important;
+      transform: translateY(5%) !important;
     }
 
     & .mat-select-placeholder {
@@ -157,15 +103,15 @@ margin-bottom: 20px;
 
   height: 100%;
   width: 100%;
-  background: #2b5d81;
-  background-image: linear-gradient(-180deg, #2b5d81 0%, #24465f 100%);
+  background: #fafafa;
+
   display: flex;
   justify-content: center;
   align-items: center;
 
   & mat-card {
     width: 480px;
-    padding:40px;
+    padding: 40px;
     //padding: 35px;
 
     color: #3b3b3b !important;
@@ -196,20 +142,19 @@ margin-bottom: 20px;
   height: 12px;
 }
 .input-group-prepend {
-  display:block !important;
+  display: block !important;
   font-size: 13px;
-
 }
 .form-control {
-  background:#fafafa;
+  background: #fafafa;
+  height: 40px;
 }
 
 .input-group-text {
   font-size: 13px;
-  padding: .532rem .75rem;
-  color:grey;
+  padding: 0.532rem 0.75rem;
+  color: grey;
 }
-  input > *{
-    font-family: Roboto !important;
-  }
-
+input > * {
+  font-family: Roboto !important;
+}
