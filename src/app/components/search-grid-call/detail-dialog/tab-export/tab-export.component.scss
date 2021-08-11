@@ -23,6 +23,8 @@ $accent:  mat-palette($homeraccent);
     background: mat-color($primary, 500);
     color: white !important;
     font-weight: 500;
+    width: 80%;
+    height: 80%;
     &:hover .hover-hide {
         display: none;
     }

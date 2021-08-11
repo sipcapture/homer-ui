@@ -68,7 +68,7 @@ export class LoginComponent implements OnInit {
         this.translateService.get('LINK').subscribe(data => {
             return data;
         }, error => {
-            console.log(error);
+            // console.log(error);
 
             this.translateError = true;
         })

@@ -17,7 +17,7 @@ export class PreferenceVersionService {
             }
             return;
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             return;
         }
     }

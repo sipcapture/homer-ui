@@ -14,6 +14,7 @@ export * from './detail-dialog/tab-messages/tab-messages.component';
 export * from './detail-dialog/tab-hepsub/tab-hepsub.component';
 export * from './detail-dialog/tab-dtmf/tab-dtmf.component';
 export * from './detail-dialog/tab-recording/tab-recording.component';
+export * from './detail-dialog/tab-qos/tab-qos.component';
 export * from './grid-chart-dialog/grid-chart-dialog.component';
 export * from './grid-settings-dialog/grid-settings-dialog';
 export * from './message-content/message-safe-html.component';

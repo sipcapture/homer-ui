@@ -87,7 +87,7 @@ export class VistimelineComponent implements OnInit, OnDestroy {
         return `rgb(${c()}, ${c()}, ${c()})`;
     }
     private mosColorBlink(mosNum: number) {
-        console.log({mosNum})
+        // console.log({mosNum})
         return mosNum >= 1 && mosNum <= 2 && 'red' ||
             mosNum === 3 && 'gray' ||
             mosNum <= 3 && 'orange' ||
@@ -121,7 +121,7 @@ export class VistimelineComponent implements OnInit, OnDestroy {
             return;
         }
 
-        
+
 
         let filteredData = this.dataSource.messages.map((item, key) => {
             item._index = key;

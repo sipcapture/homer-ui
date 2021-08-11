@@ -135,7 +135,7 @@ public translateService: TranslateService,
             }
             this.updateResult(true);
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             this.onNoClick();
 
             this.dialogAlarm.open(DialogAlarmComponent);
