@@ -127,7 +127,8 @@ import {
   PageSystemOverviewComponent,
   PageUserSettingsComponent,
   PageUsersComponent,
-  PageAdminComponent
+  PageAdminComponent,
+  PageAliasComponent
 } from '@app/components/preference/pages';
 import {
   AddDashboardDialogComponent,
@@ -340,6 +341,7 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     PageResetComponent,
     PageAboutComponent,
     PageAdminComponent,
+    PageAliasComponent,
     LoadingCircleComponent,
     PageSystemOverviewComponent,
     TransactionGraphSettingsComponent,
