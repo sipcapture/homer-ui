@@ -61,7 +61,7 @@
         },
         "widget": "Widget",
         "grafana": "Grafana",
-        "homer": "homer",
+        "hepic": "HEPIC", 
         "words": {
             "success": {
                 "successfully": "successfully",
@@ -127,7 +127,7 @@
             "sum": "Sum"
         }
     },
-
+   
     "alert": {
         "copyFullErrorMessage": "Copy Full Error Message",
         "hide": "Hide",
@@ -209,7 +209,13 @@
             "dashboardReset": "@LINK.dashboard@ @LINK.words.reset.reset@ @LINK.words.success.successful@",
             "mappingsReset": "@LINK.mapping@ @LINK.words.reset.reset@ @LINK.words.success.successful@",
             "resync": "Resync was @LINK.words.success.successful@",
-            "fileUpload": "File was uploaded @LINK.words.success.successfully@"
+            "fileUpload": "File was uploaded @LINK.words.success.successfully@",
+            "cellCopy": "Cell content @LINK.sentences.copy@",
+            "messageCopy":"Message @LINK.sentences.copy@",
+            "notificationCopy": "Notification @LINK.sentences.copy@",
+            "preferenceAdd": "{{page}} was @LINK.words.success.successfully@ added",
+            "preferenceCopy": "{{page}} was @LINK.words.success.successfully@ copied",
+            "preferenceUpdate": "{{page}} was @LINK.words.success.successfully@ updated"
         },
         "warning": {
             "forcePassword": "Please change your @LINK.login.password.toLowerCase()@",
@@ -228,7 +234,10 @@
             "noInternetError": "There seems to be an Issue with your Internet Connection",
             "invalidJWT": "Invalid JWT Token, please use your Credentials to log in again",
             "mappingIssue": "Could not retrieve the correct Setting for this Mapping",
-            "invalidJSON":"The Server returned an invalid JSON response."
+            "invalidJSON":"The Server returned an invalid JSON response.",
+            "preferenceAdd": "{{page}} couldn't be added",
+            "preferenceCopy": "{{page}} @LINK.sentences.failedCopy@",
+            "preferenceUpdate": "{{page}} couldn't be updated"
         },
         "notice": {
             "resultContainerReset": "Result Container field was @LINK.words.reset.reset@ to default value"
@@ -301,7 +310,7 @@
             "grafanaControl": {
                 "title": "@LINK.grafana@ Settings",
                 "grafanaTimestamp": "Sync with @LINK.dashboard@",
-                "grafanaProxy": "Use @LINK.homer@ proxy for @LINK.grafana@ iFrame"
+                "grafanaProxy": "Use @LINK.hepic@ proxy for @LINK.grafana@ iFrame"
             },
             "export": "Export @LINK.dashboard@ Settings"
         },
@@ -476,10 +485,15 @@
         "exportDataFromGrid": "Export Data from Grid",
         "gridDataIntoChart": "Aggregate Grid Data into a Chart"
     },
+    "transaction":{
+        "messages":{
+            "copyButton":"Copy message content"
+        }
+    },
     "preference": {
-        "settings": "Settings",
+        "settings": "Settings",                
         "invalidJSON": "The Server returned an invalid JSON response.",
-        "filter": "Filter",
+        "filter": "Filter",        
         "roles": {
             "admin": "admin",
             "support": "support",
@@ -520,17 +534,18 @@
                 "correlationMapping": "Correlation",
                 "definesCross": "Defines any cross-protocol Correlation Mechanism",
                 "fieldsMapping": "Fields",
+                "mainFields":"Main",
                 "definesSchema": "Defines Schema and @LINK.mapping@ for Protocol Fields",
                 "script": "Script",
                 "definesScript": "Defines current Profile Script",
-                "user_mapping":"User",
-                "definesUserMapping":"Defines User Mapping"
+                "user_mapping":"Custom",
+                "definesUserMapping":"Defines Custom Mapping"
             }
         },
         "system-overview": {
             "dialog": {
-                "title": "@LINK.homer@ Config Nodes synchronisation",
-                "warning": "You are about to sync Configs between two @LINK.homer@ nodes. Are you SURE?",
+                "title": "@LINK.hepic@ Config Nodes synchronisation",
+                "warning": "You are about to sync Configs between two @LINK.hepic@ nodes. Are you SURE?",
                 "destination": "@LINK.callTerms.destination@",
                 "source": "@LINK.callTerms.source@",
                 "tables": "Tables"
@@ -655,26 +670,30 @@
                 "setting": "Setting",
                 "statistics": "Statistics",
                 "lastLogin": "Last Login:",
-                "lastPassword": "Last Password Change:"
+                "lastPassword": "Last Password Change:" 
             }
         },
         "pageReset":{
-            "localStorageSetting":"Local Storage Setting",
+            "localStorageSetting":"Clear Local Storage Data and Settings",
             "clearUserLocalData":"Clear User Local Data",
             "clearAllLocalData":"Clear all Local Data",
-            "dashboardSettings":"Dashboard Settings and Widgets",
+            "dashboardSettings":"Reset Dashboard Settings and Widgets",
             "resetDashboard":"Reset Dashboard",
             "mappings":"Mappings",
-            "resetMappings":"Reset Mappings",
+            "resetMappings":"Reset Protocol and Field Mappings to Default State",
             "resetMapping":"Reset Mapping"
         },
         "pageAdmin":{
+            "rtp_agent":"RTPAgent",
             "make_rtp_agent_dump": "Dump Rtpagent Config",
+            "pic_server":"PicServer",
             "make_pic_server_dump": "Dump Picserver Config",
+            "logs":"Logs",
             "make_logs_dump": "Dump Logs Config",
-            "make_homer_app_dump": "Dump HomerAPP Config",
-            "button_export": "EXPORT",
-            "button_dump": "DUMP"
+            "hepic_app":"Hepic App",
+            "make_hepic_app_dump": "Dump HepicAPP Config",
+            "button_export": "Export",
+            "button_dump": "Dump"
 
         }
     },
@@ -745,7 +764,7 @@
                 "description": "Description",
                 "panel": "Panel",
                 "loginError": "Invalid Login Or Password, please correct it in Advanced Settings"
-
+            
             }
         },
         "influxDBChart": {
@@ -802,7 +821,7 @@
                 "title": "Panel title",
                 "columns": "Columns",
                 "mapping": "@LINK.mapping@"
-
+                
             },
             "enterOrPickIP":"Enter {{item.selection}} or Pick List"
         },

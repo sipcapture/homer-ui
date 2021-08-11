@@ -6,7 +6,7 @@ export class PreferencesComponentMapping {
                 edit: true,
                 delete: true,
                 copy: true,
-                export: true,
+                export: false,
                 import: true
             },
             'user settings': {
@@ -44,7 +44,7 @@ export class PreferencesComponentMapping {
                 copy: true,
                 delete: true,
                 import: true,
-                export: true,
+                export: false,
             },
             advanced: {
                 add: true,
@@ -317,7 +317,7 @@ export class PreferencesComponentMapping {
             // 'api documentation',
             'users',
             'user settings',
-            'ip alias',
+            'alias',
             'advanced',
             'mapping',
             'hepsub',

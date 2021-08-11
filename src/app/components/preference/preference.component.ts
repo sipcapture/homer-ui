@@ -96,12 +96,12 @@ export class PreferenceComponent implements OnInit, OnDestroy, AfterViewInit {
             /**
              * check if available on server side too
              */
-            this.adminService.checkIsActive().then(({ data: { active } }: any) => {
-                this.links = this.links.filter(link => link !== ADMIN);
-                if (active === true) {
-                    this.links.push(ADMIN);
-                }
-            });
+            // this.adminService.checkIsActive().then(({ data: { active } }: any) => {
+            //     this.links = this.links.filter(link => link !== ADMIN);
+            //     if (active === true) {
+            //         this.links.push(ADMIN);
+            //     }
+            // });
         }
 
         this.translateService.get('preference.pages').subscribe(res =>
