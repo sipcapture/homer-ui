@@ -79,6 +79,13 @@
                     <app-tab-callinfo [dataItem]="sipDataItem"
                         (ready)="showLoader=false"></app-tab-callinfo>
                 </ng-template>
+                <ng-template ngSwitchCase="QoS">
+                    <app-tab-qos [callid]="titleId" [dataItem]="sipDataItem?.data" [qosData]="_qosData" [id]="IdFromCallID"
+                        (haveData)="onTabQos($event)"
+                        (ready)="showLoader=false"></app-tab-qos>
+                </ng-template>
+
+
                 <ng-template ngSwitchCase="Media Reports">
                     <app-tab-media-reports [dataItem]="sipDataItem"
                         (filterState)="isFilterOnMediaReport = $event"

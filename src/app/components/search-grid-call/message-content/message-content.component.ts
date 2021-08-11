@@ -46,7 +46,7 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
     @Input('data') set data(val) {
 
         this._data = val;
-        console.log('this._data', this._data);
+        // console.log('this._data', this._data);
         if (val.frame_protocol) {
             // is web-shark
 
@@ -178,7 +178,7 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
 
     copy(rawData, isObject = false) {
         this.translateService.get('notifications.success.messageCopy').subscribe(alert => {
-            console.log(alert);
+            // console.log(alert);
             if (this.raw_isJSON || isObject) {
                 const message = JSON.stringify(rawData, null, 4);
                 this.copyService.copy(message, alert);
@@ -196,7 +196,7 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
         }, {});
         const actualTab = tabs['true'];
         const rawAsJSON = this.data.raw_source && Functions.JSON_parse(this.data.raw_source) || this.data.raw_source;
-        console.log('rawAsJSON', rawAsJSON);
+        // console.log('rawAsJSON', rawAsJSON);
         const tabsInfo = {
             Message: typeof this.data.raw_source !== 'undefined' ? this.data.raw_source : this.objString(this.data.raw),
             SIP: this.objString(this.pt?.sip),

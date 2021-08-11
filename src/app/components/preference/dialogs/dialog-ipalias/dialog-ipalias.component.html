@@ -457,11 +457,11 @@
         <hr />
         <div class="input-group">
           <div>
-            <mat-checkbox [(ngModel)]="data.data.ipv6"
+            <mat-checkbox [(ngModel)]="data.data.ipv6" color="primary"
               [disabled]="true">{{ 'preference.ipalias.dialog.ipv6' | translate }}</mat-checkbox>
           </div>
           <div>
-            <mat-checkbox [(ngModel)]="data.data.status"
+            <mat-checkbox [(ngModel)]="data.data.status" color="primary"
               [disabled]="true">{{ data.data.status ?
               ('preference.ipalias.dialog.active' | translate)
               : 'preference.ipalias.dialog.inactive' | translate

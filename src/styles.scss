@@ -91,7 +91,10 @@ button,
 button:focus {
   outline: none !important;
 }
-
+.mat-flat-button.mat-primary, .mat-raised-button.mat-primary, .mat-fab.mat-primary, .mat-mini-fab.mat-primary {
+  background:#009cbf;
+  color:white;
+}
 .material-icons {
   font-family: "Material Icons";
   font-weight: normal;
@@ -187,9 +190,6 @@ a:not([href]) {
   line-height: 3;
 }
 
-span.mat-option-text {
-  //text-transform: capitalize !important;
-}
 
 @import "~ag-grid-community/dist/styles/ag-grid.css";
 
@@ -371,7 +371,7 @@ ace-editor {
 .mat-toolbar-single-row {
   height: 45px !important;
   padding: 0px !important;
-  padding-left: 16px !important;
+  padding-left: 6px !important;
   padding-right: 6px !important;
 }
 
@@ -490,7 +490,7 @@ h3 {
 
 // widget buttons
 .search-btn {
-  background: #10c1cf;
+  background: #009cbf;
   color: white;
 }
 
@@ -525,7 +525,7 @@ h3 {
 //
 .md-drppicker td.active,
 .md-drppicker td.active:hover {
-  background-color: #10c1cf !important;
+  background-color: #009cbf !important;
   color: #000 !important;
 }
 
@@ -589,7 +589,7 @@ h3 {
 }
 
 .search-btn {
-  background: #10c1cf;
+  background: #009cbf;
   color: white;
 }
 
@@ -642,7 +642,7 @@ h3 {
 }
 
 .setting-btn-ok {
-  background: #26bfbc;
+  background: #009cbf;
   padding: 3px 6px;
   border-radius: 3px;
   margin: 10px;
@@ -731,7 +731,7 @@ h3 {
   .segment-type-number {
     >.segment-main {
       >.segment-value {
-        color: #6f6f6f !important;
+        color: #4f4f4f !important;
       }
     }
   }
@@ -887,7 +887,7 @@ h3 {
   .segment-type-number {
     >.segment-main {
       >.segment-value {
-        color: #6f6f6f !important;
+        color: #009cbf !important;
       }
     }
   }

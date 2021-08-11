@@ -148,7 +148,7 @@ export class EditDialogComponent implements OnInit {
         }
     }
     export(cb: Function) {
-        console.log(cb)
+        // console.log(cb)
         this.callBackExport = cb;
     }
     identify(index, item) {

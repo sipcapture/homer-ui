@@ -171,7 +171,7 @@ const cp = new ClickhouseProcessor();
 
 addEventListener('message', ({ data }) => {
   const { metaData, srcdata } = JSON.parse(data);
-  console.log('WORKER::', { metaData, srcdata });
+  // console.log('WORKER::', { metaData, srcdata });
   if (metaData && metaData.workerCommand) {
     const outputData = cp.parseCommand(srcdata, metaData.workerCommand);
     const response = JSON.stringify(outputData);

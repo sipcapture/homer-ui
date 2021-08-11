@@ -486,12 +486,12 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
                 row.raw_source = `${item.info_date} ${item.description} ${DTMFbuffer}`;
                 break;
             case FlowItemType.LOG:
-                console.log('LOG TEST')
+                // console.log('LOG TEST')
                 row = item.source_data;
                 row.raw = item.source_data?.item?.message;
                 row.raw_source = item.source_data?.item?.message;
                 row.id = `(${item.typeItem}) ${item.description}`;
-                console.log(row)
+                // console.log(row)
                 break;
 
         }

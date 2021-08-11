@@ -1088,7 +1088,7 @@ export class SearchGridCallComponent
         this.arrWindow.push(windowData);
         this.cdr.detectChanges();
         this.fullTransactionService.getTransactionData(request, this.dateFormat.dateTimeMsZ).subscribe(data => {
-            console.log('the data', {data});
+            // console.log('the data', {data});
             windowData.loaded = true;
             windowData.data = data;
             this.cdr.detectChanges();
@@ -1105,7 +1105,7 @@ export class SearchGridCallComponent
         if (!row?.data) {
             return;
         }
-        console.log({ row })
+        // console.log({ row })
         const uniqueId = row?.data?.uniqueId || row?.data?.uuid || row?.data?.id;
         const isSetWindow = this.arrMessageDetail.find(
             ({ uuid }) => `${uuid}` === `${uniqueId}`

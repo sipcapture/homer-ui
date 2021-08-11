@@ -138,7 +138,7 @@ export class TabTdrComponent implements OnInit, AfterViewInit {
         });
     }
     showMessage(eventData: any) {
-        console.log('click message', { eventData });
+        // console.log('click message', { eventData });
         // return;
         const { event } = eventData || { event: null };
         const { id: indexItem } = eventData?.node || {};
@@ -164,7 +164,7 @@ export class TabTdrComponent implements OnInit, AfterViewInit {
     }
 
     public getRowStyle(params) {
-        console.log('getRowStyle(params)', params)
+        // console.log('getRowStyle(params)', params)
         const _style: any = {
             'border-bottom': '1px solid rgba(0,0,0,0.1)',
             'cursor': 'pointer'

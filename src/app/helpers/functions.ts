@@ -294,7 +294,7 @@ export class Functions {
     try {
       return JSON.parse(jsonString);
     } catch (e) {
-      console.log(e)
+      // console.log(e)
       return null;
     }
   }

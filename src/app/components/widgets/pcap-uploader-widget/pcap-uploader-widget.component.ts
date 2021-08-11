@@ -84,7 +84,7 @@ export class PcapUploaderWidgetComponent implements IWidget, AfterViewInit {
         }, error => {
             this.filename = '';
             this.inProgress = false;
-            console.log(error);
+            // console.log(error);
         });
     }
     openDialog(): void { }

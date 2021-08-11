@@ -34,7 +34,7 @@ export class AppComponent {
             try{
                if(data) this.translateError = false
             }catch(e){
-                console.log(e)
+                // console.log(e)
                 this.translateError = true;
                 this.alertService.error('Please check JSON translate file')
 

@@ -134,7 +134,7 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
             });
             this.proto.fields_mapping = ([].concat(pmActive.reverse(), pm)).filter(i => !!i);
             // this.cdr.detectChanges();
-            console.log(this.mappingSortedData)
+            // console.log(this.mappingSortedData)
         } catch (err) {
             this.openDialog();
 
@@ -143,7 +143,7 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
         // this.cdr.detectChanges();
     }
     async openDialog() {
-        console.log(this.data.isReset, 'IS RESET')
+        // console.log(this.data.isReset, 'IS RESET')
         const dialogRef = this.dialogAlarm.open(DialogAlarmComponent, {
             data: {
                 config: this.config,
@@ -166,7 +166,7 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
             }
             this.dialogRef.close(config);
         }
-      
+
     }
     ngOnInit() {
         this.validate();

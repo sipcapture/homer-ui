@@ -8,21 +8,21 @@ import {ICellRendererAngularComp} from 'ag-grid-angular';
         <a (click)="openTransactionPopup($event)" [matTooltip]='callid' style="overflow: hidden;">{{callid}}</a>
     </span>`,
     styles: ['a { user-select: text; color: inherit; text-decoration: unset; overflow: hidden; }', `
-    ::-moz-selection { 
+    ::-moz-selection {
         background:#20c997;
-        color:white; 
+        color:white;
     }
-    ::selection { 
+    ::selection {
         background:#20c997;
         color:white;
     }
     .cell-wrapper {
         user-select:contain;
-        display: flex; 
-        position: absolute; 
-        top: 0; 
-        left: 0; 
-        right: 0; 
+        display: flex;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
         bottom: 0;
         align-items: center;
         padding-left: 5px;
@@ -65,7 +65,7 @@ export class ColumnCallidRenderer implements ICellRendererAngularComp {
         }
     }
     public openTransactionPopup(event) {
-        console.log('this.params =>>>>', this.params?.column?.colDef.field);
+        // console.log('this.params =>>>>', this.params?.column?.colDef.field);
 
         event.stopPropagation();
         this.params.context.componentParent

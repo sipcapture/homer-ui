@@ -104,7 +104,7 @@
          style="fill:#abc837;stroke:#00572c;stroke-width:0.18356305;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          transform="matrix(0,1,1,0,0,0)" />
       <path
-         style="opacity:1;fill:none;stroke:#828282;stroke-width:0.31428829;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         style="opacity:1;fill:none;stroke:#009cbf;stroke-width:0.31428829;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          d="M 93.746182,96.553091 V 120.10984 H 117.11403"
          id="path10-5-1" />
     </g>

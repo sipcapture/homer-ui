@@ -169,7 +169,7 @@
         "amountMessagesTransaction": "Quantity of Messages in this Transaction"
     },
     "login": {
-        "header": "Login",
+        "header": "Homer Login",
         "username": "@LINK.login.username@",
         "password": "@LINK.login.password@",
         "authentication": "Authentication",
@@ -177,7 +177,7 @@
             "internal": "Internal",
             "ldap": "LDAP"
         },
-        "signInButton": "Sign In",
+        "signInButton": "Login",
         "error": {
             "apiNotFound": {
                 "header": "API NOT FOUND",

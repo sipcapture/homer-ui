@@ -1,3 +1,4 @@
+import { TabQosModule } from './components/search-grid-call/detail-dialog/tab-qos/tab-qos.module';
 import { CustomAgGridModule } from './components/controls/custom-ag-grid/custom-ag-grid.module';
 import { WebsharkModule } from './components/controls/webshark/webshark.module';
 import { LokiResultsModule } from './components/controls/loki-results/loki-results.module';
@@ -408,6 +409,7 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     CopyModule,
     CustomAgGridModule,
     ColorOffsetModule,
+    TabQosModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

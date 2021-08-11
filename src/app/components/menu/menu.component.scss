@@ -29,7 +29,7 @@
   height: 45px;
 
   img {
-    width: 32px;
+    height: 30px;
   }
 }
 
@@ -77,47 +77,25 @@ button {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   line-height: 48px;
 }
-
+.logo-container {
+  display: flex;
+  align-items: center;
+  width: 120px;
+}
 
 .logo-text {
-  border-bottom-color: rgb(255, 255, 255);
-  border-bottom-style: none;
-  border-bottom-width: 0px;
-  border-image-outset: 0px;
-  border-image-repeat: stretch;
-  border-image-slice: 100%;
-  border-image-source: none;
-  border-image-width: 1;
-  border-left-color: rgb(255, 255, 255);
-  border-left-style: none;
-  border-left-width: 0px;
-  border-right-color: rgb(255, 255, 255);
-  border-right-style: none;
-  border-right-width: 0px;
-  border-top-color: rgb(255, 255, 255);
-  border-top-style: none;
-  border-top-width: 0px;
+  
   box-sizing: border-box;
   color: rgb(255, 255, 255);
   display: inline-block;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-size: 30px;
-  height: 45px;
-  line-height: 45px;
-  margin-bottom: 0px;
-  margin-left: 0px;
-  margin-right: 0px;
-  margin-top: -5px;
-  outline-color: rgb(255, 255, 255);
-  outline-style: none;
-  outline-width: 0px;
+  font-family:  Helvetica, Arial, sans-serif;
+  font-size: 20px;
+ 
   padding-bottom: 0px;
-  padding-left: 5px;
-  padding-right: 5px;
+  padding-left: 10px;
+
   padding-top: 0px;
-  text-size-adjust: 100%;
-  vertical-align: baseline;
-  width: 120.906px;
+ 
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   &:first-letter {

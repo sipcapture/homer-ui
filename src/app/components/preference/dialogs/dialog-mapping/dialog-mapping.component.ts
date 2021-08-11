@@ -151,7 +151,7 @@ export class DialogMappingComponent {
         this.dataSource.data = this.fieldsTableFields
       } catch (e) {
 
-        console.log(e);
+        // console.log(e);
 
       }
 
