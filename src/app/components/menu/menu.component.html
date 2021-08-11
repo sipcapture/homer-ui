@@ -4,8 +4,12 @@
       <div class="logo-base">
 
         <button mat-button (click)="backLastToDashboard()" [matTooltip]="('menu.home'|translate)">
-          <img src="assets/images/homerseven.png" />
-          <div class="logo-text">homer</div>
+         
+          <div class="logo-container">
+            <span class="logo-img"><img src="assets/images/homerseven.png" /></span>  
+            <span class="logo-text">
+                homer
+            </span> </div>
         </button>
       </div>
         <button [matTooltip]="('menu.settings'| translate)" mat-button (click)="onPreference()">

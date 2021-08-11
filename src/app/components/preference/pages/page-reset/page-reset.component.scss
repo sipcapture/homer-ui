@@ -21,7 +21,7 @@
     .main-icon{
         font-size: 40px;
         padding:5px;
-        color:#10c1cf ;
+        color:#009cbf ;
     }
     .reset-icon{
         color:rgb(158, 158, 158);
@@ -36,7 +36,7 @@
 
     & .setting-btn {
         height: 35px;
-        background: #10c1cf !important;
+        background: #009cbf !important;
         color: white;
         margin-right: 7px;
 
@@ -67,7 +67,7 @@
         border-bottom-left-radius: 0px !important;
         border-left: 2px #6687bd solid;
         box-shadow: none !important;
-        background-color: #10c1cf;
+        background-color: #009cbf;
 
         ::ng-deep.mat-select-value {
             position: absolute;
@@ -87,8 +87,8 @@
 .in-select {
     width: 100%;
     margin: unset;
-    background-color: #10c1cf22;
-    color: #10c1cf;
+    background-color: #009cbf22;
+    color: #009cbf;
 }
 
 .page-reset {

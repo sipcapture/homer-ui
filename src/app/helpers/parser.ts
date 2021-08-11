@@ -630,11 +630,11 @@ export class TransactionServiceProcessor {
         return `<span style="font-weight:bold">${a}:</span><span style="color:${color}">${c}</span>`;
       })
       .replace(regexpTag, (g, a) => {
-        color = 'red';
+        color = 'dimGray';
         return `<span style="font-weight:bold;color:${color}">${g}</span>`;
       })
       .replace(regexpSDP, (g, a) => {
-        color = 'red';
+        color = 'dimGray';
         return `<span style="font-weight:bold;color:${color}">${g}</span>`;
       })
       .replace(regexMethod, g => {

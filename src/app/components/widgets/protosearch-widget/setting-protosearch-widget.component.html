@@ -12,7 +12,7 @@
       <input matInput [(ngModel)]="resultConfig.title" (keydown)="onChange()" (ngModelChange)='validateTitle($event)'>
     </mat-form-field>
 
-    <mat-checkbox [(ngModel)]="resultConfig.isButton" labelPosition="before" (click)="onChange()" [checked]="true" >Search Button</mat-checkbox>
+    <mat-checkbox [(ngModel)]="resultConfig.isButton" color="primary" labelPosition="before" (click)="onChange()" [checked]="true" >Search Button</mat-checkbox>
     <mat-form-field>
       <mat-label>{{ 'widgets.protosearch.settings.columns' | translate }}</mat-label>
       <input matInput [(ngModel)]="resultConfig.countFieldColumns" type="number" (keydown)="onChange()">
