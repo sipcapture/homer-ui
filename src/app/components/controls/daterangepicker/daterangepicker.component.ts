@@ -855,9 +855,9 @@ export class DaterangepickerComponent implements OnInit {
                         this.chosenRange = this.rangesArray[i];
                         break;
 
-                    } else if (this.startDate.format("HH:mm:ss") != "00:00:00" &&
-                        (this.endDate.valueOf() - this.startDate.valueOf()) ==
-                        (this.ranges[range][1].valueOf() - this.ranges[range][0]).valueOf()) {
+                    } else if (this.startDate?.format("HH:mm:ss") != "00:00:00" &&
+                        (this.endDate?.valueOf() - this.startDate?.valueOf()) ==
+                        (this.ranges?.[range][1]?.valueOf() - this.ranges?.[range][0])?.valueOf()) {
                         customRange = false;
                         this.chosenRange = this.rangesArray[i];
                         break;

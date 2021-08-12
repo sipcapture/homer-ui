@@ -137,11 +137,11 @@ export class DialogUsersComponent implements OnInit {
             this.email.setValue(d.email);
             this.lastname.setValue(d.lastname);
             this.department.setValue(d.department);
-            this.forcePassword = d.params.force_password;
-            this.lastPasswordChange = d.params.timestamp_change_password;
-            this.lastLogin = d.params.last_loogin;
+            this.forcePassword = d.params?.force_password;
+            this.lastPasswordChange = d?.params?.timestamp_change_password;
+            this.lastLogin = d?.params?.last_loogin;
         })(data.data);
-        if (data.data.params.last_login || data.data.params.timestamp_change_password) {
+        if (data?.data?.params?.last_login || data?.data?.params?.timestamp_change_password) {
             this.hasStatistics = true;
         }
         this.isValidForm = true;
@@ -150,11 +150,11 @@ export class DialogUsersComponent implements OnInit {
     }
     async ngOnInit() {
         await this.userService.getAllGroups().toPromise().then((groups: any) => {
-            this.groupList = groups.data;
-            this.bufferGroupList = groups.data;
+            this.groupList = groups?.data;
+            this.bufferGroupList = groups?.data;
         });
-        if (!this.groupList.some(item => item.toLowerCase() === this.data.data.usergroup.toLowerCase())) {
-            this.groupList.push(this.data.data.usergroup);
+        if (!this.groupList?.some(item => item.toLowerCase() === this.data?.data?.usergroup.toLowerCase())) {
+            this.groupList?.push(this.data?.data?.usergroup);
         }
         await this.getFormat();
     }
@@ -164,7 +164,7 @@ export class DialogUsersComponent implements OnInit {
     updateGroup(e) {
         const list = Functions.cloneObject(this.bufferGroupList);
         list.push(e.target.value);
-        if (!this.groupList.some(item => item.toLowerCase() === e.target.value.toLowerCase())) {
+        if (!this.groupList?.some(item => item.toLowerCase() === e.target.value.toLowerCase())) {
             this.groupList = list;
         }
     }

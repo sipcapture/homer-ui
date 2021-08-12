@@ -37,7 +37,6 @@ export class TabQosComponent implements OnInit, AfterViewInit {
   @Input() callid;
   @Input() dataItem: any;
   @Input() set qosData(val: any) {
-    console.log('this._qosData',this._qosData)
 
     if (!val) {
       return;
@@ -132,7 +131,7 @@ export class TabQosComponent implements OnInit, AfterViewInit {
 
 
     this.worker = new WorkerService(new Worker(new URL('@app/workers/qos.worker', import.meta.url), { type: 'module' }));
-    console.log(this.worker);
+ 
   }
   initQOSData() {
     const isData = this.qosData?.rtcp?.data?.length > 0 || this.qosData?.rtp?.data?.length > 0;
@@ -148,11 +147,10 @@ export class TabQosComponent implements OnInit, AfterViewInit {
     }, 35);
   }
   async update(workerCommand: string, mosFraction: boolean, data: any) {
-    console.log('UPDATE');
 
     const outData = await this.worker.getParseData({ workerCommand, mosFraction }, data);
 
-    console.log({ workerCommand, outData });
+ 
 
     if (workerCommand === 'init') {
       this.isError = outData.isError as boolean;

@@ -523,6 +523,7 @@
                 "definesSchema": "Defines Schema and @LINK.mapping@ for Protocol Fields",
                 "script": "Script",
                 "definesScript": "Defines current Profile Script",
+                "mainFields":"Main",
                 "user_mapping":"User",
                 "definesUserMapping":"Defines User Mapping"
             }
