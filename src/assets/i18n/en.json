@@ -61,7 +61,7 @@
         },
         "widget": "Widget",
         "grafana": "Grafana",
-        "hepic": "HEPIC", 
+        "hepic": "HEPIC",
         "words": {
             "success": {
                 "successfully": "successfully",
@@ -127,7 +127,7 @@
             "sum": "Sum"
         }
     },
-   
+
     "alert": {
         "copyFullErrorMessage": "Copy Full Error Message",
         "hide": "Hide",
@@ -491,9 +491,9 @@
         }
     },
     "preference": {
-        "settings": "Settings",                
+        "settings": "Settings",
         "invalidJSON": "The Server returned an invalid JSON response.",
-        "filter": "Filter",        
+        "filter": "Filter",
         "roles": {
             "admin": "admin",
             "support": "support",
@@ -538,7 +538,7 @@
                 "definesSchema": "Defines Schema and @LINK.mapping@ for Protocol Fields",
                 "script": "Script",
                 "definesScript": "Defines current Profile Script",
-                "mainFields":"Main"
+                "mainFields":"Main",
                 "user_mapping":"Custom",
                 "definesUserMapping":"Defines Custom Mapping"
             }
@@ -671,7 +671,7 @@
                 "setting": "Setting",
                 "statistics": "Statistics",
                 "lastLogin": "Last Login:",
-                "lastPassword": "Last Password Change:" 
+                "lastPassword": "Last Password Change:"
             }
         },
         "pageReset":{
@@ -765,7 +765,7 @@
                 "description": "Description",
                 "panel": "Panel",
                 "loginError": "Invalid Login Or Password, please correct it in Advanced Settings"
-            
+
             }
         },
         "influxDBChart": {
@@ -822,7 +822,7 @@
                 "title": "Panel title",
                 "columns": "Columns",
                 "mapping": "@LINK.mapping@"
-                
+
             },
             "enterOrPickIP":"Enter {{item.selection}} or Pick List"
         },
