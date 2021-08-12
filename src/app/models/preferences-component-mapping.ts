@@ -242,12 +242,12 @@ export class PreferencesComponentMapping {
             ],
             advanced: ['Partid', 'Category', 'Param', 'Data', 'tools'],
             mapping: [
-                'Partid',
+                // 'Partid',
                 'Profile',
                 'HEP alias',
                 'HEP ID',
-                'Retention',
-                'Table Name',
+                // 'Retention',
+                // 'Table Name',
                 'tools',
             ],
             hepsub: [

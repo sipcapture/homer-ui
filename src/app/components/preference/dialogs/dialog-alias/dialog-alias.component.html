@@ -13,9 +13,9 @@
     class="dialog-title"
     *ngIf="color"
     [ngStyle]="{'color':color.font, 'background':color.background, 'border':'6px solid ' + color.border }">
-    <img [src]="isLinkImg ? aliasImg : './assets/' + aliasImg"
+    <!-- <img [src]="isLinkImg ? aliasImg : './assets/' + aliasImg"
       height="50px"
-      class="alias-img" />{{ data.data.alias }}
+      class="alias-img" />-->{{ data.data.alias }}
   </h1>
 
   <div mat-dialog-content
@@ -134,7 +134,7 @@
               <input matInput
                 autocomplete="off"
                 [ngClass]="isCopy && isNotChanged ? 'input-copy-warning':''"
-                (change)="isNotChanged=false;saveObj()"
+                (change)="isNotChanged=false;"
                 [(ngModel)]="isCopy && isNotChanged ? data.data.alias + '-COPY' : data.data.alias"
                 [formControl]="alias"
                  />
@@ -202,10 +202,10 @@
         </div>
         <hr />
         <div class="input-group">
-          <div>
+          <!-- <div>
             <mat-checkbox [(ngModel)]="data.data.ipv6"
               >{{ 'preference.ipalias.dialog.ipv6' | translate }}</mat-checkbox>
-          </div>
+          </div> -->
           <div>
             <mat-checkbox [(ngModel)]="data.data.status"
               >{{ data.data.status ?
@@ -215,10 +215,7 @@
           </div>
         </div>
       </mat-tab>
-      <mat-tab label="Alias Style Settings">
-        <!-- <p style="margin-top: 2rem;">
-                <strong>Alias Style Settings</strong>
-            </p> -->
+      <!-- <mat-tab label="Alias Style Settings">
         <div style="margin-top: 2rem;"
           class="input-group third">
           <div>
@@ -295,7 +292,7 @@
           </mat-form-field>
 
         </div>
-      </mat-tab>
+      </mat-tab> -->
     </mat-tab-group>
   </div>
 
@@ -401,7 +398,7 @@
               <input matInput
                 autocomplete="off"
                 [ngClass]="isCopy && isNotChanged ? 'input-copy-warning':''"
-                (change)="isNotChanged=false;saveObj()"
+                (change)="isNotChanged=false;"
                 [(ngModel)]="isCopy && isNotChanged ? data.data.alias + '-COPY' : data.data.alias"
                 [disabled]="true" />
             </mat-form-field>
@@ -443,7 +440,7 @@
           </div>
         </div>
       </mat-tab>
-      <mat-tab label="Alias Style Settings">
+      <!-- <mat-tab label="Alias Style Settings">
         <div style="margin-top: 2rem;"
           class="input-group third">
           <div>
@@ -518,7 +515,7 @@
           </mat-form-field>
 
         </div>
-      </mat-tab>
+      </mat-tab> -->
     </mat-tab-group>
   </div>
 

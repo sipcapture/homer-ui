@@ -127,41 +127,41 @@ export class DialogAliasComponent {
 
     }
 
-    handleImg() {
-        if (this.aliasLink !== '') {
-            const checked = this.checkExtension(this.aliasLink);
-            if (checked) {
-                this.isLinkImg = true;
-                this.aliasImg = this.aliasLink;
-                this.linkImgError = '';
-                this.saveObj();
-            } else {
-                this.linkImgError = 'Non valid image link';
-            }
-        } else {
-            this.isLinkImg = false;
-            this.aliasImg = './img/gateways/phone.png';
-            this.linkImgError = '';
-            this.saveObj();
-        }
-    }
-    saveObj() {
-        const ipobj = {};
+    // handleImg() {
+    //     if (this.aliasLink !== '') {
+    //         const checked = this.checkExtension(this.aliasLink);
+    //         if (checked) {
+    //             this.isLinkImg = true;
+    //             this.aliasImg = this.aliasLink;
+    //             this.linkImgError = '';
+    //             this.saveObj();
+    //         } else {
+    //             this.linkImgError = 'Non valid image link';
+    //         }
+    //     } else {
+    //         this.isLinkImg = false;
+    //         this.aliasImg = './img/gateways/phone.png';
+    //         this.linkImgError = '';
+    //         this.saveObj();
+    //     }
+    // }
+    // saveObj() {
+    //     const ipobj = {};
 
-        for (const key in this.data.data) {
-            if (key !== 'ipobject' && key !== 'uuid' && key !== 'version') {
-                ipobj[key] = this.data.data[key];
-            }
-        }
-        ipobj['color'] = {};
-        // ipobj['alias'] = this.alias;
-        ipobj['image'] = this.aliasImg;
-        ipobj['isLinkImg'] = this.isLinkImg;
-        ipobj['color'].font = this.fontCtr.value.toHexString();
-        ipobj['color'].background = this.backgroundCtr.value.toHexString();
-        ipobj['color'].border = this.borderCtr.value.toHexString();
-        this.data.data.ipobject = JSON.stringify(ipobj, null, 4);
-    }
+    //     for (const key in this.data.data) {
+    //         if (key !== 'ipobject' && key !== 'uuid' && key !== 'version') {
+    //             ipobj[key] = this.data.data[key];
+    //         }
+    //     }
+    //     ipobj['color'] = {};
+    //     // ipobj['alias'] = this.alias;
+    //     ipobj['image'] = this.aliasImg;
+    //     ipobj['isLinkImg'] = this.isLinkImg;
+    //     ipobj['color'].font = this.fontCtr.value.toHexString();
+    //     ipobj['color'].background = this.backgroundCtr.value.toHexString();
+    //     ipobj['color'].border = this.borderCtr.value.toHexString();
+    //     this.data.data.ipobject = JSON.stringify(ipobj, null, 4);
+    // }
 
     checkExtension(imglink: string) {
         const valtoLower = imglink.toLowerCase();
