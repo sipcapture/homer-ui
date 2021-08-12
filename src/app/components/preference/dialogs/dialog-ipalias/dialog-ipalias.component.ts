@@ -214,14 +214,14 @@ export class DialogIpAliasComponent implements OnInit {
 
     async getImages() {
         const settingObj = await this.getSettings(this.imagesParam, 'ui');
-        this.imagesobject = this._pas.getSettingData(settingObj);
+        this.imagesobject = this._pas?.getSettingData(settingObj);
         this.saveObj();
     }
 
     saveObj() {
         const ipobj = {};
 
-        for (const key in this.data.data) {
+        for (const key in this.data?.data) {
             if (key !== 'ipobject' && key !== 'uuid' && key !== 'version') {
                 ipobj[key] = this.data.data[key];
             }

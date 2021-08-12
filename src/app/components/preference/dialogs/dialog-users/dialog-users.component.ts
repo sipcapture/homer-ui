@@ -169,7 +169,7 @@ export class DialogUsersComponent implements OnInit {
     updateGroup(e) {
         const list = Functions.cloneObject(this.bufferGroupList);
         list.push(e.target.value);
-        if (!this.groupList.some(item => item.toLowerCase() === e.target.value.toLowerCase())) {
+        if (!this.groupList?.some(item => item.toLowerCase() === e.target.value.toLowerCase())) {
             this.groupList = list;
         }
     }

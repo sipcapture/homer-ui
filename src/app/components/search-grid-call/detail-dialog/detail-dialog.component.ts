@@ -126,7 +126,6 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     return this._sipDataItem;
   }
   set sipDataItem(data) {
-    console.log('>>sipDataItem', data);
     if (!data?.data) {
       return;
     }

@@ -199,6 +199,21 @@ $ag-mat-accent: mat-color($homeraccent);
 //@import "~ag-grid-community/dist/styles/ag-theme-balham.css";
 @import "~ag-grid-community/src/styles/ag-theme-material/sass/ag-theme-material";
 
+.ag-theme-material .ag-checkbox-input-wrapper.ag-checked::after {
+  color: #009cbf !important;
+}
+.ag-theme-material .ag-checkbox-input-wrapper::after {
+  color: #009cbf !important;
+}
+.mat-checkbox-checked:not(.mat-checkbox-disabled).mat-accent .mat-ripple-element, .mat-checkbox:active:not(.mat-checkbox-disabled).mat-accent .mat-ripple-element {
+  background:#009cbf !important;
+  color:#009cbf !important;
+}
+
+.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background, .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+  background:#009cbf !important;
+}
+
 $flow-checkbox-color: mat-color($checkbox-color);
 
 .material-icons.md-18 {
@@ -486,6 +501,13 @@ h3 {
 
 .add-widget-button {
   width: 200px !important;
+  background: #009cbf !important ;
+  padding: 3px 6px !important;
+  border-radius: 3px ;
+  margin: 10px;
+  color: white !important;
+  cursor: pointer;
+  line-height: 14px;
 }
 
 // widget buttons
