@@ -1,44 +1,531 @@
-<mat-toolbar class="title" color="primary">
-
-  <div>IP Lookups: {{ data.isnew ? '': data.data.alias }}</div>
-  <button mat-icon-button (click)="onNoClick()">
+<mat-toolbar class="title"
+  color="primary">
+  <div>{{(isCopy ? ('preference.ipalias.dialog.copy' | translate) : '')}} {{ 'preference.ipalias.dialog.title' |
+    translate }}</div>
+  <button mat-icon-button
+    (click)="onNoClick()">
     <fa-icon icon="times"></fa-icon>
   </button>
 </mat-toolbar>
 
-<div mat-dialog-content>
+<ng-container *ngIf="actionType !== 'data-preview'; else dataPreview">
+  <h1 mat-dialog-title
+    class="dialog-title"
+    *ngIf="color"
+    [ngStyle]="{'color':color.font, 'background':color.background, 'border':'6px solid ' + color.border }">
+    <!-- <img [src]="isLinkImg ? aliasImg : './assets/' + aliasImg"
+      height="50px"
+      class="alias-img" />-->{{ data.data.alias }}
+  </h1>
 
-  <strong>Alias Settings</strong><hr />
-  <div><mat-form-field style="padding-right: 1rem;">
-    <mat-label>Alias Name</mat-label>
-    <input matInput [(ngModel)]="data.data.alias">
-  </mat-form-field></div>
-  
-  <div><mat-form-field style="padding-right: 1rem;">
-    <mat-label>IP Address</mat-label>
-    <input matInput [(ngModel)]="data.data.ip">
-  </mat-form-field></div>
-  
-  <div><mat-form-field style="padding-right: 1rem;">
-    <mat-label>Port</mat-label>
-    <input matInput [(ngModel)]="data.data.port">
-  </mat-form-field></div>
-  
-  <div><mat-form-field style="padding-right: 1rem;">
-    <mat-label>Mask</mat-label>
-    <input matInput [(ngModel)]="data.data.mask">
-  </mat-form-field></div>
-  
-  <div><mat-form-field style="padding-right: 1rem;">
-    <mat-label>CaptureID</mat-label>
-    <input matInput [(ngModel)]="data.data.captureID">
-  </mat-form-field></div>
-  
-  <div><mat-checkbox [(ngModel)]="data.data.status">{{'LINK.status' | translate}}</mat-checkbox></div>
-  
-</div>
+  <div mat-dialog-content
+    style="min-height: 40vh;">
+    <mat-tab-group mat-align-tabs="start">
+      <mat-tab label="IP Alias Settings">
+        <p *ngIf="isCopy && isNotChanged"
+          [ngClass]="isCopy && isNotChanged ? 'copy-warning': ''">
+          <!-- <strong>IP Alias Settings</strong> -->
+          <span>{{ 'preference.ipalias.dialog.updatecopy' | translate }}</span>
+        </p>
+        <div style="margin-top: 2rem;"
+          class="input-group third">
+          <div hidden>
+            <!-- SHARD ID (HIDDEN) -->
+            <mat-form-field>
+              <mat-label>{{ 'preference.ipalias.dialog.shardid' | translate }}</mat-label>
+              <input matInput
+                [(ngModel)]="data.data.shardid"
+                [formControl]="shardid"
+                autocomplete="off" />
+              <mat-error *ngIf="alias?.errors?.required">{{'validators.required' | translate }}</mat-error>
+              <mat-error *ngIf="alias?.errors?.minlength">
+                {{ alias?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+              </mat-error>
+              <mat-error *ngIf="alias?.errors?.maxlength">
+                {{ alias?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+              </mat-error>
+              <mat-error *ngIf="alias?.errors?.pattern && !alias?.errors?.minlength">
+                {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-" or "_"]
+              </mat-error>
+              <mat-error *ngIf="shardid?.errors?.pattern">{{'validators.patternNumber' | translate }}</mat-error>
+            </mat-form-field>
+          </div>
 
-<div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
-  <button mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
-  <button mat-raised-button class="setting-btn-ok" [mat-dialog-close]="data" cdkFocusInitial [disabled]='isDisabled'>{{'LINK.buttons.save' | translate}}</button>
-</div>
+          <div>
+            <!-- CIDR IP-->
+            <mat-form-field>
+              <mat-label>{{ 'preference.ipalias.dialog.cidrip' | translate }}</mat-label>
+              <input matInput
+                [(ngModel)]="data.data.ip"
+                [formControl]="ip"
+                autocomplete="off"
+                 />
+              <mat-error *ngIf="ip?.errors?.required">{{'validators.required' | translate }}</mat-error>
+              <mat-error *ngIf="ip?.errors?.minlength">
+                {{ ip?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+              </mat-error>
+              <mat-error *ngIf="ip?.errors?.maxlength">
+                {{ ip?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+              </mat-error>
+              <mat-error *ngIf="ip?.errors?.pattern && !ip?.errors?.minlength">
+                {{'validators.patternIP' | translate }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div>
+            <!-- CIDR MASK-->
+            <mat-form-field type="number">
+
+              <mat-label>{{ 'preference.ipalias.dialog.cidrmask' | translate }}</mat-label>
+              <input matInput
+                type="number"
+                [(ngModel)]="data.data.mask"
+                autocomplete="off"
+                [formControl]="mask"
+                 />
+              <span matPrefix>/&nbsp;</span>
+              <mat-error *ngIf="mask?.errors?.required">{{'validators.required' | translate }}</mat-error>
+              <mat-error *ngIf="mask?.errors?.min">{{'validators.minNumber' | translate }} 1</mat-error>
+              <mat-error *ngIf="mask?.errors?.max">{{'validators.maxNumber' | translate }} 32</mat-error>
+              <mat-error *ngIf="mask?.errors?.pattern">{{'validators.patternNumber' | translate }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div>
+            <!-- PORT -->
+            <mat-form-field type="number">
+              <mat-label>{{ 'preference.ipalias.dialog.port' | translate }}</mat-label>
+              <input matInput
+                type="number"
+                [(ngModel)]="data.data.port"
+                autocomplete="off"
+                [formControl]="port"
+                 />
+              <mat-error *ngIf="port?.errors?.required">{{'validators.required' | translate }}</mat-error>
+              <mat-error *ngIf="port?.errors?.min">{{'validators.minNumber' | translate }} 1</mat-error>
+              <mat-error *ngIf="port?.errors?.max">{{'validators.maxNumber' | translate }} 65353</mat-error>
+              <mat-error *ngIf="port?.errors?.pattern">{{'validators.patternNumber' | translate }}</mat-error>
+            </mat-form-field>
+          </div>
+          <div>
+            <!-- TYPE -->
+            <mat-form-field type="number"
+              hidden>
+              <mat-label>{{ 'preference.ipalias.dialog.type' | translate }}</mat-label>
+              <input type="number"
+                matInput
+                [(ngModel)]="data.data.type"
+                autocomplete="off"
+                [formControl]="type"
+                 />
+              <mat-error *ngIf="type?.errors?.required">{{'validators.required' | translate }}</mat-error>
+              <mat-error *ngIf="type?.errors?.min">{{'validators.minNumber' | translate }} 1</mat-error>
+              <mat-error *ngIf="type?.errors?.max">{{'validators.maxNumber' | translate }} 100</mat-error>
+              <mat-error *ngIf="type?.errors?.pattern">{{'validators.patternNumber' | translate }}</mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="input-group third">
+
+          <div>
+            <!-- Alias name-->
+            <mat-form-field>
+              <mat-label>{{ 'preference.ipalias.dialog.aliasName' | translate }}</mat-label>
+              <input matInput
+                autocomplete="off"
+                [ngClass]="isCopy && isNotChanged ? 'input-copy-warning':''"
+                (change)="isNotChanged=false;"
+                [(ngModel)]="isCopy && isNotChanged ? data.data.alias + '-COPY' : data.data.alias"
+                [formControl]="alias"
+                 />
+              <mat-error *ngIf="alias?.errors?.required">{{'validators.required' | translate }}</mat-error>
+              <mat-error *ngIf="alias?.errors?.minlength">
+                {{ alias?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+              </mat-error>
+              <mat-error *ngIf="alias?.errors?.maxlength">
+                {{ alias?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+              </mat-error>
+              <mat-error *ngIf="alias?.errors?.pattern && !alias?.errors?.minlength">
+                {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-" or "_"]
+              </mat-error>
+
+            </mat-form-field>
+          </div>
+
+          <div>
+            <!-- GROUP NAME-->
+            <mat-form-field>
+              <mat-label>{{ 'preference.ipalias.dialog.group' | translate }}</mat-label>
+              <input matInput
+                [(ngModel)]="data.data.group"
+                autocomplete="off"
+                [formControl]="group"
+                 />
+              <mat-error *ngIf="group?.errors?.required">{{'validators.required' | translate }}</mat-error>
+              <mat-error *ngIf="group?.errors?.minlength">
+                {{ group?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+              </mat-error>
+              <mat-error *ngIf="group?.errors?.maxlength">
+                {{ group?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+              </mat-error>
+              <mat-error *ngIf="group?.errors?.pattern && !group?.errors?.minlength">
+                {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-" or "_"
+              </mat-error>
+
+            </mat-form-field>
+          </div>
+
+          <div>
+            <!-- SERVER TYPE -->
+            <mat-form-field>
+              <mat-label>{{ 'preference.ipalias.dialog.server' | translate }}</mat-label>
+              <input matInput
+                [(ngModel)]="data.data.servertype"
+                autocomplete="off"
+                [formControl]="servertype"
+                 />
+              <mat-error *ngIf="servertype?.errors?.required">{{'validators.required' | translate }}</mat-error>
+              <mat-error *ngIf="servertype?.errors?.minlength">
+                {{ servertype?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+              </mat-error>
+              <mat-error *ngIf="servertype?.errors?.maxlength">
+                {{ servertype?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+              </mat-error>
+              <mat-error *ngIf="servertype?.errors?.pattern && !servertype?.errors?.minlength">
+                {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-" or "_"
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+
+
+        </div>
+        <hr />
+        <div class="input-group">
+          <!-- <div>
+            <mat-checkbox [(ngModel)]="data.data.ipv6"
+              >{{ 'preference.ipalias.dialog.ipv6' | translate }}</mat-checkbox>
+          </div> -->
+          <div>
+            <mat-checkbox [(ngModel)]="data.data.status"
+              >{{ data.data.status ?
+              ('preference.ipalias.dialog.active' | translate)
+              : 'preference.ipalias.dialog.inactive' | translate
+              }}</mat-checkbox>
+          </div>
+        </div>
+      </mat-tab>
+      <!-- <mat-tab label="Alias Style Settings">
+        <div style="margin-top: 2rem;"
+          class="input-group third">
+          <div>
+            <mat-form-field>
+              <mat-label>{{ 'preference.ipalias.dialog.fontColor' | translate }}</mat-label>
+              <input matInput
+                [ngxMatColorPicker]="font"
+                [formControl]="fontCtr"
+                [(ngModel)]="color.font"
+                (ngModelChange)="saveObj()"
+                >
+              <ngx-mat-color-toggle matSuffix
+                [for]="font"></ngx-mat-color-toggle>
+              <ngx-mat-color-picker #font></ngx-mat-color-picker>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field>
+              <mat-label>{{ 'preference.ipalias.dialog.borderColor' | translate }}</mat-label>
+              <input matInput
+                [ngxMatColorPicker]="border"
+                [formControl]="borderCtr"
+                [(ngModel)]="color.border"
+                (ngModelChange)="saveObj()"
+                >
+              <ngx-mat-color-toggle matSuffix
+                [for]="border"></ngx-mat-color-toggle>
+              <ngx-mat-color-picker #border></ngx-mat-color-picker>
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field>
+              <mat-label>{{ 'preference.ipalias.dialog.backgroundColor' | translate }}</mat-label>
+              <input matInput
+                [ngxMatColorPicker]="background"
+                [formControl]="backgroundCtr"
+                [(ngModel)]="color.background"
+                (ngModelChange)="saveObj()"
+                >
+              <ngx-mat-color-toggle matSuffix
+                [for]="background"></ngx-mat-color-toggle>
+              <ngx-mat-color-picker #background></ngx-mat-color-picker>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="input-group full-w">
+          <mat-form-field *ngIf="imagesobject">
+            <mat-label>{{ 'preference.ipalias.dialog.selectImage' | translate }}</mat-label>
+            <mat-select [(ngModel)]="aliasImg"
+              (selectionChange)="saveObj()"
+              >
+              <mat-option *ngFor="let img of imagesobject.images"
+                [value]="img['image-path']">
+                <div style="display: flex">
+                  <img [src]="'./assets/' + img['image-path']"
+                    height="50px" />
+                  <p>{{ img["image-name"] }}</p>
+                </div>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="img-link">
+            <mat-label>{{ 'preference.ipalias.dialog.pasteImage' | translate }}</mat-label>
+            <mat-label *ngIf="linkImgError !== ''">
+              <strong style="color:red"> | {{linkImgError}} |</strong>
+            </mat-label>
+            <input matInput
+              [(ngModel)]="aliasLink"
+              (change)="handleImg()"
+               />
+
+          </mat-form-field>
+
+        </div>
+      </mat-tab> -->
+    </mat-tab-group>
+  </div>
+
+  <div mat-dialog-actions
+    style="float: right; margin-bottom: 0rem">
+    <button mat-raised-button
+      (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
+    <button mat-raised-button
+      class="setting-btn-ok"
+      [disabled]="isCopy && isNotChanged"
+      (click)="onSubmit()"
+      cdkFocusInitial>
+      {{isCopy ? 'Save Copy' : 'Save'}}
+    </button>
+  </div>
+</ng-container>
+<ng-template #dataPreview>
+  <h1 mat-dialog-title
+    class="dialog-title"
+    *ngIf="color"
+    [ngStyle]="{'color':color.font, 'background':color.background, 'border':'6px solid ' + color.border }">
+    <img [src]="isLinkImg ? aliasImg : './assets/' + aliasImg"
+      height="50px"
+      class="alias-img" />{{ data.data.alias }}
+  </h1>
+
+  <div mat-dialog-content
+    style="min-height: 40vh;">
+    <mat-tab-group mat-align-tabs="start">
+      <mat-tab label="IP Alias Settings">
+        <p *ngIf="isCopy && isNotChanged"
+          [ngClass]="isCopy && isNotChanged ? 'copy-warning': ''">
+          <!-- <strong>IP Alias Settings</strong> -->
+          <span>{{ 'preference.ipalias.dialog.updatecopy' | translate }}</span>
+        </p>
+        <div style="margin-top: 2rem;"
+          class="input-group third">
+          <div hidden>
+            <!-- SHARD ID (HIDDEN) -->
+            <mat-form-field>
+              <mat-label>{{ 'preference.ipalias.dialog.shardid' | translate }}</mat-label>
+              <input matInput
+                [(ngModel)]="data.data.shardid"
+                autocomplete="off"
+                [disabled]="true" />
+            </mat-form-field>
+          </div>
+
+          <div>
+            <!-- CIDR IP-->
+            <mat-form-field>
+              <mat-label>{{ 'preference.ipalias.dialog.cidrip' | translate }}</mat-label>
+              <input matInput
+                [(ngModel)]="data.data.ip"
+                autocomplete="off"
+                [disabled]="true" />
+            </mat-form-field>
+          </div>
+          <div>
+            <!-- CIDR MASK-->
+            <mat-form-field type="number">
+
+              <mat-label>{{ 'preference.ipalias.dialog.cidrmask' | translate }}</mat-label>
+              <input matInput
+                type="number"
+                [(ngModel)]="data.data.mask"
+                autocomplete="off"
+                [disabled]="true" />
+              <span matPrefix>/&nbsp;</span>
+            </mat-form-field>
+          </div>
+          <div>
+            <!-- PORT -->
+            <mat-form-field type="number">
+              <mat-label>{{ 'preference.ipalias.dialog.port' | translate }}</mat-label>
+              <input matInput
+                type="number"
+                [(ngModel)]="data.data.port"
+                autocomplete="off"
+                [disabled]="true" />
+            </mat-form-field>
+          </div>
+          <div>
+            <!-- TYPE -->
+            <mat-form-field type="number"
+              hidden>
+              <mat-label>{{ 'preference.ipalias.dialog.type' | translate }}</mat-label>
+              <input type="number"
+                matInput
+                [(ngModel)]="data.data.type"
+                autocomplete="off"
+                [disabled]="true" />
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="input-group third">
+
+          <div>
+            <!-- Alias name-->
+            <mat-form-field>
+              <mat-label>{{ 'preference.ipalias.dialog.aliasName' | translate }}</mat-label>
+              <input matInput
+                autocomplete="off"
+                [ngClass]="isCopy && isNotChanged ? 'input-copy-warning':''"
+                (change)="isNotChanged=false;"
+                [(ngModel)]="isCopy && isNotChanged ? data.data.alias + '-COPY' : data.data.alias"
+                [disabled]="true" />
+            </mat-form-field>
+          </div>
+
+          <div>
+            <!-- GROUP NAME-->
+            <mat-form-field>
+              <mat-label>{{ 'preference.ipalias.dialog.group' | translate }}</mat-label>
+              <input matInput
+                [(ngModel)]="data.data.group"
+                autocomplete="off"
+                [disabled]="true" />
+            </mat-form-field>
+          </div>
+
+          <div>
+            <!-- SERVER TYPE -->
+            <mat-form-field>
+              <mat-label>{{ 'preference.ipalias.dialog.server' | translate }}</mat-label>
+              <input matInput
+                [(ngModel)]="data.data.servertype"
+                autocomplete="off"
+                [disabled]="true" />
+            </mat-form-field>
+
+          </div>
+
+
+        </div>
+        <hr />
+        <div class="input-group">
+          <div>
+            <mat-checkbox [(ngModel)]="data.data.status"
+              [disabled]="true">{{ data.data.status ?
+              ('preference.ipalias.dialog.active' | translate)
+              : 'preference.ipalias.dialog.inactive' | translate
+              }}</mat-checkbox>
+          </div>
+        </div>
+      </mat-tab>
+      <!-- <mat-tab label="Alias Style Settings">
+        <div style="margin-top: 2rem;"
+          class="input-group third">
+          <div>
+            <mat-form-field>
+              <mat-label>{{ 'preference.ipalias.dialog.fontColor' | translate }}</mat-label>
+              <input matInput
+                [ngxMatColorPicker]="font"
+                [formControl]="fontCtr"
+                [(ngModel)]="color.font"
+                (ngModelChange)="saveObj()"
+                [disabled]="true">
+              <ngx-mat-color-toggle matSuffix
+                [for]="font"></ngx-mat-color-toggle>
+              <ngx-mat-color-picker #font></ngx-mat-color-picker>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field>
+              <mat-label>{{ 'preference.ipalias.dialog.borderColor' | translate }}</mat-label>
+              <input matInput
+                [ngxMatColorPicker]="border"
+                [(ngModel)]="color.border"
+                (ngModelChange)="saveObj()"
+                [disabled]="true">
+              <ngx-mat-color-toggle matSuffix
+                [for]="border"></ngx-mat-color-toggle>
+              <ngx-mat-color-picker #border></ngx-mat-color-picker>
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field>
+              <mat-label>{{ 'preference.ipalias.dialog.backgroundColor' | translate }}</mat-label>
+              <input matInput
+                [ngxMatColorPicker]="background"
+                [(ngModel)]="color.background"
+                (ngModelChange)="saveObj()"
+                [disabled]="true">
+              <ngx-mat-color-toggle matSuffix
+                [for]="background"></ngx-mat-color-toggle>
+              <ngx-mat-color-picker #background></ngx-mat-color-picker>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="input-group full-w">
+          <mat-form-field *ngIf="imagesobject">
+            <mat-label>{{ 'preference.ipalias.dialog.selectImage' | translate }}</mat-label>
+            <mat-select [(ngModel)]="aliasImg"
+              (selectionChange)="saveObj()"
+              [disabled]="true">
+              <mat-option *ngFor="let img of imagesobject.images"
+                [value]="img['image-path']">
+                <div style="display: flex">
+                  <img [src]="'./assets/' + img['image-path']"
+                    height="50px" />
+                  <p>{{ img["image-name"] }}</p>
+                </div>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field class="img-link">
+            <mat-label>{{ 'preference.ipalias.dialog.pasteImage' | translate }}</mat-label>
+            <mat-label *ngIf="linkImgError !== ''">
+              <strong style="color:red"> | {{linkImgError}} |</strong>
+            </mat-label>
+            <input matInput
+              [(ngModel)]="aliasLink"
+              (change)="handleImg()"
+              [disabled]="true" />
+
+          </mat-form-field>
+
+        </div>
+      </mat-tab> -->
+    </mat-tab-group>
+  </div>
+
+  <div mat-dialog-actions
+    style="float: right; margin-bottom: 0rem">
+    <button mat-raised-button
+      class="setting-btn-ok"
+      (click)="onNoClick()"
+      cdkFocusInitial>
+      {{'LINK.buttons.close' | translate}}
+    </button>
+  </div>
+</ng-template>
