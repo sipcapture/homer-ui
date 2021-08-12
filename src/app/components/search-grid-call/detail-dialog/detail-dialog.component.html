@@ -1,4 +1,4 @@
-<app-modal-resizable [title]="titleName + ': ' + titleId"
+<app-modal-resizable [title]="'Call-ID: ' + titleId"
     [isNonWindow]="!isWindow"
     [isOutsideButton]="true"
     [headerColor]="headerColor"
@@ -76,7 +76,7 @@
                     </app-tab-timeline>
                 </ng-template>
                 <ng-template ngSwitchCase="Session Info">
-                    <app-tab-callinfo [dataItem]="sipDataItem"
+                    <app-tab-callinfo [dataItem]="sipDataItem.data"
                         (ready)="showLoader=false"></app-tab-callinfo>
                 </ng-template>
                 <ng-template ngSwitchCase="QoS">
