@@ -554,6 +554,10 @@ export class TransactionServiceProcessor {
       i.srcAlias = sAlias || sIP;
       i.dstAlias = dAlias || dIP;
 
+      if (!item.sdp && i?.raw_source?.includes('Content-Type: application/sdp')) {
+        item.sdp = true;
+      }
+
       const { pt, rate, name } = codecData || {};
       const isRTP = i.typeItem === FlowItemType.RTP || i.typeItem === FlowItemType.RTCP;
       i.codecData = codecData;
@@ -587,7 +591,7 @@ export class TransactionServiceProcessor {
           create_date: moment(i.micro_ts).format('YYYY-MM-DD'),
           timeSeconds: moment(i.micro_ts).format('HH:mm:ss.SSS Z'),
           diff: `${diffTs.toFixed(2)} ms`,
-          method: eventName,
+          method: i.sdp ? eventName + ` (SDP)${i.msg_info ? ' ' + i.msg_info : ''}` : eventName,
           mcolor: Functions.getMethodColor(eventName),
           Msg_Size: i.raw ? (i.raw + '').length : '--',
           srcIp: sIP,

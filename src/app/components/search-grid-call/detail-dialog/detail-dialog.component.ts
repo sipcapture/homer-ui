@@ -195,6 +195,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     // setStorage(this.sharedGUID, this.objectData);
   }
   async ngOnInit() {
+    console.log('request', this.request);
     this._route_paramsSubscription = this._route.params.subscribe((params: any) => {
       this.isWindow = !params?.uuid;
 
@@ -238,7 +239,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     this.tabs.logs = true; // this.dataLogs.length > 0;
     this.tabs.messages = this.tabs.flow = this.sipDataItem?.data?.messages?.length > 0;
     this.tabs.export = this.sipDataItem?.data?.messages && !!this.IdFromCallID;
-    this.tabs.callinfo = this.sipDataItem?.data?.data?.transaction && this.sipDataItem?.data?.data?.transaction?.length > 0;
+    this.tabs.callinfo = this.sipDataItem.data.messages.length > 0; // check protokols
     this.tabs.tdr = this.tabs?.callinfo;
     const transaction = this.sipDataItem?.data?.data?.transaction?.[0]?.data;
     if (!((transaction?.geolan === 0 && transaction?.geolat === 0)
@@ -385,7 +386,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
   get getTabs(): Array<string> {
     const isWebshark = !!(this.sipDataItem?.data?.messages?.[0]?.source_data?.frame_protocol);
     return [
-      isWebshark && 'Webshark',
+      // isWebshark && 'Webshark',
       !isWebshark && this.tabs.messages && 'Message',
       'Flow',
       'Timeline',
@@ -399,8 +400,8 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
       this.agentsActive && 'Sub',
       // this.tabs.tdr && 'TDR',
       this.tabs.logs && 'Logs',
+      this.sipDataItem?.data?.qosData && 'QoS',
       'Export',
-      this.sipDataItem?.data?.qosData && 'QoS'
     ].filter(i => !!i);
   }
   ngOnDestroy() {
