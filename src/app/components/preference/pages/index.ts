@@ -13,4 +13,4 @@ export * from './page-system-overview/page-system-overview.component';
 export * from './page-user-settings/page-user-settings.component';
 export * from './page-users/page-users.component';
 export * from './page-admin/page-admin.component';
-
+export * from './page-alias/page-alias.component';

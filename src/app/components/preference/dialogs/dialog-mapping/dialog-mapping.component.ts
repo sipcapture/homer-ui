@@ -160,14 +160,14 @@ export class DialogMappingComponent {
     this.isValidForm = true;
   }
   ngOnInit(): void {
-    this.scriptService.getAll().toPromise().then((data: any) => {
-      const { hep_alias, hepid, profile } = this.data?.data || {};
-      const cProfile = JSON.stringify([hep_alias, hepid, profile]);
+    // this.scriptService.getAll().toPromise().then((data: any) => {
+    //   const { hep_alias, hepid, profile } = this.data?.data || {};
+    //   const cProfile = JSON.stringify([hep_alias, hepid, profile]);
 
-      this.mappingScript = data?.data?.find((f: any) => JSON.stringify([f.hep_alias, f.hepid, f.profile]) === cProfile) || { data: ''};
-      this.isScript = Object.keys(this.mappingScript).length > 0;
-      this.cdr.detectChanges();
-    });
+    //   this.mappingScript = data?.data?.find((f: any) => JSON.stringify([f.hep_alias, f.hepid, f.profile]) === cProfile) || { data: ''};
+    //   this.isScript = Object.keys(this.mappingScript).length > 0;
+    //   this.cdr.detectChanges();
+    // });
   }
   ngAfterViewInit() {
     const options = {
