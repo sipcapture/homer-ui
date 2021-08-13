@@ -86,6 +86,9 @@ export class DateTimeRangeService {
     getDatesForQuery(isUnixFormat = false): Timestamp {
         const _dates = (this.getRangeByLabel(DateTimeRangeService.dateTimeRangr.title) ||
             DateTimeRangeService.dateTimeRangr.dates).map(d => {
+                if (typeof d === 'string') {
+                  d = moment(d)
+                }
                 d = d.unix() * 1;
                 if (isUnixFormat) {
                     d *= 1000;
