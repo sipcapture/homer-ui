@@ -149,14 +149,17 @@ export class DialogUsersComponent implements OnInit {
 
     }
     async ngOnInit() {
-        try {
-            await this.userService.getAllGroups().toPromise().then((groups: any) => {
+        this.groupList = ['Admin', 'Support', 'User']
+            await this.userService.getAllGroups().toPromise().then(
+                (groups: any) => {
                 this.groupList = groups.data;
                 this.bufferGroupList = groups.data;
+            },(error) => {
+                this.groupList = ['Admin', 'Support', 'User']
             });
-        } catch(e) {
-            this.groupList = ['Admin', 'Support', 'User']
-        }
+            
+           
+       
         
         if (!this.groupList.some(item => item.toLowerCase() === this.data.data.usergroup.toLowerCase())) {
             this.groupList.push(this.data.data.usergroup);

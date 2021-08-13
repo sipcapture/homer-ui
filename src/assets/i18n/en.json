@@ -27,6 +27,7 @@
         "tables":"Tables",
         "tableName":"Table Name",
         "search": "Search",
+        "ipalias":"Alias",
         "callTerms": {
             "callid": "Call ID",
             "caller": "Caller",
@@ -562,7 +563,8 @@
         },
         "ipalias": {
             "dialog": {
-                "title": "@LINK.ipalias@",
+                "title": "@LINK.ipalias@ Settings",
+                "description":"Define the alias setting",
                 "copy": "Copy",
                 "updatecopy": ": (Please change @LINK.ipalias@ Settings to save a Copy)",
                 "shardid": "Shard ID",

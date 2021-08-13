@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { catchError, throwError } from 'rxjs';
 import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
 
@@ -31,6 +32,10 @@ export class ProxyService {
     return this._http.get<any>(`${this.url}/grafana/org`);
   }
   getProxyGrafanaStatus(): Observable<any> {
-    return this._http.get<any>(`${this.url}/grafana/status`);
+    return this._http.get<any>(`${this.url}/grafana/status`).pipe(catchError(this.handleError));
   }
+  handleError(error: HttpErrorResponse){
+       
+    return throwError(error);
+}
 }

@@ -69,7 +69,7 @@ export class DialogUserSettingsComponent {
             if (this.type === 'data-preview') {
                 this.json = data.data.data;
                 this.settingJSON = data.data.setting;
-                this.hasSettings = !!Object.keys(data.data.setting).length;
+                this.hasSettings = typeof data?.data?.setting === 'object' && !!Object.keys(data?.data?.setting)?.length;
             }
         }
         const userData: any = this.authService.currentUserValue;

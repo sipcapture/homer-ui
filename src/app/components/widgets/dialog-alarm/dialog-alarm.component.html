@@ -1,6 +1,6 @@
 <div *ngIf="isSearch">
     <div *ngIf="!data.isReset">
-        <mat-toolbar class="title" color="primary">
+        <mat-toolbar class="dialog-title" color="primary">
             <div>{{'LINK.settings' | translate}}</div>
             <button mat-icon-button (click)="onNoClick()">
                 <fa-icon icon="times"></fa-icon>
@@ -27,7 +27,7 @@
         </div> 
     </div>
     <div *ngIf="data.isReset">
-        <mat-toolbar class="title" color="primary">
+        <mat-toolbar class="dialog-title" color="primary">
             <div>{{'LINK.settings' | translate}}</div>
             <button mat-icon-button (click)="onNoClick()">
                 <fa-icon icon="times"></fa-icon>
@@ -46,7 +46,7 @@
     </div>
 </div>
 <div *ngIf="!isSearch">
-    <mat-toolbar class="title" color="primary">
+    <mat-toolbar class="dialog-title" color="primary">
         <div>{{'LINK.settings' | translate}}</div>
         <button mat-icon-button (click)="onNoClick()">
             <fa-icon icon="times"></fa-icon>
