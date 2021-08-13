@@ -29,14 +29,7 @@
 .hide {
   display: none !important;
 }
-.dialog-title {
-  display:flex;
-  justify-content:flex-start;
-  align-items: center;
-  font-size: 45px;
-  padding: 10px;
-  border-radius: 10px;
-}
+
 .alias-img {
   margin-right: 15px;
   border-radius: 3px;
@@ -118,7 +111,22 @@
   width:100%;
 
 }
-
+.alias-preview {
+  display:flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  background:#fafafa;
+  padding:20px;
+  margin:0;
+  border-radius: 3px;
+  border:1px solid lightgray;
+  margin-bottom:15px;
+  & .preview {
+font-size: 12px;
+    color:#bfbfbf;
+  }
+}
 ::ng-deep .mat-input-element:disabled {
     color: black;
 }

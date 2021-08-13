@@ -56,12 +56,15 @@ export class AddDialogComponent {
     async init() {
 
         const advanced = await this._pas.getAll().toPromise();
-        try {
-            this.isGrafanaProxy = await this.proxy.getProxyGrafanaStatus().toPromise().then(result => result.data.enable);
+     
+        this.proxy.getProxyGrafanaStatus().toPromise().then(
+            (result) => {
+                this.isGrafanaProxy = result.data.enable
+            },(error)=>{
+                this.isGrafanaProxy = false;
+            })
 
-        } catch (err) {
-            console.error(err);
-        }
+    
         const custom = advanced.data
             .filter((f) => f.category === 'custom-widget');
 

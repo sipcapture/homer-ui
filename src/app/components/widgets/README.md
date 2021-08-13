@@ -79,7 +79,7 @@ import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 @Component({
     selector: 'app-my-clock-widget-component',
     template: `
-        <mat-toolbar class="title" color="primary">
+        <mat-toolbar class="dialog-title" color="primary">
             <div>Settings</div>
             <button mat-icon-button (click)="onNoClick()">
                 <mat-icon>close</mat-icon>

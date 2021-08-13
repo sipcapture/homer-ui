@@ -1,6 +1,6 @@
-<mat-toolbar class="title"
+<mat-toolbar class="dialog-title"
   color="primary">
-  <div>{{ 'preference.users.dialog.title' | translate:{username:data.data.username} }}</div>
+  <div>{{ 'preference.users.dialog.title' | translate:{username:data.data.username || 'New User'} }}</div>
   <button mat-icon-button
     (click)="onNoClick()">
     <fa-icon icon="times"></fa-icon>

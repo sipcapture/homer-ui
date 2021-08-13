@@ -1,5 +1,4 @@
-<mat-toolbar class="title"
-  color="primary">
+<mat-toolbar class="dialog-title" color="primary">
   <div>{{(isCopy ? ('preference.ipalias.dialog.copy' | translate) : '')}} {{ 'preference.ipalias.dialog.title' |
     translate }}</div>
   <button mat-icon-button
@@ -9,19 +8,23 @@
 </mat-toolbar>
 
 <ng-container *ngIf="actionType !== 'data-preview'; else dataPreview">
-  <h1 mat-dialog-title
-    class="dialog-title"
+  <div class="alias-preview">
+    <h1 
+    
     *ngIf="color"
     [ngStyle]="{'color':color.font, 'background':color.background, 'border':'6px solid ' + color.border }">
-    <!-- <img [src]="isLinkImg ? aliasImg : './assets/' + aliasImg"
-      height="50px"
-      class="alias-img" />-->{{ data.data.alias }}
+  {{ data.data.alias }}
   </h1>
+  <span class="preview">
+    Alias Preview
+  </span>
+  </div>
+ 
 
   <div mat-dialog-content
     style="min-height: 40vh;">
-    <mat-tab-group mat-align-tabs="start">
-      <mat-tab label="IP Alias Settings">
+    <p>{{ 'preference.ipalias.dialog.description' | translate }}</p>
+    <hr />
         <p *ngIf="isCopy && isNotChanged"
           [ngClass]="isCopy && isNotChanged ? 'copy-warning': ''">
           <!-- <strong>IP Alias Settings</strong> -->
@@ -200,12 +203,9 @@
 
 
         </div>
-        <hr />
+
         <div class="input-group">
-          <!-- <div>
-            <mat-checkbox [(ngModel)]="data.data.ipv6"
-              >{{ 'preference.ipalias.dialog.ipv6' | translate }}</mat-checkbox>
-          </div> -->
+
           <div>
             <mat-checkbox [(ngModel)]="data.data.status"
               >{{ data.data.status ?
@@ -214,86 +214,7 @@
               }}</mat-checkbox>
           </div>
         </div>
-      </mat-tab>
-      <!-- <mat-tab label="Alias Style Settings">
-        <div style="margin-top: 2rem;"
-          class="input-group third">
-          <div>
-            <mat-form-field>
-              <mat-label>{{ 'preference.ipalias.dialog.fontColor' | translate }}</mat-label>
-              <input matInput
-                [ngxMatColorPicker]="font"
-                [formControl]="fontCtr"
-                [(ngModel)]="color.font"
-                (ngModelChange)="saveObj()"
-                >
-              <ngx-mat-color-toggle matSuffix
-                [for]="font"></ngx-mat-color-toggle>
-              <ngx-mat-color-picker #font></ngx-mat-color-picker>
-            </mat-form-field>
-          </div>
 
-          <div>
-            <mat-form-field>
-              <mat-label>{{ 'preference.ipalias.dialog.borderColor' | translate }}</mat-label>
-              <input matInput
-                [ngxMatColorPicker]="border"
-                [formControl]="borderCtr"
-                [(ngModel)]="color.border"
-                (ngModelChange)="saveObj()"
-                >
-              <ngx-mat-color-toggle matSuffix
-                [for]="border"></ngx-mat-color-toggle>
-              <ngx-mat-color-picker #border></ngx-mat-color-picker>
-            </mat-form-field>
-          </div>
-          <div>
-            <mat-form-field>
-              <mat-label>{{ 'preference.ipalias.dialog.backgroundColor' | translate }}</mat-label>
-              <input matInput
-                [ngxMatColorPicker]="background"
-                [formControl]="backgroundCtr"
-                [(ngModel)]="color.background"
-                (ngModelChange)="saveObj()"
-                >
-              <ngx-mat-color-toggle matSuffix
-                [for]="background"></ngx-mat-color-toggle>
-              <ngx-mat-color-picker #background></ngx-mat-color-picker>
-            </mat-form-field>
-          </div>
-        </div>
-        <div class="input-group full-w">
-          <mat-form-field *ngIf="imagesobject">
-            <mat-label>{{ 'preference.ipalias.dialog.selectImage' | translate }}</mat-label>
-            <mat-select [(ngModel)]="aliasImg"
-              (selectionChange)="saveObj()"
-              >
-              <mat-option *ngFor="let img of imagesobject.images"
-                [value]="img['image-path']">
-                <div style="display: flex">
-                  <img [src]="'./assets/' + img['image-path']"
-                    height="50px" />
-                  <p>{{ img["image-name"] }}</p>
-                </div>
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field class="img-link">
-            <mat-label>{{ 'preference.ipalias.dialog.pasteImage' | translate }}</mat-label>
-            <mat-label *ngIf="linkImgError !== ''">
-              <strong style="color:red"> | {{linkImgError}} |</strong>
-            </mat-label>
-            <input matInput
-              [(ngModel)]="aliasLink"
-              (change)="handleImg()"
-               />
-
-          </mat-form-field>
-
-        </div>
-      </mat-tab> -->
-    </mat-tab-group>
   </div>
 
   <div mat-dialog-actions
@@ -440,82 +361,7 @@
           </div>
         </div>
       </mat-tab>
-      <!-- <mat-tab label="Alias Style Settings">
-        <div style="margin-top: 2rem;"
-          class="input-group third">
-          <div>
-            <mat-form-field>
-              <mat-label>{{ 'preference.ipalias.dialog.fontColor' | translate }}</mat-label>
-              <input matInput
-                [ngxMatColorPicker]="font"
-                [formControl]="fontCtr"
-                [(ngModel)]="color.font"
-                (ngModelChange)="saveObj()"
-                [disabled]="true">
-              <ngx-mat-color-toggle matSuffix
-                [for]="font"></ngx-mat-color-toggle>
-              <ngx-mat-color-picker #font></ngx-mat-color-picker>
-            </mat-form-field>
-          </div>
-
-          <div>
-            <mat-form-field>
-              <mat-label>{{ 'preference.ipalias.dialog.borderColor' | translate }}</mat-label>
-              <input matInput
-                [ngxMatColorPicker]="border"
-                [(ngModel)]="color.border"
-                (ngModelChange)="saveObj()"
-                [disabled]="true">
-              <ngx-mat-color-toggle matSuffix
-                [for]="border"></ngx-mat-color-toggle>
-              <ngx-mat-color-picker #border></ngx-mat-color-picker>
-            </mat-form-field>
-          </div>
-          <div>
-            <mat-form-field>
-              <mat-label>{{ 'preference.ipalias.dialog.backgroundColor' | translate }}</mat-label>
-              <input matInput
-                [ngxMatColorPicker]="background"
-                [(ngModel)]="color.background"
-                (ngModelChange)="saveObj()"
-                [disabled]="true">
-              <ngx-mat-color-toggle matSuffix
-                [for]="background"></ngx-mat-color-toggle>
-              <ngx-mat-color-picker #background></ngx-mat-color-picker>
-            </mat-form-field>
-          </div>
-        </div>
-        <div class="input-group full-w">
-          <mat-form-field *ngIf="imagesobject">
-            <mat-label>{{ 'preference.ipalias.dialog.selectImage' | translate }}</mat-label>
-            <mat-select [(ngModel)]="aliasImg"
-              (selectionChange)="saveObj()"
-              [disabled]="true">
-              <mat-option *ngFor="let img of imagesobject.images"
-                [value]="img['image-path']">
-                <div style="display: flex">
-                  <img [src]="'./assets/' + img['image-path']"
-                    height="50px" />
-                  <p>{{ img["image-name"] }}</p>
-                </div>
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field class="img-link">
-            <mat-label>{{ 'preference.ipalias.dialog.pasteImage' | translate }}</mat-label>
-            <mat-label *ngIf="linkImgError !== ''">
-              <strong style="color:red"> | {{linkImgError}} |</strong>
-            </mat-label>
-            <input matInput
-              [(ngModel)]="aliasLink"
-              (change)="handleImg()"
-              [disabled]="true" />
-
-          </mat-form-field>
-
-        </div>
-      </mat-tab> -->
+    
     </mat-tab-group>
   </div>
 

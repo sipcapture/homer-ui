@@ -34,7 +34,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                 }
 
             }
-            if (err.status === 401 && request.url.indexOf('/proxy') === -1) {
+            if (err.status === 401 || err.status === 404 && request.url.indexOf('/proxy') === -1) {
                 // auto logout if 401 response returned from api
                 this.authenticationService.logout();
                 this.userSecurityService.removeUserSettings();
