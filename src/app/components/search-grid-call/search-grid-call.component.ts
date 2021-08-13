@@ -372,6 +372,7 @@ export class SearchGridCallComponent
                  * update DateTimeRange from GET params
                  */
                 const params = Functions.getUriJson();
+                console.log(params)
                 if (params?.timestamp) {
                     const { from, to } = params.timestamp;
                     const format = (d) =>
@@ -468,27 +469,59 @@ export class SearchGridCallComponent
         if (this.id) {
             return;
         }
+        const params = Functions.getUriJson();
 
-        this.localData = this.searchService.getLocalStorageQuery();
-        this.protocol_profile = this.localData.protocol_id;
+        if (params && params.param) {
+            /**
+             * query configuration from GET params
+             */
 
-        this.isLokiQuery = this.protocol_profile === ConstValue.LOKI_PREFIX;
+            this.localData = params.param;
 
-        if (this.isLokiQuery) {
-            this.queryTextLoki = this.localData.text;
-        }
+            this.protocol_profile = Object.keys(params.param.search)[0];
+            this.config.param = Functions.cloneObject(params.param);
+            if (params.param.search &&
+                params.param.search[this.protocol_profile] &&
+                params.param.search[this.protocol_profile].callid
+            ) {
+                const sids: Array<string> = params.param.search[this.protocol_profile].callid;
+                this.config.param.search = {};
+                this.config.param.search[this.protocol_profile] = [{
+                    name: 'sid',
+                    value: sids.join(';'),
+                    type: 'string',
+                    hepid: 1
+                }];
+            } else {
+                this.config.param.search = {};
+                this.config.param.search[this.protocol_profile] = [];
+            }
+            this.config.param.transaction = {};
+            this.config.param.limit = 200;
+            delete this.config.param.id;
+            this.isLokiQuery = false;
+        } else {
+            this.localData = this.searchService.getLocalStorageQuery();
+            this.protocol_profile = this.localData.protocol_id;
 
-        const { mapping: rm, value: rv } = this.localData.range || {};
-        const { mapping: lm, value: lv } = this.localData.location || {};
+            this.isLokiQuery = this.protocol_profile === ConstValue.LOKI_PREFIX;
 
-        this.config.param.search = { [this.protocol_profile]: this.localData.fields };
+            if (this.isLokiQuery) {
+                this.queryTextLoki = this.localData.text;
+            }
 
-        if (rv && rm) {
-            this.config.param.search.range = { [rm]: rv };
-        }
+            const { mapping: rm, value: rv } = this.localData.range || {};
+            const { mapping: lm, value: lv } = this.localData.location || {};
 
-        if (lm && lv) {
-            this.config.param.location[lm] = lv;
+            this.config.param.search = { [this.protocol_profile]: this.localData.fields };
+
+            if (rv && rm) {
+                this.config.param.search.range = { [rm]: rv };
+            }
+
+            if (lm && lv) {
+                this.config.param.location[lm] = lv;
+            }
         }
     }
 
@@ -518,8 +551,8 @@ export class SearchGridCallComponent
 
     private selectCallIdFromGetParams() {
         const params = Functions.getUriJson();
-
-        if (params?.param) {
+        setTimeout(() => {
+          if (params?.param && this.gridApi) {
             const sids: Array<string> =
                 params.param.search[this.protocol_profile].callid;
             if (sids?.length > 1) {
@@ -530,6 +563,8 @@ export class SearchGridCallComponent
                 });
             }
         }
+        }, 50);
+
     }
 
     private async openTransactionByAdvancedSettings() {
@@ -630,6 +665,7 @@ export class SearchGridCallComponent
                     valueFormatter: ({ value }) =>
                         value && moment(value).format(this.dateFormat.dateTime),
                 });
+
             }
             marData?.forEach((h: any) => {
                 const idColumn = h?.id?.split('.').pop();
@@ -772,6 +808,7 @@ export class SearchGridCallComponent
     }
 
     public update(isImportant = false) {
+
         if (this.isNewData() && !isImportant) {
             return;
         }
