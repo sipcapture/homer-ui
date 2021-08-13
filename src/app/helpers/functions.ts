@@ -308,7 +308,6 @@ export class Functions {
     });
     const dt = this.logTime ? performance.now() - this.logTime : 0;
     const dts = '[' + dt.toFixed(3) + 'ms]';
-    console.warn.apply(null, [dts, ...arg]);
     this.logTime = performance.now();
   }
 

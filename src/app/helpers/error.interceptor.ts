@@ -23,7 +23,7 @@ export class ErrorInterceptor implements HttpInterceptor {
     
         return next.handle(request).pipe(catchError(err => {
             if(err instanceof HttpErrorResponse){
-                if(err.status === 404 && err.message.match(/api/)) {
+                if(err.status === 404 && err.message.match(/api/) && !err.message.match(/grafana/)) {
                     this.errMessages.push(err)
                     if(this.errMessages.length < 2) {
                         this.translateService.get('login.error.apiNotFound.header').subscribe(res => { 
