@@ -169,6 +169,9 @@ export class TransactionServiceProcessor {
     }
 
     transactionData.data.ipaliases = _ipaliases;
+    if (!transactionData.data?.callid) {
+      transactionData.data.callid = transactionData.data.messages.map(i => i.callid).sort().filter((i, k, a) => i !== a[k - 1]).filter(i => !!i);
+    }
     const { calldata, messages, hosts, hostinfo, callid, uac, sdp, transaction, ipaliases = [] } = transactionData.data;
     let { alias } = transactionData.data;
     const aliasNonIps = Object.entries(alias)
@@ -452,15 +455,21 @@ export class TransactionServiceProcessor {
   }
 
   public reCheckHost({ messages, hosts, alias }) {
+    console.log({messages})
     const arrIPs = [].concat.apply([], messages.map(i => {
-      const source_ipisIPv6 = i.source_ip.match(/\:/g)?.length > 1;
-      const destination_ipisIPv6 = i.destination_ip.match(/\:/g)?.length > 1;
-      const sIP = source_ipisIPv6 ? `[${i.source_ip}]` : i.source_ip;
-      const dIP = destination_ipisIPv6 ? `[${i.destination_ip}]` : i.destination_ip;
-      return [
-        i.source_port ? `${sIP}:${i.source_port}` : sIP,
-        i.destination_port ? `${dIP}:${i.destination_port}` : dIP
-      ];
+      try {
+        const source_ipisIPv6 = i.source_ip.match(/\:/g)?.length > 1;
+        const destination_ipisIPv6 = i.destination_ip.match(/\:/g)?.length > 1;
+        const sIP = source_ipisIPv6 ? `[${i.source_ip}]` : i.source_ip;
+        const dIP = destination_ipisIPv6 ? `[${i.destination_ip}]` : i.destination_ip;
+        return [
+          i.source_port ? `${sIP}:${i.source_port}` : sIP,
+          i.destination_port ? `${dIP}:${i.destination_port}` : dIP
+        ];
+      } catch (err) {
+        console.log(i, err);
+      }
+      return [];
     })).sort().filter((i, k, a) => a[k - 1] !== i);
 
     const getAliasByIp = ip => this.getAliasByIp(ip, alias);
@@ -510,6 +519,11 @@ export class TransactionServiceProcessor {
     let prevTs = 0;
     let diffTs = 0;
     const getAliasByIp = ip => this.getAliasByIp(ip, alias);
+    messages.forEach((message) => {
+      if (!message.micro_ts) {
+        message.micro_ts = message.create_date || message.create_ts || message.timeSeconds * 1000 + message.timeUseconds;
+      }
+    })
     return messages.sort((itemA, itemB) => {
       const a = itemA.micro_ts;
       const b = itemB.micro_ts;
@@ -777,7 +791,7 @@ export class TransactionServiceProcessor {
           item.qosTYPE = qosDetails.TYPE;
           item.qosTYPEless = qosDetails.TYPE.slice(0, 1).toUpperCase();
         } catch (_) {
-          console.error(item.message);
+          console.warn(item.message);
           item.MOS = 0;
         }
       }
@@ -848,16 +862,16 @@ export class TransactionServiceProcessor {
       return {
         item,
         typeItem: FlowItemType.LOG,
-        id: messagesLength + key + 1,
+        id: item.id || messagesLength + key + 1,
         type: FlowItemType.LOG,
-        source_ip: item.source_ip,
-        source_port: item.source_port,
-        destination_ip: item.destination_ip,
-        destination_port: item.destination_port,
-        callid: item.callid,
+        source_ip: item.source_ip || item.srcIp,
+        source_port: item.source_port || item.srcPort,
+        destination_ip: item.destination_ip || item.dstIp,
+        destination_port: item.destination_port || item.dstPort,
+        callid: item.callid || item.sid,
         method: item.type,
         method_ext: `${item.source_ip} -> ${item.destination_ip}`,
-        micro_ts: item.create_ts,
+        micro_ts: item.create_ts || new Date(item.create_date).getTime(),
       };
     });
     logsData.forEach(item => {

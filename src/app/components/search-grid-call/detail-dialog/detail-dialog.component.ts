@@ -138,8 +138,8 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     this._isLoaded = !!this._sipDataItem;
     const { callid, messages } = data.data || {};
     const [callidFirst] = callid || [];
-
-    this.tabs.qos = !!messages.find(i => i.QOS);
+    console.log(messages.filter(i => i.QOS))
+    this.tabs.qos = !!messages.find(i => i.QOS && i.typeItem === 'RTP');
 
     this.IdFromCallID = callidFirst;
 
@@ -388,9 +388,9 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
       // isWebshark && 'Webshark',
       !isWebshark && this.tabs.messages && 'Message',
       'Flow',
-      // 'Timeline',
+      'Timeline',
       this.tabs.callinfo && 'Session Info',
-      // this.tabs.qos && 'Media Reports',
+      this.tabs.qos && 'Media Reports',
       'Graph',
       // this.sipDataItem.data.dtmf && 'DTMF',
       this.tabs.geo && 'Geo',

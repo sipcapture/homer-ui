@@ -132,7 +132,7 @@ export class FullTransactionService {
           tData.qosData = qosData;
         } catch (err) { onError('qos'); }
         ready('qos');
-        // console.log({ tData })
+        console.log({ tData })
 
       }, onError('transaction'));
     });
