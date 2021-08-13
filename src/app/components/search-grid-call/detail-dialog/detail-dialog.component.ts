@@ -194,7 +194,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     // setStorage(this.sharedGUID, this.objectData);
   }
   async ngOnInit() {
-    console.log('request', this.request);
+  
     this._route_paramsSubscription = this._route.params.subscribe((params: any) => {
       this.isWindow = !params?.uuid;
 

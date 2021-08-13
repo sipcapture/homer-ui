@@ -26,7 +26,7 @@ export class WorkerService {
       } else if (path === WorkerScript.CLICKHOUSE) {
         WorkerService.workerPull[workerId] = new WorkerService(new Worker(new URL('@app/workers/clickhouse.worker', import.meta.url), { type: 'module' }));
       }
-      console.log(WorkerService.workerPull[workerId]);
+     
     }
     return await WorkerService.workerPull[workerId].do(workerCommand, data);
   }

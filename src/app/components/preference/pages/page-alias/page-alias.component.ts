@@ -67,7 +67,6 @@ export class PageAliasComponent implements OnInit, OnDestroy, AfterViewInit {
         userData.user.admin === true;
     }
     ngOnInit() {
-        console.log('test')
         if (this.isAdmin) {
             this.isAccess = PreferencesComponentMapping.accessMapping.admin[this.pageID];
             this.columns = PreferencesComponentMapping.pagesStructureMapping.admin[this.pageID];
@@ -113,8 +112,6 @@ export class PageAliasComponent implements OnInit, OnDestroy, AfterViewInit {
                     console.log(err)
                     this.isErrorResponse = true;
                 }
-                console.log(this.columns)
-                console.log(this.dataSource.data)
                 this.cdr.detectChanges();
         this.applyFilter();
     }

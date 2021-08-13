@@ -455,7 +455,7 @@ export class TransactionServiceProcessor {
   }
 
   public reCheckHost({ messages, hosts, alias }) {
-    console.log({messages})
+   
     const arrIPs = [].concat.apply([], messages.map(i => {
       try {
         const source_ipisIPv6 = i.source_ip.match(/\:/g)?.length > 1;
