@@ -155,7 +155,7 @@ export class VistimelineComponent implements OnInit, OnDestroy {
             content: h.alias,
             style: 'background-color:' + this.randie()
         }));
-
+  console.log({filteredData})
         this.data = filteredData.map((i, key) => {
             let itemHost = `${i.source_ip}:${i.source_port}`;
             let host = this.dataSource.hosts.find(h => h.host === itemHost);
