@@ -388,7 +388,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
       // isWebshark && 'Webshark',
       !isWebshark && this.tabs.messages && 'Message',
       'Flow',
-      'Timeline',
+      // 'Timeline',
       this.tabs.callinfo && 'Session Info',
       // this.tabs.qos && 'Media Reports',
       'Graph',

@@ -534,7 +534,6 @@
                 "correlationMapping": "Correlation",
                 "definesCross": "Defines any cross-protocol Correlation Mechanism",
                 "fieldsMapping": "Fields",
-                "mainFields":"Main",
                 "definesSchema": "Defines Schema and @LINK.mapping@ for Protocol Fields",
                 "script": "Script",
                 "definesScript": "Defines current Profile Script",

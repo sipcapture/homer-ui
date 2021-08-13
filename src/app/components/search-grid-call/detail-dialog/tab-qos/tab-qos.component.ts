@@ -131,7 +131,7 @@ export class TabQosComponent implements OnInit, AfterViewInit {
 
 
     this.worker = new WorkerService(new Worker(new URL('@app/workers/qos.worker', import.meta.url), { type: 'module' }));
- 
+
   }
   initQOSData() {
     const isData = this.qosData?.rtcp?.data?.length > 0 || this.qosData?.rtp?.data?.length > 0;
@@ -150,7 +150,7 @@ export class TabQosComponent implements OnInit, AfterViewInit {
 
     const outData = await this.worker.getParseData({ workerCommand, mosFraction }, data);
 
- 
+
 
     if (workerCommand === 'init') {
       this.isError = outData.isError as boolean;
@@ -179,7 +179,7 @@ export class TabQosComponent implements OnInit, AfterViewInit {
         this._isLoaded = true;
         const t = performance.now();
         this.cdr.detectChanges();
-      }, 1000);
+      });
 
     }
     if (['onChangeRTCP', 'onChangeRTP'].includes(workerCommand)) {

@@ -24,10 +24,10 @@
     <ng-container *ngIf="_isLoaded && sipDataItem?.data?.data?.messages?.length > 0; else noDataInDatabase">
         <app-transaction-graph-settings [options]='graphSettings' (optionsChanged)='updateGraphSettings($event)' [hidden]='activeTab !== graphId'>
         </app-transaction-graph-settings>
-        <app-transaction-info [hidden]="!isFilterIcon()"
+        <!-- <app-transaction-info [hidden]="!isFilterIcon()"
             [dataItem]='sipDataItem'
             [type]='tabStringIndex'>
-        </app-transaction-info>
+        </app-transaction-info> -->
         <app-filter [hidden]="!isFilterIcon()"
             [dataItem]="sipDataItem"
             [type]="tabStringIndex">
