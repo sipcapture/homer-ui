@@ -12,7 +12,7 @@
             {{ item.method_text }}
             <span *ngIf="item.QOS && item.QOS.MOS" class="blinkLamp"
                 [style.backgroundColor]="MOSColorGradient(item.QOS.MOS)"></span>
-            {{ item.QOS ? (item.QOS.MOS ? (item.QOS.MOS + " [" + item.QOS.qosTYPEless + "]") : 'UA Report') : "" }}
+            {{ item.QOS ? (item.QOS.MOS ? (item.QOS.MOS + " [" + item.QOS.qosTYPEless + "]") : '') : "" }}
         </div>
         <div class="call_text-mini" [style.height.px]=" !isSimplify ? 15 : 0 ">
             {{ item.description }}

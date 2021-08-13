@@ -130,7 +130,13 @@ class Functions {
     offset = offset || 0;
     return `hsl(${h - offset}, ${saturation}%, ${lightness}%,${alpha})`;
   }
-
+  static newGuid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r: any = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
   static getColorByStringHEX(str: string) {
     if (str === 'LOG') {
       return 'FFA562';
@@ -305,8 +311,7 @@ export class TransactionServiceProcessor {
             item.data = JSON.parse(item.data);
             item.message = JSON.parse(item.message);
             item.tabType = 'NetworkReport';
-            item.messageType = item.message.SOURCE &&
-              item.message.SOURCE === FlowItemType.RTCP ?
+            item.messageType = ((item.message.SOURCE && item.message.SOURCE === FlowItemType.RTCP) || item.isRTCP) ?
               FlowItemType.RTCP : FlowItemType.RTP;
           } catch (_) { }
         });
@@ -426,6 +431,7 @@ export class TransactionServiceProcessor {
   }
 
   public fullTransaction(data: any) {
+    // console.log('parser.js', data)
     switch (data.type) {
       case 'full':
         data.tData.heplogs = {};
@@ -693,7 +699,70 @@ export class TransactionServiceProcessor {
     return raw;
 
   }
+  public formattingToQosArray(qosData: any): Array<any> {
+    // console.log('parser.js::formattingToQosArray', { qosData })
+    return [].concat(...Object.entries(qosData).map(([type, item]): [any, any] => {
+      const { data }: any = item || {};
+      return data.map((item: any) => {
+        var i:any = {}
+        // callid: "1248811679-5066-83@BJC.BGI.II.CAD"
+        i.callid = item.sid;
+        // captid: 2222
+        i.captid = item.captureId;
+        // capture_ip: "136.243.16.181"
+        i.capture_ip = item.srcIp;
+        // create_ts: 1628777805804
+        i.create_ts = new Date(item.create_date).getTime();
+        // data: "{\"rt\":3,\"tss\":1628777805,\"tsu\":804825}"
+        i.data = JSON.stringify({
+          rt: 3,
+          tss: item.timeSeconds,
+          tsu: item.timeUseconds
+        });
+        // destination_ip: "80.100.47.83"
+        i.destination_ip = item.dstIp;
+        // destination_port: 10000
+        i.destination_port = item.dstPort;
+        // event: "rtp_stats"
+        i.event = "rtp_stats"
+        // message:
+        i.message = item.raw;
+        // mos: 425
+        try {
+          i.mos = JSON.parse(item.raw).MOS;
+        } catch (e) { }
+        i.isRTCP = type === 'rtcp';
+        // node: ""
+        i.node = item.dbnode;
+        // proto: 34
+        i.proto = item.payloadType;
+        // source_ip: "136.243.16.181"
+        i.source_ip = item.srcIp;
+        // source_port: 26918
+        i.source_port = item.srcPort;
+        // table: "rtp_stats"
+        i.table = 'rtp_stats';
+        // type: "report"
+        i.type = 'report';
+        // uuid: "ecd5d2fb-fb77-11eb-92fb-000019432987"
+        i.uuid = Functions.newGuid();
+        // vlan: 0
+        i.vlan = 0;
+        return i;
+      })
+
+    }));
+
+  }
   public extractQOSitems(qosData: any, messages: Array<any>): Array<any> {
+    if (qosData?.rtp || qosData?.rtcp) {
+      qosData = this.pipeDataQos({
+        data: {
+          reports: this.formattingToQosArray(qosData)
+        }
+      });
+      // console.log('formatted::', qosData);
+    }
     if (!qosData || !Array.isArray(qosData)) {
       return messages;
     }
