@@ -1,11 +1,9 @@
 import { AgentsubService } from '@app/services/agentsub.service';
-// import { RecordingService } from './recording.service';
 import { Injectable } from '@angular/core';
 import { CallReportService } from './report.service';
 import { CallTransactionService } from './transaction.service';
 import { Observable } from 'rxjs';
 import { HepLogService } from './hep-log.service';
-// import { DtmfService } from './dtmf.service';
 import { WorkerService } from '../worker.service';
 import { WorkerCommands } from '../../models/worker-commands.module';
 import { log, Functions } from '@app/helpers/functions';
@@ -19,15 +17,12 @@ export class FullTransactionService {
     private callReportService: CallReportService,
     private callTransactionService: CallTransactionService,
     private hepLogService: HepLogService,
-    // private dtmfService: DtmfService,
-    // private recordingService: RecordingService,
     private agentsubService: AgentsubService,
     private preferenceHepsubService: PreferenceHepsubService
   ) { }
 
   public getTransactionData(requestTransaction, dateFormat): Observable<any> {
     const _worker = async data => await WorkerService.doOnce(WorkerCommands.TRANSACTION_SERVICE_FULL, data);
-    // console.log({ requestTransaction })
     return new Observable<any>(observer => {
       let tData;
       const next = type => observer.next({ type, data: tData });
@@ -39,7 +34,6 @@ export class FullTransactionService {
           dt = dt || type === 'dtmf';
           qo = qo || type === 'qos';
           lo = lo || type === 'heplogs';
-          rc = rc || type === 'recording';
 
           if (tr && dt && qo && lo) {
             next('transaction');
@@ -50,7 +44,6 @@ export class FullTransactionService {
         return fn && fn(type);
       };
       const onError = err => (type => {
-        // console.log('onError', type)
         ready(type, _type => {
           log('error', _type, new Error(err));
           observer.error(err);
@@ -58,22 +51,10 @@ export class FullTransactionService {
       });
       const rt = requestTransaction;
       this.callTransactionService.getTransaction(rt).toPromise().then(async (data) => {
-        // console.log(data, tData)
         data.dateFormat = dateFormat;
         tData = await _worker({ tData: data, type: 'full' });
         ready('transaction');
         Object.values(rt.param.search).forEach((i: any) => i.callid = tData.callid);
-        // try {
-        //     const getDtmfRes: any = await this.dtmfService.getDtmf(rt).toPromise();
-        //     tData = await _worker({ tData, dtmfData: getDtmfRes.data, type: 'dtmf' });
-        //     tData.dtmf = getDtmfRes.data;
-        // } catch (err) { onError('dtmf'); }
-
-        // try {
-        //     const getRecording: any = await this.recordingService.postData(rt).toPromise();
-        //     tData.recording = getRecording.data;
-        // } catch (err) { onError('recording'); }
-
         try {
           const agentSubList: any = await this.agentsubService.getAgentCdr('cdr').toPromise();
           const { uuid, type } = agentSubList.data.find(i => i.type === 'cdr');
@@ -132,7 +113,7 @@ export class FullTransactionService {
           tData.qosData = qosData;
         } catch (err) { onError('qos'); }
         ready('qos');
-        console.log({ tData })
+       
 
       }, onError('transaction'));
     });

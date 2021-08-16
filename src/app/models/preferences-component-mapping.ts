@@ -67,11 +67,6 @@ export class PreferencesComponentMapping {
                 edit: true,
                 delete: true,
             },
-            interceptions: {
-                add: true,
-                edit: true,
-                delete: true,
-            },
             agentsub: {
                 add: false,
                 edit: false,
@@ -140,11 +135,6 @@ export class PreferencesComponentMapping {
                 delete: false,
             },
             'auth token': {
-                add: false,
-                edit: false,
-                delete: false,
-            },
-            interceptions: {
                 add: false,
                 edit: false,
                 delete: false,
@@ -267,17 +257,6 @@ export class PreferencesComponentMapping {
                 'Active',
                 'tools',
             ],
-            interceptions: [
-                'UUID',
-                'Callee',
-                'Caller',
-                'Search IP',
-                'Start',
-                'Stop',
-                'Description',
-                'Status',
-                'tools',
-            ],
             agentsub: [
                 'UUID',
                 'Host',
@@ -323,7 +302,6 @@ export class PreferencesComponentMapping {
             'hepsub',
             'auth token',
             // 'scripts',
-            // 'interceptions',
             'agentsub',
             // 'system overview',
             'reset'

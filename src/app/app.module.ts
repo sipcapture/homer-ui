@@ -4,17 +4,11 @@ import { WebsharkModule } from './components/controls/webshark/webshark.module';
 import { LokiResultsModule } from './components/controls/loki-results/loki-results.module';
 import { FullScreenComponent } from './components/controls/full-screen/full-screen.component';
 import { TransactionFilterService } from '@app/components/controls/transaction-filter/transaction-filter.service';
-import { TabGraphModule } from '@app/components/search-grid-call/detail-dialog/tab-graph/tab-graph.module';
 import { MessageContentModule } from './components/search-grid-call/message-content/message-content.module';
-import { TabTimelineModule } from './components/search-grid-call/detail-dialog/tab-timeline/tab-timeline.module';
-import { TabRecordingModule } from './components/search-grid-call/detail-dialog/tab-recording/tab-recording.module';
 import { TabSubModule } from './components/search-grid-call/detail-dialog/tab-sub/tab-sub.module';
-import { TabTdrModule } from './components/search-grid-call/detail-dialog/tab-tdr/tab-tdr.module';
 import { TabMessagesModule } from './components/search-grid-call/detail-dialog/tab-messages/tab-messages.module';
-import { TabMediaReportsModule } from './components/search-grid-call/detail-dialog/tab-media-reports/tab-media-reports.module';
 import { CodeStyleFieldModule } from './components/widgets/rsearch-widget/code-style-field/code-style-field.module';
 import { TabHepsubModule } from './components/search-grid-call/detail-dialog/tab-hepsub/tab-hepsub.module';
-import { TabGeoModule } from './components/search-grid-call/detail-dialog/tab-geo/tab-geo.module';
 import { ModalResizableModule } from './components/controls/modal-resizable/modal-resizable.module';
 import { TransactionFilterModule } from './components/controls/transaction-filter/transaction-filter.module';
 import { TransactionInfoModule } from './components/controls/transaction-info/transaction-info.module';
@@ -22,7 +16,6 @@ import { FlowTooltipModule } from './components/controls/flow-tooltip/flow-toolt
 import { CustomTableModule } from './components/controls/custom-table/custom-table.module';
 import { AlertModule } from '@app/components/controls/alert/alert.module';
 import { TabCallinfoModule } from './components/search-grid-call/detail-dialog/tab-callinfo/tab-callinfo.module';
-import { TabDtmfModule } from './components/search-grid-call/detail-dialog/tab-dtmf/tab-dtmf.module';
 import { TabEventsModule } from './components/search-grid-call/detail-dialog/tab-events/tab-events.module';
 import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 /* @angular */
@@ -45,7 +38,6 @@ import { ColorOffsetModule } from '@app/pipes/colorOffset.module';
 import { HtmlPipe } from '@app/pipes/html.pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HomerMaterialModule } from '@app/app.material-module';
-// import { MatIconModule } from '@angular/material/icon';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
@@ -110,7 +102,6 @@ import {
   DialogUserSettingsComponent,
   DialogUsersComponent,
   DialogScriptsComponent,
-  DialogInterceptionsComponent,
   DialogDBSelectorComponent
 } from '@app/components/preference/dialogs';
 import {
@@ -118,9 +109,7 @@ import {
   PageAdvancedSettingsComponent,
   PageAgentSubscriptionsComponent,
   PageApiAuthComponent,
-  PageApiDocComponent,
   PageHepsubComponent,
-  PageInterceptionsComponent,
   PageIpAliasComponent,
   PageMappingComponent,
   PageResetComponent,
@@ -174,8 +163,6 @@ import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
 import { DynamicModule } from 'ng-dynamic-component';
 import { ChartsModule } from 'ng2-charts';
 import { MarkdownModule } from 'ngx-markdown';
-import { GoogleMapsModule } from '@angular/google-maps'; // temporary reverted to maplibre
-
 import { NgxDaterangepickerMd } from './components/controls/daterangepicker';
 import { SettingAlertWidgetComponent } from './components/widgets/alert-widget/setting-alert-widget.component';
 import { UpdateAlertComponent } from './components/controls/update-alert/update-alert.component';
@@ -237,7 +224,6 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     DialogPasswordResetComponent,
     PreferenceComponent,
     SearchGridCallComponent,
-    PageApiDocComponent,
 
     /** dashboard */
     AddDashboardDialogComponent,
@@ -311,7 +297,6 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     DialogUserSettingsComponent,
     DialogUsersComponent,
     DialogScriptsComponent,
-    DialogInterceptionsComponent,
     DialogDBSelectorComponent,
     SettingAlertWidgetComponent,
     UpdateAlertComponent,
@@ -334,7 +319,6 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     PageUserSettingsComponent,
     PageAdvancedSettingsComponent,
     PageMappingComponent,
-    PageInterceptionsComponent,
     PageScriptsComponent,
     PageAgentSubscriptionsComponent,
     PageApiAuthComponent,
@@ -381,11 +365,9 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     NgxMatDatetimePickerModule,
     NgxMatTimepickerModule,
     NgxMatNativeDateModule,
-    GoogleMapsModule, // temporary reverting to maplibre
     HepTooltipModule,
     TabFlowModule,
     TabEventsModule,
-    TabDtmfModule,
     TabCallinfoModule,
     AlertModule,
     CustomTableModule,
@@ -393,16 +375,10 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     TransactionFilterModule,
     TransactionInfoModule,
     ModalResizableModule,
-    TabGeoModule,
     TabHepsubModule,
     CodeStyleFieldModule,
-    TabMediaReportsModule,
     TabMessagesModule,
-    TabTdrModule,
     TabSubModule,
-    TabRecordingModule,
-    TabTimelineModule,
-    TabGraphModule,
     MessageContentModule,
     LokiResultsModule,
     WebsharkModule,
@@ -472,7 +448,6 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     SettingsAceEditorWidgetComponent,
     SettingSmartInputWidgetComponent,
     SettingAlertWidgetComponent,
-    PageApiDocComponent,
 
     /** dashboard */
     AddDashboardDialogComponent,

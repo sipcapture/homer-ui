@@ -10,6 +10,5 @@ export * from './dialog-mapping/dialog-mapping.component';
 export * from './dialog-scripts/dialog-scripts.component';
 export * from './dialog-user-settings/dialog-user-settings.component';
 export * from './dialog-users/dialog-users.component';
-export * from './dialog-interceptions/dialog-interceptions.component';
-export* from './dialog-db-selector/dialog-db-selector.component'
+export * from './dialog-db-selector/dialog-db-selector.component';
 

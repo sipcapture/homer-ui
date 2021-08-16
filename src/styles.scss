@@ -6,11 +6,6 @@
 @import "theme.scss";
 
 @include mat-core();
-@import "swagger-styles.scss";
-// @import "https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css";
-@import "./assets/css/vis.min.scss";
-// @import "https://api.mapbox.com/mapbox-gl-js/v1.10.1/mapbox-gl.css";
-@import "./assets/css/mapbox-gl.css";
 @import "./assets/roboto/roboto.scss";
 
 // mat icons font
@@ -632,13 +627,6 @@ h3 {
 .clear-btn {
   background-color: #fafafa;
   color: #8a8a8a;
-}
-
-.mapboxgl-popup-content {
-  p {
-    margin: 0 auto;
-    text-align: center;
-  }
 }
 
 .custom-tooltip {

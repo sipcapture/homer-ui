@@ -6,5 +6,3 @@ export * from './controls/modal-resizable/modal-resizable.component';
 export * from './search-grid-call/search-grid-call.component';
 export * from './controls/flow-tooltip/flow-tooltip.component';
 export * from './controls/custom-table/custom-table.component';
-export * from './controls/vis-components/vistimeline/vistimeline.component';
-export * from './preference/pages/page-api-doc/page-api-doc.component'
