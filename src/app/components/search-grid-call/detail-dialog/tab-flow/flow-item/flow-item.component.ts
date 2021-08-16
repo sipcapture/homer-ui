@@ -8,6 +8,7 @@ import { Functions } from '@app/helpers/functions';
     changeDetection: ChangeDetectionStrategy.Default
 })
 export class FlowItemComponent {
+    
     _item: any = {};
     @Input() set item(val: any) {
         this._item = val;
@@ -24,5 +25,8 @@ export class FlowItemComponent {
     }
     MOSColorGradient(hue) {
         return Functions.MOSColorGradient(hue * 100, 80, 50);
+    }
+    typeOf(st){
+        return typeof st;
     }
 }

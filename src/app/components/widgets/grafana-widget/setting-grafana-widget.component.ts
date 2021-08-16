@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { ProxyService } from '../../../services/proxy.service';
+import { ProxyService } from '@services';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SelectList, GroupedSelectList } from '../influxdbchart-widget/setting-influxdbchart-widget.component';
 import { TranslateService } from '@ngx-translate/core'

@@ -1,5 +1,5 @@
 import { Functions } from '@app/helpers/functions';
-import { MessageDetailsService } from '../../../services/message-details.service';
+import { MessageDetailsService } from '@services';
 import { ChangeDetectorRef } from '@angular/core';
 import {
     Component,

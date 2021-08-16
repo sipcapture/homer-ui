@@ -44,10 +44,9 @@ import {
 } from '@app/services';
 import { DialogSettingsGridDialog } from './grid-settings-dialog/grid-settings-dialog';
 import { MatDialog } from '@angular/material/dialog';
-import { FullTransactionService } from '../../services/call/full-transaction.service';
+import { FullTransactionService } from '@services/call/full-transaction.service';
 import { ExportDialogComponent } from './export-dialog/export-dialog.component';
-import { MessageDetailsService } from '../../services/message-details.service';
-
+import { MessageDetailsService } from '@services';
 import { StatusFilterComponent } from './filters/index';
 import { TranslateService } from '@ngx-translate/core';
 import { DateFormat, TimeFormattingService } from '@app/services/time-formatting.service';

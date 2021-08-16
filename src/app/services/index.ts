@@ -4,6 +4,8 @@ export * from './preferences/user.service';
 export * from './dashboard.service';
 export * from './hepsub.service';
 export * from './agentsub.service';
+export * from './data-time-range.service'
+export * from './proxy.service';
 export * from './preferences/advanced.service';
 export * from './preferences/alias.service';
 export * from './preferences/ipalias.service';
@@ -23,6 +25,7 @@ export * from './export/call.service';
 export * from './search/call.service';
 export * from './search/remote.service';
 export * from './search/smart.service';
+export * from './statistic.service';
 export * from './session-storage.service';
 export * from './data-time-range.service';
 export * from './search.service';

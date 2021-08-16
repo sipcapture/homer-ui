@@ -5,8 +5,8 @@ import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, Change
 import { TranslateService } from '@ngx-translate/core';
 import { ChartType, ChartDataSets } from 'chart.js';
 import { Label } from 'ng2-charts';
-import { StatisticService } from '../../../services/statistic.service';
-import { DateTimeRangeService, DateTimeTick, Timestamp } from '../../../services/data-time-range.service';
+import { StatisticService } from '@services/statistic.service';
+import { DateTimeRangeService, DateTimeTick, Timestamp } from '@services';
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
 import { Widget, WidgetArrayInstance } from '@app/helpers/widget';

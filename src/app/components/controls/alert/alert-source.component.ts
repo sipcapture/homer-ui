@@ -1,12 +1,9 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, ElementRef, ViewChild, Injectable } from '@angular/core';
 import { Subscription } from 'rxjs';
-
-import { AlertService } from './../../../services';
+import { AlertService } from '@services'
 import { TranslateService } from '@ngx-translate/core'
 import { AlertOverlayService } from './alert-overlay.service';
 import { AlertOverlayRef } from './alert-ref';
-
-
 
 @Component({
     selector: 'alert',

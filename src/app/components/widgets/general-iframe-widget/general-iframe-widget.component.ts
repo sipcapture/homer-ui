@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SettingGeneralIframeWidgetComponent } from './setting-general-iframe-widget.component';
 import { MatDialog } from '@angular/material/dialog';
-import { DateTimeRangeService, DateTimeTick } from '../../../services/data-time-range.service';
+import { DateTimeRangeService, DateTimeTick } from '@services';
 
 import { Subscription } from 'rxjs';
 import { IWidget } from '../IWidget';

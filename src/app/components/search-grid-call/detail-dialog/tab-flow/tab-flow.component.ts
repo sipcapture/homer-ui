@@ -19,7 +19,7 @@ import { TooltipService } from '@app/services/tooltip.service';
 import {
     MessageDetailsService,
     ArrowEventState,
-} from '@app/services/message-details.service';
+} from '@services/message-details.service';
 import { FixedSizeVirtualScrollStrategy, VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
 import { AfterViewChecked, OnDestroy } from '@angular/core';
 import { TransactionFilterService } from '@app/components/controls/transaction-filter/transaction-filter.service';
@@ -236,7 +236,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
             .split(',')
             .sort()
             .filter((i, k, a) => a[k - 1] !== i);
-
+            
         this.hosts.forEach((h, k, arr) => {
 
             const name = isSimplifyPort ? h.ip : h.host;
@@ -486,12 +486,10 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
                 row.raw_source = `${item.info_date} ${item.description} ${DTMFbuffer}`;
                 break;
             case FlowItemType.LOG:
-                // console.log('LOG TEST')
                 row = item.source_data;
                 row.raw = item.source_data?.item?.message;
                 row.raw_source = item.source_data?.item?.message;
                 row.id = `(${item.typeItem}) ${item.description}`;
-                // console.log(row)
                 break;
 
         }
