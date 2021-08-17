@@ -575,6 +575,7 @@
                 "aliasName": "@LINK.preferenceTerms.alias@ Name",
                 "group": "Group Name",
                 "server": "Server Type",
+                "captureID":"Capture ID",
                 "ipv6": "IPV6",
                 "fontColor": "Font Color",
                 "borderColor": "Border Color",
