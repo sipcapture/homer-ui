@@ -371,7 +371,6 @@ export class SearchGridCallComponent
                  * update DateTimeRange from GET params
                  */
                 const params = Functions.getUriJson();
-                console.log(params)
                 if (params?.timestamp) {
                     const { from, to } = params.timestamp;
                     const format = (d) =>
