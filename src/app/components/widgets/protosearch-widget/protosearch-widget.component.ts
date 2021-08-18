@@ -172,54 +172,84 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
         sizeX: 2,
         sizeY: 2,
         config: {
-          title: 'TDR CALL SEARCH',
+          title: 'SIP CALL SEARCH',
           searchbutton: true,
           protocol_id: {
-            name: 'TDR',
-            value: 60,
+            name: 'SIP',
+            value: 1,
           },
           protocol_profile: {
-            name: 'call_h20',
-            value: 'call_h20',
+            name: 'call',
+            value: 'call',
           },
           fields: [{
-            field_name: 'callid',
-            form_default: null,
-            form_type: 'input',
-            hepid: 60,
-            name: '60:call_h20:callid',
-            selection: 'Call-ID',
-            type: 'string',
-            value: ''
+            field_name: "data_header.callid",
+            hepid: 1,
+            name: "1:call:data_header.callid",
+            selection: "SIP Callid",
+            type: "string",
+            value: ""
           },
           {
-            field_name: 'targetResultsContainer',
-            form_default: null,
-            hepid: 60,
-            name: '60:call_h20:targetResultsContainer',
-            selection: 'Results Container',
-            type: 'string'
-          }],
+            field_name: "data_header.method",
+            hepid: 1,
+            name: "1:call:data_header.method",
+            selection: "SIP Method",
+            type: "string",
+            value: ""
+          },
+          {
+            field_name: "limit",
+            hepid: 1,
+            name: "1:call:limit",
+            selection: "Query Limit",
+            type: "string",
+            value: ""
+          },
+          {
+            field_name: "targetResultsContainer",
+            hepid: 1,
+            name: "1:call:targetResultsContainer",
+            selection: "Results Container",
+            type: "string",
+            value: ""
+          },
+
+          ],
 
         },
         uuid: Functions.newGuid(),
         fields: [{
-          field_name: 'callid',
-          form_default: null,
-          form_type: 'input',
-          hepid: 60,
-          name: '60:call_h20:callid',
-          selection: 'Call-ID',
-          type: 'string',
-          value: ''
+          field_name: "data_header.callid",
+          hepid: 1,
+          name: "1:call:data_header.callid",
+          selection: "SIP Callid",
+          type: "string",
+          value: ""
         },
         {
-          field_name: 'targetResultsContainer',
-          form_default: null,
-          hepid: 60,
-          name: '60:call_h20:targetResultsContainer',
-          selection: 'Results Container',
-          type: 'string'
+          field_name: "data_header.method",
+          hepid: 1,
+          name: "1:call:data_header.method",
+          selection: "SIP Method",
+          type: "string",
+          value: ""
+        },
+        {
+          field_name: "limit",
+          hepid: 1,
+          name: "1:call:limit",
+          selection: "Query Limit",
+          type: "string",
+          value: ""
+        },
+        {
+          field_name: "targetResultsContainer",
+          hepid: 1,
+          name: "1:call:targetResultsContainer",
+          selection: "Results Container",
+          type: "string",
+          value: ""
         }],
         countFieldColumns: this.countFieldColumns,
         row: 0,

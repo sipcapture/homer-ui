@@ -492,8 +492,10 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             this.dashboardCollection.data.widgets = this.dashboardArray;
 
 
-            this.dashboardCollection?.data?.widgets?.forEach(
-                item => item.strongIndex = item.strongIndex || this.getWidgetItemClass(item).strongIndex);
+            this.dashboardCollection?.data?.widgets?.forEach( item => {
+                item.strongIndex = item?.strongIndex || this.getWidgetItemClass(item)?.strongIndex
+            
+            });
 
             if (this.isShared) {
                 this.lockDashboard();
