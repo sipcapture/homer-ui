@@ -58,42 +58,6 @@
           </mat-error>
         </mat-form-field>
       </div>
-
-      <!-- <div class="ttl-inputs">
-        <mat-form-field style="padding-right: 1rem;">
-          <mat-label>{{ 'preference.mapping.dialog.retention' | translate }}</mat-label>
-          <input matInput
-            [(ngModel)]="data.data.retention"
-            [formControl]="retention"
-            autocomplete="off"
-            [disabled]="!isAdmin">
-          <mat-error *ngIf="retention?.errors?.required">{{'validators.required' | translate }}</mat-error>
-          <mat-error *ngIf="retention?.errors?.min">{{'validators.minNumber' | translate }} 1</mat-error>
-          <mat-error *ngIf="retention?.errors?.max">{{'validators.maxNumber' | translate }} 365</mat-error>
-          <mat-error *ngIf="retention?.errors?.pattern">{{'validators.patternNumber' | translate }}</mat-error>
-        </mat-form-field>
-        <mat-form-field style="padding-right: 1rem;">
-          <mat-label>{{ 'preference.mapping.dialog.tableName' | translate }}</mat-label>
-          <input matInput
-            [(ngModel)]="data.data.table_name"
-            [formControl]="table_name"
-            autocomplete="off"
-            [disabled]="!isAdmin">
-          <mat-error *ngIf="table_name?.errors?.minlength">
-            {{ table_name?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
-          </mat-error>
-          <mat-error *ngIf="table_name?.errors?.maxlength">
-            {{ table_name?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
-          </mat-error>
-          <mat-error *ngIf="table_name?.errors?.pattern && !table_name?.errors?.minlength">
-            {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-" or "_"]
-          </mat-error>
-        </mat-form-field>
-        <mat-checkbox [(ngModel)]="data.data.apply_ttl_all">
-            {{ 'preference.mapping.dialog.applyTTL' | translate }}
-        </mat-checkbox>
-
-      </div> -->
     </mat-tab>
     <mat-tab [label]="'preference.mapping.dialog.correlationMapping' | translate">
       <hr />

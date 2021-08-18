@@ -39,14 +39,6 @@ export class DialogMappingComponent {
   columns = [];
   specialColumns = [];
   public mappingScript: any = { data: ''};
-  partid = new FormControl('', [
-    Validators.required,
-    Validators.minLength(1),
-    Validators.maxLength(3),
-    Validators.min(1),
-    Validators.max(100),
-    Validators.pattern(this.regNum)
-  ]);
 
   hep_alias = new FormControl('', [
     Validators.required,
@@ -66,20 +58,6 @@ export class DialogMappingComponent {
     Validators.max(10000),
     Validators.pattern(this.regNum)
   ]);
-  retention = new FormControl('', [
-    Validators.required,
-    Validators.minLength(1),
-    Validators.maxLength(4),
-    Validators.min(1),
-    Validators.max(8784),
-    Validators.pattern(this.regNum)
-  ]);
-  table_name = new FormControl('', [
-    Validators.required,
-    Validators.minLength(3),
-    Validators.maxLength(100),
-    Validators.pattern(this.regString),
-  ]);
 
   constructor(
     public dialogRef: MatDialogRef<DialogMappingComponent>,
@@ -92,14 +70,9 @@ export class DialogMappingComponent {
     translateService.setDefaultLang('en')
     if (data.isnew) {
       data.data = {
-        partid: 10,
         hep_alias: '',
         hepid: 10,
         profile: '',
-        partition_step: 10,
-        retention: 1,
-        table_name: '',
-        apply_ttl_all: false,
         correlation_mapping: {},
         fields_mapping: {},
         user_mapping: {},
@@ -127,12 +100,11 @@ export class DialogMappingComponent {
       );
 
     (d => {
-      this.partid.setValue(d.partid)
+      
       this.hep_alias.setValue(d.hep_alias);
       this.hepid.setValue(d.hepid);
       this.profile.setValue(d.profile);
-      this.table_name.setValue(d.table_name);
-      this.retention.setValue(d.retention);
+
     })(data.data);
     if (data.data.fields_mapping) {
       try {
@@ -220,22 +192,20 @@ export class DialogMappingComponent {
     }
   }
   onSubmit() {
-    if (!this.partid?.invalid &&
+    if (
       !this.hep_alias?.invalid &&
       !this.hepid?.invalid &&
-      !this.profile?.invalid &&
-      !this.table_name?.invalid &&
-      !this.retention?.invalid
+      !this.profile?.invalid
+
     ) {
 
 
       (d => {
-        d.partid = this.partid?.value;
+     
         d.hep_alias = this.hep_alias?.value;
         d.hepid = this.hepid?.value;
         d.profile = this.profile?.value;
-        d.table_name = this.table_name?.value;
-        d.retention = this.retention?.value;
+  
 
       })(this.data.data);
       if (this.isScript && this.scriptUpd) {
@@ -243,12 +213,11 @@ export class DialogMappingComponent {
       }
       this.dialogRef.close(this.data);
     } else {
-      this.partid.markAsTouched();
+   
       this.hep_alias.markAsTouched();
       this.hepid.markAsTouched();
       this.profile.markAsTouched();
-      this.table_name.markAsTouched();
-      this.retention.markAsTouched();
+  
 
     }
   }
