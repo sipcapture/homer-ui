@@ -84,9 +84,8 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
         } catch (e) {
             console.log(e);
         }
-
         this.messageDetailTableData = this._data.messageDetailTableData;
-        this.tableObj = this.messageDetailTableData.reduce((p, a) => {
+        this.tableObj = this.messageDetailTableData?.reduce((p, a) => {
             return ({ ...p, [a.name]: a.value });
         }, {});
 
