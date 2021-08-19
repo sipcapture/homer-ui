@@ -1,7 +1,6 @@
 import { Component, Inject, ChangeDetectionStrategy, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { PreferenceScripts } from '@app/models';
 import { PreferenceScriptsService } from '@app/services';
 import { TranslateService } from '@ngx-translate/core'
 import { MatSort } from '@angular/material/sort';
@@ -74,8 +73,8 @@ export class DialogMappingComponent {
         hepid: 10,
         profile: '',
         correlation_mapping: {},
-        fields_mapping: {},
-        user_mapping: {},
+        fields_mapping: [],
+        user_mapping: [],
       };
     }
 
@@ -93,7 +92,7 @@ export class DialogMappingComponent {
         JSON.stringify(data.data.fields_mapping, null, 4)
       );
     data.data.user_mapping = data.isnew ?
-      '{}' :
+      '[]' :
       (typeof data.data.user_mapping === 'string' ?
         data.data.user_mapping :
         JSON.stringify(data.data.user_mapping, null, 4)
@@ -122,8 +121,7 @@ export class DialogMappingComponent {
 
         this.dataSource.data = this.fieldsTableFields
       } catch (e) {
-
-        // console.log(e);
+          console.log(e);
 
       }
 
@@ -131,16 +129,8 @@ export class DialogMappingComponent {
 
     this.isValidForm = true;
   }
-  ngOnInit(): void {
-    // this.scriptService.getAll().toPromise().then((data: any) => {
-    //   const { hep_alias, hepid, profile } = this.data?.data || {};
-    //   const cProfile = JSON.stringify([hep_alias, hepid, profile]);
+  ngOnInit(): void {}
 
-    //   this.mappingScript = data?.data?.find((f: any) => JSON.stringify([f.hep_alias, f.hepid, f.profile]) === cProfile) || { data: ''};
-    //   this.isScript = Object.keys(this.mappingScript).length > 0;
-    //   this.cdr.detectChanges();
-    // });
-  }
   ngAfterViewInit() {
     const options = {
       esnext: true,
@@ -196,29 +186,20 @@ export class DialogMappingComponent {
       !this.hep_alias?.invalid &&
       !this.hepid?.invalid &&
       !this.profile?.invalid
-
     ) {
-
-
       (d => {
-     
         d.hep_alias = this.hep_alias?.value;
         d.hepid = this.hepid?.value;
         d.profile = this.profile?.value;
-  
-
       })(this.data.data);
       if (this.isScript && this.scriptUpd) {
         this.scriptService.update(this.mappingScript).toPromise().then(data => data)
       }
       this.dialogRef.close(this.data);
     } else {
-   
       this.hep_alias.markAsTouched();
       this.hepid.markAsTouched();
       this.profile.markAsTouched();
-  
-
     }
   }
 }
