@@ -494,12 +494,13 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
             this.dashboardCollection?.data?.widgets?.forEach( item => {
                 item.strongIndex = item?.strongIndex || this.getWidgetItemClass(item)?.strongIndex
-            
+
             });
 
             if (this.isShared) {
                 this.lockDashboard();
             }
+            this.updateRowRatio();
             this.updateTrigger();
             this.changedOptions();
             this.scrollTop();
@@ -1304,6 +1305,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
             const columnAmount = Math.floor(this.gridster.el.clientWidth / rowHeight);
             const columnWidth = Math.ceil(this.gridster.el.clientWidth / columnAmount);
             this.gridOptions.rowHeightRatio = columnWidth / rowHeight;
+        } else {
+            this.gridOptions.rowHeightRatio = 1;
         }
         try {
             this.gridOptions?.api?.optionsChanged();

@@ -1017,7 +1017,7 @@ export class SearchGridCallComponent
     }
 
     public openMethodForSelectedRow(index, row, mouseEventData = null) {
-        this.addWindowMessage({ data: row }, mouseEventData);
+        this.addWindowMessage({ data: row }, mouseEventData, null, true);
     }
 
     private getRequest(row, selectedRows, selectedCallId, custom_profile?, custom_field_name?) {
@@ -1136,7 +1136,7 @@ export class SearchGridCallComponent
         this.cdr.detectChanges();
     }
 
-    public async addWindowMessage(row: any, mouseEventData = null, arrowMetaData: any = null) {
+    public async addWindowMessage(row: any, mouseEventData = null, arrowMetaData: any = null, fromGrid = false) {
         if (!row?.data) {
             return;
         }
@@ -1164,8 +1164,8 @@ export class SearchGridCallComponent
             isBrowserWindow: arrowMetaData ? !!arrowMetaData.isBrowserWindow : false,
         };
         let _timestamp = {
-            from: row.data.create_date + this.limitRange.message_from, // - 1sec
-            to: row.data.create_date + this.limitRange.message_to // + 1sec
+            from:  parseInt(moment(row.data.create_date).format('x'), 10) + this.limitRange.message_from, // - 1sec
+            to:  parseInt(moment(row.data.create_date).format('x'), 10) + this.limitRange.message_to // + 1sec
         };
         const _protocol_profile = row && row.data && row.data.profile ? row.data.profile : this.protocol_profile;
 
@@ -1244,49 +1244,51 @@ export class SearchGridCallComponent
              * END DECODED
              */
         }
-        if ( row.isLog || (row.data.payloadType === 1 && (row.data.raw || row.data.item && row.data.item.raw))) {
-            const data = row.data.item || row.data;
-            mData.data = data || {};
-            mData.data.item = {
-                raw: mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty'
-            };
-            mData.data.messageDetailTableData = Object.keys(mData.data)
-                .map(i => {
+        if (fromGrid) {
+            if ( row.isLog || (row.data.payloadType === 1 && (row.data.raw || row.data.item && row.data.item.raw))) {
+                const data = row.data.item || row.data;
+                mData.data = data || {};
+                mData.data.item = {
+                    raw: mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty'
+                };
+                mData.data.messageDetailTableData = Object.keys(mData.data)
+                    .map(i => {
+                        let val;
+                        if (i === 'create_date') {
+                            val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS');
+                        } else if (i === 'timeSeconds') {
+                            val =  mData.data[i];
+                        } else {
+                            val = mData.data[i];
+                        }
+                        return {name: i, value: val};
+                    })
+                    .filter(i => typeof i.value !== 'object' && i.name !== 'raw');
+                this.cdr.detectChanges();
+                mData.loaded = true;
+                return;
+            } else {
+                const result: any = await this._scs.getMessage(request).toPromise();
+
+                mData.data = result && result.data && result.data[0] ? result.data[0] : {};
+                mData.data.item = {
+                    raw: mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty'
+                };
+                mData.data.messageDetailTableData = Object.keys(mData.data).map(i => {
                     let val;
                     if (i === 'create_date') {
                         val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS');
                     } else if (i === 'timeSeconds') {
-                        val =  mData.data[i];
+                        val = mData.data[i];
                     } else {
                         val = mData.data[i];
                     }
                     return {name: i, value: val};
-                })
-                .filter(i => typeof i.value !== 'object' && i.name !== 'raw');
-            this.cdr.detectChanges();
-            mData.loaded = true;
-            return;
-        } else {
-            const result: any = await this._scs.getMessage(request).toPromise();
+                }).filter(i => typeof i.value !== 'object' && i.name !== 'raw');
 
-            mData.data = result && result.data && result.data[0] ? result.data[0] : {};
-            mData.data.item = {
-                raw: mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty'
-            };
-            mData.data.messageDetailTableData = Object.keys(mData.data).map(i => {
-                let val;
-                if (i === 'create_date') {
-                    val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS');
-                } else if (i === 'timeSeconds') {
-                    val = mData.data[i];
-                } else {
-                    val = mData.data[i];
-                }
-                return {name: i, value: val};
-            }).filter(i => typeof i.value !== 'object' && i.name !== 'raw');
-
-            mData.loaded = true;
-            this.cdr.detectChanges();
+                mData.loaded = true;
+                this.cdr.detectChanges();
+            }
         }
         mData.loaded = true;
         this.cdr.detectChanges();
