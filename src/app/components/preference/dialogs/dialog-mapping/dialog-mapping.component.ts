@@ -57,7 +57,12 @@ export class DialogMappingComponent {
     Validators.max(10000),
     Validators.pattern(this.regNum)
   ]);
-
+  partid = new FormControl(10,[Validators.required,Validators.pattern(this.regNum)])
+  retention = new FormControl(1,[
+    Validators.required,Validators.min(1),
+    Validators.max(365),
+    Validators.pattern(this.regNum)
+  ]);
   constructor(
     public dialogRef: MatDialogRef<DialogMappingComponent>,
     private scriptService: PreferenceScriptsService,
@@ -71,6 +76,9 @@ export class DialogMappingComponent {
       data.data = {
         hep_alias: '',
         hepid: 10,
+        partid: 10,
+        retention: 1,
+        partition_step:10,
         profile: '',
         correlation_mapping: {},
         fields_mapping: [],
@@ -99,7 +107,8 @@ export class DialogMappingComponent {
       );
 
     (d => {
-      
+      this.partid.setValue(d.partid);
+      this.retention.setValue(d.retention);
       this.hep_alias.setValue(d.hep_alias);
       this.hepid.setValue(d.hepid);
       this.profile.setValue(d.profile);
@@ -185,9 +194,13 @@ export class DialogMappingComponent {
     if (
       !this.hep_alias?.invalid &&
       !this.hepid?.invalid &&
-      !this.profile?.invalid
+      !this.profile?.invalid &&
+      !this.partid?.invalid 
+
     ) {
       (d => {
+        d.partid = this.partid?.value;
+        d.retention = this.retention?.value;
         d.hep_alias = this.hep_alias?.value;
         d.hepid = this.hepid?.value;
         d.profile = this.profile?.value;
@@ -197,9 +210,11 @@ export class DialogMappingComponent {
       }
       this.dialogRef.close(this.data);
     } else {
+      this.partid.markAsTouched();
       this.hep_alias.markAsTouched();
       this.hepid.markAsTouched();
       this.profile.markAsTouched();
+      this.retention.markAsTouched();
     }
   }
 }

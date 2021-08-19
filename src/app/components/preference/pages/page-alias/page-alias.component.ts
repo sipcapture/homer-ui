@@ -19,7 +19,7 @@ import {
 import {
     DialogAliasComponent,
     DialogDeleteAlertComponent,
-    DialogIpAliasComponent,
+   
 } from '@app/components/preference/dialogs';
 import {
     PreferenceAlias,
