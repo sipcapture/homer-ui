@@ -19,7 +19,7 @@ import {
 import {
     DialogAliasComponent,
     DialogDeleteAlertComponent,
-    DialogIpAliasComponent,
+   
 } from '@app/components/preference/dialogs';
 import {
     PreferenceAlias,
@@ -67,6 +67,7 @@ export class PageAliasComponent implements OnInit, OnDestroy, AfterViewInit {
         userData.user.admin === true;
     }
     ngOnInit() {
+        console.log('this one is used')
         if (this.isAdmin) {
             this.isAccess = PreferencesComponentMapping.accessMapping.admin[this.pageID];
             this.columns = PreferencesComponentMapping.pagesStructureMapping.admin[this.pageID];

@@ -57,6 +57,18 @@
             {{ hep_alias?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
           </mat-error>
         </mat-form-field>
+        <mat-form-field style="padding-right: 1rem;" hidden>
+          <mat-label>{{ 'preference.mapping.dialog.retention' | translate }}</mat-label>
+          <input matInput
+            [(ngModel)]="data.data.retention"
+            [formControl]="retention"
+            autocomplete="off"
+            [disabled]="!isAdmin">
+          <mat-error *ngIf="retention?.errors?.required">{{'validators.required' | translate }}</mat-error>
+          <mat-error *ngIf="retention?.errors?.min">{{'validators.minNumber' | translate }} 1</mat-error>
+          <mat-error *ngIf="retention?.errors?.max">{{'validators.maxNumber' | translate }} 365</mat-error>
+          <mat-error *ngIf="retention?.errors?.pattern">{{'validators.patternNumber' | translate }}</mat-error>
+        </mat-form-field>
       </div>
     </mat-tab>
     <mat-tab [label]="'preference.mapping.dialog.correlationMapping' | translate">

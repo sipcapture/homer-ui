@@ -17,13 +17,13 @@ export class AppComponent {
         public alertService: AlertService
         ) {
 
-        if (this.authenticationService?.currentUserValue?.user?.force_password) {
+        if (!this.authenticationService?.currentUserValue) {
             this.authenticationService.logout();
         }
         this.authenticationService.currentUser.subscribe(x => {
-            if (!x?.user?.force_password) {
+          
                 this.currentUser = x;
-            }
+        
         });
         window['console2file'] = Functions.console2file;
         // this language will be used as a fallback when a translation isn't found in the current language

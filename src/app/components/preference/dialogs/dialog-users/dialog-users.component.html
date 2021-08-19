@@ -79,7 +79,7 @@
         </mat-form-field>
       </div>
 
-      <div style="display: grid; grid-template-columns: 30% 30%; width: 100%; grid-gap: 10px; ">
+      <div style="display: grid; grid-template-columns: 30% 30%; width: 100%; grid-gap: 10px;">
         <mat-form-field>
           <input matInput
             autocomplete="new-password"
@@ -123,12 +123,7 @@
             {{ password2?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
           </mat-error>
         </mat-form-field>
-        <mat-checkbox color="primary" *ngIf="isAdmin && data.data.params"
-                    [checked]="forcePassword"
-                    class="example-margin" 
-                    [(ngModel)]="forcePassword">Force this user to change their password</mat-checkbox>
-      </div>
-
+</div>
       <strong>{{ 'preference.users.dialog.personalInfo' | translate }}</strong>
       <hr />
       <div style="display: grid; grid-template-columns: 30% 30%; width: 100%; grid-gap: 10px;">
@@ -165,8 +160,6 @@
           </mat-error>
         </mat-form-field>
       </div>
-
-
       <div style="display: grid; grid-template-columns: 30% 30%; width: 100%; grid-gap: 10px;">
         <mat-form-field>
           <mat-label>{{ 'preference.users.dialog.email' | translate }}</mat-label>
@@ -200,6 +193,7 @@
         </mat-form-field>
       </div>
     </mat-tab>
+    
     <mat-tab label="Setting">
       <div style="height: 1rem"></div>
       <strong>{{ 'preference.users.dialog.setting' | translate }}</strong>

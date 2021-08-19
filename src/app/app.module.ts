@@ -93,7 +93,6 @@ import {
   DialogAdvancedComponent,
   DialogAgentsubComponent,
   DialogAliasComponent,
-  DialogIpAliasComponent,
   DialogAuthKeyComponent,
   DialogAuthTokenDisplayComponent,
   DialogDeleteAlertComponent,
@@ -110,7 +109,6 @@ import {
   PageAgentSubscriptionsComponent,
   PageApiAuthComponent,
   PageHepsubComponent,
-  PageIpAliasComponent,
   PageMappingComponent,
   PageResetComponent,
   PageScriptsComponent,
@@ -183,7 +181,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
 
 
 import { PreferencesContentMapping } from './models/preferences-kw-mapping';
-import { DialogPasswordResetComponent } from './components/login/password-reset-dialog/dialog-password-reset.component';
+
 import {
   GenericCellComponent,
   ToolCellComponent,
@@ -221,7 +219,6 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     /** components */
     DashboardComponent,
     LoginComponent,
-    DialogPasswordResetComponent,
     PreferenceComponent,
     SearchGridCallComponent,
 
@@ -288,7 +285,6 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     DialogAdvancedComponent,
     DialogAgentsubComponent,
     DialogAliasComponent,
-    DialogIpAliasComponent,
     DialogAuthKeyComponent,
     DialogAuthTokenDisplayComponent,
     DialogDeleteAlertComponent,
@@ -304,8 +300,6 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     DialogImportComponent,
     FullScreenComponent,
 
-    /** Preference pages */
-    PageIpAliasComponent,
 
     /**Cell types */
     GenericCellComponent,
@@ -405,7 +399,6 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     DialogAdvancedComponent,
     DialogAgentsubComponent,
     DialogAliasComponent,
-    DialogIpAliasComponent,
     DialogAuthKeyComponent,
     DialogAuthTokenDisplayComponent,
     DialogDeleteAlertComponent,

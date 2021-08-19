@@ -219,7 +219,6 @@
             "preferenceUpdate": "{{page}} was @LINK.words.success.successfully@ updated"
         },
         "warning": {
-            "forcePassword": "Please change your @LINK.login.password.toLowerCase()@",
             "userChanged": "Your user has been updated, please sign in again.",
             "textTooLong": "This text is too long and may degrade performance on weaker computers, please proceed with caution"
         },

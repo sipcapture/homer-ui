@@ -3,7 +3,6 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 
 import { environment } from '@environments/environment';
 import { PreferenceUsers } from '@app/models';
-import { catchError, throwError } from 'rxjs';
 interface GetAllUsers {
     count: number;
     data: PreferenceUsers[];
@@ -70,12 +69,5 @@ export class PreferenceUserService {
             observe: 'events',
         });
     }
-    getAllGroups() {
-        return this.http.get(`${this.url}/groups`).pipe( catchError(this.handleError))
-    }
 
-    handleError(error: HttpErrorResponse){
-       
-        return throwError(error);
-    }
 }
