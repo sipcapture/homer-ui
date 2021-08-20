@@ -520,7 +520,7 @@
             "dialog": {
                 "mappingSettings": "@LINK.mapping@ Settings",
                 "settings":"Settings",
-                "defines": "Defines the Identifier, Format and Lifetime of Protocol Data",
+                "defines": "Defines the Identifiier and profile of Protocol Data",
                 "hepAlias": "@LINK.preferenceTerms.HEP@ Alias",
                 "shouldNotBeEmpty": "Should not be empty",
                 "charactersMin": "Characters min",

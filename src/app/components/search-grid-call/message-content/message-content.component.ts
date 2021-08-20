@@ -44,7 +44,6 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
     @ViewChild('matTabGroup', { static: false }) matTabGroup: MatTabGroup;
     @Input() rowData: any;
     @Input('data') set data(val) {
-
         this._data = val;
         // console.log('this._data', this._data);
         if (val.frame_protocol) {
@@ -90,12 +89,14 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
         }, {});
 
         try {
-            const { create_ts, srcId, dstId } = this._data;
-
+            const { create_ts, srcId, dstId, srcIp, srcPort, dstIp, dstPort } = this._data;
             this._tfs.getFormat().then((res: DateFormat) => {
                 this.dateFormat = res;
                 if (srcId && dstId) {
+                    console.log('test1')
                     this.timeLabel = `${moment(create_ts).format(this.dateFormat.dateTimeMsZ)}: ${srcId} -> ${dstId}`;
+                } else if(srcIp && srcPort && dstIp && dstPort) {
+                    this.timeLabel = `${moment(create_ts).format(this.dateFormat.dateTimeMsZ)}: ${srcIp}:${srcPort} -> ${dstIp}:${dstPort}`;
                 } else {
                     if (this._data?.id?.replace) {
                         this.timeLabel = this._data?.id?.replace(/\(.*\]\s?/g, '');

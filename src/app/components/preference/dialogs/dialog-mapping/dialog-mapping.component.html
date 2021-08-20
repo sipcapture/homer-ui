@@ -10,8 +10,6 @@
   <mat-tab-group>
     <mat-tab [label]="'preference.mapping.dialog.settings' | translate">
       <hr />
-      <strong>{{ 'preference.mapping.dialog.settings' | translate }}</strong>
-      <hr />
       <p>{{ 'preference.mapping.dialog.defines' | translate }}</p>
       <hr />
       <div>
@@ -93,11 +91,7 @@
     </mat-tab>
     <mat-tab [label]="'preference.mapping.dialog.fieldsMapping' | translate">
       <ng-template matTabContent>
-        <mat-tab-group >
-
-          <mat-tab [label]="'preference.mapping.dialog.mainFields' | translate">
-         <hr/>
-
+            <hr />
             <p>{{ 'preference.mapping.dialog.definesSchema' | translate }}</p>
             <hr />
             <full-screen
@@ -115,31 +109,6 @@
                 [disabled]="!isAdmin">
               </ace-editor>
             </full-screen>
-          </mat-tab>
-
-          <mat-tab [label]="'preference.mapping.dialog.user_mapping' | translate ">
-
-          <hr/>
-            <p>{{ 'preference.mapping.dialog.definesUserMapping' | translate }}</p>
-            <hr />
-            <full-screen
-            (fullPage)='disableClose($event)'
-            (import)='import($event, "user_mapping")'
-            (fullPage)='disableClose($event)' [data]='{json:data.data.user_mapping, title: "User Mapping " +  data.data.hep_alias + " " + data.data.profile, type: "js"}'>
-              <ace-editor [mode]="'javascript'"
-                [theme]="'monokai'"
-                [readOnly]="false"
-                [(text)]="data.data.user_mapping"
-                (textChanged)="validate('user')"
-                [durationBeforeCallback]="500"
-                #fields_user_view
-                [style.min-height.%]="100"
-                [disabled]="!isAdmin">
-              </ace-editor>
-            </full-screen>
-          </mat-tab >
-        </mat-tab-group>
-
       </ng-template>
 
 
