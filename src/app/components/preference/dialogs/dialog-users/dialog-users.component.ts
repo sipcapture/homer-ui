@@ -85,8 +85,7 @@ export class DialogUsersComponent implements OnInit {
         Validators.pattern(this.regDept)
     ]);
 
-    forcePassword = false;
-    groupList: any;
+    groupList = ['admin', 'support', 'user']
     bufferGroupList: any;
     dateFormat: string;
     hasStatistics = false;
@@ -112,9 +111,7 @@ export class DialogUsersComponent implements OnInit {
                 lastname: '',
                 department: '',
                 guid: Functions.newGuid(),
-                params: {
-                    force_password: true
-                }
+           
             };
 
         }
@@ -137,7 +134,6 @@ export class DialogUsersComponent implements OnInit {
             this.email.setValue(d.email);
             this.lastname.setValue(d.lastname);
             this.department.setValue(d.department);
-            this.forcePassword = d.params?.force_password;
             this.lastPasswordChange = d.params?.timestamp_change_password;
             this.lastLogin = d.params?.last_loogin;
         })(data.data);
@@ -149,18 +145,7 @@ export class DialogUsersComponent implements OnInit {
 
     }
     async ngOnInit() {
-        this.groupList = ['Admin', 'Support', 'User']
-            await this.userService.getAllGroups().toPromise().then(
-                (groups: any) => {
-                this.groupList = groups.data;
-                this.bufferGroupList = groups.data;
-            },(error) => {
-                this.groupList = ['Admin', 'Support', 'User']
-            });
-            
-           
-       
-        
+                this.bufferGroupList = this.groupList
         if (!this.groupList.some(item => item.toLowerCase() === this.data.data.usergroup.toLowerCase())) {
             this.groupList.push(this.data.data.usergroup);
         }
@@ -195,7 +180,6 @@ export class DialogUsersComponent implements OnInit {
                 d.email = this.email?.value;
                 d.lastname = this.lastname?.value;
                 d.department = this.department?.value;
-                d.params.force_password = this.forcePassword;
             })(this.data.data);
 
             this.dialogRef.close(this.data);

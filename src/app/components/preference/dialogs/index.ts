@@ -1,6 +1,5 @@
 export * from './dialog-advanced/dialog-advanced.component';
 export * from './dialog-alias/dialog-alias.component';
-export * from './dialog-ipalias/dialog-ipalias.component'
 export * from './dialog-authkey/dialog-authkey.component';
 export * from './dialog-delete-alert/dialog-delete-alert.component';
 export * from './dialog-authtoken-display/dialog-authtoken-display.component';

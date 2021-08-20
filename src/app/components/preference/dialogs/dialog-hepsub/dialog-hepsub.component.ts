@@ -21,7 +21,7 @@ export class DialogHepsubComponent {
     noChanges = new Observable()    
     hep_alias = new FormControl('', [
         Validators.required,
-        Validators.minLength(3),
+        Validators.minLength(1),
         Validators.maxLength(100),
         Validators.pattern(this.regString),
         Validators.maxLength(100),
@@ -29,7 +29,7 @@ export class DialogHepsubComponent {
     ]);
     profile = new FormControl('', [
         Validators.required,
-        Validators.minLength(3),
+        Validators.minLength(1),
         Validators.pattern(this.regString)
     ]);
     hepid = new FormControl('', [
