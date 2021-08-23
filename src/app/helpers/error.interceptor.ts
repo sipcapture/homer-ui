@@ -4,7 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { AuthenticationService } from '@app/services';
-import { AlertService } from '../services/alert.service';
+import { AlertService } from '@services/alert.service';
 import { Router } from '@angular/router';
 import { UserSecurityService } from '@app/services/user-security.service';
 import { TranslateService } from '@ngx-translate/core';

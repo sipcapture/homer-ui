@@ -53,7 +53,7 @@ export class AuthenticationService {
         return this.http.post<any>(`${environment.apiUrl}/auth`, { username, password, type })
             .pipe(map(user => {
                 // login successful if there's a jwt token in the response
-                if (user && user.token && !user.force_password) {
+                if (user?.token ) {
                     user.user.username = username;
                     // store user details and jwt token in local storage to keep user logged in between page refreshes
                     setStorage(ConstValue.CURRENT_USER, user);

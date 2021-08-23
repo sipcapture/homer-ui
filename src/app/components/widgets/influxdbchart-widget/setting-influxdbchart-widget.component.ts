@@ -2,10 +2,10 @@ import { Component, Inject, ViewChild, ChangeDetectionStrategy, ChangeDetectorRe
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
-import { StatisticService } from '../../../services/statistic.service';
+import { StatisticService } from '@services';
 import { ChartType } from 'chart.js';
-import { AlertService } from '../../../services/alert.service';
-import { DateTimeRangeService } from '../../../services/data-time-range.service';
+import { AlertService } from '@services';
+import { DateTimeRangeService } from '@services';
 import { Functions } from '@app/helpers/functions';
 import { DialogAlarmComponent } from '../dialog-alarm/dialog-alarm.component';
 import { TranslateService } from '@ngx-translate/core'

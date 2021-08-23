@@ -13,8 +13,6 @@
     <ng-container [ngSwitch]="pageId">
         <app-page-about
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"about"'></app-page-about>
-        <app-page-api-doc
-            [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"api documentation"'></app-page-api-doc>
         <app-page-users
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"users"'></app-page-users>
         <app-page-user-settings
@@ -33,8 +31,6 @@
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"auth token"'></app-page-api-auth>
         <app-page-scripts
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"scripts"'></app-page-scripts>
-        <app-page-interceptions
-            [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"interceptions"'></app-page-interceptions>
         <app-page-agent-subscriptions
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"agentsub"'></app-page-agent-subscriptions>
         <app-page-system-overview

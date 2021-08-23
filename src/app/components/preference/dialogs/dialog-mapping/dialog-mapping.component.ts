@@ -1,7 +1,6 @@
 import { Component, Inject, ChangeDetectionStrategy, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { PreferenceScripts } from '@app/models';
 import { PreferenceScriptsService } from '@app/services';
 import { TranslateService } from '@ngx-translate/core'
 import { MatSort } from '@angular/material/sort';
@@ -39,14 +38,6 @@ export class DialogMappingComponent {
   columns = [];
   specialColumns = [];
   public mappingScript: any = { data: ''};
-  partid = new FormControl('', [
-    Validators.required,
-    Validators.minLength(1),
-    Validators.maxLength(3),
-    Validators.min(1),
-    Validators.max(100),
-    Validators.pattern(this.regNum)
-  ]);
 
   hep_alias = new FormControl('', [
     Validators.required,
@@ -66,21 +57,12 @@ export class DialogMappingComponent {
     Validators.max(10000),
     Validators.pattern(this.regNum)
   ]);
-  retention = new FormControl('', [
-    Validators.required,
-    Validators.minLength(1),
-    Validators.maxLength(4),
-    Validators.min(1),
-    Validators.max(8784),
+  partid = new FormControl(10,[Validators.required,Validators.pattern(this.regNum)])
+  retention = new FormControl(1,[
+    Validators.required,Validators.min(1),
+    Validators.max(365),
     Validators.pattern(this.regNum)
   ]);
-  table_name = new FormControl('', [
-    Validators.required,
-    Validators.minLength(3),
-    Validators.maxLength(100),
-    Validators.pattern(this.regString),
-  ]);
-
   constructor(
     public dialogRef: MatDialogRef<DialogMappingComponent>,
     private scriptService: PreferenceScriptsService,
@@ -92,17 +74,15 @@ export class DialogMappingComponent {
     translateService.setDefaultLang('en')
     if (data.isnew) {
       data.data = {
-        partid: 10,
         hep_alias: '',
         hepid: 10,
-        profile: '',
-        partition_step: 10,
+        partid: 10,
         retention: 1,
-        table_name: '',
-        apply_ttl_all: false,
+        partition_step:10,
+        profile: '',
         correlation_mapping: {},
-        fields_mapping: {},
-        user_mapping: {},
+        fields_mapping: [],
+        user_mapping: [],
       };
     }
 
@@ -120,19 +100,19 @@ export class DialogMappingComponent {
         JSON.stringify(data.data.fields_mapping, null, 4)
       );
     data.data.user_mapping = data.isnew ?
-      '{}' :
+      '[]' :
       (typeof data.data.user_mapping === 'string' ?
         data.data.user_mapping :
         JSON.stringify(data.data.user_mapping, null, 4)
       );
 
     (d => {
-      this.partid.setValue(d.partid)
+      this.partid.setValue(d.partid);
+      this.retention.setValue(d.retention);
       this.hep_alias.setValue(d.hep_alias);
       this.hepid.setValue(d.hepid);
       this.profile.setValue(d.profile);
-      this.table_name.setValue(d.table_name);
-      this.retention.setValue(d.retention);
+
     })(data.data);
     if (data.data.fields_mapping) {
       try {
@@ -150,8 +130,7 @@ export class DialogMappingComponent {
 
         this.dataSource.data = this.fieldsTableFields
       } catch (e) {
-
-        // console.log(e);
+          console.log(e);
 
       }
 
@@ -159,16 +138,8 @@ export class DialogMappingComponent {
 
     this.isValidForm = true;
   }
-  ngOnInit(): void {
-    // this.scriptService.getAll().toPromise().then((data: any) => {
-    //   const { hep_alias, hepid, profile } = this.data?.data || {};
-    //   const cProfile = JSON.stringify([hep_alias, hepid, profile]);
+  ngOnInit(): void {}
 
-    //   this.mappingScript = data?.data?.find((f: any) => JSON.stringify([f.hep_alias, f.hepid, f.profile]) === cProfile) || { data: ''};
-    //   this.isScript = Object.keys(this.mappingScript).length > 0;
-    //   this.cdr.detectChanges();
-    // });
-  }
   ngAfterViewInit() {
     const options = {
       esnext: true,
@@ -220,23 +191,19 @@ export class DialogMappingComponent {
     }
   }
   onSubmit() {
-    if (!this.partid?.invalid &&
+    if (
       !this.hep_alias?.invalid &&
       !this.hepid?.invalid &&
       !this.profile?.invalid &&
-      !this.table_name?.invalid &&
-      !this.retention?.invalid
+      !this.partid?.invalid 
+
     ) {
-
-
       (d => {
         d.partid = this.partid?.value;
+        d.retention = this.retention?.value;
         d.hep_alias = this.hep_alias?.value;
         d.hepid = this.hepid?.value;
         d.profile = this.profile?.value;
-        d.table_name = this.table_name?.value;
-        d.retention = this.retention?.value;
-
       })(this.data.data);
       if (this.isScript && this.scriptUpd) {
         this.scriptService.update(this.mappingScript).toPromise().then(data => data)
@@ -247,9 +214,7 @@ export class DialogMappingComponent {
       this.hep_alias.markAsTouched();
       this.hepid.markAsTouched();
       this.profile.markAsTouched();
-      this.table_name.markAsTouched();
       this.retention.markAsTouched();
-
     }
   }
 }

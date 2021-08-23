@@ -791,7 +791,7 @@ export class TransactionServiceProcessor {
           item.qosTYPE = qosDetails.TYPE;
           item.qosTYPEless = qosDetails.TYPE.slice(0, 1).toUpperCase();
         } catch (_) {
-          console.warn(item.message);
+       
           item.MOS = 0;
         }
       }

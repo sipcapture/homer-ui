@@ -22,18 +22,11 @@
     </ng-template>
 
     <ng-container *ngIf="_isLoaded && sipDataItem?.data?.data?.messages?.length > 0; else noDataInDatabase">
-        <app-transaction-graph-settings [options]='graphSettings' (optionsChanged)='updateGraphSettings($event)' [hidden]='activeTab !== graphId'>
-        </app-transaction-graph-settings>
-        <!-- <app-transaction-info [hidden]="!isFilterIcon()"
-            [dataItem]='sipDataItem'
-            [type]='tabStringIndex'>
-        </app-transaction-info> -->
+
         <app-filter [hidden]="!isFilterIcon()"
             [dataItem]="sipDataItem"
             [type]="tabStringIndex">
         </app-filter>
-
-        <!-- animationDuration="0ms" -->
 
         <mat-tab-group class="transaction-mat-tab-wrapper"
             [disablePagination]="true"
@@ -70,46 +63,17 @@
                         (ready)="showLoader=false"
                         [dataItem]="sipDataItem"></app-tab-flow>
                 </ng-template>
-                <ng-template ngSwitchCase="Timeline">
-                    <app-tab-timeline [dataItem]="sipDataItem"
-                        (ready)="showLoader=false">
-                    </app-tab-timeline>
-                </ng-template>
+   
                 <ng-template ngSwitchCase="Session Info">
                     <app-tab-callinfo [dataItem]="sipDataItem.data"
                         (ready)="showLoader=false"></app-tab-callinfo>
                 </ng-template>
+              
                 <ng-template ngSwitchCase="QoS">
                     <app-tab-qos [callid]="titleId" [dataItem]="sipDataItem?.data" [qosData]="_qosData" [id]="IdFromCallID"
                         (haveData)="onTabQos($event)"
                         (ready)="showLoader=false"></app-tab-qos>
                 </ng-template>
-
-
-                <ng-template ngSwitchCase="Media Reports">
-                    <app-tab-media-reports [dataItem]="sipDataItem"
-                        (filterState)="isFilterOnMediaReport = $event"
-                        (ready)="showLoader=false">
-                    </app-tab-media-reports>
-                </ng-template>
-                <ng-template ngSwitchCase="Graph">
-                    <app-tab-graph [dataItem]="sipDataItem" [settings]='graphSettings'
-                        (ready)="showLoader=false; graphSettings=$event"></app-tab-graph>
-                </ng-template>
-                <ng-template ngSwitchCase="DTMF">
-                    <app-tab-dtmf [dataItem]="sipDataItem"
-                        (ready)="showLoader=false"></app-tab-dtmf>
-                </ng-template>
-                <ng-template ngSwitchCase="Geo">
-                    <app-tab-geo [dataItem]="sipDataItem"
-                        (ready)="showLoader=false"></app-tab-geo>
-                </ng-template>
-                <!-- Recording -->
-                <ng-template ngSwitchCase="Recording">
-                    <app-tab-recording [dataItem]="sipDataItem"
-                        (ready)="showLoader=false"></app-tab-recording>
-                </ng-template>
-
                 <ng-template ngSwitchCase="Events">
                     <app-tab-events [dataItem]="sipDataItem"
                         (ready)="showLoader=false"></app-tab-events>
@@ -119,10 +83,6 @@
                         (messageWindow)="addWindow($event)"
                         (ready)="showLoader=false">
                     </app-tab-sub>
-                </ng-template>
-                <ng-template ngSwitchCase="TDR">
-                    <app-tab-tdr [dataItem]="sipDataItem"
-                        (ready)="showLoader=false"></app-tab-tdr>
                 </ng-template>
                 <ng-template ngSwitchCase="Logs">
                     <app-tab-hepsub [snapShotTimeRange]="snapShotTimeRange"

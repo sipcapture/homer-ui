@@ -160,13 +160,9 @@ export class MenuComponent implements OnInit, OnDestroy {
         const guid = this.currentUser.scope;
         this._pus.getAll().toPromise().then(result => {
             const currentUser = result.data.find(user => user.guid === guid);
-            const isAdmin = currentUser.usergroup === 'admin' || currentUser.usergroup === 'admins';
+            const isAdmin = currentUser.usergroup === 'admin' || currentUser.usergroup === 'admins' || currentUser.usergroup === 'Admin';
             const username = currentUser.username;
-            if (currentUser?.params?.force_password) {
-                setTimeout(() => {
-                    this.logout();
-                }, 2000);
-            } else if (isAdmin !== this.currentUser.user.admin || username !== this.currentUser.user.username) {
+            if (isAdmin !== this.currentUser.user.admin || username !== this.currentUser.user.username) {
                 setTimeout(() => {
                     this.logout();
                     this.translateService.get('notifications.warning.userChanged').subscribe(res => { 

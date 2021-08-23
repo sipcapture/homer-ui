@@ -15,7 +15,7 @@
             {{ item.QOS ? (item.QOS.MOS ? (item.QOS.MOS + " [" + item.QOS.qosTYPEless + "]") : '') : "" }}
         </div>
         <div class="call_text-mini" [style.height.px]=" !isSimplify ? 15 : 0 ">
-            {{ item.description }}
+            {{ typeOf(item.description) === 'string' ? (item.description) : (item.description[0] + ' ' + item.description[1])}}
         </div>
         <div [ngClass]="'port-label-' + (!item.options.direction ? 'left' : 'right')">
             {{ item.source_port }}
@@ -35,9 +35,9 @@
         </div>
         <div *ngIf="item.options.isLastHost" class="port-label-right">{{ item.destination_port }}</div>
         <div class="call-text-date" [style.max-height.px]="!isSimplify ? 50 : 0 ">
-            {{ item.info_date }}
+            {{ item.info_date }} [{{ item.diff || "+0.00ms" }}]
         </div>
-        <div class="call-text-date">{{ item.diff || "+0.00ms" }}</div>
+        
     </div>
     <div
         [style.flex]="(item.options.rightEnd - (item.options.isRadialArrow && !item.options.isLastHost ? 1 : 0 )) || 0.0000001">

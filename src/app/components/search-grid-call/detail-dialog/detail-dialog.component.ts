@@ -1,9 +1,3 @@
-import { FlowItemType } from '@app/models/flow-item-type.model';
-
-
-import { SearchCallService } from './../../../services/search/call.service';
-import { Subscription } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
 import {
   Component,
   Input,
@@ -14,10 +8,20 @@ import {
   ChangeDetectorRef,
   OnDestroy
 } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import { Functions, setStorage, getStorage } from '@app/helpers/functions';
-import { PreferenceAdvancedService, PreferenceAgentsubService, AgentsubService, PreferenceHepsubService } from '@app/services';
+import { FlowItemType } from '@app/models/flow-item-type.model';
+import { 
+  PreferenceAdvancedService, 
+  PreferenceAgentsubService, 
+  AgentsubService, 
+  PreferenceHepsubService, 
+  SearchCallService, 
+  MessageDetailsService 
+} from '@app/services';
 import { AgentRequestModel } from '@app/models/agent-request-model';
-import { MessageDetailsService } from '../../../services/message-details.service';
+
 import * as moment from 'moment';
 
 @Component({
@@ -43,9 +47,6 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
   isFilterOnMediaReport = true;
   IdFromCallID;
   activeTab = 0;
-  get graphId() {
-    return this.getTabs.findIndex((item) => item === 'Graph');
-  };
   originalOrder = Functions.originalOrder;
   agents;
   objectKeys = Object.keys;
@@ -68,9 +69,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     qos: false,
     logs: true,
     callinfo: true,
-    tdr: true,
     export: false,
-    geo: false
   };
 
   public metricType = 'mos';
@@ -138,7 +137,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     this._isLoaded = !!this._sipDataItem;
     const { callid, messages } = data.data || {};
     const [callidFirst] = callid || [];
-    console.log(messages.filter(i => i.QOS))
+   
     this.tabs.qos = !!messages.find(i => i.QOS && i.typeItem === 'RTP');
 
     this.IdFromCallID = callidFirst;
@@ -191,7 +190,6 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
       isLoaded: this.isLoaded,
       request: this.request,
     };
-    // setStorage(this.sharedGUID, this.objectData);
   }
   async ngOnInit() {
   
@@ -199,9 +197,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
       this.isWindow = !params?.uuid;
 
       if (this.isWindow) {
-        // save data to storage
         this.saveStateOnStorage();
-        // console.log({ params });
       } else {
         const storageData = window['objectData'] || {};
         this.titleId = storageData.titleId;
@@ -220,7 +216,6 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
           this.showLoader = false;
         }, 1000);
 
-        // console.log({ storageData })
       }
       this.getAgents();
       this.setTabByAdvanced();
@@ -228,25 +223,16 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     });
     this.messageDetailsService.event.subscribe(windowData => {
       if (!this.isWindow) {
-        // console.log({ windowData });
         this.addWindowMessage({ data: windowData.message }, null, windowData.metadata);
       }
     });
   }
 
   checkStatusTabs() {
-    this.tabs.logs = true; // this.dataLogs.length > 0;
+    this.tabs.logs = true;
     this.tabs.messages = this.tabs.flow = this.sipDataItem?.data?.messages?.length > 0;
     this.tabs.export = this.sipDataItem?.data?.messages && !!this.IdFromCallID;
-    this.tabs.callinfo = this.sipDataItem.data.messages.length > 0; // check protokols
-    this.tabs.tdr = this.tabs?.callinfo;
-    const transaction = this.sipDataItem?.data?.data?.transaction?.[0]?.data;
-    if (!((transaction?.geolan === 0 && transaction?.geolat === 0)
-      || (transaction?.destlan === 0 && transaction?.destlat === 0)
-      || (transaction?.geolan === undefined && transaction?.geolat === undefined)
-      || (transaction?.destlan === undefined && transaction?.destlat === undefined))) {
-      this.tabs.geo = true;
-    }
+    this.tabs.callinfo = this.sipDataItem.data.messages.length > 0; 
   }
   onTabQos(isVisible: boolean) {
     setTimeout(() => {
@@ -259,7 +245,6 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
             selected: true,
             title: 'RTP'
           });
-          // this.doFilterMessages();
           this.cdr.detectChanges();
         }
       }
@@ -273,7 +258,6 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
   }
 
   addWindow(data: any) {
-    // console.log('addWindow', { data });
     if (!this.isWindow) {
       this.openMessage.emit({
         data: data,
@@ -294,7 +278,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     if (this.tabStringIndex === 'Media Reports') {
       return this.isFilterOnMediaReport;
     }
-    return ['Message', 'Flow', 'Timeline', 'Media Reports', 'Graph'].includes(this.tabStringIndex);
+    return ['Message', 'Flow'].includes(this.tabStringIndex);
   }
   async setTabByAdvanced() {
     const advanced = await this._pas.getAll().toPromise();
@@ -338,24 +322,21 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
       /** if exist an agent on hepsub list */
       if (HepList.includes(agent.type)) {
         const agReq = this.formatRequest(agent, this.agentRequest);
-        // this.sendRequest(agReq, agReq.type);
       }
     });
 
-    // console.log('this.agents', this.agents);
-    // console.log('HepList', HepList);
+
   }
   formatRequest(agent: any, agObj: any) {
     Object.entries(agent).forEach(([key, value]) => {
       agObj[key] = value;
     });
-    // console.log(agObj);
+
     return agObj;
   }
   async sendRequest(agent, type?) {
     try {
       const agentActiveData = await this._agss.getData(agent, type).toPromise();
-      // console.log({ agentActiveData });
       if (!agentActiveData) {
         return;
       }
@@ -363,7 +344,6 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
       this.agentsActive = true;
       this.agentsData.data.push(Functions.JSON_parse(iagent));
     } catch (error) {
-      // console.error(error);
     }
     return;
   }
@@ -385,19 +365,12 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
   get getTabs(): Array<string> {
     const isWebshark = !!(this.sipDataItem?.data?.messages?.[0]?.source_data?.frame_protocol);
     return [
-      // isWebshark && 'Webshark',
       !isWebshark && this.tabs.messages && 'Message',
       'Flow',
-      'Timeline',
       this.tabs.callinfo && 'Session Info',
-      this.tabs.qos && 'Media Reports',
-      'Graph',
-      // this.sipDataItem.data.dtmf && 'DTMF',
-      this.tabs.geo && 'Geo',
-      // this.sipDataItem?.data?.recording?.rtp?.length > 0 && 'Recording',
+      this.tabs.qos && 
       this.objectKeys(this.sipDataItem.data.hostinfo).length !== 0 && 'Events',
       this.agentsActive && 'Sub',
-      // this.tabs.tdr && 'TDR',
       this.tabs.logs && 'Logs',
       this.sipDataItem?.data?.qosData && 'QoS',
       'Export',
@@ -430,7 +403,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
       loaded: false,
       arrowMetaData,
       data: {} as any,
-      rowData: null, /// this.rowData as any,
+      rowData: null,
       id: row.data.id ? `${row.data.id}` : `${row.data.event}`,
       uuid: uniqueId,
       headerColor: (isLOG ? 'black' : color) || '',
@@ -443,59 +416,9 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     mData.data = Functions.cloneObject(row.data.item || row.data || {});
     mData.data.item = Functions.cloneObject({ raw: mData?.data?.raw || mData?.data?.message });
 
-    /**
-     *   (DECODED)
-     */
+
     const uuid = row?.data?.item?.uuid;
-    // if (false && !isLOG && uuid) {
-    //     const _protocol_profile = row?.data?.profile || this.protocol_profile;
-    //     let timestamp = {
-    //         from: row.data.micro_ts + this.limitRange.message_from, // - 1sec
-    //         to: row.data.micro_ts + this.limitRange.message_to, // + 1sec
-    //     };
-    //     if (!timestamp.from || !timestamp.to) {
-    //         timestamp = this.config.timestamp;
-    //     }
-    //     const _is = name => !!_protocol_profile.match(name);
-    //     const request = {
-    //         param: {
-    //             ...Functions.cloneObject(this.config.param || {}),
-    //             ...{
-    //                 location: row?.data?.node ? { node: [row.data.node] } : {},
-    //                 search: {
-    //                     [_protocol_profile]: {
-    //                         uuid: [uuid],
-    //                     }
-    //                 },
-    //                 transaction: {
-    //                     call: _is('call'),
-    //                     registration: _is('registration'),
-    //                     rest: _is('default'),
-    //                 }
-    //             }
-    //         },
-    //         timestamp
-    //     };
-
-    //     if ((row.data?.dbnode || row.data?.node) && request.param.location?.node) {
-    //         request.param.location.node = [row.data?.dbnode || row.data?.node];
-    //     }
-
-    //     this._scs.getDecodedData(request).toPromise().then(res => {
-    //         const [objDecoded] = res?.data || [];
-    //         if (objDecoded) {
-    //             const { decoded } = objDecoded;
-
-    //             if (decoded) {
-    //                 const [_decoded] = decoded || [];
-    //                 mData.data.decoded = _decoded?._source?.layers || _decoded || decoded;
-    //             }
-    //         }
-    //     }, err => { });
-    //     /**
-    //      * END DECODED
-    //      */
-    // }
+   
     mData.data.messageDetailTableData = Object.entries(Functions.cloneObject(mData.data))
       .filter(([name]) => !['mouseEventData', 'raw', 'item'].includes(name))
       .map(([name, value]: any[]) => {

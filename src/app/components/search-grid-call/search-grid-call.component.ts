@@ -44,10 +44,9 @@ import {
 } from '@app/services';
 import { DialogSettingsGridDialog } from './grid-settings-dialog/grid-settings-dialog';
 import { MatDialog } from '@angular/material/dialog';
-import { FullTransactionService } from '../../services/call/full-transaction.service';
+import { FullTransactionService } from '@services/call/full-transaction.service';
 import { ExportDialogComponent } from './export-dialog/export-dialog.component';
-import { MessageDetailsService } from '../../services/message-details.service';
-
+import { MessageDetailsService } from '@services';
 import { StatusFilterComponent } from './filters/index';
 import { TranslateService } from '@ngx-translate/core';
 import { DateFormat, TimeFormattingService } from '@app/services/time-formatting.service';
@@ -372,7 +371,6 @@ export class SearchGridCallComponent
                  * update DateTimeRange from GET params
                  */
                 const params = Functions.getUriJson();
-                console.log(params)
                 if (params?.timestamp) {
                     const { from, to } = params.timestamp;
                     const format = (d) =>
@@ -1019,7 +1017,7 @@ export class SearchGridCallComponent
     }
 
     public openMethodForSelectedRow(index, row, mouseEventData = null) {
-        this.addWindowMessage({ data: row }, mouseEventData);
+        this.addWindowMessage({ data: row }, mouseEventData, null, true);
     }
 
     private getRequest(row, selectedRows, selectedCallId, custom_profile?, custom_field_name?) {
@@ -1138,7 +1136,7 @@ export class SearchGridCallComponent
         this.cdr.detectChanges();
     }
 
-    public addWindowMessage(row: any, mouseEventData = null, arrowMetaData: any = null) {
+    public async addWindowMessage(row: any, mouseEventData = null, arrowMetaData: any = null, fromGrid = false) {
         if (!row?.data) {
             return;
         }
@@ -1165,7 +1163,29 @@ export class SearchGridCallComponent
             mouseEventData: mouseEventData || row.data.mouseEventData,
             isBrowserWindow: arrowMetaData ? !!arrowMetaData.isBrowserWindow : false,
         };
+        let _timestamp = {
+            from:  parseInt(moment(row.data.create_date).format('x'), 10) + this.limitRange.message_from, // - 1sec
+            to:  parseInt(moment(row.data.create_date).format('x'), 10) + this.limitRange.message_to // + 1sec
+        };
+        const _protocol_profile = row && row.data && row.data.profile ? row.data.profile : this.protocol_profile;
 
+        const request = {
+            param: Functions.cloneObject(this.config.param || {} as any),
+            timestamp: _timestamp
+        };
+
+        request.param.limit = 1;
+        request.param.search = {};
+        request.param.search[_protocol_profile] = { id: row.data.id };
+        request.param.transaction = {
+            call: !!_protocol_profile.match('call'),
+            registration: !!_protocol_profile.match('registration'),
+            rest: !!_protocol_profile.match('default')
+        };
+
+        if (row.data && row.data.dbnode && request.param.location && request.param.location.node) {
+            request.param.location.node = [row.data.dbnode];
+        }
         this.arrMessageDetail.push(mData);
 
         mData.data = Functions.cloneObject(row.data.item || row.data || {});
@@ -1224,19 +1244,137 @@ export class SearchGridCallComponent
              * END DECODED
              */
         }
-        mData.data.messageDetailTableData = Object.entries(Functions.cloneObject(mData.data))
-            .filter(([name]) => !['mouseEventData', 'raw', 'item'].includes(name))
-            .map(([name, value]: any[]) => {
-                if (name === 'create_date') {
-                    value = moment(value * 1).format(this.dateFormat.dateTime);
-                }
-                return { name, value };
-            });
+        if (fromGrid) {
+            if ( row.isLog || (row.data.payloadType === 1 && (row.data.raw || row.data.item && row.data.item.raw))) {
+                const data = row.data.item || row.data;
+                mData.data = data || {};
+                mData.data.item = {
+                    raw: mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty'
+                };
+                mData.data.messageDetailTableData = Object.keys(mData.data)
+                    .map(i => {
+                        let val;
+                        if (i === 'create_date') {
+                            val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS');
+                        } else if (i === 'timeSeconds') {
+                            val =  mData.data[i];
+                        } else {
+                            val = mData.data[i];
+                        }
+                        return {name: i, value: val};
+                    })
+                    .filter(i => typeof i.value !== 'object' && i.name !== 'raw');
+                this.cdr.detectChanges();
+                mData.loaded = true;
+                return;
+            } else {
+                const result: any = await this._scs.getMessage(request).toPromise();
 
+                mData.data = result && result.data && result.data[0] ? result.data[0] : {};
+                mData.data.item = {
+                    raw: mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty'
+                };
+                mData.data.messageDetailTableData = Object.keys(mData.data).map(i => {
+                    let val;
+                    if (i === 'create_date') {
+                        val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS');
+                    } else if (i === 'timeSeconds') {
+                        val = mData.data[i];
+                    } else {
+                        val = mData.data[i];
+                    }
+                    return {name: i, value: val};
+                }).filter(i => typeof i.value !== 'object' && i.name !== 'raw');
+                mData.data.raw_source = '' + mData.data.raw;
+                mData.data.raw = this.stylingRowText(mData.data.raw);
+                mData.data.item.raw = mData.data.raw;
+                console.log(mData)
+                mData.loaded = true;
+                this.cdr.detectChanges();
+            }
+        }
         mData.loaded = true;
         this.cdr.detectChanges();
     }
+    stylingRowText(raw: string) {
+        if (!raw) {
+            return null;
+        }
+        raw += '';
+        const regexMethod = new RegExp('INVITE|CANCEL|PRACK|ACK|BYE|OPTIONS', 'g');
+        const regexReply = new RegExp('(SIP/2.0) (100|180|200|404|407|500|503) ', 'g');
+        const regexpCallid = new RegExp('(Call-ID):(.*)', 'g');
+        const regexpSDP = new RegExp('(m=(audio|video)) (.*)', 'g');
+        const regexpTag = new RegExp('tag=.*', 'g');
+        const regexHeaders = new RegExp('(.*): ', 'g');
+        let color: string;
+        raw = raw
+            .replace(/\</g, '&lt;')
+            .replace(/\>/g, '&gt;')
+            .replace(regexpCallid, (g, a, c) => {
+                color = 'blue';
+                return `<span style="font-weight:bold">${a}:</span><span style="color:${color}">${c}</span>`;
+            })
+            .replace(regexpTag, (g, a) => {
+                color = 'dimGray';
+                return `<span style="font-weight:bold;color:${color}">${g}</span>`;
+            })
+            .replace(regexpSDP, (g, a) => {
+                color = 'dimGray';
+                return `<span style="font-weight:bold;color:${color}">${g}</span>`;
+            })
+            .replace(regexMethod, g => {
+                color = 'blue';
+                switch (g) {
+                case 'INVITE':
+                    color = 'hsl(227.5,82.4%,51%)';
+                    break;
+                case 'CANCEL':
+                    color = 'green';
+                    break;
+                case 'BYE':
+                    color = 'hsl(120,100%,25%)';
+                    break;
+                case 'ACK':
+                    color = 'orange';
+                    break;
+                }
 
+                return `<span style="font-weight:bold;color:${color}">${g}</span>`;
+            })
+            .replace(regexReply, (g, a, c: any) => {
+
+                color = 'red';
+                const b = parseInt(c, 10);
+                switch (b) {
+                case 100:
+                    color = 'orange';
+                    break;
+                case 180:
+                    color = 'blue';
+                    break;
+                case 183:
+                    color = 'blue';
+                    break;
+                case 200:
+                    color = 'green';
+                    break;
+                default:
+                    if (b >= 300 && b < 400) {
+                    color = 'blue';
+                    }
+                    break;
+                }
+
+                return `<span style="font-weight:bold">${a}</span> <span style="font-weight:bold;color:${color}">${c}</span> `;
+            })
+            .replace(regexHeaders, (g, a) => {
+                return `<span style="font-weight:bold">${g}</span> `;
+            });
+
+        return raw;
+
+      }
     public closeWindowMessage(id: number) {
         this.arrMessageDetail.splice(id, 1);
         this.cdr.detectChanges();

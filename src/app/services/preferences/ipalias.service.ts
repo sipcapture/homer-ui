@@ -9,14 +9,15 @@ import { Functions } from '@app/helpers/functions';
   providedIn: 'root',
 })
 export class PreferenceIpAliasService {
-  private url = `${environment.apiUrl}/ipalias`;
+  private url = `${environment.apiUrl}/alias`;
 
   constructor(
     private http: HttpClient,
     private httpGetBuffer: HttpGetBuffer
   ) { }
-  getAll(delayBuffer = 1000 * 60 * 5) {
-    return new Promise((resolve, reject) => {
+  getAll( delayBuffer = 1000 * 60 * 5 ) {
+    /*return new Promise((resolve, reject) => {
+      //resolve(),
       reject(null);
       /*
       this.httpGetBuffer.get<any>(this.url, delayBuffer).toPromise()
@@ -24,7 +25,8 @@ export class PreferenceIpAliasService {
           reject(null);
         });
         */
-    });
+    //});//
+    return this.http.get(`${this.url}`).toPromise();
   }
 
   add(ipalias: PreferenceIpAlias) {

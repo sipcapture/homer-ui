@@ -219,7 +219,6 @@
             "preferenceUpdate": "{{page}} was @LINK.words.success.successfully@ updated"
         },
         "warning": {
-            "forcePassword": "Please change your @LINK.login.password.toLowerCase()@",
             "userChanged": "Your user has been updated, please sign in again.",
             "textTooLong": "This text is too long and may degrade performance on weaker computers, please proceed with caution"
         },
@@ -521,7 +520,7 @@
             "dialog": {
                 "mappingSettings": "@LINK.mapping@ Settings",
                 "settings":"Settings",
-                "defines": "Defines the Identifier, Format and Lifetime of Protocol Data",
+                "defines": "Defines the Identifiier and profile of Protocol Data",
                 "hepAlias": "@LINK.preferenceTerms.HEP@ Alias",
                 "shouldNotBeEmpty": "Should not be empty",
                 "charactersMin": "Characters min",
@@ -575,6 +574,7 @@
                 "aliasName": "@LINK.preferenceTerms.alias@ Name",
                 "group": "Group Name",
                 "server": "Server Type",
+                "captureID":"Capture ID",
                 "ipv6": "IPV6",
                 "fontColor": "Font Color",
                 "borderColor": "Border Color",

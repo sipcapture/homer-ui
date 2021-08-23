@@ -155,9 +155,14 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
 
     // await this.getIpAliases();
 
+    
+    this.mapping = await this.preferenceMappingProtocolService
+    .getMerged()
+    .toPromise();
+    let mapHepId, mapProfile;
+    let actualMapping = []
     this.aliasObj = Functions.getAliasFields(this.aliases);
     WidgetArrayInstance[this.id] = this as IWidget;
-
 
     if (!this.config) {
       this.isConfig = false;
@@ -172,54 +177,84 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
         sizeX: 2,
         sizeY: 2,
         config: {
-          title: 'TDR CALL SEARCH',
+          title: 'SIP CALL SEARCH',
           searchbutton: true,
           protocol_id: {
-            name: 'TDR',
-            value: 60,
+            name: 'SIP',
+            value: 1,
           },
           protocol_profile: {
-            name: 'call_h20',
-            value: 'call_h20',
+            name: 'call',
+            value: 'call',
           },
           fields: [{
-            field_name: 'callid',
-            form_default: null,
-            form_type: 'input',
-            hepid: 60,
-            name: '60:call_h20:callid',
-            selection: 'Call-ID',
-            type: 'string',
-            value: ''
+            field_name: "data_header.callid",
+            hepid: 1,
+            name: "1:call:data_header.callid",
+            selection: "SIP Callid",
+            type: "string",
+            value: ""
           },
           {
-            field_name: 'targetResultsContainer',
-            form_default: null,
-            hepid: 60,
-            name: '60:call_h20:targetResultsContainer',
-            selection: 'Results Container',
-            type: 'string'
-          }],
+            field_name: "data_header.method",
+            hepid: 1,
+            name: "1:call:data_header.method",
+            selection: "SIP Method",
+            type: "string",
+            value: ""
+          },
+          {
+            field_name: "limit",
+            hepid: 1,
+            name: "1:call:limit",
+            selection: "Query Limit",
+            type: "string",
+            value: ""
+          },
+          {
+            field_name: "targetResultsContainer",
+            hepid: 1,
+            name: "1:call:targetResultsContainer",
+            selection: "Results Container",
+            type: "string",
+            value: ""
+          },
+
+          ],
 
         },
         uuid: Functions.newGuid(),
         fields: [{
-          field_name: 'callid',
-          form_default: null,
-          form_type: 'input',
-          hepid: 60,
-          name: '60:call_h20:callid',
-          selection: 'Call-ID',
-          type: 'string',
-          value: ''
+          field_name: "data_header.callid",
+          hepid: 1,
+          name: "1:call:data_header.callid",
+          selection: "SIP Callid",
+          type: "string",
+          value: ""
         },
         {
-          field_name: 'targetResultsContainer',
-          form_default: null,
-          hepid: 60,
-          name: '60:call_h20:targetResultsContainer',
-          selection: 'Results Container',
-          type: 'string'
+          field_name: "data_header.method",
+          hepid: 1,
+          name: "1:call:data_header.method",
+          selection: "SIP Method",
+          type: "string",
+          value: ""
+        },
+        {
+          field_name: "limit",
+          hepid: 1,
+          name: "1:call:limit",
+          selection: "Query Limit",
+          type: "string",
+          value: ""
+        },
+        {
+          field_name: "targetResultsContainer",
+          hepid: 1,
+          name: "1:call:targetResultsContainer",
+          selection: "Results Container",
+          type: "string",
+          value: ""
         }],
         countFieldColumns: this.countFieldColumns,
         row: 0,
@@ -233,6 +268,8 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
       this.isWidgetInited = true;
       this.cdr.detectChanges()
     } else {
+      [mapHepId, mapProfile]  = [ this.config.config.protocol_id.value, this.config.config.protocol_profile.name]
+      actualMapping = (this.mapping?.find( f => f.hepid === mapHepId && f.profile === mapProfile))?.['fields_mapping']
       this.isConfig = true;
       this.isWidgetInited = true;
     }
@@ -245,9 +282,14 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
       return item;
     });
     this.fields = this.config.fields || [];
-    this.mapping = await this.preferenceMappingProtocolService
-      .getMerged()
-      .toPromise();
+    if(actualMapping.length > 0){
+      this.fields.forEach(field => {
+          let actualField = actualMapping.find( f => f.id === field.field_name)
+          if(actualField){
+              field.selection = actualField?.name
+          }
+      })
+    }
     this.searchFunctions = await this._pas.getAll().toPromise();
     this.searchFunctions = this.searchFunctions?.data?.filter(
       ({ category, param }) => category === 'search' && param === 'functions'
