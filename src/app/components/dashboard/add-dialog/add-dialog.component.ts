@@ -90,12 +90,10 @@ export class AddDialogComponent {
                     },
                     "fields": [
                         {
-                            "field_name": "callid",
-                            "form_default": null,
-                            "form_type": "input",
+                            "field_name": "data_header.callid",
                             "hepid": 1,
-                            "name": "1:call:callid",
-                            "selection": "Call-ID",
+                            "name": "1:call:data_header.callid",
+                            "selection": "SIP Callid",
                             "type": "string",
                             "value": ""
                         },
@@ -139,12 +137,10 @@ export class AddDialogComponent {
                     },
                     "fields": [
                         {
-                            "field_name": "callid",
-                            "form_default": null,
-                            "form_type": "input",
+                            "field_name": "data_header.callid",
                             "hepid": 1,
-                            "name": "1:registration:callid",
-                            "selection": "Call-ID",
+                            "name": "1:call:data_header.callid",
+                            "selection": "SIP Callid",
                             "type": "string",
                             "value": ""
                         },
