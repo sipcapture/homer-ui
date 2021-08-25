@@ -1271,14 +1271,6 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
 
           this.cdr.detectChanges();
         }
-      } else if (type === 'tab') {
-        const tabId = Functions.newGuid();
-
-        const tabLink = 'search/result/' + tabId;
-
-        this.router.navigate([]).then((result) => {
-          window.open(tabLink, '_blank');
-        });
       }
       this.dosearch.emit({});
 
