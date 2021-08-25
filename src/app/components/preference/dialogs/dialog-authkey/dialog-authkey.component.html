@@ -7,19 +7,19 @@
 <div mat-dialog-content>
   <div class="authkey-cont">
     <mat-form-field style="padding-right: 1rem;">
-      <mat-label>{{ 'preference.authtoken.dialog.name' | translate }}</mat-label>
-      <input matInput [(ngModel)]="data.data.name" [formControl]="name" autocomplete="off">
-      <mat-error *ngIf="name?.errors?.required">{{'validators.required' | translate }}</mat-error>
-      <mat-error *ngIf="name?.errors?.minlength">
-        {{ name?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
-      </mat-error>
-      <mat-error *ngIf="name?.errors?.maxlength">
-        {{ name?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
-      </mat-error>
-      <mat-error *ngIf="name?.errors?.pattern && !name?.errors?.minlength">
-        {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-" or "_"]
-      </mat-error>
-    </mat-form-field>
+        <mat-label>{{ 'preference.authtoken.dialog.name' | translate }}</mat-label>
+        <input matInput [(ngModel)]="data.data.name" [formControl]="name" autocomplete="off">
+        <mat-error *ngIf="name?.errors?.required">{{'validators.required' | translate }}</mat-error>
+        <mat-error *ngIf="name?.errors?.minlength">
+          {{ name?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+        </mat-error>
+        <mat-error *ngIf="name?.errors?.maxlength">
+          {{ name?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+        </mat-error>
+        <mat-error *ngIf="name?.errors?.pattern && !name?.errors?.minlength">
+          {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or space]
+        </mat-error>
+      </mat-form-field>
 
     <mat-form-field style="padding-right: 1rem;">
       <mat-label>{{ 'preference.authtoken.dialog.expire' | translate }}</mat-label>
