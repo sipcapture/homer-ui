@@ -7,8 +7,8 @@
   <div mat-dialog-content style="display: flex; flex-direction: column">
     <mat-form-field>
       <mat-label>{{ 'dashboard.addDashboardDialog.dashboardName' |translate }}</mat-label>
-      <input matInput (change)="validate($event)" [formControl]="nameNewPanel" >
-      
+      <input matInput (ngModelChange)="validate($event)" [formControl]="nameNewPanel" >
+
         <mat-error *ngIf="nameNewPanel?.errors?.required">{{'validators.required' | translate }}</mat-error>
         <mat-error *ngIf="nameNewPanel?.errors?.minlength">
           {{ nameNewPanel?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
@@ -22,22 +22,22 @@
         <mat-error *ngIf="nameNewPanel?.errors?.dashboardNotAvailable">
             {{'validators.dashboardName' | translate }}
         </mat-error>
-      
-    
+
+
     </mat-form-field>
-    
+
     <mat-form-field>
       <mat-label>{{ 'dashboard.addDashboardDialog.type'|translate }}</mat-label>
       <mat-select [(ngModel)]="data.type" >
         <mat-option *ngFor="let itemlist of typeList; trackBy: identify" [value]="itemlist.type">{{ itemlist.name }}</mat-option>
       </mat-select>
     </mat-form-field>
-    
+
     <mat-form-field>
       <mat-label>{{data.type === 2 || data.type === 7 ? ('dashboard.addDashboardDialog.url'|translate) : ('dashboard.addDashboardDialog.param'|translate)}}</mat-label>
       <input matInput [(ngModel)]="data.param">
     </mat-form-field>
-    
+
     <hr class="hr-or">
     <form>
       <div class="file-upload-container">
@@ -48,4 +48,4 @@
   <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
     <button mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
     <button mat-raised-button color="primary"  (click)="onSubmit()" cdkFocusInitial [disabled]='isInvalid'>{{'LINK.buttons.ok' | translate}}</button>
-  </div> 
+  </div>

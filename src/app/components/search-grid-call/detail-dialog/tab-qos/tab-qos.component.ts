@@ -11,7 +11,9 @@ import {
   ViewChild,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  AfterViewInit
+  AfterViewInit,
+  HostListener,
+  ElementRef
 } from '@angular/core';
 import { PreferenceAdvancedService } from '@app/services';
 import { Chart, ChartType, ChartDataSets, ChartColor } from 'chart.js';
@@ -31,9 +33,10 @@ import { WorkerService } from '@services/worker.service';
 export class TabQosComponent implements OnInit, AfterViewInit {
 
   _qosData: any;
-  widthChart = 100;
-  widthChartRTCP = 100;
-
+  chartWidthRTP = 100;
+  chartWidthRTCP = 100;
+  chartHeightRTP = 240;
+  chartHeightRTCP
   @Input() callid;
   @Input() dataItem: any;
   @Input() set qosData(val: any) {
@@ -53,8 +56,8 @@ export class TabQosComponent implements OnInit, AfterViewInit {
   @Output() haveData = new EventEmitter();
   isError = false;
   errorMessage: any;
-  @ViewChild('rtpChart', { static: false }) rtpChart: BaseChartDirective;
-  @ViewChild('rtcpChart', { static: false }) rtcpChart: BaseChartDirective;
+  @ViewChild('chartRTP', { static: false }) chartRTP: BaseChartDirective;
+  @ViewChild('chartRTCP', { static: false }) chartRTCP: BaseChartDirective;
   color: any;
   labels: Array<any> = [];
   isRTCP = false;
@@ -95,19 +98,19 @@ export class TabQosComponent implements OnInit, AfterViewInit {
     }
   };
 
-  public chartLabels: Label[] = [];
+  public chartLabelsRTCP: Label[] = [];
   public chartType: ChartType = 'bar';
   public chartLegend = true;
 
-  public chartData: ChartDataSets[] = [];
+  public chartDataRTCP: ChartDataSets[] = [];
 
   public listRTP = [];
 
-  public list = [];
+  public listRTCP = [];
 
   hideLabelsFlag = true;
   hideLabelsFlagRTP = true;
-  streams: Array<any> = [];
+  streamsRTCP: Array<any> = [];
   streamsRTP: Array<any> = [];
   worker: WorkerService;
   _isLoaded: boolean = false;
@@ -133,6 +136,17 @@ export class TabQosComponent implements OnInit, AfterViewInit {
     this.worker = new WorkerService(new Worker(new URL('@app/workers/qos.worker', import.meta.url), { type: 'module' }));
 
   }
+  
+    @ViewChild('containerRTP', { static: false }) containerRTP: ElementRef;
+    @ViewChild('flagsRTP', { static: false }) flagsRTP: ElementRef;
+    @ViewChild('containerRTCP', { static: false }) containerRTCP: ElementRef;
+    @ViewChild('flagsRTCP', { static: false }) flagsRTCP: ElementRef;
+    @HostListener('window:resize')
+    onResize() {
+        this.chartHeightRTP = this.containerRTP?.nativeElement?.clientHeight - this.flagsRTP?.nativeElement?.clientHeight - 12;        
+        this.chartHeightRTCP = this.containerRTCP?.nativeElement?.clientHeight - this.flagsRTCP?.nativeElement?.clientHeight - 12;
+        this.cdr.detectChanges();
+    }
   initQOSData() {
     const isData = this.qosData?.rtcp?.data?.length > 0 || this.qosData?.rtp?.data?.length > 0;
     this.haveData.emit(isData);
@@ -162,17 +176,17 @@ export class TabQosComponent implements OnInit, AfterViewInit {
       this.chartDataRTP = outData.chartDataRTP as ChartDataSets[];
       this.chartLabelsRTP = outData.chartLabelsRTP as Label[];
 
-      this.chartLabels = outData.chartLabels as Label[];
+      this.chartLabelsRTCP = outData.chartLabelsRTCP as Label[];
 
       this.chartType = outData.chartType as ChartType;
       this.chartLegend = outData.chartLegend as boolean;
 
-      this.chartData = outData.chartData as ChartDataSets[];
+      this.chartDataRTCP = outData.chartDataRTCP as ChartDataSets[];
       this.listRTP = outData.listRTP as Array<any>;
-      this.list = outData.list as Array<any>;
+      this.listRTCP = outData.listRTCP as Array<any>;
       this.hideLabelsFlag = outData.hideLabelsFlag as boolean;
       this.hideLabelsFlagRTP = outData.hideLabelsFlagRTP as boolean;
-      this.streams = outData.streams as Array<any>;
+      this.streamsRTCP = outData.streamsRTCP as Array<any>;
       this.streamsRTP = outData.streamsRTP as Array<any>;
 
       setTimeout(() => {
@@ -190,9 +204,9 @@ export class TabQosComponent implements OnInit, AfterViewInit {
       /** for RTCP */
       this.isRTCP = outData.isRTCP as boolean;
       this.isNoDataRTCP = outData.isNoDataRTCP as boolean;
-      this.chartLabels = outData.chartLabels as Label[];
-      this.chartData = outData.chartData as ChartDataSets[];
-      this.streams = outData.streams as Array<any>;
+      this.chartLabelsRTCP = outData.chartLabelsRTCP as Label[];
+      this.chartDataRTCP = outData.chartDataRTCP as ChartDataSets[];
+      this.streamsRTCP = outData.streamsRTCP as Array<any>;
 
       /** for RTP */
       this.isRTP = outData.isRTP as boolean;
@@ -219,7 +233,7 @@ export class TabQosComponent implements OnInit, AfterViewInit {
 
   }
 
-  onChangeCheckBox(item: any, type: any, base = false) {
+  onChangeCheckBoxRTCP(item: any, type: any, base = false) {
     if (base) {
       item.packets = item.octets = item.highest_seq_no = item.ia_jitter = item.lsr =
         item.mos = item.packets_lost = item.fraction_lost = item._checked;
@@ -236,14 +250,14 @@ export class TabQosComponent implements OnInit, AfterViewInit {
     this.cdr.detectChanges();
     setTimeout(async () => {
       // Hides disabled labels
-      if (!base && this.rtcpChart) {
-        const [checkArray] = this.streams.map(stream => stream[type]);
-        const index: number = this.rtcpChart.datasets.findIndex(i => i.label === type);
-        this.rtcpChart.hideDataset(index, checkArray);
+      if (!base && this.chartRTCP) {
+        const [checkArray] = this.streamsRTCP.map(stream => stream[type]);
+        const index: number = this.chartRTCP.datasets.findIndex(i => i.label === type);
+        this.chartRTCP.hideDataset(index, checkArray);
       }
 
       const mosFraction = true;
-      await this.update('onChangeRTCP', this.mosFraction, { streams: this.streams });
+      await this.update('onChangeRTCP', this.mosFraction, { streamsRTCP: this.streamsRTCP });
 
       this.cdr.detectChanges();
     }, 10);
@@ -264,10 +278,10 @@ export class TabQosComponent implements OnInit, AfterViewInit {
     this.cdr.detectChanges();
     setTimeout(async () => {
       // Hides disabled labels
-      if (!base && this.rtpChart) {
+      if (!base && this.chartRTP) {
         const [checkArray] = this.streamsRTP.map(stream => stream[type]);
-        const index: number = this.rtpChart.datasets.findIndex(i => i.label === type);
-        this.rtpChart.hideDataset(index, checkArray);
+        const index: number = this.chartRTP.datasets.findIndex(i => i.label === type);
+        this.chartRTP.hideDataset(index, checkArray);
       }
 
       await this.update('onChangeRTP', this.mosFraction, { streamsRTP: this.streamsRTP });
@@ -283,19 +297,19 @@ export class TabQosComponent implements OnInit, AfterViewInit {
       return (n === 0 ? num : Math.round(num / f(n)) + ('kmb'.split('')[n - 1])) || num.toFixed(2);
     })(label);
   }
-  onWill(event: any) {
+  onWheelRTP(event: any) {
     event.preventDefault();
-    this.widthChart += event.deltaY / 10;
-    this.widthChart = Math.max(100, this.widthChart);
+    this.chartWidthRTP += event.deltaY / 10;
+    this.chartWidthRTP = Math.max(100, this.chartWidthRTP);
 
     setTimeout(() => {
       this.cdr.detectChanges();
     }, 10);
   }
-  onWillRTCP(event) {
+  onWheelRTCP(event) {
     event.preventDefault();
-    this.widthChartRTCP += event.deltaY / 10;
-    this.widthChartRTCP = Math.max(100, this.widthChartRTCP);
+    this.chartWidthRTCP += event.deltaY / 10;
+    this.chartWidthRTCP = Math.max(100, this.chartWidthRTCP);
 
     setTimeout(() => {
       this.cdr.detectChanges();
