@@ -203,7 +203,7 @@ class QosProcessor {
   }
   public onChangeRTCP({ streams }) {
     this.streams = streams || [];
-    this.onChangeCheckBox();
+    this.onChangeCheckBoxRTCP();
   }
 
   private parseRTP(data) {
@@ -778,7 +778,7 @@ class QosProcessor {
     return (mos_val);
   }
 
-  onChangeCheckBox() {
+  onChangeCheckBoxRTCP() {
     const streamsCopy = this.streams.filter(lStream => lStream._checked || lStream._indeterminate);
     this.isNoDataRTCP = streamsCopy.length === 0;
 

@@ -47,7 +47,7 @@
             </div>
         </mat-toolbar>
         <div class="inside-content" [style.top.px]="!isNonWindow ? 45 : 0">
-            <span (wheel)="onWheel($event)"
+            <span (wheel)="onWheelRTP($event)"
                 #inWindow>
                 <ng-content></ng-content>
             </span>

@@ -1,6 +1,6 @@
 .chart-container {
 	position: relative;
-	height: calc(100% - 8.5rem);
+	height: 100%;
 	width: 100%;
 	min-width: 500px;
 	min-height: 240px;
@@ -117,14 +117,15 @@
 	flex: 1;
 	min-width: 650px;
 }
-.responcive {
+.responsive {
 	width: 100%;
 	flex-wrap: wrap;
 	display: flex;
 	justify-content: baseline;
 	overflow-x: auto;
+    transition: height 0.2s;
 }
-.color-bable {
+.color-bubble {
 	min-width: 24px;
     min-height: 8px;
     padding-bottom: 8px;
@@ -161,7 +162,7 @@
 .color10 {
 	background-color: rgba(200, 180, 100, 0.5);
 }
-.cardStreem {
+.cardStream {
 	font-size: 12px;
 	margin: 0.3rem;
 	min-width: 300px;
