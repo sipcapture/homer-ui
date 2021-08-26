@@ -15,7 +15,6 @@ export * from './protosearch-widget/protosearch-widget.component';
 export * from './protosearch-widget/drag-drop-list/drag-drop-list.component';
 export * from './protosearch-widget/chips-input/chips-input.component';
 export * from './result-chart-widget/result-chart-widget.component';
-export * from './alert-widget/alert-widget.component';
 export * from './smart-input-widget/smart-input-widget.component';
 export * from './pcap-uploader-widget/pcap-uploader-widget.component';
 
@@ -31,7 +30,5 @@ export * from './ace-editor-widget/settings-ace-editor-widget.component';
 export * from './general-iframe-widget/setting-general-iframe-widget.component';
 export * from './dialog-alarm/dialog-alarm.component';
 export * from './result-chart-widget/setting-result-chart-widget.component';
-
 export * from './result-widget/setting-result-widget.component';
-export * from './alert-widget/setting-alert-widget.component';
 export * from './smart-input-widget/setting-smart-input-widget.component';
