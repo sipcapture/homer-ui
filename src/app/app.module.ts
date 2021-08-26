@@ -85,8 +85,7 @@ import {
   SettingResultChartWidgetComponent,
   SettingResultWidgetComponent,
   SettingsAceEditorWidgetComponent,
-  SettingSmartInputWidgetComponent,
-  AlertWidgetComponent
+  SettingSmartInputWidgetComponent
 } from '@app/components/widgets';
 
 import {
@@ -162,7 +161,6 @@ import { DynamicModule } from 'ng-dynamic-component';
 import { ChartsModule } from 'ng2-charts';
 import { MarkdownModule } from 'ngx-markdown';
 import { NgxDaterangepickerMd } from './components/controls/daterangepicker';
-import { SettingAlertWidgetComponent } from './components/widgets/alert-widget/setting-alert-widget.component';
 import { UpdateAlertComponent } from './components/controls/update-alert/update-alert.component';
 import {
   NgxMatDatetimePickerModule,
@@ -279,7 +277,6 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     SettingResultWidgetComponent,
     SettingsAceEditorWidgetComponent,
     SettingSmartInputWidgetComponent,
-    AlertWidgetComponent,
 
     /** dialogs */
     DialogAdvancedComponent,
@@ -294,7 +291,6 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     DialogUsersComponent,
     DialogScriptsComponent,
     DialogDBSelectorComponent,
-    SettingAlertWidgetComponent,
     UpdateAlertComponent,
     DialogExportComponent,
     DialogImportComponent,
@@ -428,7 +424,6 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     RsearchWidgetComponent,
     SmartInputWidgetComponent,
     PcapUploaderWidgetComponent,
-    AlertWidgetComponent,
     SettingClockWidgetComponent,
     SettingGeneralIframeWidgetComponent,
     SettingIframeWidgetComponent,
@@ -440,7 +435,6 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     SettingResultWidgetComponent,
     SettingsAceEditorWidgetComponent,
     SettingSmartInputWidgetComponent,
-    SettingAlertWidgetComponent,
 
     /** dashboard */
     AddDashboardDialogComponent,
