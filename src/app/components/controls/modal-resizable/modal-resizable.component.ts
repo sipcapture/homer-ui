@@ -286,7 +286,7 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
     ngOnDestroy() {
         document.body.removeChild(this.layerZIndex.nativeElement);
     }
-    onWheel($event) {
+    onWheelRTP($event) {
         return;
     }
 }
