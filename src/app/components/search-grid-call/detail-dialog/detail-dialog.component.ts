@@ -18,7 +18,8 @@ import {
   AgentsubService, 
   PreferenceHepsubService, 
   SearchCallService, 
-  MessageDetailsService 
+  MessageDetailsService, 
+  TooltipService
 } from '@app/services';
 import { AgentRequestModel } from '@app/models/agent-request-model';
 
@@ -170,6 +171,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     private _phss: PreferenceHepsubService,
     private _route: ActivatedRoute,
     private _scs: SearchCallService,
+    private tooltipService: TooltipService,
     private messageDetailsService: MessageDetailsService
   ) { }
   updateGraphSettings(e) {
@@ -349,6 +351,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
   }
   onSelectedTabChange({ tab: { textLabel } }) {
     this.showLoader = true;
+    this.tooltipService.hide();
     setTimeout(() => {
       Functions.emitWindowResize();
 
