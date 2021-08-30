@@ -60,11 +60,11 @@ class QosProcessor {
 
   public chartLabelsRTP: Array<any> = [];
 
-  public chartLabels: Array<any> = [];
+  public chartLabelsRTCP: Array<any> = [];
   public chartType: any = 'bar';
   public chartLegend = true;
 
-  public chartData: Array<any> = [
+  public chartDataRTCP: Array<any> = [
     {
       data: [],
       label: 'packets',
@@ -150,7 +150,7 @@ class QosProcessor {
     { name: 'max PACKET_LOSS', value: 0, color: 'color6' },
   ];
 
-  public list: any = [
+  public listRTCP: any = [
     { name: 'min packets', value: Number.MAX_VALUE, color: 'color1' },
     { name: 'avg packets', value: 0, color: 'color1' },
     { name: 'max packets', value: 0, color: 'color1' },
@@ -186,7 +186,7 @@ class QosProcessor {
 
   public hideLabelsFlag = true;
   public hideLabelsFlagRTP = true;
-  public streams: Array<any> = [];
+  public streamsRTCP: Array<any> = [];
   public streamsRTP: Array<any> = [];
 
   public init(srcdata, mosFraction) {
@@ -201,8 +201,8 @@ class QosProcessor {
     this.streamsRTP = streamsRTP || [];
     this.onChangeCheckBoxRTP();
   }
-  public onChangeRTCP({ streams }) {
-    this.streams = streams || [];
+  public onChangeRTCP({ streamsRTCP }) {
+    this.streamsRTCP = streamsRTCP || [];
     this.onChangeCheckBoxRTCP();
   }
 
@@ -361,10 +361,10 @@ class QosProcessor {
         return;
       }
 
-      // this.chartLabels.push(moment( item.create_date ).format('HH:mm:ss'));
+      // this.chartLabelsRTCP.push(moment( item.create_date ).format('HH:mm:ss'));
 
-      if (this.streams.filter((j: any) => j.dstIp === item.dstIp && j.srcIp === item.srcIp).length === 0) {
-        this.streams.push({
+      if (this.streamsRTCP.filter((j: any) => j.dstIp === item.dstIp && j.srcIp === item.srcIp).length === 0) {
+        this.streamsRTCP.push({
           dstIp: item.dstIp,
           srcIp: item.srcIp,
           create_date: [],
@@ -388,7 +388,7 @@ class QosProcessor {
           mos: true
         });
       }
-      this.streams.forEach((k: any) => {
+      this.streamsRTCP.forEach((k: any) => {
         if (k.dstIp === item.dstIp && k.srcIp === item.srcIp) {
           k.create_date.push(item.create_date);
 
@@ -452,65 +452,65 @@ class QosProcessor {
             /* end chart */
 
             if (typeof i.sender_information === 'undefined') {
-              this.list[0].value = 0;
-              this.list[2].value = 0;
+              this.listRTCP[0].value = 0;
+              this.listRTCP[2].value = 0;
             } else if (!isNaN(i.sender_information.packets)) {
               // min packets
-              this.list[0].value = Math.min(this.list[0].value, i.sender_information.packets * 1);
+              this.listRTCP[0].value = Math.min(this.listRTCP[0].value, i.sender_information.packets * 1);
               // max packets
-              this.list[2].value = Math.max(this.list[2].value, i.sender_information.packets * 1);
+              this.listRTCP[2].value = Math.max(this.listRTCP[2].value, i.sender_information.packets * 1);
             }
 
             if (typeof i.sender_information === 'undefined') {
-              this.list[3].value = 0;
-              this.list[5].value = 0;
+              this.listRTCP[3].value = 0;
+              this.listRTCP[5].value = 0;
             } else if (!isNaN(i.sender_information.octets)) {
               // min octets
-              this.list[3].value = Math.min(this.list[3].value, i.sender_information.octets * 1);
+              this.listRTCP[3].value = Math.min(this.listRTCP[3].value, i.sender_information.octets * 1);
               // max octets
-              this.list[5].value = Math.max(this.list[5].value, i.sender_information.octets * 1);
+              this.listRTCP[5].value = Math.max(this.listRTCP[5].value, i.sender_information.octets * 1);
             }
 
             if (!isNaN(block.highest_seq_no)) {
               // min highest_seq_no
-              this.list[6].value = Math.min(this.list[6].value, block.highest_seq_no * 1);
+              this.listRTCP[6].value = Math.min(this.listRTCP[6].value, block.highest_seq_no * 1);
               // max highest_seq_no
-              this.list[8].value = Math.max(this.list[8].value, block.highest_seq_no * 1);
+              this.listRTCP[8].value = Math.max(this.listRTCP[8].value, block.highest_seq_no * 1);
             }
 
             if (!isNaN(block.ia_jitter)) {
               // min ia_jitter
-              this.list[9].value = Math.min(this.list[9].value, block.ia_jitter * 1);
+              this.listRTCP[9].value = Math.min(this.listRTCP[9].value, block.ia_jitter * 1);
               // max ia_jitter
-              this.list[11].value = Math.max(this.list[11].value, block.ia_jitter * 1);
+              this.listRTCP[11].value = Math.max(this.listRTCP[11].value, block.ia_jitter * 1);
             }
 
             if (!isNaN(block.lsr)) {
               // min lsr
-              this.list[12].value = Math.min(this.list[12].value, block.lsr * 1);
+              this.listRTCP[12].value = Math.min(this.listRTCP[12].value, block.lsr * 1);
               // max lsr
-              this.list[14].value = Math.max(this.list[14].value, block.lsr * 1);
+              this.listRTCP[14].value = Math.max(this.listRTCP[14].value, block.lsr * 1);
             }
 
             if (!isNaN(tmpMos)) {
               // min mos
-              this.list[15].value = Math.min(this.list[15].value, tmpMos * 1);
+              this.listRTCP[15].value = Math.min(this.listRTCP[15].value, tmpMos * 1);
               // max mos
-              this.list[17].value = Math.max(this.list[17].value, tmpMos * 1);
+              this.listRTCP[17].value = Math.max(this.listRTCP[17].value, tmpMos * 1);
             }
 
             if (!isNaN(block.packets_lost)) {
               // min packets_lost
-              this.list[18].value = Math.min(this.list[18].value, block.packets_lost * 1);
+              this.listRTCP[18].value = Math.min(this.listRTCP[18].value, block.packets_lost * 1);
               // max packets_lost
-              this.list[20].value = Math.max(this.list[20].value, block.packets_lost * 1);
+              this.listRTCP[20].value = Math.max(this.listRTCP[20].value, block.packets_lost * 1);
             }
 
             if (!isNaN(block.fraction_lost)) {
               // min fraction_lost
-              this.list[21].value = Math.min(this.list[21].value, block.fraction_lost * 1);
+              this.listRTCP[21].value = Math.min(this.listRTCP[21].value, block.fraction_lost * 1);
               // max fraction_lost
-              this.list[23].value = Math.max(this.list[23].value, block.fraction_lost * 1);
+              this.listRTCP[23].value = Math.max(this.listRTCP[23].value, block.fraction_lost * 1);
             }
 
           } else {
@@ -536,35 +536,35 @@ class QosProcessor {
       });
     });
 
-    this.list.forEach(item => {
+    this.listRTCP.forEach(item => {
       item.value = item.value === Number.MAX_VALUE ? 0 : item.value;
     });
 
     // avg packets
-    this.list[1].value = this.average(this.streams, 'packetsData');
+    this.listRTCP[1].value = this.average(this.streamsRTCP, 'packetsData');
 
     // avg octets
-    this.list[4].value = this.average(this.streams, 'octetsData');
+    this.listRTCP[4].value = this.average(this.streamsRTCP, 'octetsData');
 
     // avg highest_seq_no
-    this.list[7].value = this.average(this.streams, 'highest_seq_noData');
+    this.listRTCP[7].value = this.average(this.streamsRTCP, 'highest_seq_noData');
 
     // avg ia_jitter
-    this.list[10].value = this.average(this.streams, 'ia_jitterData');
+    this.listRTCP[10].value = this.average(this.streamsRTCP, 'ia_jitterData');
 
     // avg lsr
-    this.list[13].value = this.average(this.streams, 'lsrData');
+    this.listRTCP[13].value = this.average(this.streamsRTCP, 'lsrData');
 
     // avg mos
-    this.list[16].value = this.average(this.streams, 'mosData');
+    this.listRTCP[16].value = this.average(this.streamsRTCP, 'mosData');
 
     // avg packets_lost
-    this.list[19].value = this.average(this.streams, 'packets_lostData');
+    this.listRTCP[19].value = this.average(this.streamsRTCP, 'packets_lostData');
 
     // avg fraction_lost
-    this.list[21].value = this.average(this.streams, 'fraction_lostData');
+    this.listRTCP[21].value = this.average(this.streamsRTCP, 'fraction_lostData');
 
-    this.renderChartData(this.streams, this.chartData, true);
+    this.renderChartData(this.streamsRTCP, this.chartDataRTCP, true);
     this.isRTCP = true;
   }
   private average(streams, labelData) {
@@ -577,13 +577,13 @@ class QosProcessor {
     }
     return false;
   }
-  private renderChartData(streams, chartData, isRTCP = true) {
+  private renderChartData(streams, chartDataRTCP, isRTCP = true) {
     if (isRTCP) {
-      this.chartLabels = [];
+      this.chartLabelsRTCP = [];
     } else {
       this.chartLabelsRTP = [];
     }
-    chartData.forEach(i => {
+    chartDataRTCP.forEach(i => {
       i.data = [];
       i.backgroundColor = [];
       i.hoverBackgroundColor = [];
@@ -662,12 +662,12 @@ class QosProcessor {
 
       const [create_date] = item.create_date;
       if (isRTCP) {
-        this.chartLabels.push(moment(create_date).format('HH:mm:ss'));
+        this.chartLabelsRTCP.push(moment(create_date).format('HH:mm:ss'));
       } else {
         this.chartLabelsRTP.push(moment(create_date).format('HH:mm:ss'));
       }
 
-      chartData.forEach(val => {
+      chartDataRTCP.forEach(val => {
         const unique = item.srcIp + val.label + item.dstIp;
         const rColor = this.setColor(unique);
         const arrData = val.data as Array<number> || [];
@@ -779,10 +779,10 @@ class QosProcessor {
   }
 
   onChangeCheckBoxRTCP() {
-    const streamsCopy = this.streams.filter(lStream => lStream._checked || lStream._indeterminate);
+    const streamsCopy = this.streamsRTCP.filter(lStream => lStream._checked || lStream._indeterminate);
     this.isNoDataRTCP = streamsCopy.length === 0;
 
-    this.renderChartData(streamsCopy, this.chartData, true);
+    this.renderChartData(streamsCopy, this.chartDataRTCP, true);
   }
 
   onChangeCheckBoxRTP() {
