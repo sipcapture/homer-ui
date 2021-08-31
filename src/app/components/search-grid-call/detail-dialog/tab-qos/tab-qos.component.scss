@@ -19,6 +19,14 @@
     align-items: center;
     z-index: 9999999;
 }
+.tab {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+::ng-deep .mat-tab-body-wrapper {
+    height: 100%;
+}
 .nodata{
 	height: 100%;
 

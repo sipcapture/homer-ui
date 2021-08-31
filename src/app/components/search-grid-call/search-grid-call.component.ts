@@ -253,11 +253,11 @@ export class SearchGridCallComponent
 
     @HostListener('window:resize')
     onResize() {
-        if (!this.gridApi || this.agGridSizeControl.selectedType !== 'sizeToFitContinuos') {
+        if (!this.gridApi || this.agGridSizeControl.selectedType !== 'sizeToFitContinuos' && this.agGridSizeControl.selectedType !== 'sizeToFit') {
             return;
         }
         setTimeout(() => {
-            if (this.agGridSizeControl.selectedType === 'sizeToFitContinuos' && this.loader === false) {
+            if ((this.agGridSizeControl.selectedType === 'sizeToFitContinuos' || this.agGridSizeControl.selectedType === 'sizeToFit') && this.loader === false) {
                 this.gridApi.sizeColumnsToFit();
             }
         }, 300);

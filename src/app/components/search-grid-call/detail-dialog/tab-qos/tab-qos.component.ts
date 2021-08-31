@@ -143,8 +143,8 @@ export class TabQosComponent implements OnInit, AfterViewInit {
     @ViewChild('flagsRTCP', { static: false }) flagsRTCP: ElementRef;
     @HostListener('window:resize')
     onResize() {
-        this.chartHeightRTP = this.containerRTP?.nativeElement?.clientHeight - this.flagsRTP?.nativeElement?.clientHeight - 12;        
-        this.chartHeightRTCP = this.containerRTCP?.nativeElement?.clientHeight - this.flagsRTCP?.nativeElement?.clientHeight - 12;
+        this.chartHeightRTP = this.containerRTP?.nativeElement?.clientHeight - this.flagsRTP?.nativeElement?.clientHeight;        
+        this.chartHeightRTCP = this.containerRTCP?.nativeElement?.clientHeight - this.flagsRTCP?.nativeElement?.clientHeight;
         this.cdr.detectChanges();
     }
   initQOSData() {
