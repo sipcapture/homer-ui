@@ -93,7 +93,6 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
             this._tfs.getFormat().then((res: DateFormat) => {
                 this.dateFormat = res;
                 if (srcId && dstId) {
-                    console.log('test1')
                     this.timeLabel = `${moment(create_ts).format(this.dateFormat.dateTimeMsZ)}: ${srcId} -> ${dstId}`;
                 } else if(srcIp && srcPort && dstIp && dstPort) {
                     this.timeLabel = `${moment(create_ts).format(this.dateFormat.dateTimeMsZ)}: ${srcIp}:${srcPort} -> ${dstIp}:${dstPort}`;
