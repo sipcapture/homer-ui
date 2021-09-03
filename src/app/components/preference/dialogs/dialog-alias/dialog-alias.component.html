@@ -140,10 +140,9 @@
           <div class="input-group" style="padding-left:10px">
 
             <div>
-              <mat-checkbox [(ngModel)]="data.data.status"
-                >{{ data.data.status ?
+              <mat-checkbox [(ngModel)]="data.data.status" labelPosition='before'
+                >{{ 
                 ('preference.ipalias.dialog.active' | translate)
-                : 'preference.ipalias.dialog.inactive' | translate
                 }}</mat-checkbox>
             </div>
           </div>
