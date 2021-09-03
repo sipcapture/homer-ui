@@ -26,6 +26,9 @@
     width: 100%;
   }
 }
+::ng-deep .mat-checkbox-label {
+    min-width: 0 !important;
+}
 .hide {
   display: none !important;
 }
