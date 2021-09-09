@@ -142,8 +142,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding-right: 1rem;
-    margin-right: -9px;
+    width: calc(100% + 15px);
 }
 
 .virtual-scrollbar {

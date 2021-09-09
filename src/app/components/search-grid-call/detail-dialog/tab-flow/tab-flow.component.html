@@ -1,4 +1,4 @@
-<div class="flowscreen" [style.min-width.px]="pageWidth + 16" [style.padding-top.rem]="isExport && 2.5" #flowscreen>
+<div class="flowscreen" [style.min-width.px]="pageWidth + 16" [style.padding-top.px]="isExport ? 40 : 0" #flowscreen>    
     <!-- <div [style.min-width.px]="pageWidth + 16" style="padding: 1px;"></div> -->
     <!-- flow grid lines -->
     <div class="flow-grid-lines" [style.min-width.px]="pageWidth">
@@ -8,7 +8,7 @@
 
     <!-- hosts -->
 
-    <div class="hosts">
+    <div class="hosts" [style.top.px]='isExport ? 40 : 0'>
         <div class="hosts-wrapper">
             <!-- host titles -->
             <ng-template ngFor let-itemhost [ngForOf]="_isCombineByAlias ? hostsCA : hosts">
