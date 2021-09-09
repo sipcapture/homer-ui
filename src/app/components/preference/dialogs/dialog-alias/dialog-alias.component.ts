@@ -1,7 +1,8 @@
 import { Component, Inject, ChangeDetectionStrategy, ViewChild } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core'
+
 @Component({
     selector: 'app-dialog-alias',
     templateUrl: './dialog-alias.component.html',
@@ -48,7 +49,8 @@ export class DialogAliasComponent {
         Validators.required,
         Validators.minLength(3),
         Validators.maxLength(45),
-        Validators.pattern(this.regip)
+        Validators.pattern(this.regip),
+        this.cannotContainSpace
     ]);
 
     captureID = new FormControl('',[
@@ -88,6 +90,14 @@ export class DialogAliasComponent {
     onNoClick(): void {
         this.dialogRef.close();
     }
+    cannotContainSpace(control: AbstractControl) {
+        if((control.value as string).indexOf(' ') >= 0){
+            return {cannotContainSpace: true}
+        }
+  
+        return null;
+    }
+
     onSubmit() {
         if (!this.alias?.invalid &&
             !this.ip?.invalid &&

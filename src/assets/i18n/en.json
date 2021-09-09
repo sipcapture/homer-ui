@@ -196,7 +196,8 @@
         "pattern":"Invalid Characters, should use",
         "patternNumber":"Value should be a Number",
         "patternIP":"Invalid Characters, should be a valid IP",
-        "dashboardName": "Dashboard name is already in use, choose another one"
+        "dashboardName": "Dashboard name is already in use, choose another one",
+        "noWhiteSpace":"No white spaces allowed"
     },
     "notifications": {
         "success": {
