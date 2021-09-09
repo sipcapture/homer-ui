@@ -1,17 +1,32 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Functions } from '@app/helpers/functions';
 
 @Component({
     selector: 'app-flow-item',
     templateUrl: './flow-item.component.html',
-    styleUrls: ['./flow-item.component.scss']
+    styleUrls: ['./flow-item.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Default
 })
 export class FlowItemComponent {
-    @Input() item: any = {};
+    
+    _item: any = {};
+    @Input() set item(val: any) {
+        this._item = val;
+    }
+    get item(): any {
+        return this._item;
+    }
     @Input() isSimplify = true;
     @Input() idx = 0;
-    @Output() click: EventEmitter<any> = new EventEmitter();
+    @Output() itemClick: EventEmitter<any> = new EventEmitter();
 
-    onClickItem(item, event) {
-        this.click.emit({ item, event });
+    onClickItem(idx, event) {
+        this.itemClick.emit({ idx, event });
+    }
+    MOSColorGradient(hue) {
+        return Functions.MOSColorGradient(hue * 100, 80, 50);
+    }
+    typeOf(st){
+        return typeof st;
     }
 }

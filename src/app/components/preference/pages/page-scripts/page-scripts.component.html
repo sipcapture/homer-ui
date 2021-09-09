@@ -1,0 +1,36 @@
+<app-setting-button [isAccess]='isAccess' (addDialog)='settingDialog()'></app-setting-button>
+<div class="tab-name">
+    <h3>{{page | titlecase}}</h3>
+</div>
+
+<app-loading-circle *ngIf='isLoading'></app-loading-circle>
+<div #content [hidden]='isLoading'>
+<!-- if ERROR -->
+<div *ngIf="isErrorResponse" class="alert-error alert-danger">
+    <mat-icon>warning</mat-icon>
+    {{'notifications.error.invalidJSON' | translate}}
+</div>
+<mat-form-field appearance="fill">
+    <input matInput placeholder="Filter"
+        [(ngModel)]="filter" (ngModelChange)='applyFilter()' />
+</mat-form-field>
+<table mat-table [dataSource]='dataSource'  mat-table [dataSource]="dataSource"
+class="mat-elevation-z8" matSort>
+        <ng-container *ngFor="let column of columns" >         
+            <!-- Status column -->
+            <app-active-cell [column]='column' *ngIf="column === 'Status'" [options]='{option1: "Active", option2: "Inactive"}'>
+            </app-active-cell>
+            <!-- Generic column -->
+            <app-generic-cell [column]='column' *ngIf="!specialColumns.includes(column)">
+            </app-generic-cell>
+            <!-- Button column -->
+            <app-tool-cell [column]='column' [page]='page' [isAccess]='isAccess' *ngIf="column === 'tools'" (settingDialog)='settingDialog($event.item, $event.type)' (deleteDialog)='deleteDialog($event)'>
+            </app-tool-cell>
+        </ng-container>
+<tr mat-header-row *matHeaderRowDef="columns"></tr>
+<tr mat-row *matRowDef="let row; columns: columns;"></tr>
+</table>
+<mat-paginator style="flex: 0; min-width: 500px;" [pageSizeOptions]="[25, 50, 100, 200]"
+    showFirstLastButtons>
+</mat-paginator>
+</div>

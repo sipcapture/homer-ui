@@ -11,7 +11,8 @@ import {
     HostListener
 } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { SmartService } from '@app/services';
+import { PreferenceMappingProtocolService, SmartService } from '@app/services';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
     selector: 'app-code-style-smart-input-field',
@@ -19,7 +20,27 @@ import { SmartService } from '@app/services';
     styleUrls: ['./code-style-smart-input-field.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
+
 export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit {
+    @Input() set queryText(val: string) {
+        if (val === '' && this.editor) {
+            this.editor.innerText = '';
+        }
+        this.setQueryText(val);
+    }
+
+    get queryText() {
+        return this._queryText;
+    }
+
+    constructor(
+        private smartService: SmartService,
+        private cdr: ChangeDetectorRef,
+    ) {
+
+
+    }
+
     divHTML: string;
     divText: string;
     serverLoki: string;
@@ -30,30 +51,20 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
     isFocusOnField = false;
     private _menuDOM: HTMLElement;
     private lastMenuXPosition = 0;
-    @Input() apiLink = '';
-    @Input() hepid = 1;
-    @Input() set queryText(val: string) {
-        if (val === '' && this.editor) {
-            this.editor.innerText = '';
-        }
-        this.setQueryText(val);
-    }
-    get queryText() {
-        return this._queryText;
-    }
-    @Input() simplefield = false;
 
+    // protocol to add at selector
+
+    @Input() apiLink;
+    @Input() hepid = 1;
+// api link? how is it generated. Does it affect on changes?
+    @Input() simplefield = false;
     @Output() updateData: EventEmitter<any> = new EventEmitter();
     @Output() keyEnter: EventEmitter<any> = new EventEmitter();
-    @ViewChild('divContainer', {static: false}) divContainer;
-    @ViewChild(MatMenuTrigger, {static: false}) trigger: MatMenuTrigger;
+
+    @ViewChild('divContainer', { static: false }) divContainer;
+    @ViewChild(MatMenuTrigger, { static: false }) trigger: MatMenuTrigger;
 
     popupList: Array<string>;
-
-    constructor(
-        private smartService: SmartService,
-        private cdr: ChangeDetectorRef
-    ) { }
     public setQueryText(value: string) {
         if (this.isFocusOnField && !this.simplefield || this._queryText === value) {
             return;
@@ -66,9 +77,12 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
     public getQueryText() {
         return this._queryText;
     }
+
     ngOnInit() {
+
     }
-    ngAfterViewInit () {
+    ngAfterViewInit() {
+
         this.editor = this.divContainer.nativeElement;
         this.editor.onfocus = event => {
             this.isFocusOnField = true;
@@ -91,11 +105,13 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
         }
         this.cdr.detectChanges();
     }
+
     @HostListener('document:keydown', ['$event']) onKeydownHandler(event: KeyboardEvent) {
         if (event.key === 'Enter' && !this.trigger.menuOpen) {
             event.preventDefault();
         }
     }
+
     async getLabels() {
         try {
             this.menuTitle = 'Labels';
@@ -106,16 +122,12 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
 
             const labelsData: any = await this.smartService.getLabelByUrl(this.apiLink, this.editor.innerText).toPromise();
             let labels: Array<string> = [];
-            if (labelsData && labelsData.data && labelsData.data.length > 0) {
-                labels = labelsData.data.map(i => i.value);
+            if (labelsData && labelsData.data && labelsData.data.data.length > 0) {
+                labels = labelsData.data.data.map(i => i.value);
             }
-
             const readyAdded: any = this.getObject(this.editor.innerText);
-
             this.popupList = labels;
-
-
-            if ( this.popupList.length > 0) {
+            if (this.popupList.length > 0) {
                 this.trigger.openMenu();
                 this.setMenuXPosition();
                 this.editor.focus();
@@ -124,7 +136,7 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
             }
             this.cdr.detectChanges();
         } catch (error) {
-            console.error({error});
+            console.error({ error });
         }
     }
 
@@ -144,9 +156,10 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
 
         this._menuDOM.style.marginLeft = (this.getCaretPosition() - x0) + 'px';
     }
-    triggerNavMenu(action: string = null) {
-        switch (action) {
+    triggerNavMenu(event) {
+        switch (event.key) {
             case 'ArrowUp': case 'ArrowDown':
+                event.preventDefault();
                 this.trigger.menu.focusFirstItem();
                 break;
             case 'Enter':
@@ -159,21 +172,21 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
         }
     }
     onKeyDownDiv(event) {
-        if (!!({ArrowDown: 1, ArrowUp: 1, Enter: 1})[event.key]) {
-            this.triggerNavMenu(event.key);
+        if (!!({ ArrowDown: 1, ArrowUp: 1, Enter: 1 })[event.key]) {
+            this.triggerNavMenu(event);
             event.preventDefault();
-            this.editor.innerHTML = '' + this.editor.innerText;
+            this.editor.innerHTML = this.editor.innerText;
             return;
         }
     }
     onKeyUpDiv(event) {
-        if (!!{Shift: 1, Control: 1, Alt: 1, Backspace: 1}[event.key]) {
+        if (!!{ Shift: 1, Control: 1, Alt: 1, Backspace: 1 }[event.key]) {
             this.updateEditor(null);
             return;
         }
 
-        if (!!({ArrowDown: 1, ArrowUp: 1, Enter: 1})[event.key]) {
-            this.triggerNavMenu(event.key);
+        if (!!({ ArrowDown: 1, ArrowUp: 1, Enter: 0 })[event.key]) {
+            this.triggerNavMenu(event);
             event.preventDefault();
             return;
         }
@@ -191,21 +204,21 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
     private getCaretPosition() {
         try {
             const d = window.getSelection().anchorNode.parentNode as HTMLElement;
-            this.lastMenuXPosition = Math.round( d.getBoundingClientRect().left );
-            return Math.round( d.getBoundingClientRect().left );
+            this.lastMenuXPosition = Math.round(d.getBoundingClientRect().left);
+            return Math.round(d.getBoundingClientRect().left);
         } catch (e) {
             return -1;
         }
     }
-    getObject (str: string) {
+    getObject(str: string) {
         const out = str.split(/\"\s+/g).reduce((a, b) => {
             if (!b.includes('=')) {
                 if (b !== '') {
-                    a = Object.assign(a, {regexpText: b});
+                    a = Object.assign(a, { regexpText: b });
                 }
             } else {
                 const [key, val] = b.split('=');
-                a = Object.assign(a, {[key]: val.replace(/\"/g, '')});
+                a = Object.assign(a, { [key]: val.replace(/\"/g, '') });
             }
             return a;
         }, {});
@@ -226,8 +239,8 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
     getRegExpString(str) {
         return str.split(/\{.*\}\s*/g)[1] || '';
     }
-    onMenuMessage (item, event: any = null) {
-        if (!event || (event.keyCode === 13 || event.keyCode === 32 )) {
+    onMenuMessage(item, event: any = null) {
+        if (!event || (event.keyCode === 13 || event.keyCode === 32)) {
             const str = this.editor.innerText.replace(/[\w\d]*\.\s*$/g, '');
             this.typeInTextarea(str + item + '=', true);
             this.updateEditor(null, true);
@@ -267,13 +280,13 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
         }).join('');
     }
 
-    private getTextSegments (element) {
+    private getTextSegments(element) {
         const textSegments = [];
         try {
             Array.from(element.childNodes).forEach((node: Node) => {
                 switch (node.nodeType) {
                     case Node.TEXT_NODE:
-                        textSegments.push({text: node.nodeValue, node});
+                        textSegments.push({ text: node.nodeValue, node });
                         break;
 
                     case Node.ELEMENT_NODE:
@@ -294,11 +307,11 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
         }
         const sel = window.getSelection();
         const textSegments = this.getTextSegments(this.editor);
-        const textContent = textSegments.map(({text}) => text).join('');
+        const textContent = textSegments.map(({ text }) => text).join('');
         let anchorIndex = null;
         let focusIndex = null;
         let currentIndex = 0;
-        textSegments.forEach(({text, node}) => {
+        textSegments.forEach(({ text, node }) => {
             if (node === sel.anchorNode) {
                 anchorIndex = currentIndex + sel.anchorOffset;
             }
@@ -333,7 +346,7 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
         let focusIndex = 0;
         let currentIndex = 0;
 
-        textSegments.forEach(({text, node}) => {
+        textSegments.forEach(({ text, node }) => {
             const startIndexOfNode = currentIndex;
             const endIndexOfNode = startIndexOfNode + text.length;
             if (startIndexOfNode <= absoluteAnchorIndex && absoluteAnchorIndex <= endIndexOfNode) {
@@ -359,9 +372,9 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
             const end = sel.extentOffset || 1;
             const text = el.innerText;
             const before = text.substring(0, start);
-            const after  = text.substring(end, text.length);
+            const after = text.substring(end, text.length);
 
-            if ( autoClear ) {
+            if (autoClear) {
                 el.innerText = str;
             } else {
                 el.innerText = before + str + after;
@@ -373,4 +386,5 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
         }
         return false;
     }
+
 }

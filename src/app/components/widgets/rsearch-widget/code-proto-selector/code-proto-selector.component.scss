@@ -1,0 +1,36 @@
+.proto-selector {
+    display: flex;
+    color: grey;
+    border: 1px solid lightgray;
+    border-radius: 3px 3px 3px 3px;
+    margin-right:3px;
+    height: 28px;
+    line-height: 14px;
+    font-size: 12px;
+    cursor: pointer;
+    background: #fafafa;
+    width:105px;
+    text-overflow: ellipsis;
+
+    &:focus {
+        outline: none;
+
+    }
+
+    .proto-button {
+        background: #fafafa;
+        cursor: pointer;
+        height: 100%;
+        display: inline-block;
+        padding: 6px;
+
+    }
+
+    .menu-button {
+        font-size: 14px;
+        line-height: 21px;
+        padding: 3px;
+        padding-left: 0px;
+        background: #fafafa;
+    }
+}

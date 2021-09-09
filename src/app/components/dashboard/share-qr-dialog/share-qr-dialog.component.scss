@@ -1,0 +1,45 @@
+.link-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.qr-logo {
+    position: absolute;
+    top: 48%;
+    left: 44%;
+}
+.linktext {
+    background: #fafafa;
+    border-radius: 3px;
+    padding: 6px;
+    border: 1px solid lightgrey;
+}
+.linktext:focus {
+    outline: none;
+    border: none;
+}
+.unshare {
+   opacity:.15;
+   -webkit-touch-callout: none; /* iOS Safari */
+   -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+      -moz-user-select: none; /* Old versions of Firefox */
+       -ms-user-select: none; /* Internet Explorer/Edge */
+           user-select: none; 
+           transition:.2s all;
+}
+.shared-btn {
+    background: #e23030;
+    color: white;
+    padding: 3px 6px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 3px;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 1px 1px 2px lightgrey;
+    transition: .2s all;
+}
+.shared-btn:hover {
+opacity: .75;
+}

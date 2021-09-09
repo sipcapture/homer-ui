@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="svg85"
+   version="1.1"
+   viewBox="0 0 26.458333 26.458334"
+   height="100"
+   width="100">
+  <defs
+     id="defs79" />
+  <metadata
+     id="metadata82">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(0,-270.54165)"
+     id="layer1">
+    <g
+       id="g4986"
+       style="display:inline"
+       transform="translate(-119.2587,175.2986)">
+      <rect
+         id="rect12-7-0-2"
+         width="4.8154006"
+         height="8.9442863"
+         x="99.66082"
+         y="131.95003"
+         style="fill:#c83737;stroke:#800000;stroke-width:0.18459834;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(0,1,1,0,0,0)" />
+      <rect
+         id="rect12-7-2-9-9"
+         width="4.812737"
+         height="7.7608671"
+         x="106.67872"
+         y="133.17534"
+         style="fill:#c83737;stroke:#800000;stroke-width:0.18547568;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(0,1,1,0,0,0)" />
+      <rect
+         id="rect12-7-2-7-3-3"
+         width="4.8158178"
+         height="3.531317"
+         x="113.87761"
+         y="137.37976"
+         style="fill:#c83737;stroke:#800000;stroke-width:0.18416981;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(0,1,1,0,0,0)" />
+      <rect
+         id="rect12-3-5-6-1"
+         width="4.8135228"
+         height="8.7326813"
+         x="99.661758"
+         y="123.28107"
+         style="fill:#ff6600;stroke:#bb0000;stroke-width:0.18662396;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(0,1,1,0,0,0)" />
+      <rect
+         id="rect12-3-6-3-6-0-9"
+         width="4.8141923"
+         height="2.6354594"
+         x="99.661247"
+         y="120.6665"
+         style="fill:#abc837;stroke:#00572c;stroke-width:0.18551083;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(0,1,1,0,0,0)" />
+      <rect
+         id="rect12-3-5-9-6-4"
+         width="4.8127289"
+         height="9.3146353"
+         x="106.67872"
+         y="123.86068"
+         style="fill:#ff6600;stroke:#bb0000;stroke-width:0.18546696;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(0,1,1,0,0,0)" />
+      <rect
+         id="rect12-3-5-9-1-2-7"
+         width="4.8128142"
+         height="12.183255"
+         x="113.8791"
+         y="125.2039"
+         style="fill:#ff6600;stroke:#bb0000;stroke-width:0.18741007;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(0,1,1,0,0,0)" />
+      <rect
+         id="rect12-3-6-3-61-8"
+         width="4.8146019"
+         height="4.5013332"
+         x="113.8782"
+         y="120.6436"
+         style="fill:#abc837;stroke:#00572c;stroke-width:0.18548225;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(0,1,1,0,0,0)" />
+      <rect
+         id="rect12-3-6-3-6-2-8-4"
+         width="4.8127513"
+         height="3.196295"
+         x="106.67692"
+         y="120.66441"
+         style="fill:#abc837;stroke:#00572c;stroke-width:0.1854426;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(0,1,1,0,0,0)" />
+      <path
+         style="opacity:1;fill:none;stroke:#009cbf;stroke-width:0.31445611;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="M 120.67375,96.553091 V 120.13077 H 144.0458"
+         id="path10-5-7-5" />
+    </g>
+  </g>
+</svg>

@@ -1,44 +1,160 @@
 :host {
-	display: flex;
-    justify-content: center;
-    margin: 100px 0px;
+  height: 100%;
+  width: 100%;
+  margin: 0px;
+  & > * {
+    font-family: Roboto;
+  }
 }
 
-.mat-form-field {
-	width: 100%;
-    min-width: 300px;
+.homer-header {
+  height: 80px;
 }
 
-mat-card-title,
-mat-card-content {
-	display: flex;
-    justify-content: center;
-    .login-page-header {
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        & h2 {
-            margin-top: 2rem;
+.homer-footer {
+  position: absolute;
+  color: white;
+  bottom: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.login-submit {
+  border: none;
+  background: #484848;
+  border-radius: 3px;
+  width: 100% !important;
+  height: 35px;
+  margin-top: 20px;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  float: right;
+}
+.login-logo {
+  margin-bottom: 36px;
+  img {
+    width: 135px;
+  }
+}
+.login-page-header {
+  color: rgb(87, 87, 87);
+  font-weight: bold;
+  text-align: center;
+  margin-left: -15px;
+  margin-bottom: 36px;
+  & fa-icon {
+    color: grey;
+
+    font-size: 18px;
+  }
+}
+
+.login-container {
+  & form {
+    padding-top: 0px;
+    display: grid;
+    height: 225px;
+  }
+
+  & .mat-form-field-wrapper {
+    //height: 60px;
+
+    & .mat-form-field-flex {
+      height: 35px;
+
+      & .mat-form-field-outline {
+        height: 35px;
+      }
+
+      & .mat-form-field-infix {
+        top: -12px;
+
+        & .mat-form-field-label,
+        & .mat-input-element {
+          font-size: 15px;
         }
-        & > img {
-            width: 190px;
+
+        & .mat-form-field-label-wrapper {
+          & .mat-form-field-label {
+            height: 14px;
+          }
         }
+      }
     }
+
+    & .mat-form-field-outline {
+      background: #fafafa;
+    }
+
+    & .mat-form-field-appearance-outline.mat-form-field-invalid.mat-form-field-invalid .mat-form-field-outline-thick {
+      color: grey !important;
+    }
+
+    & .mat-select-arrow-wrapper {
+      transform: translateY(5%) !important;
+    }
+
+    & .mat-select-placeholder {
+      position: relative;
+      height: 40px;
+    }
+  }
+
+  height: 100%;
+  width: 100%;
+  background: #fafafa;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & mat-card {
+    width: 480px;
+    padding: 40px;
+    //padding: 35px;
+
+    color: #3b3b3b !important;
+    background: white;
+  }
 }
+
 .caps-lock {
-    background-color: gainsboro;
-    color: red;
-    padding: 3px;
-    border-radius: 4px;
+  background-color: gainsboro;
+  color: red;
+  padding: 3px;
+  border-radius: 4px;
 }
+
 .error {
-	padding: 16px;
-    width: 300px;
-    color: white;
-    background-color: red;
+  padding: 16px;
+  width: 300px;
+  color: white;
+  background-color: red;
 }
 
 .button {
-	display: flex;
-    justify-content: flex-end;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.login-input {
+  height: 12px;
+}
+.input-group-prepend {
+  display: block !important;
+  font-size: 13px;
+}
+.form-control {
+  background: #fafafa;
+  height: 40px;
+}
+
+.input-group-text {
+  font-size: 13px;
+  padding: 0.532rem 0.75rem;
+  color: grey;
+}
+input > * {
+  font-family: Roboto !important;
 }

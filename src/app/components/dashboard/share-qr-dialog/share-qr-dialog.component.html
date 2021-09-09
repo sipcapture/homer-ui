@@ -1,0 +1,32 @@
+<div style="text-align: center;position:relative">
+  <h3 style="color:#5e5e5e;font-size:24px;">Share Dashboard Link</h3>
+  <small [ngClass]="{'unshare':!shared}" >Paste link on browser search bar</small>
+  <div *ngIf="!shared">
+    Please set This Dashboard as <span (click)="shareDashboard()" class="shared-btn" title="click to share dashboard">shared</span> to Share QR-Link
+  </div>
+  <div *ngIf="shared">
+    Dashboard <span style="color:green;">SHARED</span>
+  </div>
+  <div class="qr-container" [ngClass]="{'unshare':!shared}">
+    <ngx-qrcode
+    style="text-align:center;padding:20px;"
+
+    [elementType]="elementType"
+    [errorCorrectionLevel]="correctionLevel"
+    [value]="value"
+    cssClass="bshadow">
+  </ngx-qrcode>
+  <div class="image-code"></div>
+  <div class="homer-logo">
+    <img src="/assets/images/homer_qr_logo.png" width="75px" class="qr-logo"/>
+
+  </div>
+
+  </div>
+ <div class="link-container">
+
+  <input [disabled]="!shared" [ngClass]="{'unshare':!shared}" class="linktext" target="_blank" [value]="value" style="color:#5e5e5e;width:95%" #qrlink>
+  <button [disabled]="!shared" (click)="copyLink(qrlink)" mat-icon-button title="copy link"><mat-icon>content_copy</mat-icon></button>
+ </div>
+
+</div>

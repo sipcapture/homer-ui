@@ -1,23 +1,29 @@
 import {
     Component,
-    OnInit,
     Input,
-    Output,
-    EventEmitter,
-    AfterViewInit,
+    OnInit,
     ViewChild,
-    OnDestroy,
     ElementRef,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
-    ViewEncapsulation
+    AfterViewInit,
+    EventEmitter,
+    ViewEncapsulation,
+    Output
 } from '@angular/core';
-import * as moment from 'moment';
-import { MesagesData } from '../tab-messages/tab-messages.component';
-import { Functions } from '../../../../helpers/functions';
+import { VirtualScrollerComponent } from 'ngx-virtual-scroller';
+import { Functions } from '@app/helpers/functions';
 import * as html2canvas from 'html2canvas';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { CdkVirtualScrollViewport, FixedSizeVirtualScrollStrategy, VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
+import { FlowItemType } from '@app/models/flow-item-type.model';
+import { TooltipService } from '@app/services/tooltip.service';
+import {
+    MessageDetailsService,
+    ArrowEventState,
+} from '@services/message-details.service';
+import { FixedSizeVirtualScrollStrategy, VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
+import { AfterViewChecked, OnDestroy } from '@angular/core';
+import { TransactionFilterService } from '@app/components/controls/transaction-filter/transaction-filter.service';
+import { Subscription } from 'rxjs';
 
 export class CustomVirtualScrollStrategy extends FixedSizeVirtualScrollStrategy {
     constructor() {
@@ -25,12 +31,6 @@ export class CustomVirtualScrollStrategy extends FixedSizeVirtualScrollStrategy 
     }
 }
 
-enum FlowItemType {
-    SIP = 'SIP',
-    SDP = 'SDP',
-    RTP = 'RTP',
-    RTCP = 'RTCP'
-}
 
 @Component({
     selector: 'app-tab-flow',
@@ -39,70 +39,94 @@ enum FlowItemType {
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,
     providers: [{ provide: VIRTUAL_SCROLL_STRATEGY, useClass: CustomVirtualScrollStrategy }]
-
 })
-export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
-    @ViewChild('flowtitle', { static: false }) flowtitle;
-    @ViewChild('virtualScroll') virtualScroll: CdkVirtualScrollViewport;
+export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
+    @ViewChild('flowscreen', { static: true }) flowscreen: ElementRef;
+    @ViewChild('canvas', { static: true }) canvas: ElementRef;
+    @ViewChild('downloadLink', { static: true }) downloadLink: ElementRef;
+    @ViewChild('virtualScroll') virtualScroll: VirtualScrollerComponent;
     @ViewChild('virtualScrollbar') virtualScrollbar: ElementRef;
-    @Input()
-    set isSimplify(val: boolean) {
-        this._isSimplify = val;
-        this.cdr.detectChanges();
-    }
-    get isSimplify() {
-        return this._isSimplify;
-    }
-    _qosData: any;
-    _flagAfterViewInit = false;
-    _isSimplify = false;
-    public _isSimplifyPort = false;
-    public _isCombineByAlias = true;
+
+    public isSimplifyPort = false;
+    _isCombineByAlias = false;
     private _dataItem: any;
+    private filters: any;
+    private ScrollTarget: string;
     flowGridLines = [];
     isExport = false;
     hosts: Array<any>;
+    hostsCA: Array<any>;
+    ipaliases: Array<any> = [];
     arrayItems: Array<any> = [];
+    arrayItemsVisible: Array<any> = [];
     color_sid: string;
     labels: Array<any> = [];
-    private scrollFlag = 0;
-    private ScrollTarget: string;
-    @Input() set flowFilters(filters: any) {
-        if (!filters) {
-            return;
-        }
-        this._isSimplifyPort = filters.isSimplifyPort;
-        this._isCombineByAlias = filters.isCombineByAlias;
-        setTimeout(this.initData.bind(this));
-    }
+    _flagAfterViewInit = false;
+    channelIdMessageDetails: string;
+    hashDataItem = '';
+    hashArrayItems = '';
+    hashFilters = '';
+    filterSubscription: Subscription;
+    virtualScrollerItemsArray: Array<any> = [];
+    _isSimplify: boolean;
+
 
     @Input() callid: any;
 
-    @Input() set dataItem(dataItemValue) {
-        this._dataItem = dataItemValue;
-        setTimeout(this.initData.bind(this));
+    @Input() set isSimplify(v: boolean) {
+        this._isSimplify = v;
+        this.virtualScroll?.refresh();
+        setTimeout(() => this.cdr.detectChanges());
+    }
+    get isSimplify(): boolean {
+        return this._isSimplify;
+    }
+
+
+    @Input() set dataItem(dataItem) {
+        const _hash = Functions.md5(JSON.stringify(dataItem));
+        if (this.hashDataItem === _hash) {
+            return;
+        } else {
+            this.hashDataItem = _hash;
+        }
+        this._dataItem = dataItem;
+
+        this.color_sid = Functions.getColorByString(this.callid);
+        this.hosts = Functions.cloneObject(dataItem.data.hosts);
+        this.ipaliases = Functions.cloneObject(dataItem.data.data.ipaliases) || [];
+        this.channelIdMessageDetails = 'TabFlow-' + dataItem.data.callid.join();
+
+        const aliases = this.ipaliases.filter(alias => alias.status === true);
+        this.hosts.forEach(host => {
+            const aliasCollection = aliases.filter(({ ip }) => ip === host.ip);
+            const alias =
+                aliasCollection.find(({ port }) => port === host.port) ||
+                aliasCollection.find(({ port }) => port === 0);
+
+            if (alias) {
+                const selection = {
+                    alias: alias.alias,
+                    color: alias.color,
+                    image: alias.image,
+                    group: alias.group,
+                    ipv6: alias.ipv6,
+                    mask: alias.mask,
+                    servertype: alias.servertype,
+                    shardid: alias.shardid,
+                    type: alias.type,
+                    isLinkImg: alias.isLinkImg
+                };
+                Object.assign(host, selection);
+            }
+        });
+
+        this.setFilters(this.filters);
     }
     get dataItem() {
         return this._dataItem;
     }
-    @Input() set qosData(value) {
-        if (!value) {
-            return;
-        }
-        this._qosData = value;
-        const { rtp } = this._qosData;
-        const arrRTP = rtp.data.map((i, key) => this.formattingQosItemAsFlowElement(i, key));
-        this.arrayItemsRTP_AGENT = [].concat(arrRTP);
-        setTimeout(this.initData.bind(this));
-    }
-    _RTPFilterForFLOW = false;
-    @Input() set RTPFilterForFLOW(val: boolean) {
-        this._RTPFilterForFLOW = val;
-        this.initData();
-    }
-    get RTPFilterForFLOW() {
-        return this._RTPFilterForFLOW;
-    }
+
     @Input() set exportAsPNG(val) {
         if (val) {
             this.isExport = true;
@@ -114,367 +138,374 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     get pageWidth() {
         return (this.isSimplify ? 150 : 200) * this.flowGridLines.length;
     }
-    @Output() messageWindow: EventEmitter<any> = new EventEmitter();
+
     @Output() pngReady: EventEmitter<any> = new EventEmitter();
+    @Output() ready: EventEmitter<any> = new EventEmitter();
 
-    @ViewChild('flowpage', { static: true }) flowpage: ElementRef;
-    @ViewChild('flowscreen', { static: true }) flowscreen: ElementRef;
-    @ViewChild('canvas', { static: true }) canvas: ElementRef;
-    @ViewChild('downloadLink', { static: true }) downloadLink: ElementRef;
+    constructor(
+        private cdr: ChangeDetectorRef,
+        private tooltipService: TooltipService,
+        private messageDetailsService: MessageDetailsService
+    ) { }
 
-    aliasTitle: Array<any>;
-    dataSource: Array<MesagesData> = [];
-    arrayItemsRTP_AGENT: Array<any> = [];
-    _interval: any;
-
-    constructor(private cdr: ChangeDetectorRef, private _snackBar: MatSnackBar) { }
-
-    ngAfterViewInit() {
-        this._flagAfterViewInit = true;
-    }
-    ngOnDestroy() {
-        clearInterval(this._interval);
-    }
     ngOnInit() {
-        this.initData();
-        this.virtualScroll.setRenderedContentOffset(1);
-    }
-    formattingQosItemAsFlowElement(item: any, pid: number) {
-        item = Functions.cloneObject(item);
-        item.micro_ts = item.micro_ts || (item.timeSeconds * 1000 + item.timeUseconds / 1000);
-        const sIP = item.srcIp;
-        const sPORT = item.srcPort;
-        const dIP = item.dstIp;
-        const dPORT = item.dstPort;
-        const diffTs = 0;
-        const protoName = Functions.protoCheck(item.proto).toUpperCase();
-        const eventName = item.proto === 'rtcp' ? 'RTCP' : 'RTP';
-        const typeItem = item.proto === 'rtcp' ? 'RTCP' : 'RTP';
-        return {
-            id: item.id,
-            callid: item.sid,
-            sid: item.sid,
-            method_text: eventName,
-            ruri_user: `${sIP}:${sPORT} -> ${dIP}:${dPORT}`,
-            info_date: `[${pid}][${protoName}] ${moment(item.micro_ts).format('YYYY-MM-DD HH:mm:ss.SSS Z')}`,
-            diff: `+${diffTs.toFixed(2)}ms`,
-            source_ip: sIP,
-            source_port: sPORT,
-            srcId: item.srcId || `${sIP}:${sPORT}`,
-            dstId: item.dstId || `${dIP}:${dPORT}`,
-            srcIp: item.srcIp,
-            srcPort: item.srcPort,
-            dstIp: item.dstIp,
-            dstPort: item.dstPort,
-            destination_ip: dIP,
-            destination_port: dPORT,
-            micro_ts: (item.timeSeconds * 1000 + item.timeUseconds / 1000),
-            source_data: item,
-            typeItem,
-            QOS: item,
-            MOS: item.raw.MOS,
-            __is_flow_item__: true,
-            RTPmessageData: {
-                id: item.id || '--',
-                create_date: moment(item.micro_ts).format('YYYY-MM-DD'),
-                timeSeconds: moment(item.micro_ts).format('HH:mm:ss.SSS Z'),
-                diff: `${diffTs.toFixed(2)} s`,
-                method: eventName,
-                mcolor: Functions.getMethodColor(eventName),
-                Msg_Size: item.raw ? (JSON.stringify(item.raw) + '').length : '--',
-                srcIp_srcPort: `${sIP}:${sPORT}`,
-                dstIp_dstPort: `${dIP}:${dPORT}`,
-                dstPort: dPORT,
-                proto: protoName,
-                type: typeItem,
-                item: item
-            }
-        };
-    }
-    initData() {
-        this.color_sid = Functions.getColorByString(this.callid, 100, 40, 1);
-
-        let hosts = Functions.cloneObject(this.dataItem.data.hosts);
-        /** added host from RTP AGENT */
-        if (this._RTPFilterForFLOW) {
-            this.arrayItemsRTP_AGENT.forEach(item => {
-                [`${item.source_ip}:${item.source_port}`, `${item.destination_ip}:${item.destination_port}`]
-                    .forEach(IP_PORT => {
-                        if (!hosts[IP_PORT]) {
-                            hosts[IP_PORT] = {
-                                host: [IP_PORT],
-                                position: Object.keys(hosts).length
-                            };
-                        }
-                    });
-            });
-        }
-        const data = this.dataItem.data;
-        const sortedArray: Array<any> = [].concat(
-            ...(this._RTPFilterForFLOW ? this.arrayItemsRTP_AGENT : []),
-            ...data.calldata)
-            .sort((itemA, itemB) => {
-                const a = itemA.micro_ts;
-                const b = itemB.micro_ts;
-                return a < b ? -1 : a > b ? 1 : 0;
-            });
-
-        const IpList: Array<any> = [].concat(...sortedArray.map(i => [i.srcId, i.dstId])).reduce((arr, b) => {
-            const _ip = this._isSimplifyPort ? b.match(/\d+$|(\[.*\]|\d+\.\d+\.\d+\.\d+)/g)[0] : b;
-            if (!arr.includes(_ip)) {
-                arr.push(_ip);
-            }
-            return arr;
-        }, []);
-        if (this._isSimplifyPort) {
-            const hostNoPortsArray: Array<any> = Object.keys(hosts).sort()
-                .map(i => i.match(/\d+$|(\[.*\]|\d+\.\d+\.\d+\.\d+)/g))
-                .filter((i, k, a) => {
-                    if (a[k - 1]) {
-                        return a[k - 1][0] !== i[0];
-                    }
-                    return true;
-                }).map(i => i.join(':'));
-            const filterdHostd: any = hostNoPortsArray.reduce((a, b) => {
-                const _ip = this._isSimplifyPort ? b.match(/\d+$|(\[.*\]|\d+\.\d+\.\d+\.\d+)/g)[0] : b;
-                a[_ip] = hosts[b];
-                return a;
-            }, {});
-
-            hosts = filterdHostd;
-        }
-
-        hosts = this.sortProperties(hosts, 'position', true, false);
-        let increment = 0;
-        Object.keys(hosts).map(i => {
-            if (!IpList.includes(i)) {
-                delete hosts[i];
-            } else {
-                hosts[i].position = increment;
-                increment++;
+        this.filterSubscription = TransactionFilterService.listen.subscribe(this.setFilters.bind(this));
+        this.messageDetailsService.arrows.subscribe((data) => {
+            const { channelId } = data.metadata.data;
+            let { itemId } = data.metadata.data;
+            if (data && this.channelIdMessageDetails === channelId) {
+                const arrData: Array<any> = this.arrayItemsVisible as Array<any>;
+                switch (data.eventType) {
+                    case ArrowEventState.PREVIOUS:
+                        itemId--;
+                        break;
+                    case ArrowEventState.FOLLOWING:
+                        itemId++;
+                        break;
+                }
+                const itemData: any = this.arrayItemsVisible[itemId];
+                this.onClickMessageRow(arrData[itemId], data.metadata.mouseEventData, {
+                    isLeft: !!arrData[itemId - 1],
+                    isRight: !!arrData[itemId + 1],
+                    itemId,
+                });
             }
         });
-
-        this.aliasTitle = Object.keys(hosts).map(i => {
-            const __alias = Object.entries(this.dataItem.data.alias).find(j => j[0].startsWith(i + ':'));
-            const alias = this.dataItem.data.alias[i] || (__alias && __alias[1]);
-            // This is where the GUI splits port from IP Address.
-            // Note: not perfect. It works 'backwards' from the end of the string
-            // If last IPv6 block has letters and digits, and there is no port, then
-            // the regexp will fail, and result in null. This is a 'best' effort
-            const regex = RegExp('(.*(?!$))(?::)([0-9]+)?$');
-            let IP, PORT;
-            if (regex.exec(i) != null) {
-                IP = regex.exec(i)[1]; // gives IP
-                PORT = regex.exec(i)[2]; // gives port
-            } else {
-                // fall back to the old method if things don't work out.
-                const al = i.match(/\d+$|(\[.*\]|\d+\.\d+\.\d+\.\d+)/g);
-                IP = al[0];
-                PORT = al[1] ? ':' + al[1] : '';
-            }
-
-            return {
-                ip: i,
-                isIPv6: IP.match(/\:/g) && IP.match(/\:/g).length > 1,
-                shortIPtext1: this.compIPV6(IP).replace(/\[|\]/g, ''),
-                shortIPtext2: this.shortcutIPv6String(IP),
-                alias: alias && alias.includes(i) ? i : alias,
-                IP,
-                arrip: [IP.replace(/\[|\]/g, '')],
-                PORT
-            };
-        });
-
-        let diffTs = 0;
-        this.labels = data.calldata.map(i => i.sid).reduce((arr, b) => {
-            if (arr.indexOf(b) === -1) {
-                arr.push(b);
-            }
-            return arr;
-        }, []).map(i => {
-            return {
-                color_sid: Functions.getColorByString(i, 100, 40, 1),
-                callid: i
-            };
-        });
-
-        /** maping hosts Combinad aliases OR IPs */
-        const positionIPs = sortedArray.map(i => this._isSimplifyPort ? [i.srcIp, i.dstIp] : [i.srcId, i.dstId])
-            .join(',').split(',').reduce((obj, b) => {
-                if (obj[b] === undefined) {
-                    obj[b] = Object.keys(obj).length;
-                }
-                return obj;
-            }, {});
-
-        /** sort hosts */
-        this.aliasTitle = Object.keys(positionIPs).reduce((arr, ip) => {
-            arr[positionIPs[ip]] = this.aliasTitle.find(i => i.ip === ip || i.shortIPtext1 === ip);
-            return arr;
-        }, []);
-        if (this._isCombineByAlias && this._isSimplifyPort && this.aliasTitle) {
-            this.aliasTitle = this.aliasTitle.reduce((arr, b) => {
-                if (b) {
-                    if (b.arrip === undefined) {
-                        b.arrip = [b.ip.replace(/\[|\]/g, '')];
-                    }
-                    const el = arr.find(k => k.alias === b.alias || k.ip === b.ip);
-                    if (el) {
-                        el.arrip.push(b.ip.replace(/\[|\]/g, ''));
-                    } else {
-                        arr.push(b);
-                    }
-                }
-                return arr;
-            }, []);
-        }
-        const getHostPosition = (ip, port, ipId) => {
-            const isEqual = (src, ip, port) => {
-                if ((ip.match(/[\:]/g) || []).length > 1) {
-                    // it's IPv6
-                    return src === ip;
-                }
-                // it's IPv4
-                ip = ip.split(':')[0];
-                return src === ip || src === `${ip}:${port}`;
-            };
-            const [isC, isS] = [this._isCombineByAlias, this._isSimplifyPort];
-            let num = 0;
-            if (isC && isS) { // 1 1
-                num = this.aliasTitle.findIndex(i => i.arrip.includes(ip));
-            } else
-                if (!isC && isS) { // 0 1
-                    num = this.aliasTitle.findIndex(i => isEqual(i.IP, ip, port));
-                } else
-                    if (!isS) { // 1 0
-                        num = this.aliasTitle.findIndex(i => (isEqual(i.IP, ip, port) && i.PORT === port + '') || i.ip === ipId);
-                    }
-            return num;
-        };
-        const at = this.aliasTitle;
-        if (at.length === 2 && at[1].arrip.length) {
-            at.push({
-                empty: true
-            });
-        }
-
-        this.flowGridLines = Array.from({ length: at.length - 1 });
-
-        this.arrayItems = sortedArray.map((item, key, arr) => {
-            diffTs = key - 1 >= 0 && arr[key - 1] !== null ? (item.micro_ts - arr[key - 1].micro_ts) / 1000 : 0;
-            const { min, max, abs } = Math;
-            const srcPosition = getHostPosition(item.srcIp, item.srcPort, item.srcId),
-                dstPosition = getHostPosition(item.dstIp, item.dstPort, item.dstId),
-                course = srcPosition < dstPosition ? 'right' : 'left',
-                position_from = min(srcPosition, dstPosition),
-                position_width = abs(srcPosition - dstPosition),
-                color_method = Functions.getMethodColor(item.method_text);
-
-            const a = srcPosition;
-            const b = dstPosition === a ? a + 1 : dstPosition;
-            const mosColor = '';
-            const isRedialArrow = srcPosition === dstPosition;
-            const middle = abs(a - b);
-            const options = {
-                mosColor,
-                color: Functions.getColorByString(item.sid, 100, 40, 1),
-                start: min(a, b),
-                middle,
-                direction: a > b,
-                rightEnd: this.aliasTitle.length - 1 - max(a, b),
-                shortdata: '',
-                isRedialArrow,
-                arrowStyleSolid: item.method_text === 'RTCP' || item.method_text === 'RTP'
-            };
-            const typeItem = item.method_text === 'RTCP' || item.method_text === 'RTP' ? item.method_text : 'SIP';
-            return {
-                options,
-                course,
-                source_data: item,
-                srcPort: item.srcPort,
-                dstPort: item.dstPort,
-                method_text: item.method_text,
-                packetType: item.method_text === 'RTCP' || item.method_text === 'RTP' ? item.method_text : 'SIP',
-                ruri_user: item.ruri_user,
-                id: item.id,
-                color_method: color_method,
-                color: Functions.getColorByString(item.sid, 100, 40, 1),
-                micro_ts: moment(item.micro_ts).format('YYYY-MM-DD HH:mm:ss.SSS Z'),
-                diffTs: diffTs.toFixed(3),
-                proto: Functions.protoCheck(item.protocol),
-                typeItem,
-                style: {
-                    left: position_from / this.aliasTitle.length * 100,
-                    width: position_width / this.aliasTitle.length * 100
-                }
-            };
-        });
-
-
-        this.dataSource = Functions.messageFormatter(this.dataItem.data.messages);
         this.cdr.detectChanges();
     }
 
-    onClickItem(item: any, event = null) {
-        if (!item) {
+    private setFilters(filters) {
+        if (!filters || !this.hosts) {
             return;
         }
-        if (item.source_data.QOS) {
-            const rtpROW: any = Object.assign({
-                typeItem: 'RTP',
-                mouseEventData: event,
-            }, Functions.cloneObject(item.source_data.RTPmessageData));
-            this.messageWindow.emit(rtpROW);
-        } else {
-            const row: any = this.dataSource.find(i => i.id === item.id) as any;
-            row.mouseEventData = event;
-            this.messageWindow.emit(row);
+        this.filters = filters;
+        const {
+            CallId,
+            PayloadType,
+            filterIP,
+            isSimplify,
+            isSimplifyPort,
+            isCombineByAlias,
+        } = filters;
+
+        this._isCombineByAlias = isCombineByAlias;
+        this.isSimplify = !isSimplify;
+        this.isSimplifyPort = isSimplifyPort;
+        if (CallId) {
+            this.labels = CallId.filter(({ selected }) => selected).map(
+                ({ title }) => ({
+                    callid: title,
+                    color: Functions.getColorByString(title),
+                })
+            );
         }
+        this.arrayItems = Functions.cloneObject(this.dataItem.data.messages)
+            .filter(item => {
+                const source_ip = (filterIP?.find(i => i.title === item.source_ip)) || { selected: true };
+                const destination_ip = (filterIP?.find(i => i.title === item.destination_ip)) || { selected: true };
+                const bool = (source_ip.selected && destination_ip.selected);
+                return bool;
+            });
+
+        this.arrayItems.forEach((item) => {
+            const itemFilter = (CallId && CallId.find(i => i.title === item.callid)) || { selected: true };
+            const payloadFilter = (PayloadType && PayloadType.find(i => i.title === item.typeItem)) || { selected: true };
+            const bool = !(itemFilter.selected && payloadFilter.selected);
+            if (bool !== item.invisible) {
+                item.invisibleDisplayNone = false;
+                item.invisible = bool;
+            }
+        });
+
+        const visibleHosts = this.arrayItems
+            .filter((i) => !i.invisible)
+            .map((i) => {
+                const source_ipisIPv6 = i.source_ip.match(/\:/g)?.length > 1;
+                const destination_ipisIPv6 = i.destination_ip.match(/\:/g)?.length > 1;
+                const sIP = source_ipisIPv6 ? `[${i.source_ip}]` : i.source_ip;
+                const dIP = destination_ipisIPv6 ? `[${i.destination_ip}]` : i.destination_ip;
+
+                return isSimplifyPort
+                    ? [i.source_ip, i.destination_ip]
+                    : [
+                        `${sIP}:${i.source_port}`,
+                        `${dIP}:${i.destination_port}`,
+                    ];
+            })
+            .join(',')
+            .split(',')
+            .sort()
+            .filter((i, k, a) => a[k - 1] !== i);
+            
+        this.hosts.forEach((h, k, arr) => {
+
+            const name = isSimplifyPort ? h.ip : h.host;
+            h.hidden = !visibleHosts.includes(name);
+
+            if (visibleHosts.includes(name)) {
+                visibleHosts.splice(visibleHosts.indexOf(name), 1);
+            }
+            h.arrip = name;
+
+
+        });
+        if (isCombineByAlias) {
+            const uniqueAliasArray = Functions.arrayUniques(
+                this.hosts.filter((i) => !i.hidden).map(i => i.alias)
+            );
+            uniqueAliasArray.forEach(alias => {
+                this.hosts.filter((i) => i.alias === alias).forEach((i, k) => i.hidden = k !== 0);
+            });
+        }
+
+        /** mapping hosts Combined aliases OR IPs */
+        const objectMap = this.hosts
+            .filter((i) => !i.hidden)
+            .map((i) => i.arrip || i.alias)
+            .reduce((a, b) => {
+                if (!a[b]) {
+                    a[b] = 0;
+                }
+                return a;
+            }, {});
+
+        /** mapping hosts position by flow */
+        let inc = 1;
+        this.arrayItems
+            .filter((i) => !i.invisible)
+            .map((i) => {
+                const source_ipisIPv6 = i.source_ip.match(/\:/g)?.length > 1;
+                const destination_ipisIPv6 = i.destination_ip.match(/\:/g)?.length > 1;
+                const sIP = source_ipisIPv6 ? `[${i.source_ip}]` : i.source_ip;
+                const dIP = destination_ipisIPv6 ? `[${i.destination_ip}]` : i.destination_ip;
+
+                return isSimplifyPort
+                    ? [i.source_ip, i.destination_ip]
+                    : [
+                        `${sIP}:${i.source_port}`,
+                        `${dIP}:${i.destination_port}`,
+                    ];
+            })
+            .join(',')
+            .split(',')
+            .forEach((i) => {
+                Object.keys(objectMap).forEach((j) => {
+                    const bool = j.includes('\n') ? j.split('\n').includes(i) : j === i;
+                    if (bool && objectMap[j] === 0) {
+                        objectMap[j] = inc;
+                        inc++;
+                    }
+                });
+            });
+
+        /** sort hosts */
+        const indexHost = this.hosts.filter((i) => !i.hidden).length - 1;
+        for (let index = indexHost; index > 0; index--) {
+            const [ip] = Object.entries(objectMap)
+                .filter((i) => i[1] === index)
+                .map((i) => i[0]);
+            const _ind = this.hosts.findIndex((i) =>
+                i.arrip ? i.arrip.includes(ip) : ip === i.alias
+            );
+            this.hosts.unshift(this.hosts.splice(_ind, 1)[0]);
+        }
+
+        this.flowGridLines = Array.from({
+            length: this.hosts.filter((i) => !i.hidden).length - 1,
+        });
+
+        const { min, max, abs } = Math;
+        const _arrayItems: any = this.arrayItems;
+        const shownHosts: any = this.hosts.filter(i => !i.hidden);
+        const [lastHost] = shownHosts.slice(-1);
+        _arrayItems
+            .filter((i) => !i.invisible)
+            .forEach((item) => {
+                const { srcAlias, dstAlias } = item || item?.messageData?.item || {};
+                const srcPosition = this.getHostPosition(item.source_ip, item.source_port, srcAlias || item.source_ip);
+                const dstPosition = this.getHostPosition(item.destination_ip, item.destination_port, dstAlias || item.destination_ip);
+
+                const isRadialArrow = srcPosition === dstPosition;
+                const isLastHost = isRadialArrow &&
+                    shownHosts.length > 1 &&
+                    lastHost.ip === item.source_ip;
+
+                const a = srcPosition;
+                const b = dstPosition;
+                const mosColor = item.QOS
+                    ? 'blinkLamp ' + this.mosColorBlink(item.QOS.MOS)
+                    : '';
+                item.options = {
+                    mosColor,
+                    color: Functions.getColorByString(item.callid),
+                    color_method: Functions.getMethodColor(item.method + ''),
+                    start: min(a, b),
+                    middle: abs(a - b) || 1,
+                    direction: isLastHost || a > b,
+                    rightEnd: this.hosts.filter((i) => !i.hidden).length - 1 - max(a, b),
+                    shortdata: '',
+                    isRadialArrow,
+                    isLastHost,
+                    arrowStyleSolid: item.typeItem === FlowItemType.SIP,
+                };
+            });
+
+        setTimeout(() => {
+            this.cdr.detectChanges();
+        }, 35);
+
+        const _hash = Functions.md5object(_arrayItems);
+        if (this.hashArrayItems === _hash) {
+            return;
+        } else {
+            this.hashArrayItems = _hash;
+            this.arrayItems = _arrayItems;
+            this.arrayItems.forEach((item) => {
+                item.invisibleDisplayNone = item.invisible;
+            });
+            this.arrayItemsVisible = this.arrayItems.filter(i => !i.invisibleDisplayNone);
+            this.setVirtualScrollerItemsArray();
+        }
+        this.updateHosts();
+        this.cdr.detectChanges();
     }
-    compIPV6(input) {
-        return input.replace(/\b(?:0+:){2,}/, ':');
+    updateHosts() {
+        const aggregatedHosts = Functions.cloneObject(this.hosts.filter(i => !i.hidden));
+        aggregatedHosts.forEach(i => {
+            this.hosts.filter(h => h.alias && h.alias === i.alias).forEach(item => {
+                i.ip_array = i.ip_array || [];
+                if (i.ip_array.find(({ ip }) => ip === item.ip)) {
+                    return;
+                }
+                i.ip_array.push({
+                    ip: item.ip,
+                    host: item
+                });
+            });
+        });
+
+        this.hostsCA = aggregatedHosts;
+    }
+    getHostPosition(ip, port, alias) {
+        ip = ip.replace(/\[|\]/g, '');
+        return this.hosts.filter(i => !i.hidden).findIndex(host =>
+            this._isCombineByAlias ?
+                host.alias === alias || host.ip === ip :
+                (this.isSimplifyPort ?
+                    host.ip === ip :
+                    host.ip === ip && host.port * 1 === port * 1)
+        );
+
+    }
+
+    ngAfterViewInit() {
+
+        setTimeout(() => {
+            this.ready.emit({});
+        }, 35);
+    }
+    ngAfterViewChecked() {
+        this._flagAfterViewInit = true;
+        setTimeout(() => {
+            this.cdr.detectChanges();
+        });
+    }
+
+    private mosColorBlink(mosNum: number) {
+        return (
+            (mosNum >= 1 && mosNum <= 2 && 'red') ||
+            (mosNum === 3 && 'gray') ||
+            (mosNum <= 3 && 'orange') ||
+            (mosNum > 3 && 'green')
+        );
+    }
+
+    showTooltip(hostItem: any) {
+        this.tooltipService.show(hostItem);
+    }
+    hideTooltip() {
+        this.tooltipService.hide();
     }
     shortcutIPv6String(str = '') {
         const regexp = /^\[?([\da-fA-F]+)\:.*\:([\da-fA-F]+)\]?$/g;
         const regfn = (fullstring, start, end) => `${start}:...:${end}`;
         return str.replace(regexp, regfn);
     }
-    /**
-    * Sort object properties (only own properties will be sorted).
-    * @param {object|any} obj object to sort properties
-    * @param {string|int} sortedBy 1 - sort object properties by specific value.
-    * @param {bool} isNumericSort true - sort object properties as numeric value, false - sort as string value.
-    * @param {bool} reverse false - reverse sorting.
-    * @returns {Array} array of items in [[key,value],[key,value],...] format.
-    */
-    private sortProperties(obj: any, sortedBy: any = 1, isNumericSort = false, reverse = false) {
-        const reversed = (reverse) ? -1 : 1;
-        const sortable = [];
 
-        for (const key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                sortable.push([key, obj[key]]);
-            }
-        }
-        if (isNumericSort) {
-            sortable.sort(function (a, b) {
-                return reversed * (a[1][sortedBy] - b[1][sortedBy]);
-            });
-        } else {
-            sortable.sort(function (a, b) {
-                const x = a[1][sortedBy].toLowerCase();
-                const y = b[1][sortedBy].toLowerCase();
-                return x < y ? reversed * -1 : x > y ? reversed : 0;
-            });
-        }
-
-        return sortable.reduce((target, [key, value]) => {
-            target[key] = value;
-            return target;
-        }, {});
+    onClickMessage(id: any, event = null, sitem = null) {
+        const arrData: Array<any> = this.arrayItemsVisible as Array<any>;
+        const index = arrData.findIndex(({ __item__index__ }) => __item__index__ === sitem.__item__index__);
+        const data: any = arrData[index];
+        this.onClickMessageRow(data, {
+            clientX: event && event.pageX,
+            clientY: event && event.pageY,
+        }, {
+            isLeft: !!arrData[index - 1],
+            isRight: !!arrData[index + 1],
+            itemId: index,
+        });
     }
+    onClickMessageRow(
+        item: any,
+        event = null,
+        { isLeft = false, isRight = false, itemId = 0 }
+    ) {
+        if (!item) {
+            return;
+        }
+        let row: any;
+        switch (item.typeItem) {
+            case FlowItemType.SIP:
+                row = item.messageData;
+                break;
+            case FlowItemType.RTP:
+            case FlowItemType.RTCP:
+                row = item.QOS;
+                row.raw = item.QOS.message;
+                row.raw_source = JSON.stringify(item.QOS.message);
+                break;
+            case FlowItemType.SDP:
 
+                const SDPbuffer = JSON.stringify(item.source_data);
+                row = item.source_data;
+                row.raw = [
+                    item.info_date,
+                    item.description,
+                    Object.assign({}, item.source_data),
+                ];
+                row.raw_source = `${item.info_date} ${item.description} ${SDPbuffer}`;
+                break;
+            case FlowItemType.DTMF:
+                const DTMFbuffer = JSON.stringify(item.source_data.DTMFitem);
+                row = item.source_data;
+                row.raw = [
+                    item.info_date,
+                    item.description,
+                    Object.assign({}, item.source_data.DTMFitem),
+                ];
+                row.raw_source = `${item.info_date} ${item.description} ${DTMFbuffer}`;
+                break;
+            case FlowItemType.LOG:
+                row = item.source_data;
+                row.raw = item.source_data?.item?.message;
+                row.raw_source = item.source_data?.item?.message;
+                row.id = `(${item.typeItem}) ${item.description}`;
+                break;
+
+        }
+        row.id = row.id || `(${item.typeItem}) ${item.info_date} ${item.description}`;
+        row.mouseEventData = event;
+        this.messageDetailsService.open(row, {
+            isLeft,
+            isRight,
+            itemId,
+            channelId: this.channelIdMessageDetails,
+            isBrowserWindow: !!this.messageDetailsService.getParentWindowData(this._dataItem.data.callid.join('---')).isBrowserWindow
+        });
+    }
+    identifyHosts(index, item) {
+        return `${index}_${item.host}_${item.hidden}`;
+    }
     identify(index, item) {
         return item.id;
     }
@@ -488,58 +519,33 @@ export class TabFlowComponent implements OnInit, AfterViewInit, OnDestroy {
             return;
         }
         if (html2canvas && typeof html2canvas === 'function') {
+            this.cdr.detectChanges();
             const f: Function = html2canvas as Function;
-            f(this.flowscreen.nativeElement).then(canvas => {
+            f(this.flowscreen.nativeElement).then((canvas) => {
                 this.canvas.nativeElement.src = canvas.toDataURL();
                 this.downloadLink.nativeElement.href = canvas.toDataURL('image/png');
                 this.downloadLink.nativeElement.download = `${this.callid}.png`;
                 this.downloadLink.nativeElement.click();
                 setTimeout(() => {
                     this.pngReady.emit({});
-                }, 100);
+                });
             });
         }
     }
-    onCopyToClipboard(e) {
-        const el = document.createElement('textarea');
-        el.value = e;
-        el.setAttribute('readonly', '');
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
-        window.alert('IP ' + e + ' copied to clipboard');
-    }
-    openSnackBar(e) {
-        const el = document.createElement('textarea');
-        el.value = e;
-        el.setAttribute('readonly', '');
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
-        const message = e;
-        const action = 'copied to clipboard';
-        this._snackBar.open(message, action, {
-            duration: 3000,
-            panelClass: 'copysnack'
-        });
-    }
-    onScroll({ target: { scrollTop } }) {
-        if (this.ScrollTarget === 'virtualScrollbar') {
-            this.virtualScroll.scrollToOffset(scrollTop);
-            return;
-        }
-        if (this.ScrollTarget === 'virtualScroll') {
-            this.virtualScrollbar.nativeElement.scrollTop = scrollTop;
-            return;
-        }
-    }
-    get getVirtualScrollHeight(): string {
-        const _h = Math.floor((this.virtualScroll && this.virtualScroll.elementRef.nativeElement.scrollHeight || 1) + 80);
-        return `translateY(${_h}px)`;
-    }
+
     setScrollTarget(targetString: string) {
         this.ScrollTarget = targetString;
+    }
+    onScrollVScrollWrapper({ target: { scrollLeft } }: any) {
+        try {
+            this.flowscreen.nativeElement.style.marginLeft = `${-scrollLeft}px`;
+        } catch (e) { }
+
+    }
+    setVirtualScrollerItemsArray() {
+        this.virtualScrollerItemsArray = [{ _step: 'top' }, ...this.arrayItemsVisible, { _step: 'bottom' }];
+    }
+    ngOnDestroy() {
+        this.filterSubscription?.unsubscribe();
     }
 }

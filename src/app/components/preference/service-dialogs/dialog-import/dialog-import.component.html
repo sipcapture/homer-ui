@@ -1,0 +1,40 @@
+<mat-toolbar class="dialog-title" color="primary">
+    <div>{{pageId}} import</div>
+    <button mat-icon-button (click)="onNoClick()">
+        <fa-icon icon="times"></fa-icon>
+    </button>
+</mat-toolbar>
+    <div mat-dialog-content>
+    <mat-checkbox [(ngModel)]="isReplace" style='display: block;'>Replace existing values</mat-checkbox>
+    <mat-checkbox [(ngModel)]="isHomer2" style='display: block;'>Homer 2 compatibility mode</mat-checkbox>
+    <form>
+    <div class="file-upload-container">
+        <label for="fileSelect" [className]="'fileselect' + (isDragOver ? ' dragOver' : '')"></label>
+        <input placeholder="" value="" type="file" id="fileUpload" accept=".csv" #fileUpload multiple="multiple">
+    </div>
+    </form>
+  <div style="text-align: center; margin-top: 100px" [hidden]="!isUploading">
+    <mat-card style="margin-top: 10px; width: 600px">
+        <mat-card-content>
+            <ul>
+                <li *ngFor="let file of files" [@fadeInOut]="file.state" >
+                    <span id="file-label">Uploading file </span>
+                    <mat-progress-bar [value]="file.progress"></mat-progress-bar>
+                    <span id="file-label">  {{file.data.name}}
+                        <a title="Retry" (click)="retryFile(file)" *ngIf="file.canRetry"> <mat-icon>refresh</mat-icon></a>
+                        <a title="Cancel" (click)="cancelFile(file)" *ngIf="file.canCancel">  <mat-icon>cancel</mat-icon></a>
+                    </span>
+                </li>
+            </ul>
+        </mat-card-content>
+        <span id="uploadinfo">{{uploadInfo}}</span>
+        <mat-card-actions> </mat-card-actions>
+    </mat-card>
+    </div>
+</div>
+
+  <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
+    <button mat-raised-button (click)="onNoClick()"></button>
+    <button mat-raised-button class="setting-btn-ok" cdkFocusInitial
+      (click)="onNoClick()">{{'LINK.buttons.close' | translate}}</button>
+  </div>

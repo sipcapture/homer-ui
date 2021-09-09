@@ -1,12 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SettingGeneralIframeWidgetComponent } from './setting-general-iframe-widget.component';
 import { MatDialog } from '@angular/material/dialog';
-import { DateTimeRangeService, DateTimeTick} from '../../../services/data-time-range.service';
+import { DateTimeRangeService, DateTimeTick } from '@services';
 
 import { Subscription } from 'rxjs';
 import { IWidget } from '../IWidget';
 import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
-
+import { TranslateService } from '@ngx-translate/core';
 
 export interface GeneralIframeConfig {
     id?: string;
@@ -21,7 +21,8 @@ export interface GeneralIframeConfig {
 @Component({
     selector: 'app-general-iframe-widget',
     templateUrl: './general-iframe-widget.component.html',
-    styleUrls: ['./general-iframe-widget.component.scss']
+    styleUrls: ['./general-iframe-widget.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 @Widget({
     title: 'Embed Content',
@@ -30,12 +31,13 @@ export interface GeneralIframeConfig {
     indexName: 'embed-content',
     className: 'GeneralIframeWidgetComponent',
     minHeight: 300,
-    minWidth: 300
+    minWidth: 300,
+
 })
 export class GeneralIframeWidgetComponent implements IWidget {
     @Input() config: GeneralIframeConfig;
     @Input() id: string;
-    @Output() changeSettings = new EventEmitter<any> ();
+    @Output() changeSettings = new EventEmitter<any>();
 
     url: string;
     _config: GeneralIframeConfig;
@@ -48,7 +50,12 @@ export class GeneralIframeWidgetComponent implements IWidget {
     constructor(
         public dialog: MatDialog,
         private _dtrs: DateTimeRangeService,
-        ) { }
+        private cdr: ChangeDetectorRef,
+        public translateService: TranslateService
+    ) {
+        translateService.addLangs(['en'])
+        translateService.setDefaultLang('en')
+    }
 
     ngOnInit() {
         WidgetArrayInstance[this.id] = this as IWidget;
@@ -74,11 +81,14 @@ export class GeneralIframeWidgetComponent implements IWidget {
         this.subscription = this._dtrs.castRangeUpdateTimeout.subscribe((dtr: DateTimeTick) => {
             if (this._config.refresh) {
                 this.buildUrl();
+                this.cdr.detectChanges();
             }
         });
+        this.cdr.detectChanges();
     }
     public refresh() {
         this.buildUrl();
+        this.cdr.detectChanges();
     }
 
     buildUrl() {
@@ -87,6 +97,7 @@ export class GeneralIframeWidgetComponent implements IWidget {
             return;
         }
         this.url = this._config.url;
+        this.cdr.detectChanges();
     }
 
     onLoadGeneralIframe() {
@@ -120,7 +131,8 @@ export class GeneralIframeWidgetComponent implements IWidget {
                 id: this.id
             });
         }
+        this.cdr.detectChanges();
     }
 
-    ngOnDestroy () {}
+    ngOnDestroy() { }
 }

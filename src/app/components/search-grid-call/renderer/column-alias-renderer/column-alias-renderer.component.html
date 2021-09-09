@@ -1,0 +1,8 @@
+
+<span class='cell-wrapper' [ngClass]="{'selected': selected}" (mousedown)='startCopy()' (mouseup)='copy(ip.value)'>
+    <div class="user-actions">
+        <div class="alias-field" [matTooltip]='ellipsed(ip.value)'>
+            {{ip.name}}
+        </div>
+    </div>
+</span>

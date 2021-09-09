@@ -1,70 +1,131 @@
-<mat-toolbar color="primary" class="header">
-	<div class="logo-base" (click)="backLastToDashboard()">
-		<img src="assets/images/homerseven.png" />
-		<div class="logo-text">homer</div>
-	</div>
-	<div>
-		<div style="float: right; margin-bottom: 0rem; ">
-			<button mat-button (click)="onPreference()">Settings</button>
-			<button mat-button [matMenuTriggerFor]="panels" [(ngModel)]="panelName" name="panelName"
-				ngDefaultControl>Panels: {{panelName || 'Home'}}</button>
-			<mat-menu #panels="matMenu">
-				<mat-form-field style="margin-left: 1rem;">
-					<mat-label>filter dashboards...</mat-label>
-					<input matInput [(ngModel)]="searchText" (click)="$event.stopPropagation();">
-				</mat-form-field>
-				<button mat-menu-item *ngFor="let dashboardItem of dashboards | filter : searchText"
-					[className]="'menu-item ' + (dashboardItem.id === currentDashboardId ? 'menu-item-active' : '')"
-					(click)="panelName = dashboardItem.name; dashboardGo(dashboardItem.href)"
-					[title]="dashboardItem.name + ' (' + dashboardItem.id + ')'">
-					<mat-icon>dashboard</mat-icon>{{dashboardItem.name}}
-				</button>
-                <div  class="menu-item menu-item-text" *ngIf="sharedDashboards !== undefined && sharedDashboards.length > 0">
-                    Shared Dashboards
-                </div>
-                <button mat-menu-item *ngFor="let dashboardItem of sharedDashboards | filter : searchText"
-                    [className]="'menu-item ' + (dashboardItem.id === currentDashboardId ? 'menu-item-active' : '')"
-                    (click)="panelName = dashboardItem.name; dashboardGo(dashboardItem.href)"
-                    [title]="dashboardItem.name + ' (' + dashboardItem.id + ')'">
-                    <mat-icon>dashboard</mat-icon>{{dashboardItem.name}}
-                </button>
-				<button mat-menu-item (click)="onAddDashboard()">
-					<mat-icon>add</mat-icon>
-					Add New Dashboard
-				</button>
-			</mat-menu>
 
-			<span class="mat-button time-range-icon">
-				<mat-icon>access_time</mat-icon>
-			</span>
-			<span style="color: white;">
-				<input type="button" class="mat-button" ngxDaterangepickerMd [showCustomRangeLabel]="true"
-					[alwaysShowCalendars]="true" [ranges]="ranges" [linkedCalendars]="true" [showClearButton]="false"
-					[autoApply]="false" [opens]="'left'" [timePicker]="true" [timeInput]="true" [timeZone]="true"
-					[timePickerSeconds]="true" [timePickerIncrement]="1"
-					[locale]="{format: 'DD/MM/YYYY HH:mm:ss', firstDay: 1}" [timePicker24Hour]="true"
-					(rangeClicked)="onRangeClicked($event)" (datesUpdated)="onDatesUpdated($event)"
-					[timepickerTimezone]=timepickerTimezone [startDate]=startDate [endDate]="endDate"
-					[titleDate] = "selectedDateTimeRangeTitle" [value]="selectedDateTimeRangeTitleValue" />
-			</span>
-			<button mat-button (click)="refresh()"
-				[className]="'mat-button mat-button-base btn-refresh ' + loadingAnim">
-				<mat-icon>refresh</mat-icon>
-			</button>
-			<button mat-button class="btn-refresh-timer" name="refresherName" [matMenuTriggerFor]="refrasher"
-				[(ngModel)]="refresherName" ngDefaultControl>
-				{{refresherName || 'off'}}
-			</button>
-			<mat-menu #refrasher="matMenu">
-				<button mat-menu-item *ngFor="let item of refresherList"
-					(click)="refresherName = item.name; onRefrasher(item.value)">
-					{{ item.title }}
-				</button>
-			</mat-menu>
-			<button mat-button (click)="logout()">
-				<mat-icon>exit_to_app</mat-icon>
-			</button>
-		</div>
-	</div>
+<mat-toolbar color="primary" class="header">
+    <div class="menu-start">
+      <div class="logo-base">
+
+        <button mat-button (click)="backLastToDashboard()" [matTooltip]="('menu.home'|translate)">
+         
+          <div class="logo-container">
+            <span class="logo-img"><img src="assets/images/homerseven.png" /></span>  
+            <span class="logo-text">
+                homer
+            </span> </div>
+        </button>
+      </div>
+        <button [matTooltip]="('menu.settings'| translate)" mat-button (click)="onPreference()">
+            <mat-icon>tune</mat-icon>
+        </button>
+    </div>
+    <div  cdkDropList cdkDropListOrientation="horizontal" class="example-list droplist"
+         (cdkDropListDropped)="dropFav($event)"  (wheel)='onScroll($event, "favList")' #favList style='overflow-x: scroll;'>
+        <div *ngFor="let favorite of favoriteDashboardsList" class="example-box fav-menu-button" cdkDrag >
+
+            <span (click)="panelName = favorite.name; dashboardGo(favorite.href)">
+                {{favorite.name}}
+            </span>
+            <button (click)="addDashboardFavorite(favorite)">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </div>
+    <div cdkDropList cdkDropListOrientation="horizontal" class="example-list-tabs droplist" [ngClass]="{'tab-title': searchTabsList.length > 0}"
+         (cdkDropListDropped)="dropSearchTab($event)" (wheel)='onScroll($event, "tabList")' #tabList style='overflow-x: scroll;'>
+
+        <div *ngFor="let searchTab of searchTabsList" class="example-box fav-menu-button searchtabs" cdkDrag>
+            <span (click)="panelName = searchTab.name; tabGo(searchTab)">
+                {{searchTab.name}}</span>
+            <button (click)="deleteSearchTab(searchTab)">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </div>
+    <div>
+        <div style="float: right; margin-bottom: 0rem; ">
+
+            <button [matTooltip]="('menu.selectDashboard'|translate)" mat-button [matMenuTriggerFor]="panels" [(ngModel)]="panelName" name="panelName"
+                ngDefaultControl><span class="dash-span">{{'menu.dashboard'|translate}}</span> {{panelName || ('menu.home' | translate)}}</button>
+            <mat-menu #panels="matMenu">
+                <button mat-menu-item (click)="onAddDashboard()"
+                        [matTooltip]="('menu.createNewDashboard'|translate)"
+                        style="border-bottom: 1px solid black;"
+                        >
+                        <fa-icon icon="plus"></fa-icon>
+                        {{'menu.newDashboard'| translate}}
+                </button>
+                <mat-form-field style="margin-left: 1rem;">
+                    <mat-label>{{'menu.filterDashboards'|translate}}</mat-label>
+                    <input matInput [(ngModel)]="searchText" (click)="$event.stopPropagation();">
+                </mat-form-field>
+
+                <div *ngFor="let dashboardItem of dashboards | filter : searchText"
+                    style="display: flex;justify-content: space-between;">
+                    <button mat-menu-item *ngIf="dashboardItem.type !== 6"
+                    [ngClass]="{'menu-item-active': dashboardItem.id === currentDashboardId}"
+                        (click)="panelName = dashboardItem.name; dashboardGo(dashboardItem.href)"
+                        [matTooltip]="dashboardItem.name + ' (' + dashboardItem.id + ')'">
+                        <mat-icon>dashboard</mat-icon>{{dashboardItem.name}}
+                    </button>
+                    <button mat-button *ngIf="dashboardItem.type !== 6"
+                        [className]="'addToFavorites' + (hasFav(dashboardItem,favoriteDashboardsList) ? ' activeFavorite': '')"
+                        (click)="addDashboardFavorite(dashboardItem)">
+                        <mat-icon>grade</mat-icon>
+                    </button>
+                </div>
+                <div  class="menu-item menu-item-text" *ngIf="sharedDashboards !== undefined && sharedDashboards.length > 0">
+                   {{'menu.sharedDashboards'|translate}}
+                </div>
+                <div *ngFor="let dashboardItem of sharedDashboards | filter : searchText"
+                    style="display: flex;justify-content: space-between;">
+                    <button mat-menu-item *ngIf="dashboardItem.type !== 6"
+                    [ngClass]="{'menu-item-active': dashboardItem.id === currentDashboardId}"
+                        (click)="panelName = dashboardItem.name; dashboardGo(dashboardItem.href)"
+                        [matTooltip]="dashboardItem.name + ' (' + dashboardItem.id + ')' + ('menu.sharedBy'|translate) + dashboardItem.owner" >
+                        <mat-icon>dashboard</mat-icon>{{dashboardItem.name}}
+                    </button>
+                    <button mat-button *ngIf="dashboardItem.type !== 6"
+                        [className]="'addToFavorites' + (hasFav(dashboardItem,favoriteDashboardsList) ? ' activeFavorite': '')"
+                        (click)="addDashboardFavorite(dashboardItem)">
+                        <mat-icon>grade</mat-icon>
+                    </button>
+                </div>
+            </mat-menu>
+
+            <span class="mat-button time-range-icon">
+                <fa-icon icon="clock"></fa-icon>
+            </span>
+            <span style="color: white;">
+                <input type="button" class="mat-button" ngxDaterangepickerMd [showCustomRangeLabel]="true"
+                    [matTooltip]="('menu.changeTimeRange'|translate)"
+                    [alwaysShowCalendars]="true" [ranges]="ranges" [linkedCalendars]="true" [showClearButton]="false"
+                    [autoApply]="false" [opens]="'left'" [timePicker]="true" [timeInput]="true" [timeZone]="true"
+                    [timePickerSeconds]="true" [timePickerIncrement]="1"
+                    [locale]="{format: 'DD/MM/YYYY HH:mm:ss', firstDay: 1}" [timePicker24Hour]="true"
+                    (rangeClicked)="onRangeClicked($event)" (datesUpdated)="onDatesUpdated($event)"
+                    [value]="selectedDateTimeRangeTitle" />
+            </span>
+            <button
+                [matTooltip]="('menu.refreshResults' | translate)"
+                mat-button class="btn-refrash"
+                [ngClass]="{'loading-anim': !!loadingAnim}"
+                (click)="refresh()">
+                <fa-icon icon="sync" [ngClass]="{'notify': notify}"></fa-icon>
+            </button>
+            <button mat-button class="btn-refrash-timer" name="refresherName" [matMenuTriggerFor]="refrasher"
+                [(ngModel)]="refresherName" ngDefaultControl
+                [matTooltip]="('menu.changeRefreshRange'|translate)">
+                {{refresherName || 'off'}} <mat-icon>keyboard_arrow_down</mat-icon>
+            </button>
+            <mat-menu #refrasher="matMenu">
+                <button mat-menu-item *ngFor="let item of refresherList"
+                    (click)="refresherName = item.name; onRefrasher(item.value)">
+                    {{ item.title }}
+                </button>
+            </mat-menu>
+
+            <button [matTooltip]="('menu.logout'|translate)" mat-button (click)="logout()">
+                <mat-icon>exit_to_app</mat-icon>
+            </button>
+        </div>
+    </div>
 </mat-toolbar>
 <router-outlet></router-outlet>

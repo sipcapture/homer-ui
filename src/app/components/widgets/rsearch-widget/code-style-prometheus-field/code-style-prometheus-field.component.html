@@ -14,7 +14,7 @@
 <div [matMenuTriggerFor]="trigger" style="position: absolute;"></div>
 
 <div *ngIf="lokiConnectionDisapper" class="error">
-    <mat-icon>error</mat-icon>
+    <fa-icon icon="exclamation-circle"></fa-icon>
 Error connecting to datasource: Data source connected, but no labels received. Verify that Loki and Promtail is configured properly.
 </div>
 

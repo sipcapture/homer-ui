@@ -1,12 +1,26 @@
+.chack-list {
+	margin-right: 1.3rem;
+}
+
+.title {
+	margin: -1.5rem -1.5rem 2rem -1.5rem;
+	width: initial !important;
+	display: flex;
+	justify-content: space-between;
+}
+
+
 .chart-container {
 	position: relative;
 	height: 100%;
 	width: 100%;
 }
+
 .fill-container {
 	height: 100%;
 	width: 100%;
 }
+
 .panel-setting {
 	width: 300px;
 	padding: 1rem;
@@ -14,13 +28,15 @@
 	overflow-y: auto;
 	transition: all 0.3s;
 	opacity: 1;
+
 	&.hide {
 		opacity: 0;
 		width: 0px;
 	}
 }
+
 .show-hide-label {
-	position: absolute;
+	position: relative;
 	display: inline-flex;
 	height: fit-content;
 	padding: 0;
@@ -29,4 +45,63 @@
 	cursor: pointer;
 	top: 0;
 	right: 0;
+}
+
+mat-sidenav-content {
+	padding: 12px;
+	display: block;
+}
+
+.sidenav-toolbar {
+	flex: 1;
+}
+
+.mat-sidenav-container {
+	width: 99%;
+	height: 91%;
+	margin: 8px;
+	flex: 1;
+	border: 1px solid #555;
+}
+
+
+section {
+	display: table;
+}
+
+.chart-label {
+	display: table-cell;
+	font-size: 14px;
+	margin-left: 8px;
+	min-width: 80px;
+}
+
+.chart-button-row {
+	display: table-cell;
+	width: 290px;
+}
+
+.chart-button-row .mat-button-base {
+	margin: 8px 8px 8px 0;
+}
+
+.chart-flex-container {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+
+.chart-button-container {
+	display: flex;
+	justify-content: center;
+	width: 80px;
+}
+
+.chart-selection-body {
+	display: flex;
+}
+
+.settngs-chart-content{
+	display: block;
+	overflow: hidden;
 }

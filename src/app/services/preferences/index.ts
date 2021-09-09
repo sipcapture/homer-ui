@@ -5,4 +5,6 @@ export * from './hepsub.service';
 export * from './agentsub.service';
 export * from './mapping-protocol.service';
 export * from './user-settings.service';
+export * from './scripts.service';
 export * from './user.service';
+export * from './ipalias.service';

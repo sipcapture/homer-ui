@@ -1,24 +1,27 @@
-
 <form>
+  <div>
+  </div>
   <div class="example-container">
-    <app-code-style-field
-      [queryText]="queryText"
-      (updateData)="onCodeData($event)"
-    ></app-code-style-field>
-    
+   
+      <app-code-style-field [queryText]="queryText"
+      (updateData)="onCodeData($event)"></app-code-style-field>
+   
+   
     <mat-form-field>
       <mat-label>Limit</mat-label>
       <input matInput
         [(ngModel)]="limit"
         [ngModelOptions]="{standalone: true}"
         (change)="onChangeField($event)"
-        (keydown.enter)="handleEnterKeyPress($event)"
-      >
+        (keydown.enter)="handleEnterKeyPress($event)">
     </mat-form-field>
   </div>
   <div class="action-buttons">
-      <button mat-raised-button (click)="onClearFields()">Clear</button>
-      <button mat-raised-button color="primary" (click)="doSearchResult()">Search</button>
+    <button mat-raised-button
+      class="clear-btn"
+      (click)="onClearFields()">{{'LINK.buttons.clear' | translate}}</button>
+    <button mat-raised-button
+      class="search-btn"
+      (click)="doSearchResult()">{{'LINK.buttons.search' | translate}}</button>
   </div>
 </form>
-<div class="info-label">Press CTRL+Enter for Search</div>

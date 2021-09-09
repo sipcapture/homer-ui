@@ -8,7 +8,8 @@ import {
     Input,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
-    OnChanges } from '@angular/core';
+    OnChanges
+} from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { SearchRemoteService, PreferenceAdvancedService } from '@app/services';
 
@@ -22,7 +23,6 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
     divHTML: string;
     divText: string;
     serverLoki: string;
-    lokiTemplate: string;
     editor: HTMLElement;
     isLabel = true;
     _queryText: string;
@@ -42,8 +42,8 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
     }
     @Output() updateData: EventEmitter<any> = new EventEmitter();
     @Output() keyEnter: EventEmitter<any> = new EventEmitter();
-    @ViewChild('divContainer', {static: false}) divContainer;
-    @ViewChild(MatMenuTrigger, {static: false}) trigger: MatMenuTrigger;
+    @ViewChild('divContainer', { static: false }) divContainer;
+    @ViewChild(MatMenuTrigger, { static: false }) trigger: MatMenuTrigger;
 
     popupList: Array<string>;
 
@@ -52,15 +52,14 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
         private _srs: SearchRemoteService,
         private cdr: ChangeDetectorRef
     ) {
-        this._pas.getAll().toPromise().then((data: any) => {
-            [this.serverLoki] = data.data
-                .filter(i => i.category === 'search' && i.param === 'lokiserver')
-                .map(i => i.data.host);
-            [this.lokiTemplate] = data.data
-            .filter(i => i.category === 'search' && i.param === 'lokiserver')
-            .map(i => i.data.template);
-            this.updateEditor();
-            this.cdr.detectChanges();
+        this._pas.getAll().toPromise().then(res => {
+            if (res && res.data) {
+                this.serverLoki = res.data.find(i =>
+                    i.category === 'search' &&
+                    i.param === 'lokiserver'
+                ).data.host;
+                this.updateEditor();
+            }
         });
     }
 
@@ -73,7 +72,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
         }
         this.cdr.detectChanges();
     }
-    ngAfterViewInit () {
+    ngAfterViewInit() {
         this.editor = this.divContainer.nativeElement;
         this.editor.addEventListener('input', this.updateEditor.bind(this));
         if (this.queryText && this.editor !== undefined) {
@@ -83,65 +82,65 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
         this.cdr.detectChanges();
     }
     async getLabels() {
-        try {
-            this.menuTitle = 'Labels';
-            this.popupList = ['loading...'];
+        // try {
+        this.menuTitle = 'Labels';
+        this.popupList = ['loading...'];
+        this.trigger.openMenu();
+        this.setMenuXPosition();
+        this.editor.focus();
+
+        const labels: Array<string> = await this._srs.getLabel(this.serverLoki).toPromise();
+        this.isLabel = true;
+        if (labels?.length === 0) {
+            this.lokiConnectionDisapper = true;
+            return;
+        }
+        this.lokiConnectionDisapper = false;
+
+        const readyAdded = this.getObject(this.editor.innerText);
+
+        this.popupList = labels?.filter(i => {
+            return Object.keys(readyAdded).indexOf(i) === -1;
+        });
+
+        if (this.popupList?.length > 0) {
             this.trigger.openMenu();
-                this.setMenuXPosition();
-                this.editor.focus();
-
-            let labels: Array<string> = await this._srs.getLabel(this.serverLoki).toPromise();
-            this.isLabel = true;
-            if (labels.length === 0) {
-                this.lokiConnectionDisapper = true;
-                return;
-            }
-            this.lokiConnectionDisapper = false;
-
-            const readyAdded = this.getObject(this.editor.innerText);
-
-            this.popupList = labels.filter(i => {
-                return Object.keys(readyAdded).indexOf(i) === -1;
-            });
-
-            if ( this.popupList.length > 0) {
-                this.trigger.openMenu();
-                this.setMenuXPosition();
-                this.editor.focus();
-            } else {
-                this.trigger.closeMenu();
-            }
-            this.cdr.detectChanges();
-        } catch (error) {
-            console.error({error});
+            this.setMenuXPosition();
+            this.editor.focus();
+        } else {
+            this.trigger.closeMenu();
         }
+        this.cdr.detectChanges();
+        // } catch (error) {
+        //     console.error({error});
+        // }
     }
-    async getVariabls (label: string = null) {
+    async getVariabls(label: string = null) {
         label = label || this.editor.innerText.split(',').pop().replace(/[\=\"\,\{\}]+/g, '');
-        try {
-            setTimeout(() => {
-                this.isLabel = false;
-                this.popupList = ['loading...'];
-                this.menuTitle = `Label value for "${label}"`;
-                this.trigger.openMenu();
-                this.setMenuXPosition();
-                this.editor.focus();
-            }, 0);
-
-            this.popupList = await this._srs.getValues(label, this.serverLoki).toPromise();
-
+        // try {
+        // setTimeout(() => {
             this.isLabel = false;
-            if ( this.popupList.length > 0) {
-                this.menuTitle = `Label value for "${label}"`;
-                this.trigger.openMenu();
-                this.setMenuXPosition();
-                this.editor.focus();
-            } else {
-                this.trigger.closeMenu();
-            }
-        } catch (error) {
-            console.error({error});
+            this.popupList = ['loading...'];
+            this.menuTitle = `Label value for "${label}"`;
+            this.trigger.openMenu();
+            this.setMenuXPosition();
+            this.editor.focus();
+        // }, 0);
+
+        this.popupList = await this._srs.getValues(label, this.serverLoki).toPromise();
+
+        this.isLabel = false;
+        if (this.popupList?.length > 0) {
+            this.menuTitle = `Label value for "${label}"`;
+            this.trigger.openMenu();
+            this.setMenuXPosition();
+            this.editor.focus();
+        } else {
+            this.trigger.closeMenu();
         }
+        // } catch (error) {
+        //     console.error({error});
+        // }
     }
     private setMenuXPosition() {
         if (this.getCaretPosition() === -1) {
@@ -172,14 +171,14 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
         }
     }
     onKeyDownDiv(event) {
-        if (!!({ArrowDown: 1, ArrowUp: 1, Enter: 1})[event.key]) {
+        if (!!({ ArrowDown: 1, ArrowUp: 1, Enter: 1 })[event.key]) {
             this.triggerNavMenu(event.key);
             event.preventDefault();
             return;
         }
 
     }
-    onKeyUpDiv(event) {
+    onKeyUpDiv(event):void {
         // 16 - Shift
         // 13 - Enter
         // 17 - Ctrl
@@ -190,12 +189,13 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
             this.trigger.closeMenu();
             return;
         }
-        if (!!({ArrowDown: 1, ArrowUp: 1, Enter: 1})[event.key]) {
+        if (!!({ ArrowDown: 1, ArrowUp: 1, Enter: 1 })[event.key]) {
             this.triggerNavMenu(event.key);
             event.preventDefault();
             return;
         }
-        if (['}', ']', ')'].indexOf(event.key) !== -1) {
+
+        if ([221].indexOf(event.keyCode) !== -1) {
             if (')}]'.indexOf(this.editor.innerText[0]) !== -1) {
                 this.editor.innerText = this.editor.innerText.slice(1);
             }
@@ -204,12 +204,12 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
                 return;
             }
             event.preventDefault();
-            return false;
+            return;
         }
-        if (['{', '[', '"', "'", ',', '=', '`'].indexOf(event.key) !== -1) {
-        // if (['[', '"', ',', '=', '`'].includes(event.key)) {
+        if ([219, 222, 188, 187, 192].indexOf(event.keyCode) !== -1) {
+            // if (['[', '"', ',', '=', '`'].includes(event.key)) {
 
-            const getLastLetter = window.getSelection().anchorNode.textContent.split('')[0];
+            const getLastLetter = window.getSelection().anchorNode.textContent.split('').find(i => !!i);
 
             if ('(' === getLastLetter) { // ()
                 this.editor.innerText = '()';
@@ -247,15 +247,15 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
     private getCaretPosition() {
         try {
             const d = window.getSelection().anchorNode.parentNode as HTMLElement;
-            this.lastMenuXPosition = Math.round( d.getBoundingClientRect().left );
-            return Math.round( d.getBoundingClientRect().left );
+            this.lastMenuXPosition = Math.round(d.getBoundingClientRect().left);
+            return Math.round(d.getBoundingClientRect().left);
         } catch (e) {
             return -1;
         }
     }
-    getObject (str: string) {
+    getObject(str: string) {
         if (str.match(/\{.*\}/g)) {
-            str = str.match(/\{.*\}/g)[0];
+            str = str.match(/\{.*\}/g).find(i => !!i);
         }
         const json = str.replace(/\{|\}/g, '')
             .split(',')
@@ -263,7 +263,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
                 if (i.indexOf('=') === -1) {
                     i += ':';
                 }
-            return i;
+                return i;
             }).join(',')
             .replace(/\=/g, ':')
             .replace(/[a-zA-Z-]+/g, (a, b) => `"${a}"`)
@@ -274,21 +274,21 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
             .replace(':}', ': null}')
             .replace('":"}', '": null}')
             .replace('",: null}', '"}');
-            try {
-                if (json === '{: null}') {
-                    return {};
-                }
-                return JSON.parse(json);
-            } catch (e) {
-                return json;
+        try {
+            if (json === '{: null}') {
+                return {};
             }
+            return JSON.parse(json);
+        } catch (e) {
+            return json;
+        }
     }
     getRegExpString(str) {
         return str.split(/\{.*\}\s*/g)[1] || '';
     }
-    onMenuMessage (item, event: any = null) {
-        if (!event || (event.keyCode === 13 || event.keyCode === 32 )) {
-            if (this.isLabel ) {
+    onMenuMessage(item, event: any = null) {
+        if (!event || (event.keyCode === 13 || event.keyCode === 32)) {
+            if (this.isLabel) {
                 this.typeInTextarea(item + '=');
                 this.updateEditor(null, true);
                 const c = this.editor.innerText.length - 1;
@@ -322,6 +322,8 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
                 cssClass = 'Pquotes';
             } else if (i.match(/[a-z]+/g)) {
                 cssClass = 'Plabel';
+            } else if (i.match('@'.indexOf(i) !== -1)) {
+                cssClass = 'Pcommat'
             }
             const span = document.createElement('span');
             span.classList.add(cssClass);
@@ -331,13 +333,13 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
         }).join('');
     }
 
-    private getTextSegments (element) {
+    private getTextSegments(element) {
         const textSegments = [];
         try {
             Array.from(element.childNodes).forEach((node: Node) => {
                 switch (node.nodeType) {
                     case Node.TEXT_NODE:
-                        textSegments.push({text: node.nodeValue, node});
+                        textSegments.push({ text: node.nodeValue, node });
                         break;
 
                     case Node.ELEMENT_NODE:
@@ -355,11 +357,11 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
     private updateEditor(event = null, setEnd = false) {
         const sel = window.getSelection();
         const textSegments = this.getTextSegments(this.editor);
-        const textContent = textSegments.map(({text}) => text).join('');
+        const textContent = textSegments.map(({ text }) => text).join('');
         let anchorIndex = null;
         let focusIndex = null;
         let currentIndex = 0;
-        textSegments.forEach(({text, node}) => {
+        textSegments.forEach(({ text, node }) => {
             if (node === sel.anchorNode) {
                 anchorIndex = currentIndex + sel.anchorOffset;
             }
@@ -382,7 +384,6 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
             this.updateData.emit({
                 text: textContent,
                 serverLoki: this.serverLoki,
-                template: this.lokiTemplate || '',
                 obj: this.getObject(textContent),
                 rxText: this.getRegExpString(textContent)
             });
@@ -402,7 +403,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
         let focusIndex = 0;
         let currentIndex = 0;
 
-        textSegments.forEach(({text, node}) => {
+        textSegments.forEach(({ text, node }) => {
             const startIndexOfNode = currentIndex;
             const endIndexOfNode = startIndexOfNode + text.length;
             if (startIndexOfNode <= absoluteAnchorIndex && absoluteAnchorIndex <= endIndexOfNode) {
@@ -426,7 +427,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
         const end = sel['extentOffset'] || 0;
         const text = el.innerText;
         const before = text.substring(0, start);
-        const after  = text.substring(end, text.length);
+        const after = text.substring(end, text.length);
         el.innerText = (before + str + after);
         el.focus();
         return false;

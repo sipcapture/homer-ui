@@ -1,28 +1,39 @@
-<mat-toolbar class="title" color="primary">
-  <div>Auth Token Settings</div>
+<mat-toolbar class="dialog-title" color="primary">
+  <div>{{ 'preference.authtoken.dialog.title' | translate }}</div>
   <button mat-icon-button (click)="onNoClick()">
-    <mat-icon>close</mat-icon>
+    <fa-icon icon="times"></fa-icon>
   </button>
 </mat-toolbar>
 <div mat-dialog-content>
- Auth Token:  <code>{{ data.isnew ? '': data.data.guid }}</code><hr />
-  <div style="display: flex;align-items: center;">
+  <div class="authkey-cont">
     <mat-form-field style="padding-right: 1rem;">
-    <mat-label>Auth Token Name</mat-label>
-    <input matInput [(ngModel)]="data.data.name">
-  </mat-form-field>
-  <mat-form-field style="padding-right: 1rem;">
-    <mat-label>Expire Date</mat-label>
-    <input matInput [matDatepicker]="picker" [(ngModel)]="data.data.expire_date">
-    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
+        <mat-label>{{ 'preference.authtoken.dialog.name' | translate }}</mat-label>
+        <input matInput [(ngModel)]="data.data.name" [formControl]="name" autocomplete="off">
+        <mat-error *ngIf="name?.errors?.required">{{'validators.required' | translate }}</mat-error>
+        <mat-error *ngIf="name?.errors?.minlength">
+          {{ name?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+        </mat-error>
+        <mat-error *ngIf="name?.errors?.maxlength">
+          {{ name?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+        </mat-error>
+        <mat-error *ngIf="name?.errors?.pattern && !name?.errors?.minlength">
+          {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or space]
+        </mat-error>
+      </mat-form-field>
 
-  <mat-checkbox style="padding-left:2rem" [(ngModel)]="data.data.active">Active</mat-checkbox>
+    <mat-form-field style="padding-right: 1rem;">
+      <mat-label>{{ 'preference.authtoken.dialog.expire' | translate }}</mat-label>
+      <input matInput [matDatepicker]="picker" autocomplete="off" [(ngModel)]="data.data.expire_date">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
 
- 
+    <mat-checkbox style="padding-left: 1rem;" [(ngModel)]="data.data.active">{{ 'preference.authtoken.dialog.active' | translate }}</mat-checkbox>
+  </div>
 </div>
+
 <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
-  <button mat-raised-button (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Save</button>
+  <button mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
+  <button mat-raised-button class="setting-btn-ok" (click)="onSubmit()"
+    cdkFocusInitial>{{'LINK.buttons.save' | translate}}</button>
 </div>

@@ -1,8 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { SettingsAceEditorWidgetComponent } from './settings-ace-editor-widget.component';
 import { MatDialog } from '@angular/material/dialog';
 import { IWidget } from '../IWidget';
 import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
+import { TranslateService } from '@ngx-translate/core';
+
 // to use theme "eclipse"
 // with angular-cli add "../node_modules/ace-builds/src-min/ace.js"
 // and "../node_modules/ace-builds/src-min/theme-eclipse.js" to "scripts" var into the file angular-cli.json
@@ -16,7 +18,8 @@ export interface AceEditorConfig {
 @Component({
     selector: 'app-ace-editor-widget-component',
     templateUrl: 'ace-editor-widget.component.html',
-    styleUrls: ['./ace-editor-widget.component.scss']
+    styleUrls: ['./ace-editor-widget.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 @Widget({
     title: 'Embed Markdown',
@@ -30,19 +33,25 @@ export interface AceEditorConfig {
 export class AceEditorWidgetComponent implements IWidget {
     @Input() config: AceEditorConfig;
     @Input() id: string;
-    @Output() changeSettings = new EventEmitter<any> ();
-    options: any = {maxLines: 1000, printMargin: false};
+    @Output() changeSettings = new EventEmitter<any>();
+    options: any = { maxLines: 1000, printMargin: false };
     isConfig = false;
-    _config: AceEditorConfig
+    _config: AceEditorConfig;
 
-    constructor(public dialog: MatDialog) { }
+    constructor(public dialog: MatDialog, 
+        private cdr: ChangeDetectorRef,
+        public translateService:TranslateService
+        ) { 
+             translateService.addLangs(['en'])
+        translateService.setDefaultLang('en')
+        }
 
     ngOnInit() {
         WidgetArrayInstance[this.id] = this as IWidget;
         this._config = {
             id: this.id,
             title: 'Markdown editor',
-            text:  'Default text',
+            text: 'Default text',
             theme: 'clouds_midnight'
         };
 
@@ -54,13 +63,14 @@ export class AceEditorWidgetComponent implements IWidget {
         } else {
             this.isConfig = false;
         }
+        this.cdr.detectChanges();
     }
     async openDialog() {
         const dialogRef = this.dialog.open(SettingsAceEditorWidgetComponent, {
             width: '610px',
             data: {
                 title: this._config.title,
-                text:  this._config.text,
+                text: this._config.text,
                 theme: this._config.theme
             }
         });
@@ -68,7 +78,7 @@ export class AceEditorWidgetComponent implements IWidget {
 
         if (result) {
             this._config.title = result.title;
-            this._config.text  = result.text;
+            this._config.text = result.text;
             this._config.theme = result.theme;
             this.changeSettings.emit({
                 config: this._config,
@@ -76,6 +86,7 @@ export class AceEditorWidgetComponent implements IWidget {
             });
             this.isConfig = true;
         }
+        this.cdr.detectChanges();
     }
     ngOnDestroy() { }
 }

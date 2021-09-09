@@ -1,0 +1,24 @@
+<ng-container [matColumnDef]='column'>
+    <th mat-header-cell style="text-align: center" *matHeaderCellDef
+        mat-sort-header>
+       {{'cellTypes.lastError' | translate}}
+    </th>
+    <td mat-cell *matCellDef="let element" style="text-align: center">
+        <div class="noError" *ngIf="element.item && element.item.last_error === ''"
+            [hepTooltip]="noError">
+            <fa-icon icon="clipboard-check"></fa-icon>
+            <ng-template #noError>
+                <p style="text-align: center;">{{'cellTypes.noDatabaseErrors'| translate}}</p>
+            </ng-template>
+        </div>
+        <div class="lastError"
+            *ngIf="element.item && element.item.last_error !== ''"
+            [hepTooltip]="lastError">
+            <fa-icon icon="exclamation-triangle"></fa-icon>
+            <ng-template #lastError>
+                <div>{{element.item.last_error}}</div>
+            </ng-template>
+        </div>
+    </td>
+
+</ng-container>

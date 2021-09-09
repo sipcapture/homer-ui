@@ -6,6 +6,8 @@ export * from './dialog-authtoken-display/dialog-authtoken-display.component';
 export * from './dialog-hepsub/dialog-hepsub.component';
 export * from './dialog-agentsub/dialog-agentsub.component';
 export * from './dialog-mapping/dialog-mapping.component';
+export * from './dialog-scripts/dialog-scripts.component';
 export * from './dialog-user-settings/dialog-user-settings.component';
 export * from './dialog-users/dialog-users.component';
+export * from './dialog-db-selector/dialog-db-selector.component';
 

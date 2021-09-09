@@ -1,21 +1,23 @@
-import { Component, Inject, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
+import { Component, Inject, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
 import { AlertService } from '@app/services/alert.service';
 import { Functions } from '@app/helpers/functions';
 import { DialogAlarmComponent } from '../dialog-alarm/dialog-alarm.component';
 import { PrometheusService } from '@app/services/prometheus.service';
-
+import { TranslateService } from '@ngx-translate/core'
 @Component({
     selector: 'app-setting-prometheus-widget-component',
     templateUrl: 'setting-prometheus-widget.component.html',
-    styleUrls: ['./setting-prometheus-widget.component.scss']
+    styleUrls: ['./setting-prometheus-widget.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class SettingPrometheusWidgetComponent {
-    @ViewChild(MatTable, {static: true}) table: MatTable<any>;
+    @ViewChild(MatTable, { static: true }) table: MatTable<any>;
 
+    isInvalid: boolean;
     public metricList: string[] = [];
     public _metricList: string[];
 
@@ -50,52 +52,55 @@ export class SettingPrometheusWidgetComponent {
     constructor(
         private _ps: PrometheusService,
         private alertService: AlertService,
+        public translateService: TranslateService,
         public dialogAlarm: MatDialog,
         public dialogRef: MatDialogRef<SettingPrometheusWidgetComponent>,
         @Inject(MAT_DIALOG_DATA) public data: any) {
-            if (data.empty) {
-                return;
-            }
-            try {
-                this.chartType = data.chart.type.value;
-                this.chartTitle = data.title;
-                this.format = data.format.value;
-
-                if (data.panel && data.panel.queries) {
-                    data.dataquery.data.map((v, k) => ({
-                        panel_queries: Functions.cloneObject(data.panel.queries[k]),
-                        dataquery: Functions.cloneObject(v)
-                    })).forEach(item => {
-                        this.prometheusQuery = item.dataquery.prometheusQuries;
-                        this.dataSource.push({
-                            id: item.panel_queries.name,
-                            panelDataSource: item.panel_queries.type.name,
-                            buttons: true,
-                            detail: {
-                                prometheusLabels: item.dataquery.prometheusLabels,
-                                prometheusQuries: item.dataquery.prometheusQuries,
-                                sum: item.dataquery.sum
-                            }
-                        });
-                    });
-                }
-
-                this.updateResult();
-            } catch (err) {
-                this.onNoClick();
-
-                this.dialogAlarm.open(DialogAlarmComponent);
-
-                console.warn('ERROR config broken');
-            }
+        translateService.addLangs(['en'])
+        translateService.setDefaultLang('en')
+        if (data.empty) {
+            return;
         }
+        try {
+            this.chartType = data.chart.type.value;
+            this.chartTitle = data.title;
+            this.format = data.format.value;
+
+            if (data.panel && data.panel.queries) {
+                data.dataquery.data.map((v, k) => ({
+                    panel_queries: Functions.cloneObject(data.panel.queries[k]),
+                    dataquery: Functions.cloneObject(v)
+                })).forEach(item => {
+                    this.prometheusQuery = item.dataquery.prometheusQuries;
+                    this.dataSource.push({
+                        id: item.panel_queries.name,
+                        panelDataSource: item.panel_queries.type.name,
+                        buttons: true,
+                        detail: {
+                            prometheusLabels: item.dataquery.prometheusLabels,
+                            prometheusQuries: item.dataquery.prometheusQuries,
+                            sum: item.dataquery.sum
+                        }
+                    });
+                });
+            }
+
+            this.updateResult();
+        } catch (err) {
+            this.onNoClick();
+
+            this.dialogAlarm.open(DialogAlarmComponent);
+
+            console.warn('ERROR config broken');
+        }
+    }
 
     onNoClick(): void {
         this.dialogRef.close();
     }
 
     addRecord() {
-        if (this.panelDataSource ) {
+        if (this.panelDataSource) {
             let n = 1;
             const arr = this.dataSource.map(i => i.id);
 
@@ -120,7 +125,7 @@ export class SettingPrometheusWidgetComponent {
 
     editRecord(element: any) {
         const id = element.id;
-        this.selecedEditQuery = this.dataSource.filter(item => item.id === id)[0];
+        this.selecedEditQuery = this.dataSource.find(item => item.id === id);
         if (!this.selecedEditQuery.detail) {
             this.selecedEditQuery.detail = {
                 prometheusLabels: [],
@@ -189,7 +194,7 @@ export class SettingPrometheusWidgetComponent {
         this.updateResult();
     }
 
-    onPrometheusLabel () {
+    onPrometheusLabel() {
         this.selecedEditQuery.detail.prometheusLabels = this.prometheus.value;
         const _prometheusLabels = Functions.cloneObject(this.selecedEditQuery.detail.prometheusLabels);
         this.getMetrics(_prometheusLabels, data => {
@@ -200,7 +205,7 @@ export class SettingPrometheusWidgetComponent {
         });
         this.updateResult();
     }
-    onPrometheusQuery (event = null) {
+    onPrometheusQuery(event = null) {
         this.prometheusQuery = event.text;
         const arrStr = this.prometheusQuery.replace(/[\{\}\s]{1}/g, '').split(',');
         arrStr.forEach(j => {
@@ -215,11 +220,11 @@ export class SettingPrometheusWidgetComponent {
         this.selecedEditQuery.detail.sum = this.isSum;
         this.updateResult();
     }
-    onFormat () {
+    onFormat() {
         this.updateResult();
     }
 
-    onRawValue () {
+    onRawValue() {
         this.selecedEditQuery.detail.raw = this.apiQueryValue;
         this.updateResult();
     }
@@ -232,7 +237,7 @@ export class SettingPrometheusWidgetComponent {
             }
         });
     }
-    private updateResult () {
+    private updateResult() {
         if (this.selecedEditQuery) {
             this.dataSource[this.dataSource.map(i => i.id).indexOf(this.selecedEditQuery.id)] = this.selecedEditQuery;
         }
@@ -251,6 +256,14 @@ export class SettingPrometheusWidgetComponent {
         if (index >= 0) {
             arr.splice(index, 1);
             this[typeName].setValue(arr);
+        }
+    }
+    validate(event) {
+        event = event.trim();
+        if (event === '' || event === ' ') {
+            this.isInvalid = true;
+        } else {
+            this.isInvalid = false;
         }
     }
 }

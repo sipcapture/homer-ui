@@ -1,0 +1,7 @@
+<mat-label style="color: rgba(0, 0, 0, 0.54); font-size: 0.8em;">Select Protocol</mat-label>
+<select class="proto-selector" name="proto-selector" [ngModel]="protoSelect" (ngModelChange)="changeProto($event)"
+    ngDefaultControl>
+    <option *ngFor="let proto_Item of protocolList" [ngValue]="proto_Item">
+        {{proto_Item.name}}
+    </option>
+</select>

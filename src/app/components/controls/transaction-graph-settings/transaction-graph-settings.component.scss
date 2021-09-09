@@ -1,0 +1,88 @@
+.button-icon-right-top {
+    display: block;
+    position: absolute;
+    right: 80px;
+    margin: 0.2rem;
+    z-index: 2;
+    background-color: #fff;
+    box-shadow: -5px 0 8px 2px #fff;
+}.hidden-back {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.01);
+    cursor: pointer;
+    z-index: 2;
+}
+.filter-label-panel {
+    margin: 0 -1rem;
+}
+
+.filter-label {
+    color: rgba(0, 0, 0, 0.8);
+}
+
+.panel-title {
+    padding: 9px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    display: block;
+    width: 100%;
+    margin: -18px -24px;
+    position: absolute;
+}
+
+.filter-radio-group {
+    display: flex;
+    flex-direction: column;
+    margin: 15px 0;
+    .filter-radio-button {
+        margin: 5px;
+        font-size: .8em
+    }
+}
+.filter-container {
+    background-color: #fff;
+    top: 3rem;
+    right: 1rem;
+    padding: 0 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.4);
+    z-index: 999999;
+    max-height: 90%;
+    overflow: auto;
+    &::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: #d6d6d6;
+        border-radius: 10px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+        background: #a6a6a6;
+    }
+    &::-webkit-scrollbar-track {
+        background: #ffffff;
+        border-radius: 5px;
+        box-shadow: inset 7px 10px 12px #f0f0f0;
+    }
+    .slide-toggle {
+        padding-top: 1rem;
+        width: 200px;
+        font-size: .8em !important;
+    }
+    .checkbox-container {
+        display: flex;
+        flex-direction: column;
+    }
+    .checkbox-filter {
+        font-size: .8em !important;
+    }
+}
+::ng-deep .mat-slider-min-value.mat-slider-thumb-label-showing .mat-slider-thumb, .mat-slider-min-value.mat-slider-thumb-label-showing .mat-slider-thumb-label {
+    background-color: hsla(0, 0%, 0%, 0.26);
+}

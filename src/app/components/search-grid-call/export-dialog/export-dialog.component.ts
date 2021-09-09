@@ -1,11 +1,13 @@
 import { Component, Inject, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Functions } from '@app/helpers/functions';
+import * as XLSX from 'xlsx';
 import * as moment from 'moment';
-
+import { TranslateService } from '@ngx-translate/core'
 export interface ExportData {
     apicol: any;
     apipoint: any;
+    mappings: any;
     columns: any;
     idParent?: string;
     protocol: string;
@@ -21,6 +23,7 @@ export interface ExportData {
 export class ExportDialogComponent implements OnInit {
     public apiColumn: any;
     apiPoint: any;
+    mappings: any;
     id: string;
     allColumnIds: Array<any> = [];
     _bufferData: Array<any>;
@@ -42,11 +45,14 @@ export class ExportDialogComponent implements OnInit {
     constructor(
         public dialogRef: MatDialogRef<ExportDialogComponent>,
         private cdr: ChangeDetectorRef,
+        public translateService: TranslateService,
         @Inject(MAT_DIALOG_DATA) public data: ExportData
     ) {
-
+        translateService.addLangs(['en'])
+        translateService.setDefaultLang('en')
         this.apiColumn = data.apicol;
         this.apiPoint = data.apipoint;
+        this.mappings = data.mappings;
         this.id = data.idParent;
         this.protocol = data.protocol;
         if (typeof this.apiColumn.getAllColumns() !== 'undefined' && this.apiColumn.getAllColumns() !== null) {
@@ -68,11 +74,33 @@ export class ExportDialogComponent implements OnInit {
     }
     ngOnInit() {
         if (typeof this.apiColumn.getAllColumns() !== 'undefined' && this.apiColumn.getAllColumns() !== null) {
-            this.params.gridExport.columnKeys = this._bufferData.map(item => item.field);
+            for (let i = 0; i < this._bufferData.length; i++) {
+                if (this._bufferData[i].selected) {
+                    this.exportColumns.push(this._bufferData[i].field);
+                }
+            }
+            this.params.gridExport.columnKeys = this.exportColumns;
         }
         this.filename = `hep_proto_${this.protocol}_${moment().format('YYYY-MM-DD')}`;
         this.params.gridExport.fileName = this.filename;
         this.cdr.detectChanges();
+    }
+    onUpdateProto(event) {
+        if (typeof this.apiColumn.getAllColumns() !== 'undefined' && this.apiColumn.getAllColumns() !== null) {
+            const objField = event.find(i => {
+                const k = this._bufferData.find(j => i.name === j.name);
+                return i.selected !== k.selected;
+            });
+            this._bufferData = Functions.cloneObject(this.allColumnIds);
+            this.exportColumns = [];
+            for (let i = 0; i < this._bufferData.length; i++) {
+                if (this._bufferData[i].selected) {
+                    this.exportColumns.push(this._bufferData[i].field);
+                }
+            }
+            this.params.gridExport.columnKeys = this.exportColumns;
+            this.cdr.detectChanges();
+        }
     }
     formatData(param) {
         if (param.column.colId === 'create_date') {
@@ -82,6 +110,18 @@ export class ExportDialogComponent implements OnInit {
             } else {
                 const formattedValue = moment(param.value, 'x').format('X');
                 return formattedValue;
+            }
+        } else if (param.column.colId === 'status' && this.params.convertStatus) {
+
+            if (this.mappings) {
+                const statusMap = this.mappings.find((f: any) => f.id === 'status');
+                if (statusMap && statusMap['form_default']) {
+                    return (statusMap['form_default'].find((f: any) => f.value === param.value))['name'];
+                } else {
+                    return param.value;
+                }
+            } else {
+                return param.value;
             }
         } else if (param.column.colId === 'mos') {
             return param.value / 100;
@@ -93,7 +133,12 @@ export class ExportDialogComponent implements OnInit {
 
     }
     export() {
-        this.apiPoint.exportDataAsCsv(this.params.gridExport);
+        if (this.params.type === 'CSV') {
+            this.apiPoint.exportDataAsCsv(this.params.gridExport);
+        } else if (this.params.type === 'XLSX') {
+            const workbook = XLSX.read(this.apiPoint.getDataAsCsv(this.params.gridExport), { type: 'string' });
+            XLSX.writeFile(workbook, `${this.filename}.xlsx`);
+        }
     }
     onNoClick(): void {
         this.dialogRef.close();

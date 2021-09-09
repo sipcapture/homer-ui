@@ -1,3 +1,9 @@
+.vertical {
+    .scrollable-content {
+        max-width: initial !important;
+    }
+}
+
 .flow-grid-lines {
     display: flex;
     justify-content: space-between;
@@ -6,68 +12,127 @@
     top: 0;
     z-index: -1;
     left: 0px;
-    bottom: 0;
+    bottom: -1px;
     right: 0px;
-    margin-top: 66px;
-    height: calc(100% - 67px);
 
-    //   transition: all 0.3s ease;
+    // transition: all 0.3s ease;
     .line {
         margin-right: -1px;
-        border: 1px dotted #999;
+        border: 0px dotted rgb(204, 204, 204);
         border-right-width: 1px;
         border-left-width: 1px;
-        border-bottom: 0;
         min-width: 150px;
         // transition: all 0.3s ease;
         flex: 1;
     }
 }
 
-::ng-deep .mat-tooltip {
-    font-size: 14px;
-}
-
 .hosts {
-    // position: sticky;
-    // top: 0px;
-    display: flex;
-    justify-content: space-between;
-    // z-index: 1;
-    background: white;
+    position: absolute;
+    top: 0px;
+    display: inline-block;
+    // justify-content: space-between;
+    z-index: 1;
+    padding: 6px;
+    min-width: 100%;
 
-    .item-wrapper {
-        margin-top: 7px;
-        min-width: 200px;
+    .hosts-wrapper {
+        display: flex;
+        justify-content: space-between;
 
-        // transition: all 0.3s ease;
-        &.big {
-            min-width: 150px;
-        }
+        .item-wrapper {
+            min-width: 200px;
+            height: 1px;
 
-        &.hidden {
-            display: none;
-        }
+            &.big {
+                min-width: 150px;
+            }
 
-        &:last-child {
-            min-width: 0px;
-        }
+            &.hidden {
+                display: none;
+            }
 
-        .item {
-            margin: 0;
-            background-color: #fff;
-            font-size: 12px;
-            padding: 0.3rem;
-            font-weight: 700;
-            border-bottom: 1px dotted #999;
-            padding-top: 1rem;
-            margin-top: 0;
-            display: flex;
-            width: 100px;
-            flex-direction: column;
-            justify-content: flex-end;
-            align-items: center;
-            height: 60px;
+            &:last-child {
+                min-width: 0px;
+            }
+
+            .item {
+                position: relative;
+                display: inline-block;
+                margin-top: 0.3rem 0;
+                background-color: white;
+                color: grey;
+                font-size: 12px;
+                border: 1px dotted lightgray;
+                border-radius: 6px;
+                max-width: 105px;
+                min-width: 105px;
+
+                .ipfield {
+                    text-align: center;
+                    background: #fafafa;
+                    color: #717171;
+                    padding: 3px 6px;
+                    border-radius: 0px 0px 6px 6px;
+                    border-top: 1px solid #ececec;
+
+                    &.multiple {
+                        // display: none;
+                        display: block;
+                    }
+
+                    &.dotted {
+                        // display: block;
+                        display: none;
+
+                        >span {
+                            font-size: 12pt;
+                            line-height: 0;
+                        }
+                    }
+                }
+
+                // &:hover .ipfield {
+                //     &.multiple {
+                //         display: block;
+                //     }
+                //     &.dotted {
+                //         display: none;
+                //     }
+                // }
+                .aliasfield {
+                    display: flex;
+                    flex-direction: column;
+                    font-size: 12px;
+                    justify-content: center;
+                    color: rgb(102, 102, 102);
+                    border-radius: 6px 6px 0px 0px;
+                    padding: 3px 3px;
+                    text-align: center;
+                    max-width: 105px;
+                    min-height: 58px;
+                }
+
+                .aliasimg {
+                    margin-left: -3px;
+                }
+
+                .alias-name {
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    font-weight: 500;
+                    font-family: 'Roboto';
+                }
+
+                .defaultaliasimg {
+                    margin-left: -3px;
+                    opacity: .35;
+                    height: 20px;
+                    padding: 7.5px;
+                    height: 35px;
+                }
+            }
         }
     }
 }
@@ -76,10 +141,8 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    margin-right: 0rem;
     height: 100%;
-
-    // overflow: hidden;
+    width: calc(100% + 15px);
 }
 
 .virtual-scrollbar {
@@ -87,36 +150,10 @@
     // background: aqua;
     width: 22px;
     top: 0;
-    right: 0;
     bottom: 0;
+    right: 0;
     overflow: auto;
-}
-
-cdk-virtual-scroll-viewport {
-    // contain: none;
-    // height: 800px;
-    &.flow-packets-wrapper {
-        &::-webkit-scrollbar {
-            display: none;
-        }
-
-        -ms-overflow-style: none;
-        /* IE and Edge */
-        scrollbar-width: none;
-
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        min-height: calc(100% - 66px);
-
-        // overflow: hidden !important;
-
-        /* Firefox */
-        // .cdk-virtual-scroll-content-wrapper {
-
-
-        // }
-    }
+    z-index: 999;
 }
 
 .label-callid-container {
@@ -128,9 +165,15 @@ cdk-virtual-scroll-viewport {
     bottom: 19px;
     text-align: center;
     font-size: 12px;
-    font-weight: 700;
     max-height: 50px;
     overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    /* Firefox */
+    &::-webkit-scrollbar {
+        display: none;
+    }
 
     .label-callid-wrapper {
         background-color: rgba(255, 255, 255, 0.7);
@@ -140,25 +183,6 @@ cdk-virtual-scroll-viewport {
     }
 }
 
-.iptooltip {
-    white-space: pre-line !important;
-
-    font-size: 11px !important;
-    font-weight: bold;
-}
-
-.copysnack {
-    color: white !important;
-    background-color: rgb(61, 61, 61) !important;
-
-    .mat-simple-snackbar-action {
-        color: rgb(28, 221, 160) !important;
-    }
-}
-
-.itemhost-alias {
-    text-align: center;
-    font-size: 13px !important;
-    font-weight: normal;
-    white-space: nowrap;
+.flowline {
+    padding-top: 6px
 }

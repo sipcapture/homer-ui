@@ -1,0 +1,75 @@
+.content-wrapper {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    z-index: 1000000;
+    background: white;
+
+    .button-inside {
+        float: right;
+        position: absolute;
+        background: hsla(0, 0%, 100%, 0.3);
+        right: 10px;
+        top: 10px;
+        z-index: 1;
+        
+    }
+    .download {
+        top: 45px;
+    }
+    .button-inside-menu {
+        background: hsla(0, 0%, 100%, 0.3);
+        z-index: 1;
+        margin: 5px 0;
+        height: 40px;
+        width: 40px;
+        border-radius: 100%;
+    }
+    .menu-button {
+        position: absolute;
+        right: 10px;
+        top: 55px;
+        width: 40px;
+        display: flex;
+        flex-direction: column;
+        background-color: transparent;
+        overflow: visible;
+    }
+    ::ng-deep .mat-expansion-panel-header {
+        padding: 0;
+    }
+    ::ng-deep .mat-expansion-panel-body {
+        display: flex;
+        flex-direction: column;
+        background-color: transparent;
+        padding: 0;
+    }
+    ::ng-deep .mat-expansion-panel-header.mat-expanded {
+        height: 48px
+    }
+    .fileselect {
+		align-items: center;
+		border-radius: 100%;
+		color: black;
+		cursor: pointer;
+		display: flex;
+		height: 40px;
+		justify-content: center;
+		margin: 0;
+		min-width: 40px;
+		&::before {
+			content: "";
+		}
+    }
+    input[type="file"] {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 0px;
+		height: 0px;
+		cursor: pointer;
+		opacity: 0;
+	}
+}

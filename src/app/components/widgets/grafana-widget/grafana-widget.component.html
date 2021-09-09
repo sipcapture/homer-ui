@@ -2,6 +2,6 @@
     [ngStyle]="{'display' : iframeLoaded ? 'block' : 'none' }"></iframe>
 <div *ngIf="!iframeLoaded">
     <button mat-raised-button color="primary" (click)="openDialog()">
-        <mat-icon>settings</mat-icon> Widget Settings
+        <fa-icon icon="cog"></fa-icon> {{'LINK.buttons.widgetSettings' | translate}}
     </button>
 </div>

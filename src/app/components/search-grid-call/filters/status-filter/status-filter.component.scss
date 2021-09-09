@@ -1,0 +1,26 @@
+.container {
+    width: 167px;
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    line-height: normal;
+    position: relative;
+    padding: 16px 12px;
+}
+
+input {
+    border-radius: unset;
+    height: 40px;
+    background: transparent;
+    padding-bottom: 8px;
+    border-width: 0;
+    border-bottom: 2px solid;    
+    border-bottom-color: var(--ag-border-color, #e2e2e2);
+    color: var(--ag-foreground-color, rgba(0, 0, 0, 0.87));
+    padding-bottom: 8px;
+}
+input:focus {
+    border-bottom: 2px solid;
+    border-bottom-color: var(--ag-material-primary-color, #3f51b5);
+    box-shadow: unset;
+}

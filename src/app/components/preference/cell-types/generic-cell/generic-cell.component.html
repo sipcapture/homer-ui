@@ -1,0 +1,9 @@
+<ng-container [matColumnDef]='column'>
+
+
+    <th mat-header-cell *matHeaderCellDef mat-sort-header
+        style="text-align: center;" [style.max-width.px]="100">{{ column }}</th>
+    <td mat-cell *matCellDef="let item" [style.max-width.px]="100">
+        {{ item[column] }} 
+    </td>
+</ng-container>

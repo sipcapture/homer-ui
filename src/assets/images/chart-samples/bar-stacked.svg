@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="svg85"
+   version="1.1"
+   viewBox="0 0 26.458333 26.458334"
+   height="100"
+   width="100">
+  <defs
+     id="defs79" />
+  <metadata
+     id="metadata82">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(0,-270.54165)"
+     id="layer1">
+    <g
+       id="g4998"
+       style="display:inline"
+       transform="translate(-92.484102,175.46413)">
+      <rect
+         id="rect12-7-3"
+         width="4.8144574"
+         height="4.3189106"
+         x="99.597641"
+         y="101.05807"
+         style="fill:#c83737;stroke:#800000;stroke-width:0.18554005;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(0,1,1,0,0,0)" />
+      <rect
+         id="rect12-7-2-75"
+         width="4.8136806"
+         height="4.3172507"
+         x="106.62586"
+         y="106.24753"
+         style="fill:#c83737;stroke:#800000;stroke-width:0.18548942;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(0,1,1,0,0,0)" />
+      <rect
+         id="rect12-7-2-7-9"
+         width="4.8141489"
+         height="11.008694"
+         x="113.74652"
+         y="103.09458"
+         style="fill:#c83737;stroke:#800000;stroke-width:0.18587659;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(0,1,1,0,0,0)" />
+      <rect
+         id="rect12-3-5-2"
+         width="4.8144627"
+         height="4.7861571"
+         x="99.597641"
+         y="96.317917"
+         style="fill:#ff6600;stroke:#bb0000;stroke-width:0.18553431;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(0,1,1,0,0,0)" />
+      <rect
+         id="rect12-3-6-3-6-28"
+         width="4.8140788"
+         height="2.636848"
+         x="99.597656"
+         y="93.736877"
+         style="fill:#abc837;stroke:#00572c;stroke-width:0.1855575;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(0,1,1,0,0,0)" />
+      <rect
+         id="rect12-3-5-9-9"
+         width="4.8136725"
+         height="9.3159418"
+         x="106.62588"
+         y="96.93158"
+         style="fill:#ff6600;stroke:#bb0000;stroke-width:0.18549815;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(0,1,1,0,0,0)" />
+      <rect
+         id="rect12-3-5-9-1-7"
+         width="4.8145113"
+         height="4.7836375"
+         x="113.74635"
+         y="98.307129"
+         style="fill:#ff6600;stroke:#bb0000;stroke-width:0.18548639;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(0,1,1,0,0,0)" />
+      <rect
+         id="rect12-3-6-3-3"
+         width="4.8145165"
+         height="4.5013433"
+         x="113.74635"
+         y="93.805817"
+         style="fill:#abc837;stroke:#00572c;stroke-width:0.18548082;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(0,1,1,0,0,0)" />
+      <rect
+         id="rect12-3-6-3-6-2-6"
+         width="4.8154659"
+         height="3.1967077"
+         x="106.62406"
+         y="93.734863"
+         style="fill:#abc837;stroke:#00572c;stroke-width:0.18356305;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(0,1,1,0,0,0)" />
+      <path
+         style="opacity:1;fill:none;stroke:#009cbf;stroke-width:0.31428829;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="M 93.746182,96.553091 V 120.10984 H 117.11403"
+         id="path10-5-1" />
+    </g>
+  </g>
+</svg>

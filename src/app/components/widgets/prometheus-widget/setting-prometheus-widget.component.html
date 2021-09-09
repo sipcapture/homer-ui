@@ -1,7 +1,7 @@
-<mat-toolbar class="title" color="primary">
-  <div>Settings</div>
+<mat-toolbar class="dialog-title" color="primary">
+  <div>{{'LINK.settings' | translate}}</div>
   <button mat-icon-button (click)="onNoClick()">
-    <mat-icon>close</mat-icon>
+    <fa-icon icon="times"></fa-icon>
   </button>
 </mat-toolbar>
 
@@ -9,12 +9,12 @@
   <div class="example-container">
     <div>
       <mat-form-field appearance="fill">
-        <mat-label>Chart Title</mat-label>
-        <input matInput [(ngModel)]="chartTitle" >
+        <mat-label>{{ 'widgets.prometheusChart.settings.chartTitle' | translate }}</mat-label>
+        <input matInput [(ngModel)]="chartTitle" (ngModelChange)='validate($event)'>
       </mat-form-field> 
 
       <mat-form-field appearance="fill"> 
-        <mat-label >Chart Type</mat-label>
+        <mat-label >{{ 'widgets.prometheusChart.settings.chartType' | translate }}</mat-label>
         <mat-select [(ngModel)]="chartType" (selectionChange)="onChartType()">
           <mat-option *ngFor="let type of chartTypeList" [value]="type">
             {{ type | titlecase }}
@@ -23,7 +23,7 @@
       </mat-form-field>
       
       <mat-form-field appearance="fill"> 
-        <mat-label >Format</mat-label>
+        <mat-label >{{ 'widgets.prometheusChart.settings.format' | translate }}</mat-label>
         <mat-select [(ngModel)]="format" (selectionChange)="onFormat()">
           <mat-option value="row">Default</mat-option>
           <mat-option value="number">Numbers</mat-option>
@@ -35,37 +35,37 @@
     
     <div>
       <button mat-raised-button color="primary" (click)="addRecord()">
-        <mat-icon>add</mat-icon>
-        Add Prometheus item</button>
+        <fa-icon icon="plus"></fa-icon>
+        {{ 'LINK.buttons.add' | translate }}</button>
       <hr>
     </div>
 
     <div>
-      <h5>Query</h5>
+      <h5>{{ 'widgets.prometheusChart.settings.query' | translate }}</h5>
       <table mat-table [dataSource]="dataSource" style="width: 100%; margin-bottom: 1rem;" #table> 
 
         <ng-container matColumnDef="id">
-          <th mat-header-cell *matHeaderCellDef> No. </th>
+          <th mat-header-cell *matHeaderCellDef> {{ 'widgets.prometheusChart.settings.number' | translate }} </th>
           <td mat-cell *matCellDef="let element"> {{element.id}} </td>
         </ng-container>
 
         <ng-container matColumnDef="panelDataSource"> 
-          <th mat-header-cell *matHeaderCellDef> Panel Data Source </th>
+          <th mat-header-cell *matHeaderCellDef> {{ 'widgets.prometheusChart.settings.panelDataSource' | translate }} </th>
           <td mat-cell *matCellDef="let element"> {{element.panelDataSource}} </td>
         </ng-container>
 
         <ng-container matColumnDef="buttons">
           <th mat-header-cell *matHeaderCellDef> 
-            <mat-icon>edit</mat-icon>
+            <fa-icon icon="edit"></fa-icon>
           </th>
           <td mat-cell *matCellDef="let element" style="text-align: right;">
             <button mat-icon-button color="primary" aria-label="Delete"
               (click)="deleteRecord(element.id)">
-              <mat-icon>delete</mat-icon>
+              <fa-icon icon="trash-alt"></fa-icon>
             </button>
             <button mat-icon-button color="primary" aria-label="Edit"
               (click)="editRecord(element)">
-              <mat-icon>edit</mat-icon>
+              <fa-icon icon="edit"></fa-icon>
             </button>
           </td>
         </ng-container>
@@ -78,10 +78,10 @@
           style="margin-bottom: 1rem;"
           class="mat-elevation-z4"
           *ngIf="detailShow">
-        <mat-tab label="Fields"> 
+        <mat-tab [label]="'widgets.prometheusChart.settings.fields' | translate "> 
           <div style="padding: 1rem">
             <mat-form-field appearance="fill" style="width: 100%;">
-              <mat-label >Counter</mat-label>
+              <mat-label >{{ 'widgets.prometheusChart.settings.counter' | translate }}</mat-label>
               <mat-chip-list #chipList class="chips-container prometheus" (click)="selectPrometheus.open()">
                 <mat-chip class="custom-mat-chip"
                   *ngFor="let item of prometheus.value"
@@ -111,7 +111,7 @@
               {{ item }}
             </div>
             <div>
-              <mat-checkbox [(ngModel)]="isSum" (change)="onSum()">Sum</mat-checkbox>
+              <mat-checkbox [(ngModel)]="isSum" (change)="onSum()">{{ 'widgets.prometheusChart.settings.sum' | translate }}</mat-checkbox>
             </div> 
           </div>
 
@@ -122,6 +122,6 @@
 </div>
 
 <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
-  <button mat-raised-button (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="outputObject" cdkFocusInitial>Save</button>
+  <button mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="outputObject" cdkFocusInitial [disabled]='isInvalid'>{{'LINK.buttons.save' | translate}}</button>
 </div>

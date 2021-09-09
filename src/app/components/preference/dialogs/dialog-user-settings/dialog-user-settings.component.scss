@@ -1,12 +1,7 @@
 .chack-list {
 	margin-right: 1.3rem;
 }
-.title {
-	margin: -1.5rem -1.5rem 2rem -1.5rem;
-	width: initial !important;
-	display: flex;
-	justify-content: space-between;
-}
+
 .example-container {
 	display: flex;
 	flex-direction: column;
@@ -16,4 +11,13 @@
 }
 .hide {
 	display: none !important;
+}
+
+
+::ng-deep .mat-input-element:disabled {
+    color: black;
+}
+::ng-deep .mat-form-field-appearance-legacy.mat-form-field-disabled .mat-form-field-underline {
+    background-image: unset;    
+    background-color: rgba(0,0,0,.42);
 }

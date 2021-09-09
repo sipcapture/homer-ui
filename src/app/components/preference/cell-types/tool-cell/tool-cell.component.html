@@ -1,0 +1,30 @@
+<ng-container [matColumnDef]='column'> 
+    <th mat-header-cell style="width:132px;text-align:center" *matHeaderCellDef>
+        {{'LINK.action' | translate}}
+    </th>
+    <td mat-cell *matCellDef="let cell">
+        <div class="actions-container" #actionsContainer
+            [ngStyle]="{'width': (childCount(actionsContainer) * 42) +'px'}">
+            <button *ngIf="isAccess?.copy" class="copyBtn" [matTooltip]="( 'LINK.copy'| translate ) + ' ' + page.toLowerCase()"
+                (click)="settingDialog.emit({item: cell.item, type: 'copy'})">
+                <fa-icon icon="copy"></fa-icon>
+            </button>
+            <button *ngIf="isAccess?.edit" class="editBtn" [matTooltip]="( 'LINK.edit' | translate ) + ' ' + page.toLowerCase()"
+                (click)="settingDialog.emit({item: cell.item})">
+                <fa-icon icon="edit"></fa-icon>
+            </button>
+            <button *ngIf="isAccess?.resync" class="resetBtn" [matTooltip]="('LINK.sync' | translate) + ' ' + page.toLowerCase()"
+            (click)="resyncDialog.emit(cell.item)">
+            <fa-icon icon="exchange-alt"></fa-icon>
+            </button>
+            <button *ngIf="isAccess?.reset" class="resetBtn" [matTooltip]="('LINK.reset' | translate ) + ' ' + page.toLowerCase()"
+                (click)="resetDialog.emit(cell.item)">
+                <fa-icon icon="redo"></fa-icon>
+            </button>
+            <button *ngIf="isAccess?.delete" class="eraseBtn"
+                [matTooltip]="('LINK.delete' | translate) + ' ' + page.toLowerCase()" (click)="deleteDialog.emit(cell.item)">
+                <fa-icon icon="trash-alt"></fa-icon>
+            </button>
+        </div>
+    </td>
+</ng-container>

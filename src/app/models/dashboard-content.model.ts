@@ -12,6 +12,11 @@ export interface DashboardContentModel {
     strongIndex?: string;
     minItemCols?: number;
     minItemRows?: number;
+    minHeight?: number;
+    minWidth?: number;
     isWarning?: boolean;
     isDismissed?: boolean;
+    tabGroup?: string;
+    activeTab?: boolean;
+    layerIndex?: number;
 }

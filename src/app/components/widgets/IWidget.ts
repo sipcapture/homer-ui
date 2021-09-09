@@ -17,11 +17,12 @@ export interface IWidgetMetaData {
     indexName?: string;
     strongIndex?: string;
     advancedName?: string;
+    subCategory?: string;
     enable?: boolean;
     componentClass?: any;
     settingWindow?: boolean;
     className?: string;
     submit?: boolean;
     minWidth?: number;
-    minHeight?:number;
+    minHeight?: number;
 }

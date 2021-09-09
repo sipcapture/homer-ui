@@ -79,7 +79,7 @@ import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 @Component({
     selector: 'app-my-clock-widget-component',
     template: `
-        <mat-toolbar class="title" color="primary">
+        <mat-toolbar class="dialog-title" color="primary">
             <div>Settings</div>
             <button mat-icon-button (click)="onNoClick()">
                 <mat-icon>close</mat-icon>
@@ -94,8 +94,8 @@ import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
         </div>
      
         <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
-            <button mat-raised-button (click)="onNoClick()">Cancel</button>
-            <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+            <button mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
+            <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>{{'LINK.buttons.ok' | translate}}</button>
         </div>
     `,
     styleUrls: ['./my-clock-widget.component.scss']

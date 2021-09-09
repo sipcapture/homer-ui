@@ -1,48 +1,74 @@
+.transaction-mat-tab-wrapper ::ng-deep .mat-tab-body.mat-tab-body-active {
+    height: 0;
+    display: none;
+}
+
+.transaction-mat-tab-wrapper ::ng-deep .mat-tab-label {
+    min-width: inherit;
+    padding: 0 1rem;
+}
+
 .loading {
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: 0;
-	bottom: 0;
-	background-color: rgba(255,255,255,0.6);
-	display: flex;
-	justify-content: center;
-	align-content: center;
-	align-items: center;
-	z-index: 9999999;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.6);
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    z-index: 9999999;
 }
+
 .button-icon-right-top {
-	position: absolute;
-	right: 0;
-	margin: 0.2rem;
-	z-index: 2;
+    position: absolute;
+    right: 0;
+    margin: 0.2rem;
+    z-index: 2;
 }
+
 .filter-container {
-	background-color: #fff;
-	top: 3rem;
-	right: 1rem;
-	padding: 1rem;
-	border: 1px solid rgba(0,0,0,0.2);
-	border-radius: 4px;
-	box-shadow: 0px 3px 7px rgba(0,0,0,0.4);
+    background-color: #fff;
+    top: 3rem;
+    right: 1rem;
+    padding: 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.4);
 }
+
 .filter-label {
-	font-size: 0.8em;
-	color: rgba(0,0,0,0.8);
-	background-color: rgba(0,0,0,0.2);
-	margin: -1rem;
-	margin-top: 1rem;
-	margin-bottom: 1rem;
-	padding: 0.5rem;
+    font-size: 0.8em;
+    color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.2);
+    margin: 1rem -1rem;
+    padding: 0.5rem;
 }
+
 .filter-radio-group {
-	display: flex;
-	flex-direction: column;
-	margin: 15px 0;
-	.filter-radio-button {
-		margin: 5px;
-		font-size: .8em
-  	}
+    display: flex;
+    flex-direction: column;
+    margin: 15px 0;
+    .filter-radio-button {
+        margin: 5px;
+        font-size: .8em
+    }
 }
-  
-  
+
+.tab-content-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 3rem;
+    bottom: 0;
+    overflow-x: auto;
+    .tab-content-container-wrapper {
+        height: 100%;
+        overflow: hidden;
+    }
+}
+::ng-deep .mat-tab-header {
+    z-index: 1;
+}

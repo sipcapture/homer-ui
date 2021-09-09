@@ -1,0 +1,25 @@
+<div class="flow-tooltip" [ngStyle]="{
+  'left.px': point.left,
+  'top.px': point.top,
+  'display': isMessage ? 'block' : 'none'
+
+}" #tooltipContainer>
+    <ng-container *ngIf="type === 'string', else isObject">
+        <p style="margin: 0; padding:0;font-size: 12px !important;">{{ messageString }}</p>
+    </ng-container>
+
+    <ng-template #isObject>
+        <table style="min-width: 200px;">
+            <tr *ngFor="let item of messageTable">
+                <td *ngIf="item.name === 'image' && isLinkImg" colspan="2" style="text-align: center;">
+                    <img [src]="item.value" />
+                </td>
+                <td *ngIf="item.name === 'image' && !isLinkImg" colspan="2" style="text-align: center;">
+                    <img [src]="'assets/' + item.value" />
+                </td>
+                <td *ngIf="item.name !== 'image' && item.name !== 'color' && item.name !== 'isLinkImg'" style="padding-right: 5px; text-align: right;"><strong>{{ item.name | titlecase }}</strong></td>
+                <td *ngIf="item.name !== 'image' && item.name !== 'color' && item.name !== 'isLinkImg'" style="padding-left: 5px;">{{ item.value }}</td>
+            </tr>
+        </table>
+    </ng-template>
+</div>

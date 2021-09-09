@@ -1,44 +1,95 @@
-<mat-toolbar class="title" color="primary">
-  <div>HepSub Settings</div>
+<mat-toolbar class="dialog-title" color="primary">
+  <div>{{ 'preference.hepsub.title' | translate }}</div>
   <button mat-icon-button (click)="onNoClick()">
-    <mat-icon>close</mat-icon>
+    <fa-icon icon="times"></fa-icon>
   </button>
 </mat-toolbar>
+
+<ng-container *ngIf="type !== 'data-preview'; else dataPreview">
 <div mat-dialog-content>
-  
-    <strong>HepSub Settings</strong>
-    <p>Defines the identifier, format and lifetime of protocol data</p><hr />
-    <div>
-      <mat-form-field style="padding-right: 1rem;">
-        <mat-label>HEP Alias</mat-label>
-        <input matInput [(ngModel)]="data.data.hep_alias">
-      </mat-form-field>
-      <mat-form-field style="padding-right: 1rem;">
-        <mat-label>HEP ID</mat-label>
-        <input matInput [(ngModel)]="data.data.hepid">
-      </mat-form-field>
-      <mat-form-field style="padding-right: 1rem;">
-        <mat-label>Profile</mat-label>
-        <input matInput [(ngModel)]="data.data.profile">
-      </mat-form-field>
-    </div>
-    <hr>
-    <strong>HepSub Mapping</strong>
-    <p>Defines any cross-protocol correlation mechanism</p><hr />
-    <ace-editor
-      [mode]="'json'"
-      [theme]="'eclipse'"
-      [readOnly]="false"
-      [(text)]="data.data.mapping"
-      (textChanged)="validate()"
-      [durationBeforeCallback]="500"
-      #data_view style="min-height:150px;"></ace-editor>
+
+  <strong>{{ 'preference.hepsub.settings.title' | translate }}</strong>
+  <p>{{ 'preference.hepsub.settings.description' | translate }}</p>
+  <hr />
+  <div>
+    <mat-form-field style="padding-right: 1rem;">
+      <mat-label>{{ 'preference.hepsub.settings.hepAlias' | translate }}</mat-label>
+      <input matInput [(ngModel)]="data.data.hep_alias" autocomplete="off" [formControl]="hep_alias" [disabled]="!isAdmin">
+      <mat-error *ngIf="hep_alias?.errors?.required">{{'validators.required' | translate }}</mat-error>
+      <mat-error *ngIf="hep_alias?.errors?.minlength">
+        {{ hep_alias?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+      </mat-error>
+      <mat-error *ngIf="hep_alias?.errors?.maxlength">
+        {{ hep_alias?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+      </mat-error>
+      <mat-error *ngIf="hep_alias?.errors?.pattern">
+        {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-" or "_"]
+      </mat-error>
+    </mat-form-field>
+    <mat-form-field style="padding-right: 1rem;">
+      <mat-label>{{ 'preference.hepsub.settings.hepId' | translate }}</mat-label>
+      <input matInput [(ngModel)]="data.data.hepid" autocomplete="off" [formControl]="hepid" [disabled]="!isAdmin">
+      <mat-error *ngIf="hepid?.errors?.required">{{'validators.required' | translate }}</mat-error>
+      <mat-error *ngIf="hepid?.errors?.min">{{'validators.minNumber' | translate }} 1</mat-error>
+      <mat-error *ngIf="hepid?.errors?.max">{{'validators.maxNumber' | translate }} 10000</mat-error>
+      <mat-error *ngIf="hepid?.errors?.pattern">{{'validators.patternNumber' | translate }}</mat-error>
+    </mat-form-field>
+    <mat-form-field style="padding-right: 1rem;">
+      <mat-label>{{ 'preference.hepsub.settings.profile' | translate }}</mat-label>
+      <input matInput [(ngModel)]="data.data.profile" autocomplete="off" [formControl]="profile" [disabled]="!isAdmin">
+      <mat-error *ngIf="profile?.errors?.required">{{'validators.required' | translate }}</mat-error>
+      <mat-error *ngIf="profile?.errors?.minlength">
+        {{ profile?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+      </mat-error>
+      <mat-error *ngIf="hepid?.errors?.pattern">Invalid profile entry</mat-error>
+    </mat-form-field>
   </div>
+  <strong>{{ 'preference.hepsub.mapping.title' | translate }}</strong>
+  <p>{{ 'preference.hepsub.mapping.description' | translate }}</p>
+  <hr />
+  <full-screen (fullPage)='disableClose($event)'  
+                (import)='import($event)' 
+                [data]='{json:data.data.mapping, title: "HEPSub" + " " + data.data.hep_alias + " " + data.data.profile, type: "json"}'>
+    <ace-editor [mode]="'json'" [theme]="'monokai'" [readOnly]="false" [(text)]="data.data.mapping" #data_view
+    [style.height.%]="100"></ace-editor>
+  </full-screen>
   
-  
-  
-  <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
-    <button mat-raised-button (click)="onNoClick()">Cancel</button>
-    <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial [disabled]="isDisabled">Save</button>
-  </div>
-  
+</div>
+
+<div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
+  <button mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
+  <button mat-raised-button class="setting-btn-ok" cdkFocusInitial
+    (click)="onSubmit()">{{'LINK.buttons.save' | translate}}</button>
+</div>
+</ng-container>
+<ng-template #dataPreview>
+    <div mat-dialog-content>
+
+        <strong>{{ 'preference.hepsub.settings.title' | translate }}</strong>
+        <p>{{ 'preference.hepsub.settings.description' | translate }}</p>
+        <hr />
+        <div>
+          <mat-form-field style="padding-right: 1rem;">
+            <mat-label>{{ 'preference.hepsub.settings.hepAlias' | translate }}</mat-label>
+            <input matInput [(ngModel)]="data.data.hep_alias" autocomplete="off" [disabled]="true">
+          </mat-form-field>
+          <mat-form-field style="padding-right: 1rem;">
+            <mat-label>{{ 'preference.hepsub.settings.hepId' | translate }}</mat-label>
+            <input matInput [(ngModel)]="data.data.hepid" autocomplete="off" [disabled]="true">
+          </mat-form-field>
+          <mat-form-field style="padding-right: 1rem;">
+            <mat-label>{{ 'preference.hepsub.settings.profile' | translate }}</mat-label>
+            <input matInput [(ngModel)]="data.data.profile" autocomplete="off" [disabled]="true">
+          </mat-form-field>
+        </div>
+        <strong>{{ 'preference.hepsub.mapping.title' | translate }}</strong>
+        <p>{{ 'preference.hepsub.mapping.description' | translate }}</p>
+        <hr />
+        <ngx-json-viewer [json]="json" [expanded]="true"></ngx-json-viewer>
+      </div>
+      
+      <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
+        <button mat-raised-button class="setting-btn-ok" cdkFocusInitial
+          (click)="onNoClick()">{{'LINK.buttons.close' | translate}}</button>
+      </div>
+</ng-template>

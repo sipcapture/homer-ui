@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import * as moment from 'moment';
 import { SessionStorageService, UserSettings } from './session-storage.service';
+import * as _moment from 'moment-timezone';
+const moment: any = _moment;
 
 
 export interface DateTimeTick {
     _id?: number;
+    isImportant?: boolean;
     range: {
         title: string;
+        timezone: string;
         dates: any;
     };
 }
@@ -22,6 +25,7 @@ export interface Timestamp {
 export class DateTimeRangeService {
     public static dateTimeRangr: any = {
         title: '',
+        timezone: '',
         dates: []
     };
 
@@ -56,31 +60,35 @@ export class DateTimeRangeService {
      * Set delay ro auto refresh
      * @param delay number of milliseconds
      */
-    setDelay (delay: number) {
+    setDelay(delay: number) {
         this.delayRefresher = delay;
         if (this._interval) {
             clearInterval(this._interval);
         }
-        // if delay === 0, then is no refrash
+        // if delay === 0, then is no refresh
         if (delay === 0) {
             return;
         }
 
-        this._interval = setInterval(this.refrash.bind(this), this.delayRefresher);
+        this._interval = setInterval(this.refresh.bind(this), this.delayRefresher);
     }
-    refrash() {
+    refresh(isImportant = false) {
         DateTimeRangeService.dateTimeRangr.dates =
             this.getRangeByLabel(DateTimeRangeService.dateTimeRangr.title) ||
             DateTimeRangeService.dateTimeRangr.dates;
 
         this.rangeUpdateTimeout.next({
             _id: Date.now(),
-            range: DateTimeRangeService.dateTimeRangr
+            range: DateTimeRangeService.dateTimeRangr,
+            isImportant
         });
     }
     getDatesForQuery(isUnixFormat = false): Timestamp {
         const _dates = (this.getRangeByLabel(DateTimeRangeService.dateTimeRangr.title) ||
             DateTimeRangeService.dateTimeRangr.dates).map(d => {
+                if (typeof d === 'string') {
+                  d = moment(d)
+                }
                 d = d.unix() * 1;
                 if (isUnixFormat) {
                     d *= 1000;
@@ -95,7 +103,7 @@ export class DateTimeRangeService {
     }
 
     getTimezoneForQuery() {
-        return (DateTimeRangeService.dateTimeRangr.timezone || moment.tz.guess(true));
+        return (DateTimeRangeService.dateTimeRangr.timezone || moment.tz.guess());
     }
 
     getRangeByLabel(label: string, isAll = false) {
@@ -103,27 +111,20 @@ export class DateTimeRangeService {
             label = 'Today';
         }
         const arr = {
+            'Last 5 minutes': [moment().subtract(5, 'minutes'), moment()],
+            'Last 15 minutes': [moment().subtract(15, 'minutes'), moment()],
+            'Last 30 minutes': [moment().subtract(30, 'minutes'), moment()],
+            'Last 1 hour': [moment().subtract(1, 'hour'), moment()],
+            'Last 3 hours': [moment().subtract(3, 'hours'), moment()],
+            'Last 6 hours': [moment().subtract(6, 'hours'), moment()],
+            'Last 12 hours': [moment().subtract(12, 'hours'), moment()],
+            'Last 24 hours': [moment().subtract(24, 'hours'), moment()],
             'Today': [moment().startOf('day'), moment().endOf('day')],
-                        'Last 5 minutes': [moment().subtract(5, 'minutes'), moment()],
             'Yesterday': [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days').endOf('day')],
-                        'Last 15 minutes': [moment().subtract(15, 'minutes'), moment()],
-            'Tomorrow': [moment().add(1, 'days').startOf('day'), moment().add(1, 'days').endOf('day')],
-                        'Last 30 minutes': [moment().subtract(30, 'minutes'), moment()],
             'Last 7 days': [moment().subtract(6, 'days').startOf('day'), moment().endOf('day')],
-                        'Last 1 hour': [moment().subtract(1, 'hour'), moment()],
-            'Last 15 days': [moment().subtract(15, 'days').startOf('day'), moment().endOf('day')],
-                        'Last 3 hours': [moment().subtract(3, 'hours'), moment()],
-            'Last 30 days': [moment().subtract(29, 'days').startOf('day'), moment().endOf('day')],
-                        'Last 6 hours': [moment().subtract(6, 'hours'), moment()],
+            'Last 14 days': [moment().subtract(14, 'days').startOf('day'), moment().endOf('day')],
             'This month': [moment().startOf('month'), moment().endOf('month')],
-                        'Last 12 hours': [moment().subtract(12, 'hours'), moment()],
             'Last month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                        'Last 24 hours': [moment().subtract(24, 'hours'), moment()],
-            'Last 2 months': [moment().subtract(2, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                        'Last 48 hours': [moment().subtract(48, 'hours'), moment()],
-            'Last 3 months': [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                        'Last 72 hours': [moment().subtract(72, 'hours'), moment()],
-
         }
         if (isAll) {
             return arr;
@@ -138,12 +139,13 @@ export class DateTimeRangeService {
     updateDataRange(dtr: any) {
         DateTimeRangeService.dateTimeRangr.title = dtr.title;
         DateTimeRangeService.dateTimeRangr.timezone = dtr.timezone;
+
         DateTimeRangeService.dateTimeRangr.dates = this.getRangeByLabel(dtr.title) || dtr.dates;
         this._sss.saveDateTimeRange({
             title: DateTimeRangeService.dateTimeRangr.title,
             timezone: DateTimeRangeService.dateTimeRangr.timezone,
             dates: DateTimeRangeService.dateTimeRangr.dates
         });
-        this.refrash();
+        this.refresh();
     }
 }

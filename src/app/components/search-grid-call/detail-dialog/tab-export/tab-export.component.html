@@ -1,36 +1,112 @@
-
-<mat-grid-list cols="2" rowHeight="100px">
+<mat-grid-list cols="2"
+  rowHeight="100px">
   <mat-grid-tile colspan="2">
-    <h3>Export Session Data</h3>
+    <h3 style="color:#808080">{{'tabExport.exportSessionData'|translate}}</h3>
   </mat-grid-tile>
   <mat-grid-tile>
-    <button mat-raised-button color="primary" (click)="exportPCAP()">
-      <mat-icon>file_copy</mat-icon>
-      Export PCAP
+    <button mat-raised-button
+      class="setting-btn"
+      (click)="getFile('Pcap')">
+      <fa-icon icon="copy"></fa-icon>
+      {{'tabExport.exportPCAP'|translate}}
     </button>
   </mat-grid-tile>
   <mat-grid-tile>
-    <button mat-raised-button disabled> 
-      <mat-icon>cloud_download</mat-icon>
-      Share Cloud
+    <button mat-raised-button
+      style="width: 80%; height: 80%;"
+      disabled>
+      <fa-icon icon="cloud-download-alt"></fa-icon>
+      {{'tabExport.shareCloud'|translate}}
     </button>
   </mat-grid-tile>
   <mat-grid-tile>
-    <button mat-raised-button color="primary" (click)="exportTEXT()">
-      <mat-icon>file_copy</mat-icon>
-      Export TEXT
+    <button mat-raised-button
+      class="setting-btn"
+      (click)="getFile('Text')">
+      <fa-icon icon="copy"></fa-icon>
+      {{'tabExport.exportText'|translate}}
     </button>
   </mat-grid-tile>
   <mat-grid-tile>
-    <button mat-raised-button color="primary" (click)="onShareLink()">
-      <mat-icon>share</mat-icon>
+    <button class="setting-btn"
+      mat-raised-button
+      color="primary"
+      (click)="onShareLink()">
+      <fa-icon icon="external-link-alt"></fa-icon>
       Share Link
     </button>
   </mat-grid-tile>
-  <mat-grid-tile>
-    <button mat-raised-button color="primary" (click)="onExportFlowAsPNG()">
-      <mat-icon>save_alt</mat-icon>
-      Export Flow as PNG
+  <!-- <mat-grid-tile>
+    <button mat-raised-button
+      class="setting-btn">
+      <span class="hover-hide">{{'tabExport.shareLink'|translate}}</span>
+      <div class="share-link-menu">
+        <button mat-raised-button
+          class="setting-btn in-select"
+          (click)="onShareLink()">
+          <fa-icon icon="external-link-alt"></fa-icon>
+          {{'tabExport.openShareLink'|translate}}
+        </button>
+        <button mat-raised-button
+          class="setting-btn in-select"
+          (click)="onCopyLink()">
+          <fa-icon icon="copy"></fa-icon>
+          {{'tabExport.copyShareLink'|translate}}
+        </button>
+      </div>
     </button>
+  </mat-grid-tile> -->
+  <mat-grid-tile>
+    <button mat-raised-button
+      class="setting-btn"
+      (click)="onExportFlowAsPNG()">
+      <mat-icon>save_alt</mat-icon>
+      {{'tabExport.exportFlowAsPNG'|translate}}
+    </button>
+  </mat-grid-tile>
+
+
+
+  <!-- <mat-grid-tile>
+    <button mat-raised-button
+      class="setting-btn"
+      (click)="getFile('Report')">
+      <mat-icon>save_alt</mat-icon>
+      {{'tabExport.exportReport'|translate}}
+    </button>
+  </mat-grid-tile> -->
+  <!-- <mat-grid-tile *ngIf="enableSIPP">
+    <button mat-raised-button
+      class="setting-btn"
+      (click)="getFile('SIPP')">
+      <fa-icon icon="copy"></fa-icon>
+      {{'tabExport.exportSIPPScenario'|translate}}
+    </button>
+  </mat-grid-tile> -->
+  <!-- <mat-grid-tile *ngIf="enablePCAPSule">
+    <button mat-raised-button
+      class="setting-btn"
+      (click)="getTimePCAPSule()">
+      <fa-icon icon="copy"></fa-icon>
+      {{'tabExport.timePCAPsule'|translate}}
+    </button>
+  </mat-grid-tile> -->
+  <mat-grid-tile>
+    <mat-select class="ipSelect setting-btn"
+      [(value)]='whitelistIP'
+      placeholder="Export Exclusion"
+      multiple>
+      <mat-select-trigger>
+        {{'tabExport.IPSelection' | translate }}: {{whitelistIP && whitelistIP.length > 0 ? whitelistIP[0].ip : ''}}
+        {{whitelistIP &&
+        whitelistIP.length > 0 ? whitelistIP[0].alias : ''}}
+        <span *ngIf="whitelistIP.length > 1"
+          class="example-additional-selection">
+          (+{{whitelistIP.length - 1}} {{whitelistIP.length === 2 ? 'other' : 'others'}})
+        </span>
+      </mat-select-trigger>
+      <mat-option *ngFor="let host of listIP"
+        [value]='host'>{{host.ip}} {{host.alias}} </mat-option>
+    </mat-select>
   </mat-grid-tile>
 </mat-grid-list>

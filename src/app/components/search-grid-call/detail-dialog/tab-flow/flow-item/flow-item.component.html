@@ -2,46 +2,44 @@
     <div class="bg-color-polygon" [style.background-color]="item.options.color"></div>
     <!-- background-color -->
 
-    <div [style.flex]="item.options.start || 0.0000001"></div> <!-- left space -->
-    <div [ngStyle]="{
-                    'flex': item.options.middle || 0.0000001,
-                    'text-align': item.options.direction ? 'right' : 'left'
-                }" class="item-flow-packet" (click)="onClickItem(item, $event)">
-        <!-- content -->
-        <div class="call_text" [style.color]=" item.color_method ? item.color_method : 'initial' "> {{
-                        item.method_text 
-                    }} <span *ngIf="item.QOS" [ngClass]="item.options.mosColor"></span> {{
-                    item.QOS ? item.QOS.MOS + ' [' + item.QOS.qosTYPEless + ']' : ''
-                }} </div>
-        <div class="call_text-mini" [ngStyle]="{'height.px': !isSimplify ? 15 : 0,'max-width.px':isSimplify ? 150 : ''}"
-            [ngClass]="!item.options.direction ? 'left' : 'right'" title="{{item.ruri_user}}">
-            {{ item.ruri_user }}</div>
-        <div [ngClass]="'port-label-' + (!item.options.direction ? 'left' : 'right')">{{ item.srcPort }}
-        </div>
-        <!-- ARROW line -->
-        <div *ngIf="!item.options.isRedialArrow"
-            [ngClass]="'arrow' + (item.options.direction ? ' left': '') + (!item.options.arrowStyleSolid ? ' arrow-solid' : ' arrow-dotted')"
-            [style.color]="item.options.color"></div>
-        <!-- ARROW redial -->
-        <div *ngIf="item.options.isRedialArrow"
-            [ngClass]="'redial-arrow' + (item.options.arrowStyleSolid ? ' rtp' : '')"
-            [style.color]="item.options.color"></div>
+    <div [style.flex]="item.options.start || 0.0000001"></div>
+    <!-- left space -->
+    <div class="item-flow-packet" (click)="onClickItem(idx, $event)" [style.flex]="item.options.middle || 0.0000001"
+        [style.text-align]="item.options.direction ? 'right' : 'left'">
 
-        <div [ngClass]="'port-label-' + (item.options.direction ? 'left' : 'right')"
-            [ngStyle]="item.options.isRedialArrow && {'left.px' : -47 }">{{ item.dstPort }}</div>
-        <span *ngIf='!item.options.isRedialArrow; else elseBlock'>
-            <div class="call-text-date" [ngStyle]="{'maxHeight.px': !isSimplify ? 50 : 0}">
-                [{{ idx + 1 }}][{{ item.proto | uppercase }}] {{ item.micro_ts }}</div>
-            <div class="call-text-date">+ {{ item.diffTs }} s</div>
-        </span>
-        <ng-template #elseBlock>
-            <div class="call-text-date" [ngStyle]="{'maxHeight.px': (!isSimplify ? 50 : 0)}">
-                [{{ idx + 1 }}][{{ item.proto | uppercase }}] {{ item.micro_ts }} + {{ item.diffTs }} s
-            </div>
-            <div class="call-text-date"
-                [ngStyle]="{'display': (!isSimplify ? 'none' : 'block'),'text-align': 'center'}"> +
-                {{ item.diffTs }} s </div>
-        </ng-template>
+        <!-- content -->
+        <div class="call_text" [style.color]="item.options.color_method || 'initial'">
+            {{ item.method_text }}
+            <span *ngIf="item.QOS && item.QOS.MOS" class="blinkLamp"
+                [style.backgroundColor]="MOSColorGradient(item.QOS.MOS)"></span>
+            {{ item.QOS ? (item.QOS.MOS ? (item.QOS.MOS + " [" + item.QOS.qosTYPEless + "]") : '') : "" }}
+        </div>
+        <div class="call_text-mini" [style.height.px]=" !isSimplify ? 15 : 0 ">
+            {{ typeOf(item.description) === 'string' ? (item.description) : (item.description[0] + ' ' + item.description[1])}}
+        </div>
+        <div [ngClass]="'port-label-' + (!item.options.direction ? 'left' : 'right')">
+            {{ item.source_port }}
+        </div>
+        <div *ngIf="!item.options.isRadialArrow" [ngClass]="
+                'arrow' +
+                (item.options.direction ? ' left' : '') +
+                (item.options.arrowStyleSolid ? ' arrow-solid' : ' arrow-dotted')
+            " [ngStyle]="{ color: item.options.color }"></div>
+        <div *ngIf="item.options.isRadialArrow" [ngClass]="(item.options.isLastHost ? 'radial-arrow-end' : 'radial-arrow') +
+                                    (item.options.arrowStyleSolid ? ' arrow-solid' : ' arrow-dotted')"
+            [style.color]="item.options.color">
+        </div>
+        <div *ngIf="!item.options.isLastHost" [ngClass]="'port-label-' + (item.options.direction ? 'left' : 'right')"
+            [style.left.px]="item.options.isRadialArrow && -47">
+            {{ item.destination_port }}
+        </div>
+        <div *ngIf="item.options.isLastHost" class="port-label-right">{{ item.destination_port }}</div>
+        <div class="call-text-date" [style.max-height.px]="!isSimplify ? 50 : 0 ">
+            {{ item.info_date }} [{{ item.diff || "+0.00ms" }}]
+        </div>
+        
     </div>
-    <div [ngStyle]="{'flex': item.options.rightEnd || 0.0000001 }"></div> <!-- right space -->
+    <div
+        [style.flex]="(item.options.rightEnd - (item.options.isRadialArrow && !item.options.isLastHost ? 1 : 0 )) || 0.0000001">
+    </div>
 </div>

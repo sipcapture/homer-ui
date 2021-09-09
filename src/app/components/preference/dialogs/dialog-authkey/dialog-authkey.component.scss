@@ -4,8 +4,12 @@
 .title {
 	margin: -1.5rem -1.5rem 2rem -1.5rem;
 	width: initial !important;
+	font-size: 14px;
 	display: flex;
 	justify-content: space-between;
+	text-transform: uppercase;
+	//font-weight: 400;
+	letter-spacing: 1px;
 }
 .example-container {
 	display: flex;
@@ -16,4 +20,9 @@
 }
 .hide {
 	display: none !important;
+}
+.authkey-cont {
+	display:flex;
+	 align-items:center;
+	 min-height:100px;
 }

@@ -1,19 +1,23 @@
 
-import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialog} from '@angular/material/dialog';
+import { Component, Inject, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { DialogAlarmComponent } from '../dialog-alarm/dialog-alarm.component';
 import { ConstValue } from '@app/models';
-import { Functions } from '../../../helpers/functions';
-
-
+import { Functions } from '@app/helpers/functions';
+import { AlertService } from '@app/services';
+import { TranslateService } from '@ngx-translate/core'
 @Component({
     selector: 'app-setting-protosearch-widget-component',
     templateUrl: 'setting-protosearch-widget.component.html',
-    styleUrls: ['./setting-protosearch-widget.component.scss']
+    styleUrls: ['./setting-protosearch-widget.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None
 })
 
 export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
     isValidForm = true;
+    isInvalid: boolean;
+    config: any;
     _interval: any;
     proto: any = {
         hep_alias: '',
@@ -59,44 +63,59 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
         form_default: 'default',
         disabled: false,
     }];
-
     constructor(
         public dialogRef: MatDialogRef<SettingProtosearchWidgetComponent>,
         public dialogAlarm: MatDialog,
+        private cdr: ChangeDetectorRef,
+        public translateService: TranslateService,
+        private alertService: AlertService,
         @Inject(MAT_DIALOG_DATA) public data: any
     ) {
+        translateService.addLangs(['en'])
+        translateService.setDefaultLang('en')
         if (!data) {
             return;
         }
         try {
-            this.resultConfig.title =  data.config.config.title || '';
+            const { config } = data.config;
+            this.config = config;
+            this.resultConfig.title = config.title || '';
             this.resultConfig.isButton = data.isButton;
-            this.resultConfig.profile = data.config.config.protocol_profile.value;
-            this.resultConfig.protocol_id = data.config.config.protocol_id;
+            this.resultConfig.profile = config.protocol_profile.value;
+            this.resultConfig.protocol_id = config.protocol_id;
             this.resultConfig.countFieldColumns = data.config.countFieldColumns || 1;
-            this.mappingSortedData = Functions.cloneObject(data.mapping.data);
+            this.mappingSortedData = Functions.cloneObject(data.mapping);
             if (data.isContainer) {
                 this.mappingSortedData = this.mappingSortedData.filter(item => {
                     return !(item.profile === 'default' && item.hepid === 2000 && item.hep_alias === 'LOKI');
                 });
             }
+
             for (const item of this.mappingSortedData) {
                 if (item.profile === 'default' && item.hepid === 2000 && item.hep_alias === 'LOKI') {
                     item.fields_mapping = this.lokiFields;
                 }
 
                 /* check if we have default fields inside */
-                if (!item.fields_mapping.find(it => it.id === 'limit')) {
+                if (item?.fields_mapping && !item.fields_mapping.find(it => it.id === 'limit')) {
                     item.fields_mapping = item.fields_mapping.concat(this.defaultFields);
                 }
             }
-            if (data.config.config.protocol_id) {
-                this.proto.hep_alias = data.config.config.protocol_id.name;
+            if (config.protocol_id) {
+                this.proto.hep_alias = config.protocol_id.name;
                 this.proto.profile = this.resultConfig.profile;
-                const mapping = this.mappingSortedData.find(i =>
-                    i.hep_alias === data.config.config.protocol_id.name &&
-                    i.profile === data.config.config.protocol_profile.value);
-                this.proto.fields_mapping = mapping.fields_mapping.filter(i => !(i.skip === true)).map(i => {
+                const [defaultMapping] = this.mappingSortedData;
+                let mapping = this.mappingSortedData.find(i =>
+                    i.hep_alias === config.protocol_id.name &&
+                    i.profile === config.protocol_profile.value);
+
+                if (!mapping) {
+                    this.proto.hep_alias = defaultMapping.hep_alias;
+                    this.proto.profile = defaultMapping.profile;
+
+                    mapping = defaultMapping;
+                }
+                this.proto.fields_mapping = mapping.fields_mapping.filter(i => !i.skip).map(i => {
                     i.selected = data.config.fields.map(j => j.field_name).includes(i.id);
                     return i;
                 });
@@ -104,31 +123,62 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
             }
             /* sorting this.proto.fields_mapping by data.config.fields */
             const pm = Functions.cloneObject(this.proto.fields_mapping);
+            if (pm.length === this.defaultFields.length) {
+                const err = 'Please check mappings for this protocol';
+                throw err;
+            }
             const pmActive = [];
             data.config.fields.forEach(j => {
                 const [pmItem] = pm.splice(pm.findIndex(i => i.id === j.field_name), 1);
                 pmActive.unshift(pmItem);
             });
             this.proto.fields_mapping = ([].concat(pmActive.reverse(), pm)).filter(i => !!i);
+            // this.cdr.detectChanges();
+            // console.log(this.mappingSortedData)
         } catch (err) {
-            this.onNoClick();
+            this.openDialog();
 
-            this.dialogAlarm.open(DialogAlarmComponent);
-
-            console.warn('ERROR config broken:', err);
+            console.warn('ERROR config broken:', err, data);
         }
+        // this.cdr.detectChanges();
     }
+    async openDialog() {
+        // console.log(this.data.isReset, 'IS RESET')
+        const dialogRef = this.dialogAlarm.open(DialogAlarmComponent, {
+            data: {
+                config: this.config,
+                isReset: this.data.isReset,
+            }
+        });
+        const result = await dialogRef.afterClosed().toPromise();
+        if (result && result.config && !result.isReset) {
+            const config = {
+                countFieldColumns: 1,
+                fields: result.config.data.fields,
+                isButton: true,
+                profile: result.config.data.config.protocol_profile.value,
+                protocol_id: {
+                    name: result.config.data.config.protocol_profile.name,
+                    value: result.config.data.config.protocol_profile.value
+                },
+                title: result.config.data.title,
+                isReset: true
+            }
+            this.dialogRef.close(config);
+        }
 
-    ngOnInit () {
+    }
+    ngOnInit() {
         this.validate();
+        this.cdr.detectChanges();
     }
     private getHepId(hep_alias, profile) {
         return this.mappingSortedData.find(i =>
             i.hep_alias === hep_alias &&
             i.profile === profile
-        ).hepid;
+        )?.hepid;
     }
-    compareProto (a: any, b: any) {
+    compareProto(a: any, b: any) {
         return a.hep_alias === b.hep_alias && a.profile === b.profile;
     }
 
@@ -154,6 +204,7 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
                     item.proto = this.proto.hep_alias + '-' + this.proto.profile;
                     return item;
                 });
+                this.cdr.detectChanges();
             }
         }, 50);
     }
@@ -166,15 +217,25 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
         } catch (err) {
             console.error(10, this.proto.fields_mapping);
         }
+        this.cdr.detectChanges();
 
+    }
+    validateTitle(event) {
+        event = event.trim();
+        if (event === '' || event === ' ') {
+            this.isInvalid = true;
+        } else {
+            this.isInvalid = false;
+        }
     }
     onUpdateProto(event: any) {
         this.proto.fields_mapping = event;
         this.validate();
         this.onChange();
+        this.cdr.detectChanges();
     }
-    ngOnDestroy () {
-        if (this._interval ) {
+    ngOnDestroy() {
+        if (this._interval) {
             clearInterval(this._interval);
         }
     }

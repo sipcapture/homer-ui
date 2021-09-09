@@ -1,0 +1,96 @@
+<button mat-icon-button
+    class="button-icon-right-top"
+    (click)="doOpenFilter()">
+    <fa-icon icon="filter"></fa-icon>
+</button>
+<!-- filter -->
+<div class="hidden-back"
+    [hidden]="!isFilterOpened"
+    (click)="hideFilter()"></div>
+<div class="button-icon-right-top filter-container"
+    [hidden]="!isFilterOpened"
+    #filterContainer>
+    <mat-slide-toggle class="slide-toggle"
+        *ngIf="isFlowTab"
+        color="warn"
+        [(ngModel)]="isSimplify"
+        (click)="doFilterMessages()">
+        {{ isSimplify ? 'Extended Format' : 'Simple Format'}}
+    </mat-slide-toggle>
+
+    <br *ngIf="isFlowTab">
+    <mat-radio-group *ngIf="isFlowTab || isGraphTab"
+        [(ngModel)]="combineType"
+        class="filter-radio-group"
+        (change)="doFilterMessages()">
+        <mat-radio-button color="warn"
+            class="filter-radio-button"
+            *ngFor="let type of listCombineTypes | keyvalue; let idx = index"
+            [disabled]="_isSingleIP && idx > 0"
+            [value]="type.key">
+            {{type.value}}
+        </mat-radio-button>
+    </mat-radio-group>
+    <div style="margin: 0 -10px 5px -10px;">
+        <mat-accordion>
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>PayloadType</mat-panel-title>
+                </mat-expansion-panel-header>
+                <div style="display: flex; flex-flow: wrap; max-width: 360px;">
+                    <ng-container *ngFor="let item of checkboxListFilterPayloadType">
+                        <mat-checkbox *ngIf="isMediaReportsTab ? item.title === 'RTP' || item.title === 'RTCP' : true"
+                            class="example-margin checkbox-filter"
+                            color="warn"
+                            (click)="doFilterMessages()"
+                            [(ngModel)]="item.selected">{{ item.title }}</mat-checkbox>
+                    </ng-container>
+                </div>
+            </mat-expansion-panel>
+            <mat-expansion-panel *ngIf="checkboxListFilterAliases.length">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>Alias filter</mat-panel-title>
+                </mat-expansion-panel-header>
+                <div style="display: flex; flex-flow: wrap; max-width: 360px;">
+                    <ng-container *ngFor="let item of checkboxListFilterAliases">
+                        <mat-checkbox *ngIf="isMediaReportsTab ? item.title === 'RTP' || item.title === 'RTCP' : true"
+                            class="example-margin checkbox-filter"
+                            color="warn"
+                            (click)="doFilterMessages('alias')"
+                            [(ngModel)]="item.selected">{{ item.title }}</mat-checkbox>
+                    </ng-container>
+                </div>
+            </mat-expansion-panel>
+            <mat-expansion-panel *ngIf="checkboxListFilterIP.length && !_isSingleIP">
+                <mat-expansion-panel-header>
+                    <mat-panel-title> IP filter </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div style="display: flex; flex-flow: wrap; max-width: 360px;">
+                    <ng-container *ngFor="let item of checkboxListFilterIP">
+                        <mat-checkbox class="example-margin checkbox-filter"
+                            color="warn"
+                            (click)="doFilterMessages('ip')"
+                            [(ngModel)]="item.selected">
+                            {{ item.title }}
+                        </mat-checkbox>
+                    </ng-container>
+                </div>
+            </mat-expansion-panel>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>CallId</mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div class="checkbox-container">
+                    <mat-checkbox class="example-margin checkbox-filter"
+                        color="warn"
+                        *ngFor="let item of checkboxListFilterCallId"
+                        (click)="doFilterMessages()"
+                        [(ngModel)]="item.selected">
+                        <span [style.color]="item.color">{{ item.title }}</span>
+                    </mat-checkbox>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+</div>

@@ -1,8 +1,12 @@
-import {Component} from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ICellRendererAngularComp} from 'ag-grid-angular';
 
 @Component({
-    template: `<div class="loki-highlight" [innerHTML]="data"></div>`
+    template: `
+        <span class='cell-wrapper' (click)='copy(data)'>
+            <div class="loki-highlight" [innerHTML]="data"></div>
+        </span>`,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class LokiHighlightRenderer implements ICellRendererAngularComp {
@@ -23,6 +27,10 @@ export class LokiHighlightRenderer implements ICellRendererAngularComp {
     private htmlSpecialChars(s: string) {
         return s.replace(/\</g, '&lt;').replace(/\>/g, '&gt;');
 
+    }
+    
+    copy(value) {
+        this.params.context.componentParent.copy(value);
     }
     refresh(): boolean {
         return false;

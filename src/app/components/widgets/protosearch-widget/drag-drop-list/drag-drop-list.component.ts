@@ -67,7 +67,7 @@ export class DragDropListComponent implements OnInit {
             item.selected = true;
         });
         const newProto = [].concat(this.activeList, this.inactiveList);
-        const sortedProto = newProto.sort((a, b) => a.idx - b.idx)
+        const sortedProto = newProto.sort((a, b) => a.idx - b.idx);
         this.change.emit(newProto);
         this.order.emit({
             sortedProto: sortedProto,

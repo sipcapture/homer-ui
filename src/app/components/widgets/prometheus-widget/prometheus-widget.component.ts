@@ -1,5 +1,5 @@
 import { DateTimeRangeService, DateTimeTick, Timestamp } from '@app/services/data-time-range.service';
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { SettingPrometheusWidgetComponent } from './setting-prometheus-widget.component';
 import { PrometheusService } from '@app/services/prometheus.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -9,11 +9,12 @@ import { IWidget } from '../IWidget';
 import { Subscription } from 'rxjs';
 import { Label } from 'ng2-charts';
 import * as moment from 'moment';
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
     selector: 'app-prometheus-widget',
     templateUrl: './prometheus-widget.component.html',
-    styleUrls: ['./prometheus-widget.component.scss']
+    styleUrls: ['./prometheus-widget.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 @Widget({
     title: 'Prometheus',
@@ -23,12 +24,13 @@ import * as moment from 'moment';
     advancedName: 'promserver',
     className: 'PrometheusWidgetComponent',
     minHeight: 300,
-    minWidth: 300
+    minWidth: 300,
+
 })
 export class PrometheusWidgetComponent implements IWidget {
     @Input() id: string;
     @Input() config: any;
-    @Output() changeSettings = new EventEmitter<any> ();
+    @Output() changeSettings = new EventEmitter<any>();
 
     _isLoaded = false;
     public chartOptions: any = {
@@ -45,7 +47,8 @@ export class PrometheusWidgetComponent implements IWidget {
                     beginAtZero: true
                 }
             }]
-        }
+        },
+        legend: { position: 'bottom' }
     };
     timeRange: Timestamp;
     public chartLabels: Label[] = [];
@@ -68,8 +71,12 @@ export class PrometheusWidgetComponent implements IWidget {
     constructor(
         public dialog: MatDialog,
         private _dtrs: DateTimeRangeService,
-        private _ps: PrometheusService,
-    ) { }
+        private _ps: PrometheusService, 
+        public translateService: TranslateService
+    ) {
+        translateService.addLangs(['en'])
+        translateService.setDefaultLang('en')
+    }
 
     ngOnInit() {
         WidgetArrayInstance[this.id] = this as IWidget;
@@ -87,11 +94,13 @@ export class PrometheusWidgetComponent implements IWidget {
                         prometheusQuries: ''
                     }]
                 },
-                panel: { queries: [{
-                    name: 'A1',
-                    type: { name: 'prometheus', alias: 'prometheus' },
-                    value: 'query'
-                }]}
+                panel: {
+                    queries: [{
+                        name: 'A1',
+                        type: { name: 'prometheus', alias: 'prometheus' },
+                        value: 'query'
+                    }]
+                }
             };
             // this.changeSettings.emit({
             //     config: this.config,
@@ -104,7 +113,7 @@ export class PrometheusWidgetComponent implements IWidget {
             this.update(this.config.chart.type.value);
         });
     }
-    private update (chartType: any) {
+    private update(chartType: any) {
 
         if (!this.config) {
             return;
@@ -162,11 +171,11 @@ export class PrometheusWidgetComponent implements IWidget {
 
 
     }
-    private querybuilder (config: any) { /** depricated, need use {SearchService} */
+    private querybuilder(config: any) { /** depricated, need use {SearchService} */
         const dataquery: Array<any> = config.dataquery.data;
         let formattedQuery: Array<any> = [];
         dataquery.forEach(item => {
-            formattedQuery = formattedQuery.concat( item.prometheusLabels.map(i => i + encodeURIComponent(item.prometheusQuries) ) );
+            formattedQuery = formattedQuery.concat(item.prometheusLabels.map(i => i + encodeURIComponent(item.prometheusQuries)));
         });
         formattedQuery = formattedQuery[0] instanceof Array ? formattedQuery[0] : formattedQuery;
 
@@ -184,7 +193,7 @@ export class PrometheusWidgetComponent implements IWidget {
     openDialog(): void {
         const dialogRef = this.dialog.open(SettingPrometheusWidgetComponent, {
             width: '800px',
-            data: this.config || {empty: true}
+            data: this.config || { empty: true }
         });
 
         const dialogRefSubscription = dialogRef.afterClosed().subscribe(result => {
@@ -218,20 +227,20 @@ export class PrometheusWidgetComponent implements IWidget {
         });
     }
 
-    yAxisFormatter (label) {
+    yAxisFormatter(label) {
         switch (this.config.format.value) {
             case 'short':
                 return ((num) => {
                     const f = i => Math.pow(1024, i);
                     let n = 4;
-                    while (n-- && !(f(n) < num)) {}
+                    while (n-- && !(f(n) < num)) { }
                     return (n === 0 ? num : Math.round(num / f(n)) + ('kmb'.split('')[n - 1])) || num.toFixed(2);
                 })(label);
             case 'bytes':
                 return ((num) => {
                     const f = i => Math.pow(1024, i);
                     let n = 6;
-                    while (n-- && !(f(n) < num)) {}
+                    while (n-- && !(f(n) < num)) { }
                     return ((n === 0 ? num : Math.round(num / f(n)) + ('KMGTP'.split('')[n - 1])) || num.toFixed(0)) + 'b';
                 })(label);
 
@@ -239,7 +248,7 @@ export class PrometheusWidgetComponent implements IWidget {
         return label;
     }
 
-    ngOnDestroy () {
+    ngOnDestroy() {
         this.subscription.unsubscribe();
     }
 }

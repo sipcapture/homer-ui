@@ -1,68 +1,160 @@
-<cdk-virtual-scroll-viewport tvsItemSize="38" headerHeight="38" auditTimeInMs="1" [style.flex]="1">
-    <table mat-table [dataSource]="dataSource">
-        <ng-container matColumnDef="id">
-            <th mat-header-cell *matHeaderCellDef> Id </th>
-            <td mat-cell *matCellDef="let element"> {{element.id}} </td>
-        </ng-container>
-        <ng-container matColumnDef="create_date">
-            <th mat-header-cell *matHeaderCellDef> Date </th>
-            <td mat-cell *matCellDef="let element"> {{element.create_date}} </td>
-        </ng-container>
-        <ng-container matColumnDef="timeSeconds">
-            <th mat-header-cell *matHeaderCellDef> Time </th>
-            <td mat-cell *matCellDef="let element"> {{element.timeSeconds}} </td>
-        </ng-container>
-        <ng-container matColumnDef="diff">
-            <th mat-header-cell *matHeaderCellDef> Diff </th>
-            <td mat-cell *matCellDef="let element"> {{element.diff}} </td>
-        </ng-container>
+<!-- style="position: relative; overflow: auto; display: flex; flex-direction: column; height: 100%;" -->
 
-        <ng-container matColumnDef="method">
-            <th mat-header-cell *matHeaderCellDef> Event </th>
-            <td mat-cell *matCellDef="let element" [style]="{'color': getMethodColor(element.method)}">
-                {{element.method}}
-            </td>
-        </ng-container>
-
-        <ng-container matColumnDef="Msg_Size">
-            <th mat-header-cell *matHeaderCellDef> Msg Size </th>
-            <td mat-cell *matCellDef="let element"> {{element.Msg_Size}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="srcIp_srcPort">
-            <th mat-header-cell *matHeaderCellDef> Src IP/Host </th>
-            <td mat-cell *matCellDef="let element">
-                {{getAliasByIP(element.srcIp_srcPort)}}
-            </td>
+<div class="mat-elevation-z8"
+    style="position: relative; overflow: auto; display: flex; flex-direction: column; height: 100%;">
+    <custom-ag-grid class="example-table-container"
+        [details]="dataSource.filteredData"
+        [columns]="displayedColumns"
+        (rowClick)="onClickMessage($event)"></custom-ag-grid>
+    <!-- <div class="example-table-container">
+        <table mat-table
+            [dataSource]="dataSource"
+            [trackBy]="identify"
+            class="mat-elevation-z8"
+            matSort
+            matSortActive="created"
+            matSortDisableClear
+            matSortDirection="desc">
+            <ng-container matColumnDef="id">
+                <th mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header> Id </th>
+                <td mat-cell
+                    *matCellDef="let element"> {{element.id}} </td>
+            </ng-container>
+            <ng-container matColumnDef="create_date">
+                <th mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header> Date </th>
+                <td mat-cell
+                    *matCellDef="let element"> {{element.create_date}} </td>
+            </ng-container>
+            <ng-container matColumnDef="timeSeconds">
+                <th mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header> Time </th>
+                <td mat-cell
+                    *matCellDef="let element"
+                    [style.min-width.px]="150"> {{element.timeSeconds}} </td>
+            </ng-container>
+            <ng-container matColumnDef="diff">
+                <th mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header> Diff </th>
+                <td mat-cell
+                    *matCellDef="let element"> {{element.diff}} </td>
             </ng-container>
 
-        <ng-container matColumnDef="srcPort">
-            <th mat-header-cell *matHeaderCellDef> Sport </th>
-            <td mat-cell *matCellDef="let element"> {{element.srcPort}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="dstIp_dstPort">
-            <th mat-header-cell *matHeaderCellDef> Dst IP/Host </th>
-            <td mat-cell *matCellDef="let element">
-                {{getAliasByIP(element.dstIp_dstPort)}}
-            </td>
+            <ng-container matColumnDef="method">
+                <th mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header> Event </th>
+                <td mat-cell
+                    *matCellDef="let element"
+                    [style.color]="element.mcolor || ''">
+                    {{element.method}}
+                </td>
             </ng-container>
 
-        <ng-container matColumnDef="dstPort">
-            <th mat-header-cell *matHeaderCellDef> Dport </th>
-            <td mat-cell *matCellDef="let element"> {{element.dstPort}} </td>
-        </ng-container>
-        <ng-container matColumnDef="proto">
-            <th mat-header-cell *matHeaderCellDef> Proto </th>
-            <td mat-cell *matCellDef="let element"> {{element.proto | uppercase }} </td>
-        </ng-container>
-        <ng-container matColumnDef="type">
-            <th mat-header-cell *matHeaderCellDef> Type </th>
-            <td mat-cell *matCellDef="let element"> {{element.type}} </td>
-        </ng-container>
+            <ng-container matColumnDef="Msg_Size">
+                <th mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header> Msg Size </th>
+                <td mat-cell
+                    *matCellDef="let element"> {{element.Msg_Size}} </td>
+            </ng-container>
+            <ng-container matColumnDef="srcIp_srcPort">
+                <th mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header> Src IP/Host </th>
+                <td mat-cell
+                    *matCellDef="let element"
+                    [matTooltip]="isEllipsis(element.srcAlias)"
+                    class="ellipsis-text">{{element.srcAlias || element.srcIp}}</td>
+            </ng-container>
+            <ng-container matColumnDef="srcPort">
+                <th mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header> Sport </th>
+                <td mat-cell
+                    *matCellDef="let element">{{element.srcPort}} </td>
+            </ng-container>
+            <ng-container matColumnDef="dstIp_dstPort">
+                <th mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header> Dst IP/Host </th>
+                <td mat-cell
+                    *matCellDef="let element"
+                    [matTooltip]="isEllipsis(element.dstAlias)"
+                    class="ellipsis-text">{{element.dstAlias || element.dstIp}}</td>
+            </ng-container>
+            <ng-container matColumnDef="dstPort">
+                <th mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header> Dport </th>
+                <td mat-cell
+                    *matCellDef="let element"> {{element.dstPort}} </td>
+            </ng-container>
+            <ng-container matColumnDef="proto">
+                <th mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header> Proto </th>
+                <td mat-cell
+                    *matCellDef="let element"> {{element.proto | uppercase }} </td>
+            </ng-container>
+            <ng-container matColumnDef="type">
+                <th mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header> Type </th>
+                <td mat-cell
+                    *matCellDef="let element"> {{element.type === 'SIP' ? element.typeDisplay : element.type}}
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="ip_tos">
+                <th mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header> DSCP </th>
+                <td mat-cell
+                    *matCellDef="let element"> {{ element.tosDisplay ? element.tosDisplay : element.ip_tos }}
+                </td>
+            </ng-container>
+            <ng-container matColumnDef="vlan">
+                <th mat-header-cell
+                    *matHeaderCellDef
+                    mat-sort-header> VLAN </th>
+                <td mat-cell
+                    *matCellDef="let element"> {{element.vlan}}
+                </td>
+            </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onClickMessageRow(row, $event)">
-        </tr>
-    </table>
-</cdk-virtual-scroll-viewport>
+            <tr mat-header-row
+                *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+            <tr mat-row
+                *matRowDef="let row; index as i; columns: displayedColumns;"
+                (click)="onClickMessage(i, $event, row)">
+            </tr>
+        </table>
+    </div> -->
+    <div class="footer-panel">
+        <mat-form-field style="flex: 1"
+            class="example-form-field">
+            <mat-label>Filter</mat-label>
+            <input matInput
+                type="text"
+                [(ngModel)]="filterTextValue"
+                (keyup)="applyFilter()">
+            <button mat-button
+                *ngIf="filterTextValue"
+                matSuffix
+                mat-icon-button
+                aria-label="Clear"
+                (click)="filterTextValue=''; applyFilter()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
+        <mat-paginator style="flex: 0; min-width: 500px; display: none;"
+            [pageSizeOptions]="[25, 50, 100, 200]"
+            showFirstLastButtons>
+        </mat-paginator>
+    </div>
+</div>

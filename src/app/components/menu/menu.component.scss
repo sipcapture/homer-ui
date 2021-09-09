@@ -1,116 +1,256 @@
-@keyframes spin {
-    100% {
-        transform: rotate(360deg); transform:rotate(360deg);
-    }
+@keyframes notifyAnimarion {
+  from {
+    box-shadow: 0px 0px 0px 0px yellow, inset 0px 0px 0px 0px yellow;
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+    box-shadow: 0px 0px 11px 2px yellow, inset 0px 0px 11px 0px yellow;
+  }
+}
+
+.notify {
+  transition: all 1s;
+  animation-name: notifyAnimarion;
+  animation-duration: 0.5s;
+  animation-timing-function: ease-out;
+  animation-delay: 0;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+  animation-fill-mode: none;
+  animation-play-state: running;
 }
 
 .logo-base {
-	display: flex;
-	align-items: center;
-	cursor: pointer;
-    height: 45px;
-	& > img {
-		width: 32px;
-	}
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  height: 45px;
+
+  img {
+    height: 30px;
+  }
 }
-.btn-refresh {
-	z-index: 1;
-	margin: 0;
-	padding: 0px;
-	min-width: initial;
-	margin-right: 4px !important;
-	padding-right: 2px;
-	color: inherit;
-    background: transparent;
+
+.btn-refrash {
+  z-index: 1;
+  margin: 0;
+  padding: 0px;
+  min-width: initial;
+  margin-right: 8px;
+  padding-right: 2px;
+  border: none;
+  background: none;
+  font-size: 16px;
+  color: white;
+
 }
-.btn-refresh-timer {
-	border-left: 1px solid #fff;
-	border-radius: 0;
-	margin-left: 0;
-	min-width: initial;
-	padding-left: 0.5rem;
+
+
+.btn-refrash-timer {
+  border-left: 1px solid #fff;
+  border-radius: 0;
+  margin-left: 0;
+  min-width: initial;
+  padding-left: 0.5rem;
 }
+
 button {
-	&:focus {
-		outline: none;
-	}
+  &:focus {
+    outline: none;
+  }
 }
+
 .menu-item-active {
-	font-weight: bold;
-	box-shadow: inset 0 0 8px -4px #000;
+  font-weight: bold;
+  box-shadow: inset 0 0 8px -4px #000;
 }
+
 .menu-item-text {
-    height: 48px;
-    padding: 0 16px;
-    position: relative;
-    background: rgba(0, 0, 0, 0.04);
-    font-size: 14px;
-    text-align: center;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
-    line-height: 48px;
+  height: 48px;
+  padding: 0 16px;
+  position: relative;
+  background: rgba(0, 0, 0, 0.04);
+  font-size: 14px;
+  text-align: center;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  line-height: 48px;
 }
+.logo-container {
+  display: flex;
+  align-items: center;
+  width: 120px;
+}
+
 .logo-text {
-	border-bottom-color: rgb(255, 255, 255);
-	border-bottom-style: none;
-	border-bottom-width: 0px;
-	border-image-outset: 0px;
-	border-image-repeat: stretch;
-	border-image-slice: 100%;
-	border-image-source: none;
-	border-image-width: 1;
-	border-left-color: rgb(255, 255, 255);
-	border-left-style: none;
-	border-left-width: 0px;
-	border-right-color: rgb(255, 255, 255);
-	border-right-style: none;
-	border-right-width: 0px;
-	border-top-color: rgb(255, 255, 255);
-	border-top-style: none;
-	border-top-width: 0px;
-	box-sizing: border-box;
-	color: rgb(255, 255, 255);
-	display: inline-block;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-	font-size: 30px;
-	height: 45px;
-	line-height: 45px;
-	margin-bottom: 0px;
-	margin-left: 0px;
-	margin-right: 0px;
-	margin-top: -5px;
-	outline-color: rgb(255, 255, 255);
-	outline-style: none;
-	outline-width: 0px;
-	padding-bottom: 0px;
-	padding-left: 5px;
-	padding-right: 5px;
-	padding-top: 0px;
-	text-size-adjust: 100%;
-	vertical-align: baseline;
-	width: 120.906px;
-	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-	&:first-letter {
-		color: #E0121A;
-	}
+  
+  box-sizing: border-box;
+  color: rgb(255, 255, 255);
+  display: inline-block;
+  font-family:  Helvetica, Arial, sans-serif;
+  font-size: 20px;
+ 
+  padding-bottom: 0px;
+  padding-left: 10px;
+
+  padding-top: 0px;
+ 
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+  &:first-letter {
+    color: #E0121A;
+  }
 }
+
 .header {
-	justify-content: space-between;
-	.ng-star-inserted {
-		.md-drppicker {
-			.buttons {
-				position: absolute;
-				right: 1rem;
-				bottom: 1rem;
-			}
-		}
-	}
+  justify-content: space-between;
+
+  .ng-star-inserted {
+    .md-drppicker {
+      .buttons {
+        position: absolute;
+        right: 1rem;
+        bottom: 1rem;
+      }
+    }
+  }
 }
+
 .time-range-icon {
-	margin: -34px !important;
-	height: 24px;
-	top: 7px;
-	margin-left: 0 !important;
+  margin: -34px !important;
+  height: 24px;
+  margin-left: 0 !important;
 }
+
 .loading-anim {
-	animation: spin 1.5s linear infinite;
+  animation: spin 1.5s linear infinite;
+}
+
+.addToFavorites {
+  color: #7c7c7c;
+  background: none;
+  border: none;
+
+  &.activeFavorite {
+    color: #53c1b7;
+  }
+}
+
+.fav-menu-button {
+  background: #ffffff26;
+  border-radius: 6px 6px 0px 0px;
+  margin: 0px 3px;
+  color: white;
+  font-size: 12px;
+  line-height: 34px;
+  padding: 0px 6px;
+  border-bottom: 1px solid #ffffff26;
+
+  & button {
+    border: none;
+    color: #ffffff55;
+    background: none;
+    padding: 0px;
+    margin: 0px;
+
+    & mat-icon {
+      font-size: 15px;
+    }
+
+    &:hover {
+      color: white;
+    }
+  }
+
+  & span {
+    cursor: pointer;
+
+    &:hover {
+      color: #53c1b7;
+    }
+
+    padding-right: 25px;
+  }
+}
+
+.example-list {
+  width: 1000px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  overflow-x: hidden;
+}
+
+.example-list-tabs {
+  width: 1000px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+  overflow-x: hidden;
+}
+
+.tab-title::after {
+  display: inline-block;
+  content: 'TABS:';
+  color: #ffffffaf;
+  font-size: 12px;
+  margin-right: 12px;
+}
+
+.example-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  cursor: move;
+  flex-basis: 0;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.example-box:last-child {
+  border: none;
+}
+
+.example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.menu-start {
+  width: 650px;
+  display: flex;
+}
+
+.dash-span {
+  text-shadow: none;
+  text-transform: uppercase;
+  font-size: 12px !important;
+  color: #ffffffaf;
+}
+
+.droplist {
+  display: flex;
+  margin: 0px 6px;
+  margin-bottom: -11px;
+  margin-left: 40px;
+}
+
+.tab-menu-title {
+  justify-content: flex-end;
 }

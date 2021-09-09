@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild } from '@angular/core';
-import { Widget, WidgetArrayInstance } from '@app/helpers/widget.ts';
+import { Component, OnInit, Input, Output, EventEmitter, AfterViewInit, ViewChild, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 import { SettingClockWidgetComponent } from './setting-clock-widget.component';
 import { MatDialog } from '@angular/material/dialog';
 import { IWidget } from '../IWidget';
@@ -26,7 +26,7 @@ export interface ClockConfig {
     location: TimeZone;
     showDate: boolean;
     showAnalog: string;
-    fontSizeClock: number; 
+    fontSizeClock: number;
     fontSizeDate: number;
     radius: number;
 }
@@ -34,22 +34,25 @@ export interface ClockConfig {
 @Component({
     selector: 'app-clock-widget',
     templateUrl: './clock-widget.component.html',
-    styleUrls: ['./clock-widget.component.scss']
+    styleUrls: ['./clock-widget.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 @Widget({
     title: 'World Clock',
     description: 'Display date and time',
     category: 'Visualize',
     indexName: 'clock',
-    className: 'ClockWidgetComponent'
+    className: 'ClockWidgetComponent',
+    minHeight: 300,
+    minWidth: 300
 })
 export class ClockWidgetComponent implements IWidget {
     @Input() config: ClockConfig;
     @Input() index: string;
     @Input() id: string;
 
-    @Output() changeSettings = new EventEmitter<any> ();
-    @ViewChild('clockWidget',{static: false}) clockWidget;
+    @Output() changeSettings = new EventEmitter<any>();
+    @ViewChild('clockWidget', { static: false }) clockWidget;
 
     desc: string;
     name: string;
@@ -61,7 +64,7 @@ export class ClockWidgetComponent implements IWidget {
     hourHandStyle: any;
     minuteHandStyle: any;
     secondHandStyle: any;
-    constructor(public dialog: MatDialog) { }
+    constructor(public dialog: MatDialog, private cdr: ChangeDetectorRef) { }
 
     ngOnInit() {
         WidgetArrayInstance[this.id] = this as IWidget;
@@ -103,33 +106,35 @@ export class ClockWidgetComponent implements IWidget {
         this.name = this._config.location.name;
         this.update();
     }
-    resizeClock(){
-        let dimension = this.clockWidget.nativeElement.getBoundingClientRect();
+    resizeClock() {
+        const dimension: any = this.clockWidget.nativeElement.getBoundingClientRect();
         if (this._config.showAnalog === 'Analog') {
-            this._config.radius = Math.min(dimension['width'],dimension['height']) * 0.6;
-        }else if(this._config.showAnalog === 'Both') {
-            this._config.radius = Math.min(dimension['width'],dimension['height']) * 0.4;
+            this._config.radius = Math.min(dimension.width, dimension.height) * 0.6;
+        } else if (this._config.showAnalog === 'Both') {
+            this._config.radius = Math.min(dimension.width, dimension.height) * 0.4;
         }
     }
     update() {
         if (this._interval) {
             clearInterval(this._interval);
         }
-        //moment.tz.setDefault(this.name);
 
         this._interval = setInterval(() => {
-            this.objDate =  moment().tz(this.name).format("YYYY-MM-DD");
-            this.objTime =  moment().tz(this.name).format("HH:mm:ss");
+            this.objDate = moment().tz(this.name).format('YYYY-MM-DD');
+            this.objTime = moment().tz(this.name).format('HH:mm:ss');
             this.animateAnalogClock();
             this.resizeClock();
+            this.cdr.detectChanges();
         }, 1000);
+        this.cdr.detectChanges();
     }
 
     animateAnalogClock() {
 
-        this.hourHandStyle = { transform: `translate3d(-50%, 0, 0) rotate(${(moment().format("HH") * 30) + (moment().format("mm") * 0.5) + (moment().format("ss") * (0.5 / 60))}deg)` };
-        this.minuteHandStyle = { transform: `translate3d(-50%, 0, 0) rotate(${(moment().format("mm") * 6) + (moment().format("ss") * 0.1)}deg)` };
-        this.secondHandStyle = { transform: `translate3d(-50%, 0, 0) rotate(${moment().format("ss") * 6}deg)` };
+        this.hourHandStyle = { transform: `translate3d(-50%, 0, 0) rotate(${(moment().format('HH') * 30) + (moment().format('mm') * 0.5) + (moment().format('ss') * (0.5 / 60))}deg)` };
+        this.minuteHandStyle = { transform: `translate3d(-50%, 0, 0) rotate(${(moment().format('mm') * 6) + (moment().format('ss') * 0.1)}deg)` };
+        this.secondHandStyle = { transform: `translate3d(-50%, 0, 0) rotate(${moment().format('ss') * 6}deg)` };
+        this.cdr.detectChanges();
     }
 
     async openDialog() {
@@ -165,6 +170,8 @@ export class ClockWidgetComponent implements IWidget {
                 id: this.id
             });
         }
+
+        this.cdr.detectChanges();
     }
     ngOnDestroy() { }
 

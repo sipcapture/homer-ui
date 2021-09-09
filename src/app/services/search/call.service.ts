@@ -3,9 +3,10 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@environments/environment';
 import { SearchCallModel } from '../../models/search-call.model';
+import { map } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class SearchCallService {
 
@@ -31,5 +32,4 @@ export class SearchCallService {
     getDecodedData(searchConfig: SearchCallModel) {
         return this.http.post<any>(`${this.url}/decode/message`, searchConfig);
     }
-
 }

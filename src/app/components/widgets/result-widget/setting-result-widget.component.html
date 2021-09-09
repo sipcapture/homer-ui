@@ -1,18 +1,22 @@
-<mat-toolbar class="title" color="primary">
-  <div>Settings</div>
-  <button mat-icon-button (click)="onNoClick()">
-    <mat-icon>close</mat-icon>
-  </button>
+<mat-toolbar class="dialog-title" color="primary">
+    <div>{{'LINK.settings' | translate}}</div>
+    <button mat-icon-button (click)="onNoClick()">
+        <fa-icon icon="times"></fa-icon>
+    </button>
 </mat-toolbar>
 
 <div mat-dialog-content>
-  <mat-form-field>
-    <mat-label>Title</mat-label>
-    <input matInput [(ngModel)]="data.title">
-  </mat-form-field>
+    <mat-form-field>
+        <mat-label>{{'LINK.title' | translate}}</mat-label>
+        <input matInput [(ngModel)]="data.title" (ngModelChange)='validate($event)'>
+    </mat-form-field>
+    <div style="height: 3rem;">
+        <mat-slide-toggle class="slide-toggle" color="warn" [(ngModel)]="data.isAutoRefrasher">
+            {{ 'widgets.resultWidget.settings.autoRefresh' | translate }}        </mat-slide-toggle>
+    </div>
 </div>
 
 <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
-  <button mat-raised-button (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+    <button mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial [disabled]='isInvalid'>{{'LINK.buttons.save' | translate}}</button>
 </div>

@@ -1,12 +1,7 @@
 .chack-list {
 	margin-right: 1.3rem;
 }
-.title {
-	margin: -1.5rem -1.5rem 2rem -1.5rem;
-	width: initial !important;
-	display: flex;
-	justify-content: space-between;
-}
+
 .example-container {
 	display: flex;
 	flex-direction: column;
@@ -16,4 +11,24 @@
 }
 .hide {
 	display: none !important;
+}
+
+.input-copy-warning {
+    color:red;
+    font-weight: bold;
+}
+.copy-warning {
+    padding:5px;
+   background: #ff000022;
+    color:red;
+    width:100%;
+  
+}
+.stats-label {
+    display: inline-block;
+    font-weight: 500;
+    padding: 10px;
+}
+.stats-data {
+    display: inline-block;
 }

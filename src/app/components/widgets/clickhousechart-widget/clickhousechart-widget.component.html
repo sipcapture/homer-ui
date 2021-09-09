@@ -1,0 +1,41 @@
+<div *ngIf="isConfig" class="chart-container">
+    <app-loading-circle *ngIf="!_isLoaded">
+
+    </app-loading-circle>
+    <div *ngIf='_isLoaded' class="legend" [ngClass]="{'hidden': legendHidden}">
+        <cdk-virtual-scroll-viewport
+            orientation="horizontal"
+            itemSize="100"
+            class="example-viewport"
+            (wheel)=onScroll($event)
+            #virtualScroll
+        >
+            <div *cdkVirtualFor='let item of legendItems' class="legend-item" (click)='hideDataset(item.datasetIndex, $event)'>
+                <div [style.backgroundColor]='item.fillStyle | colorOffset: "0":"0":"0":"1"' [ngClass]="{'crossed': item.hidden}" class="legend-token"></div>
+                <div [ngClass]="{'crossed': item.hidden}" class="legend-text">{{item.text}}</div>
+            </div>
+        </cdk-virtual-scroll-viewport>
+    </div>
+
+    <div *ngIf="_isLoaded" class="fill-container" [ngClass]="{'hidden': legendHidden}">
+        <h1 *ngIf="noChartData">No Data</h1>
+        <canvas *ngIf="!noChartData" baseChart
+            [datasets]="chartData"
+            [labels]="chartLabels"
+            [options]="chartOptions"
+            [legend]="false"
+            [chartType]="chartType"
+            >
+        </canvas>
+    </div>
+</div>
+<div *ngIf="!isConfig">
+    <button mat-raised-button color="primary" (click)="openDialog()">
+        <fa-icon icon="cog"></fa-icon> {{'LINK.buttons.widgetSettings' | translate}}
+    </button>
+
+</div>
+<!-- <div class="virtual-scrollbar" *ngIf="!isExport" (mousedown)="setScrollTarget('virtualScrollbar')"
+    (scroll)="onScroll($event)" #virtualScrollbar>
+    <div [style.transform]="getVirtualScrollHeight" [style.padding.px]="1"></div>
+</div> -->

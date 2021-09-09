@@ -1,0 +1,11 @@
+<div class="update-alert" *ngIf="isMessage">
+    <span>{{ message || 'Upgrade..' }}</span>
+    <span>
+        <form action="\upgrade.html" method="GET" #refreshForm>
+            <input type="hidden" [(ngModel)]="refreshURL" name="URL" />
+            <button mat-raised-button type="submit" (click)="refreshForm.submit();" style="margin-right: 1rem;"
+                color="primary">Upgrade now!</button>
+            <button mat-raised-button (click)="onClose()">{{'LINK.buttons.close' | translate}}</button>
+        </form>
+        </span>
+        </div>

@@ -1,0 +1,80 @@
+<app-setting-button [isAccess]='isAccess' (addDialog)='settingDialog()'></app-setting-button>
+<div class="tab-name">
+    <h3>{{page | titlecase}}</h3>
+</div>
+
+<app-loading-circle *ngIf='isLoading'></app-loading-circle>
+<div #content>
+
+    <mat-form-field appearance="fill">
+        <input matInput placeholder="Filter"
+            [(ngModel)]="filter" (ngModelChange)='applyFilter()' />
+    </mat-form-field>
+    <!-- if ERROR -->
+    <!-- <div class="alert-error"> -->
+    <div *ngIf="isErrorResponse" class="alert-error alert-danger">
+        <mat-icon>warning</mat-icon>
+        {{'notifications.error.invalidJSON' | translate}}
+    </div>
+    <mat-tab-group (selectedTabChange)='tabChanged()'>
+        <mat-tab label="Data">
+            <table [hidden]="isLoading && isErrorResponse" mat-table
+                [dataSource]="dataSource" class="mat-elevation-z8" matSort #dataSorter="matSort">
+                <ng-container *ngFor="let column of columns">
+                    <!-- Status column -->
+                    <app-active-cell [column]='column' *ngIf="column === 'Online'" [options]='{option1: "Online", option2: "Offline"}'>
+                    </app-active-cell>
+                    <!-- Status-like column but for true/false of Master -->
+                    <app-active-cell [column]='column' columnName='Master' *ngIf="column === 'Master'" [options]='{option1: "True", option2: "False"}'>
+                    </app-active-cell>
+                    <!-- Last error column -->
+                    <app-last-error-cell [column]='column' *ngIf="column==='Last Error'"></app-last-error-cell>
+                    <!-- DB Stats column -->
+                    <app-db-stats-cell [column]='column' *ngIf="column === 'DB Stats'"></app-db-stats-cell>
+                    <!-- Button column -->
+                    <app-tool-cell [column]='column' [page]='page' [isAccess]='isAccess' *ngIf="column === 'tools'" (settingDialog)='settingDialog($event.item, $event.type)' >
+                    </app-tool-cell>
+                    <!-- Generic column -->
+                    <app-generic-cell [column]='column' *ngIf="!specialColumns.includes(column)">
+                    </app-generic-cell>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="columns"></tr>
+                <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+            </table>
+            <mat-paginator style="flex: 0; min-width: 500px;" [pageSizeOptions]="[25, 50, 100, 200]"
+                showFirstLastButtons #dataPaginator>
+            </mat-paginator>
+        </mat-tab>
+        <mat-tab label="Config" [hidden]="!isConfigTab">
+            <table [hidden]="isLoading && isErrorResponse" mat-table [dataSource]="configSource"
+                class="mat-elevation-z8" matSort #configSorter="matSort">
+                <ng-container *ngFor="let column of configColumns; let i = index">
+                    <!-- Status column -->
+                    <app-active-cell [column]='column' *ngIf="column === 'Online'" [options]='{option1: "Online", option2: "Offline"}'>
+                    </app-active-cell>
+                    <!-- Last error column -->
+                    <app-last-error-cell [column]='column' *ngIf="column==='Last Error'"></app-last-error-cell>
+                    <!-- DB Stats column -->
+                    <app-db-stats-cell [column]='column' *ngIf='column === "DB Stats"'></app-db-stats-cell>
+                    <!-- Status-like column but for true/false of Master -->
+                    <app-active-cell [column]='column' columnName='Master' *ngIf="column === 'Master'" [options]='{option1: "True", option2: "False"}'>
+                    </app-active-cell>
+                    <!-- Generic column -->
+                    <app-generic-cell [column]='column' *ngIf="!specialColumns.includes(column)">
+                    </app-generic-cell>
+                    <!-- Button column -->
+                    <app-tool-cell [column]='column' [page]='page' [isAccess]='isAccessConfig' *ngIf="column === 'tools'" (resyncDialog)='onResync($event)'>
+                    </app-tool-cell>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="configColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: configColumns"></tr>
+            </table>
+            <mat-paginator style="flex: 0; min-width: 500px;" [pageSizeOptions]="[25, 50, 100, 200]"
+                showFirstLastButtons #configPaginator>
+            </mat-paginator>
+        </mat-tab>
+    </mat-tab-group>
+
+</div>

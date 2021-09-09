@@ -8,4 +8,6 @@ export interface PreferenceUsers {
     department: string;
     usergroup: string;
     guid: string;
+    version?: number;
+    params?: any;
 }

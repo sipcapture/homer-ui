@@ -27,7 +27,7 @@ export class PreferenceHepsubService {
       return this.http.put(`${this.url}/${ph.guid}`, ph);
   }
 
-  delete(guid: number) {
+  delete(guid) {
       return this.http.delete(`${this.url}/${guid}`);
   }
 

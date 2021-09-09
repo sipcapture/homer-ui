@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="svg85"
+   version="1.1"
+   viewBox="0 0 26.458333 26.458334"
+   height="100"
+   width="100">
+  <defs
+     id="defs79" />
+  <metadata
+     id="metadata82">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(0,-270.54165)"
+     id="layer1">
+    <g
+       id="g5004"
+       style="display:inline"
+       transform="translate(-65.457375,175.46603)">
+      <rect
+         id="rect12-9"
+         width="4.7685876"
+         height="10.620092"
+         x="99.65892"
+         y="66.704994"
+         style="fill:#c83737;stroke:#800000;stroke-width:0.23141262;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(0,1,1,0,0,0)" />
+      <rect
+         id="rect12-3-2"
+         width="4.7686505"
+         height="15.648298"
+         x="106.70802"
+         y="66.751411"
+         style="fill:#ff6600;stroke:#bb0000;stroke-width:0.23134947;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(0,1,1,0,0,0)" />
+      <rect
+         id="rect12-3-6-0"
+         width="4.768682"
+         height="20.494732"
+         x="113.79809"
+         y="66.742729"
+         style="fill:#abc837;stroke:#00572c;stroke-width:0.23131777;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         transform="matrix(0,1,1,0,0,0)" />
+      <path
+         style="opacity:1;fill:none;stroke:#009cbf;stroke-width:0.31445611;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 66.704993,96.553091 v 23.577679 h 23.37205"
+         id="path10-2" />
+    </g>
+  </g>
+</svg>
