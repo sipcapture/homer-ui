@@ -50,6 +50,10 @@
               <mat-error *ngIf="ip?.errors?.pattern && !ip?.errors?.minlength">
                 {{'validators.patternIP' | translate }}
               </mat-error>
+              <mat-error *ngIf="ip?.errors?.cannotContainSpace&& !ip?.errors?.minlength">
+                {{'validators.noWhiteSpace' | translate }}
+              </mat-error>
+
             </mat-form-field>
           </div>
           <div>
