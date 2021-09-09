@@ -109,7 +109,7 @@ export class DialogAliasComponent {
                 d.alias = this.alias?.value;
                 d.mask = this.mask?.value;
                 d.port = this.port?.value;
-                d.ip = this.ip?.value.trim();
+                d.ip = this.ip?.value;
                 d.captureID = this.captureID?.value;
             })(this.data.data);
            
