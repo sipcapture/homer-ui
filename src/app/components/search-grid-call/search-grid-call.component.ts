@@ -62,6 +62,7 @@ export class SearchGridCallComponent
   implements OnInit, OnDestroy, AfterViewInit {
   gridApi;
   gridColumnApi;
+  columnApi;
   _id: string = null;
   public context;
   public frameworkComponents;
@@ -79,7 +80,7 @@ export class SearchGridCallComponent
   @Output() dataReady: EventEmitter<any> = new EventEmitter();
   @Output() changeSettings: EventEmitter<any> = new EventEmitter();
   @ViewChild('searchSlider', { static: false }) searchSlider: any;
-  filterGridValue: string;
+  filterGridValue: string = '';
   defaultColDef: ColDef;
   _columnDefs: Array<ColDef>;
   set columnDefs(value: Array<ColDef>) {
@@ -142,6 +143,8 @@ export class SearchGridCallComponent
   };
   mappings: any;
 
+  filterRegex: RegExp;
+  filterCleaned: string;
   gridOptions: GridOptions = <GridOptions>{
     defaultColDef: {
       sortable: true,
@@ -200,6 +203,7 @@ export class SearchGridCallComponent
   }
 
 
+  externalFiltertimeout;
   constructor(
     public dialog: MatDialog,
     private _puss: PreferenceUserSettingsService,
@@ -456,9 +460,21 @@ export class SearchGridCallComponent
       .length;
   }
 
-  setQuickFilter() {
-    this.gridOptions?.api?.setQuickFilter(this.filterGridValue);
-  }
+  setExternalFilter() {
+    clearTimeout(this.externalFiltertimeout);
+    this.externalFiltertimeout = setTimeout(() => { // to debounce search event
+        const regexWithSlashes =   this.filterGridValue?.startsWith('/') &&  this.filterGridValue?.endsWith('/') &&  this.filterGridValue?.length > 2;
+        const firstAsterisk = this.filterGridValue?.startsWith('*');
+        const lastAsterisk = this.filterGridValue?.endsWith('*');
+        const cleanedUpFilter = regexWithSlashes ? this.filterGridValue.slice(1,-1) 
+                                                : firstAsterisk ? '.' + this.filterGridValue 
+                                                : lastAsterisk ? this.filterGridValue.replace(this.filterGridValue[this.filterGridValue.length -1], ".*") 
+                                                : this.filterGridValue;
+        this.filterRegex = new RegExp(cleanedUpFilter);
+        this.filterCleaned = cleanedUpFilter;
+        this.gridApi.onFilterChanged();
+    }, 200);
+    }   
 
   chartChangeSettings(event) {
     if (this.inChartContainer) {
@@ -702,38 +718,18 @@ export class SearchGridCallComponent
 
         if (idColumn === 'destination_ip') {
           vaColumn.cellRenderer = 'columnAliasRenderer';
-          vaColumn.getQuickFilterText = (params) => {
-            return params.data.aliasDst || params.value;
-          }
 
         } if (idColumn === 'source_ip') {
           vaColumn.cellRenderer = 'columnAliasRenderer';
-          vaColumn.getQuickFilterText = (params) => {
-            return params.data.aliasSrc || params.value;
-          }
 
         }
         if (idColumn === 'mos' || h.mos) {
           vaColumn.valueFormatter = ({ value }) => value && value / 100 || '';
           vaColumn.cellStyle = this.getMosColor.bind(this);
           vaColumn.cellRenderer = 'columnMOSRenderer';
-          vaColumn.getQuickFilterText = (params) => {
-            if (this.filterGridValue.includes('.')) {
-              return params.value / 100;
-            } else {
-              return params.value;
-            }
-          }
         }
         if (idColumn === 'duration' || h.duration) {
           vaColumn.valueFormatter = ({ value }) => Functions.secondsToHour(value || 0);
-          vaColumn.getQuickFilterText = (params) => {
-            if (this.filterGridValue.includes(':')) {
-              return Functions.secondsToHour(params.value);
-            } else {
-              return params.value.toString();
-            }
-          }
         }
         if (idColumn === 'custom_1' && hepVersion === 2000) {
           /** Loki column 'Message' */
@@ -755,13 +751,6 @@ export class SearchGridCallComponent
             (h.form_default.find(({ value }) => value === item.value) || { name: null }).name;
           vaColumn.filter = 'statusFilter';
           vaColumn.cellStyle = this.getStatusColor.bind(this);
-          vaColumn.getQuickFilterText = (params) => {
-            if (isNaN(parseInt(this.filterGridValue, 10))) {
-              return h.form_default.find(({ value }) => value === params.value).name;
-            } else {
-              return params.value;
-            }
-          }
         }
         if (idColumn === 'proto') {
           vaColumn.valueFormatter = (item: any) => Functions.protoCheck(item.value).toUpperCase();
@@ -813,7 +802,43 @@ export class SearchGridCallComponent
     }
     return bool;
   }
+  isExternalFilterPresent() {        
+    const filterValue = this.context.componentParent.filterGridValue.toLowerCase().trim();
+    return filterValue !== '';
+}
+doesExternalFilterPass(node) {
+    const statusFormDefaults = this.context.componentParent.statusFormDefaults;
+    const filter = this.context.componentParent.filterCleaned;
+    const regex = this.context.componentParent.filterRegex;
+    const columns = this.columnApi.getAllDisplayedColumns().map(({colDef}) => colDef.field).filter(column => column !== '')
+    return Object.keys(node.data).some(item => {
+        if(!columns.includes(item)){
 
+            return false;
+        }
+        switch (item) {
+            case 'status':
+                return regex.test(node.data[item]?.toString()?.toLowerCase()) || regex.test(statusFormDefaults.find(({ value }) => value === node?.data?.[item]).name.toLowerCase());
+            case 'destination_ip': 
+                return regex.test(node.data.aliasDst?.toString().toLowerCase()) || regex.test(node.data[item]?.toLowerCase());
+            case 'source_ip': 
+                return regex.test(node.data.aliasSrc?.toString().toLowerCase()) || regex.test(node.data[item]?.toLowerCase());
+            case 'mos': {
+                return regex.test((node.data[item] / 100).toString()) || regex.test(node.data[item].toString());
+            }
+            case 'duration': {
+                if (filter.includes(':')) {
+                    return regex.test(Functions.secondsToHour(node.data[item]));
+                } else {
+                    return regex.test(node.data[item].toString());
+                }
+            }
+            default:
+                return regex.test(node.data[item]?.toString()?.toLowerCase());
+        }
+    });
+    
+}
   public update(isImportant = false) {
 
     if (this.isNewData() && !isImportant) {
@@ -1020,7 +1045,6 @@ export class SearchGridCallComponent
     const [{ uuid_field }] = correlation_mapping || [{ }];
     const custom_profile: string | null = uuid_field?.profile || null;
 
-    // console.log({ correlation_mapping, uuid_field, protocol_profile: this.protocol_profile, config: this.config });
 
     this.openTransactionDialog({ data: row }, mouseEventData, null, custom_profile);
   }
@@ -1132,7 +1156,6 @@ export class SearchGridCallComponent
     this.arrWindow.push(windowData);
     this.cdr.detectChanges();
     this.fullTransactionService.getTransactionData(request, this.dateFormat.dateTimeMsZ).subscribe(data => {
-      // console.log('the data', {data});
       windowData.loaded = true;
       windowData.data = data;
       this.cdr.detectChanges();
@@ -1141,7 +1164,6 @@ export class SearchGridCallComponent
 
   closeWindow(id: number) {
     this.arrWindow.splice(id, 1);
-    // console.log('this.arrWindow', this.arrWindow);
     this.cdr.detectChanges();
   }
 
@@ -1149,7 +1171,6 @@ export class SearchGridCallComponent
     if (!row?.data) {
       return;
     }
-    // console.log({ row })
     const uniqueId = row?.data?.uniqueId || row?.data?.uuid || row?.data?.id;
     const isSetWindow = this.arrMessageDetail.find(
       ({ uuid }) => `${uuid}` === `${uniqueId}`
@@ -1297,7 +1318,6 @@ export class SearchGridCallComponent
         mData.data.raw_source = '' + mData.data.raw;
         mData.data.raw = this.stylingRowText(mData.data.raw);
         mData.data.item.raw = mData.data.raw;
-        console.log(mData)
         mData.loaded = true;
         this.cdr.detectChanges();
       }
@@ -1460,7 +1480,6 @@ export class SearchGridCallComponent
   }
 
   ngOnDestroy() {
-    // console.log('ngOnDestroy::', this.id);
     this.subscriptionDashboardEvent?.unsubscribe();
     this.subscriptionRangeUpdateTimeout?.unsubscribe();
     window.document.body.removeEventListener(
