@@ -125,7 +125,8 @@ export class DashboardService {
     this.dbs = JSON.parse(localStorage.getItem(UserConstValue.SQWR)) ||
       JSON.parse(localStorage.getItem(ConstValue.SQWR)) || this.dbs;
     const wList = this.dbs?.resultWidget || {};
-    return wList[idWidget] && wList[idWidget][paramName] || null;
+    const result = wList[idWidget] && wList[idWidget][paramName] 
+    return result  || typeof result === 'boolean' ? result : null;
   }
 
   update(isFromSearch = false, isImportant = false) {
