@@ -470,7 +470,7 @@ export class SearchGridCallComponent
                                                 : firstAsterisk ? '.' + this.filterGridValue 
                                                 : lastAsterisk ? this.filterGridValue.replace(this.filterGridValue[this.filterGridValue.length -1], ".*") 
                                                 : this.filterGridValue;
-        this.filterRegex = new RegExp(cleanedUpFilter);
+        this.filterRegex = new RegExp(cleanedUpFilter, 'i');
         this.filterCleaned = cleanedUpFilter;
         this.gridApi.onFilterChanged();
     }, 200);
