@@ -54,7 +54,7 @@ export class SettingSmartInputWidgetComponent implements OnInit, OnDestroy {
             this.mappingSortedData = Functions.cloneObject(data.mapping);
 
             if (data.isContainer) {
-                this.mappingSortedData = this.mappingSortedData.filter(item => {
+                this.mappingSortedData = this.mappingSortedData.filter((item: any) => {
                     return !(item.profile === 'default' && item.hepid === 2000 && item.hep_alias === 'LOKI');
                 });
             }

@@ -1,4 +1,5 @@
 <form *ngIf="isWidgetInited && isConfig && fields; else setFields"
+  (keydown.enter)="$event.preventDefault()"
   class="form-container">
   <div class="inputs-container"
     [hidden]="isRefresh"
@@ -17,7 +18,7 @@
                 class="result-container-field"
                 [compareWith]="compareResultListItem"
                 (selectionChange)="onChangeTargetResultsContainer()"
-                name="targetResultsContainer"
+                [name]="item.field_name"
                 ngDefaultControl>
                 <mat-option *ngFor="let listItem of widgetResultList"
                   [value]="listItem">
@@ -40,7 +41,7 @@
           <ng-template ngSwitchCase="check-box-field">
             <mat-checkbox [(ngModel)]="item.value"
               [name]="item.field_name"
-              (change)="onChangeField($event)">{{item.selection}}</mat-checkbox>
+              (ngModelChange)="onChangeField($event,item)">{{item.selection}}</mat-checkbox>
 
           </ng-template>
           <ng-template ngSwitchCase="type-array">
@@ -50,14 +51,56 @@
             </app-chips-input>
           </ng-template>
           <ng-template ngSwitchCase="input-multi-select-with-chips">
+            <app-multi-select-field [value]="item.value"
+              (valueChange)="onChangeField($event, item)"
+              [placeholder]="('widgets.protosearch.enterOrPickIP' | translate : { 'item.selection':item.selection})"
+              [dataList]="isAliasField(item.field_name) ? aliasObj[item.field_name] : item.form_default">
+              <span matSuffix
+                *ngIf="!noFunctions"
+                style="z-index:10000">
+                <div class="function-suffix"
+                  [ngStyle]="{color: !item.func ? '#7c7c7c' : item.func.color ? item.func.color : '#7c7c7c' }">
+                  {{ !item.func ? '' : item.func.name === 'None' ? '' : item.func.name }}
+                </div>
+                <mat-select *ngIf="!item.form_default"
+                  style="width: 18px; padding-right: 23px;"
+                  (selectionChange)="addFunction($event.value, item.field_name)"
+                  [(value)]="item.func">
+                  <mat-option *ngFor="let function of getSearchFunctions(item.type)"
+                    [value]="function"
+                    style="color: black;">
+                    {{ function.name ? function.name : function.value }}
+                    <button mat-icon-button
+                      *ngIf="function.description || function.guide"
+                      [matTooltip]="getFunctionTooltip(function)"
+                      [style.transform]="function.iconTransform ? function.iconTransform : ''"
+                      class="function-select-button">
+                      <a [href]="function.guide"
+                        *ngIf="function.guide"
+                        target="_blank">
+                        <fa-icon [icon]="function.icon ? function.icon : 'question-circle'"
+                          class="function-select-icon link"></fa-icon>
+                      </a>
+                      <fa-icon *ngIf="!function.guide"
+                        [icon]="function.icon ? function.icon : 'info-circle'"
+                        class="function-select-icon link"></fa-icon>
+                    </button>
+
+                  </mat-option>
+                </mat-select>
+              </span>
+            </app-multi-select-field>
+          </ng-template>
+          <!-- <ng-template ngSwitchCase="input-multi-select-with-chips__BACKUP">
             <mat-form-field [ngClass]="{'with-function': item.func}"
               style="display:block">
               <ng-select ngSelectMulti
                 [items]="isAliasField(item.field_name) ? aliasObj[item.field_name] : item.form_default"
                 bindLabel="name"
                 bindValue="value"
-                [multiple]="true"
-                name="{{item.field_name}}"
+                multiple="true"
+                [addTag]="addCustomItem"
+                [name]="item.field_name"
                 [(ngModel)]="item.value"
                 (ngModelChange)="onChangeField($event, item)"
                 [placeholder]="('widgets.protosearch.enterOrPickIP' | translate : { 'item.selection':item.selection})"
@@ -107,7 +150,7 @@
                 </mat-select>
               </span>
             </mat-form-field>
-          </ng-template>
+          </ng-template> -->
           <ng-template ngSwitchCase="chip-list-array-string">
             <mat-form-field class="chip-list">
               <mat-label>{{item.selection}}</mat-label>
@@ -177,7 +220,41 @@
                 (keydown.enter)="handleEnterKeyPress($event)"
                 autocomplete="off"
                 [disabled]="item.func ? item.func.value==='function: notEmpty(`::field::`)' : false">
+              <span matSuffix
+                *ngIf="!noFunctions"
+                style="z-index:10000">
+                <div class="function-suffix"
+                  [ngStyle]="{color: !item.func ? '#7c7c7c' : item.func.color ? item.func.color : '#7c7c7c' }">
+                  {{ !item.func ? '' : item.func.name === 'None' ? '' : item.func.name }}
+                </div>
+                <mat-select *ngIf="!item.form_default"
+                  style="width: 18px; padding-right: 23px;"
+                  (selectionChange)="addFunction($event.value, item.field_name)"
+                  [(value)]="item.func">
+                  <mat-option *ngFor="let function of getSearchFunctions(item.type)"
+                    [value]="function"
+                    style="color: black;">
+                    {{ function.name ? function.name : function.value }}
+                    <button mat-icon-button
+                      *ngIf="function.description || function.guide"
+                      [matTooltip]="getFunctionTooltip(function)"
+                      [style.transform]="function.iconTransform ? function.iconTransform : ''"
+                      class="function-select-button">
+                      <a [href]="function.guide"
+                        *ngIf="function.guide"
+                        target="_blank">
+                        <fa-icon [icon]="function.icon ? function.icon : 'question-circle'"
+                          class="function-select-icon link"></fa-icon>
+                      </a>
+                      <fa-icon *ngIf="!function.guide"
+                        [icon]="function.icon ? function.icon : 'info-circle'"
+                        class="function-select-icon link"></fa-icon>
+                    </button>
+                  </mat-option>
+                </mat-select>
+              </span>
             </mat-form-field>
+
           </ng-template>
           <ng-template ngSwitchCase="Text-field-number">
             <mat-form-field style="display: block"
@@ -246,8 +323,11 @@
             <mat-form-field style="display: block"
               [ngClass]="{'with-function': item.func}">
               <mat-label>{{item.selection}}</mat-label>
-              <mat-select [(value)]="item.value"
-                (selectionChange)="onChangeField($event, item)">
+              <mat-select [(ngModel)]="item.value"
+                (selectionChange)="onChangeField($event)"
+                [name]="item.field_name"
+                class="result-container-field"
+                ngDefaultControl>
                 <mat-option *ngFor="let option of item.form_default"
                   [value]="(option.name === 'Any' &&  option.value === 0 ? '' :(option && option.value || option.value === 0 ? option.value : option))">
                   {{option.name ? option.name : option}}
@@ -263,9 +343,10 @@
                 <mat-select multiple
                   [(ngModel)]="item.value"
                   (selectionChange)="onChangeField($event, item)"
-                  name="multiple_select_field"
+                  [name]="item.field_name"
                   ngDefaultControl>
                   <mat-option *ngFor="let option of item.form_default"
+                    [disabled]='option.disabled'
                     [value]="option.name ? option.name : option">
                     {{option.name ? option.name : option}}
                   </mat-option>

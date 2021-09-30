@@ -4,7 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { AuthenticationService } from '@app/services';
-import { AlertService } from '@services/alert.service';
+import { AlertService } from '../services/alert.service';
 import { Router } from '@angular/router';
 import { UserSecurityService } from '@app/services/user-security.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -20,21 +20,19 @@ export class ErrorInterceptor implements HttpInterceptor {
     ) { }
         errMessages = []
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    
         return next.handle(request).pipe(catchError(err => {
             if(err instanceof HttpErrorResponse){
-                if(err.status === 404 && err.message.match(/api/) && !err.message.match(/grafana/)) {
+                if(err.status === 404 && err.message.match(/api/)) {
                     this.errMessages.push(err)
                     if(this.errMessages.length < 2) {
-                        this.translateService.get('login.error.apiNotFound.header').subscribe(res => { 
-                            this.alertService.error(res, JSON.stringify(err));
+                        this.translateService.get('login.error.apiNotFound.header').subscribe(res => {
+                            this.alertService.error({message: res, fullObject: JSON.stringify(err)});
                         })
-                      
+
                     }
                 }
-
             }
-            if (err.status === 401 || err.status === 404 && request.url.indexOf('/proxy') === -1) {
+            if (err.status === 401 && request.url.indexOf('/proxy') === -1) {
                 // auto logout if 401 response returned from api
                 this.authenticationService.logout();
                 this.userSecurityService.removeUserSettings();
@@ -52,24 +50,28 @@ export class ErrorInterceptor implements HttpInterceptor {
 
                 }
             }
-        if(err.name === 'HttpErrorResponse' && err.message.match(/i18n/) ) {
-               console.log('%cBroken translate file, please contact Support Service.','font-weight: bold; margin:10px;border-radius:3px;padding:10px;background:black;color:white')
-                    this.alertService.error('Broken translate file, please contact Support Service.', JSON.stringify(err))
-               
+            if(err.name === 'HttpErrorResponse' && err.message.match(/i18n/) ) {
+                console.log('%cBroken translate file, please contact Support Service.','font-weight: bold; margin:10px;border-radius:3px;padding:10px;background:black;color:white')
+                this.alertService.error({
+                        message:'Broken translate file, please contact Support Service.',
+                        fullObject: JSON.stringify(err)
+                    })
             }
             const error = err.error.message || err.statusText;
             if (err.error.message !== 'invalid or expired jwt' && err.status !== 0 && !err.message.match(/i18n/) && !err.message.match(/api/)) {
-                
-                this.alertService.error(error, JSON.stringify(err));
+                this.alertService.error({message:error, fullObject: JSON.stringify(err)});
             } else if (err.status === 0) {
-                this.translateService.get('notifications.error.noInternetError').subscribe(res => { 
-                    this.alertService.error(res, JSON.stringify(err));
-                })
-
+                this.alertService.error({isTranslation: true ,message:'notifications.error.noInternetError', fullObject: JSON.stringify(err)});
             }
-           
+            if (typeof err?.error?.size === 'number' && err.status === 400) {
+                setTimeout(async () => {
+                    const text = JSON.parse(await err.error.text()).message;
+                    this.alertService.error({message:text, fullObject: JSON.stringify(err)});
+                }, 0);
+            }
+
             return throwError(error);
-            
+
         }));
     }
 }

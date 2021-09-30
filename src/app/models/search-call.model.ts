@@ -11,6 +11,7 @@ export interface SearchCallModel {
         transaction: { };
         limit: number;
         orlogic: boolean;
+        archive: boolean;
         search?: {},
         location: { };
         timezone: {

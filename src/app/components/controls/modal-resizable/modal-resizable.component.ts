@@ -1,6 +1,6 @@
 import { Functions } from '@app/helpers/functions';
-import { MessageDetailsService } from '@services';
-import { ChangeDetectorRef } from '@angular/core';
+import { MessageDetailsService } from '../../../services/message-details.service';
+import { ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import {
     Component,
     OnInit,
@@ -38,10 +38,31 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
     get isNonWindow(): boolean {
         return this._isNonWindow;
     }
-    @Input() sharedUrl: string;
-    @Input() objectData: any;
+    _sharedUrl: string;
+    @Input() set sharedUrl(val: string) {
+        this._sharedUrl = val;
+        this.cdr.detectChanges();
+    };
+    get sharedUrl(): string {
+        return this._sharedUrl
+    }
+    _objectData: any;
+    @Input() set objectData(val: any) {
+        this._objectData = val;
+        this.cdr.detectChanges();
+    };
+    get objectData(): any {
+        return this._objectData;
+    }
     @Input() title: string;
-    @Input() headerColor: string;
+    @Input() set headerColor (val: string) {
+        this._headerColor = val;
+        this.cdr.detectChanges();
+    };
+    get headerColor(): string {
+        return this._headerColor;
+    }
+    _headerColor;
     @Input() width = 700;
     @Input() height = 600;
     @Input() minWidth = 300;
@@ -70,12 +91,11 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
 
     ngOnInit() {
         this.cdr.detectChanges();
-        setInterval(() => {
-            Functions.emitWindowResize();
-            this.cdr.detectChanges();
-        }, 500);
     }
 
+    ngOnChanges(change: SimpleChanges) {
+        // console.log(change)
+    }
     onFullPage() {
         this.isFullPage = !this.isFullPage;
         setTimeout(() => {
@@ -286,7 +306,7 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
     ngOnDestroy() {
         document.body.removeChild(this.layerZIndex.nativeElement);
     }
-    onWheelRTP($event) {
+    onWheel($event) {
         return;
     }
 }

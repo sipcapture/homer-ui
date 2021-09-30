@@ -114,6 +114,7 @@
 
 <app-detail-dialog
     *ngFor="let item of arrWindow; let idx = index; trackBy: identify"
+    [callIDColorList]='callIDColorList'
     [titleId]="item.id"
     [titleName]="item.titleName"
     [rowData]="rowData"

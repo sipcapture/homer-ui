@@ -23,8 +23,7 @@ export class DialogAlarmComponent {
         this.isSearch = data ? true : false;
     }
     async ngOnInit() {
-        // console.log(this.isSearch)
-        // console.log(this.data)
+
         const advanced = await this._pas.getAll().toPromise();
         if (this.isSearch) {
             const [custom] = advanced.data
@@ -40,7 +39,7 @@ export class DialogAlarmComponent {
             );
             this.changePreset()
         }
-        // console.log(this.presetList);
+
     }
     changePreset() {
         this.data.config = this.selectedPreset;

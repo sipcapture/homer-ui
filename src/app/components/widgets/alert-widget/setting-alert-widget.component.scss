@@ -1,0 +1,104 @@
+.title {
+    margin: -1.5rem -1.5rem 2rem -1.5rem;
+    width: initial !important;
+    display: flex;
+    justify-content: space-between;
+}
+.color-picker {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  $radius: 5px;
+  .summary-info {
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    background: #fff;
+    width: 156px;
+    margin-right: 17px;
+    padding: 15px;
+    border-radius: $radius;
+    display: flex;
+    cursor: pointer;
+    margin-bottom: 15px;
+    .info {
+      width: calc(100% - 40px); //40px is $size
+      & p {
+        & .style {
+          color: #000;
+          margin-bottom: 5px;
+          font-size: 0.8rem;
+        }
+        & .style-value {
+          color: #595b65;
+          text-transform: uppercase;
+          letter-spacing: 1.5px;
+          font-size: 10px;
+        }
+      }
+      
+  }
+
+  .circle {
+    $size: 30px;
+    height: $size;
+    width: $size;
+    box-sizing: border-box;
+    border-radius: 100%;
+    cursor: pointer;
+    border: 1px solid #dadada;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14);
+  }
+
+  .opened {
+    z-index: 1;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    background: #fff;
+    width: 156px;
+    padding: 15px;
+    border-radius: $radius;
+    position: absolute;
+
+    .colors {
+      display: flex;
+      flex-wrap: wrap;
+      & .circle {
+        flex: 40px 0 0;
+        margin-right: 10px;
+        margin-bottom: 10px;
+
+        & :nth-child(5n) {
+          margin-right: 0;
+        }
+      }
+    }
+
+    .hex-code {
+      $height: 45px;
+      display: flex;
+      margin-top: 20px;
+      & p {
+        width: 50%;
+        text-align: center;
+        font-size: 10px;
+        text-transform: uppercase;
+      }
+      & .color-chrome{
+        position: absolute;
+        z-index: 4;
+        top:-150px;
+        left: 0px;
+        & .pickerOverlay{
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: -1;
+          background-color: transparent;
+        }
+        
+      }
+
+    }
+  }
+  }
+}

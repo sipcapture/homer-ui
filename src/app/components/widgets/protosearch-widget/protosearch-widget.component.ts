@@ -19,7 +19,6 @@ import { Subscription, Observable } from 'rxjs';
 import { Functions, log } from '@app/helpers/functions';
 import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 import { map, startWith } from 'rxjs/operators';
-
 import {
   DashboardService,
   DashboardEventData,
@@ -36,8 +35,8 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { ConstValue } from '@app/models';
 import { FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
-export declare type AddTagFn = ((term: string) => any | Promise<any>);
 interface SearchFieldItem {
   field_name: string;
   form_type: string;
@@ -88,6 +87,7 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
     type: 'page',
   };
   locationNode: any = null;
+  locationGroup: any = null;
   profileFields: [];
   lokiQueryText: string;
   searchQueryLoki: any;
@@ -97,6 +97,7 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
   searchTabs: any;
   _cache: any;
   orLogic = false;
+  archive = false;
   buttonState = true;
   searchQuery: any;
   profile_fields;
@@ -143,10 +144,9 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
   }
 
   ngAfterViewInit() {
-    this.chipsObj = { };
-    this.aliasObj = { };
+    this.chipsObj = {};
+    this.aliasObj = {};
   }
-
   async ngOnInit() {
     // SET DEFAULT CONTAINER
     this.targetResultsContainerValue.setValue([
@@ -176,84 +176,54 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
         sizeX: 2,
         sizeY: 2,
         config: {
-          title: 'SIP CALL SEARCH',
+          title: 'TDR CALL SEARCH',
           searchbutton: true,
           protocol_id: {
-            name: 'SIP',
-            value: 1,
+            name: 'TDR',
+            value: 60,
           },
           protocol_profile: {
-            name: 'call',
-            value: 'call',
+            name: 'call_h20',
+            value: 'call_h20',
           },
           fields: [{
-            field_name: "data_header.callid",
-            hepid: 1,
-            name: "1:call:data_header.callid",
-            selection: "SIP Callid",
-            type: "string",
-            value: ""
+            field_name: 'callid',
+            form_default: null,
+            form_type: 'input',
+            hepid: 60,
+            name: '60:call_h20:callid',
+            selection: 'Call-ID',
+            type: 'string',
+            value: ''
           },
           {
-            field_name: "data_header.method",
-            hepid: 1,
-            name: "1:call:data_header.method",
-            selection: "SIP Method",
-            type: "string",
-            value: ""
-          },
-          {
-            field_name: "limit",
-            hepid: 1,
-            name: "1:call:limit",
-            selection: "Query Limit",
-            type: "string",
-            value: ""
-          },
-          {
-            field_name: "targetResultsContainer",
-            hepid: 1,
-            name: "1:call:targetResultsContainer",
-            selection: "Results Container",
-            type: "string",
-            value: ""
-          },
-
-          ],
+            field_name: 'targetResultsContainer',
+            form_default: null,
+            hepid: 60,
+            name: '60:call_h20:targetResultsContainer',
+            selection: 'Results Container',
+            type: 'string'
+          }],
 
         },
         uuid: Functions.newGuid(),
         fields: [{
-          field_name: "data_header.callid",
-          hepid: 1,
-          name: "1:call:data_header.callid",
-          selection: "SIP Callid",
-          type: "string",
-          value: ""
+          field_name: 'callid',
+          form_default: null,
+          form_type: 'input',
+          hepid: 60,
+          name: '60:call_h20:callid',
+          selection: 'Call-ID',
+          type: 'string',
+          value: ''
         },
         {
-          field_name: "data_header.method",
-          hepid: 1,
-          name: "1:call:data_header.method",
-          selection: "SIP Method",
-          type: "string",
-          value: ""
-        },
-        {
-          field_name: "limit",
-          hepid: 1,
-          name: "1:call:limit",
-          selection: "Query Limit",
-          type: "string",
-          value: ""
-        },
-        {
-          field_name: "targetResultsContainer",
-          hepid: 1,
-          name: "1:call:targetResultsContainer",
-          selection: "Results Container",
-          type: "string",
-          value: ""
+          field_name: 'targetResultsContainer',
+          form_default: null,
+          hepid: 60,
+          name: '60:call_h20:targetResultsContainer',
+          selection: 'Results Container',
+          type: 'string'
         }],
         countFieldColumns: this.countFieldColumns,
         row: 0,
@@ -276,13 +246,14 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
     this.widgetId =
       this.id || '_' + Functions.md5(JSON.stringify(this.config));
     this.config.id = this.id;
-    this.config.config = this.config.config || { };
+    this.config.config = this.config.config || {};
     this.config.fields = (this.config.fields || []).map((item) => {
-      item.value = '';
+      item.value = item.type === 'boolean' ? false : '';
       return item;
     });
+
     this.fields = this.config.fields || [];
-    if (actualMapping?.length > 0) {
+    if (actualMapping.length > 0) {
       this.fields.forEach(field => {
         const actualField = actualMapping.find(f => f.id === field.field_name);
         if (actualField) {
@@ -344,18 +315,32 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
     const cacheQuery = this.searchService.getLocalStorageQuery(true);
     const item = this.fields?.find(
       (i) =>
-        i.field_name === cacheQuery?.location?.mapping && i.form_default
+        i.field_name === cacheQuery?.location?.mapping && i.form_default && i.field_name === 'node'
     );
+
     if (!item || !location) {
       return;
     }
-    item.value = this.locationNode.value.map(
-      (i) => item.form_default.find((j) => j.value === i)?.name
+
+    item.value = location.value.map(
+      (i) => item.form_default.find((j) => j.value === i && j.online !== false)?.name
     );
 
     this.cdr.detectChanges();
   }
 
+  private locationGroupRestore() {
+    const location_group = this.locationGroup;
+    const item = this.fields?.find(
+      (i) => i.field_name === 'nodesgroup'
+    );
+    if (!item || !location_group) {
+      return;
+    }
+    item.value = location_group.value.map(
+      (i) => item.form_default?.find((j) => j.value === i)?.name
+    );
+  }
   private initSubscribes() {
     this.subscriptionStorage = this._sss.sessionStorage.subscribe(
       (data: UserSettings) => {
@@ -386,13 +371,23 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
         }
         this._cache = data.protosearchSettings[this.widgetId];
 
-        // log("this._cache", this._cache);
+        // console.log("this._cache", this._cache);
 
         if (this._cache) {
-          const { fields, location } = this._cache || { };
+          if (this.searchQuery) {
+
+            this.searchQuery['archive'] = this.archive;
+            // console.log("this.archive", this.archive)
+
+          }
+          // console.log(this._cache)
+          const { fields, location, locationGroup } = this._cache || {};
 
           /** restore LOCATION NODE */
           this.locationNode = location;
+
+          /** restore LOCATION NODE_GROUP */
+          this.locationGroup = locationGroup;
 
           if (fields) {
             const arrfields = [].concat(
@@ -430,6 +425,7 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
           const cacheQuery = this.searchService.getLocalStorageQuery(
             true
           );
+
           this.fields?.forEach((item) => {
             if (
               item.type === 'array_string' &&
@@ -448,11 +444,22 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
 
               if (
                 constParam === 'param' &&
-                this._cache?.[collectionName]?.mapping === propertyName
+                this._cache?.[collectionName]?.mapping === propertyName &&
+                this._cache?.[collectionName]?.value
               ) {
                 item.value = this._cache[collectionName].value;
               }
+              if (item.field_name === 'archive') {
+                item.value = this._cache?.archive || false;
+                this.archive = item.value;
+                if (this.searchQuery) {
+                  this.searchQuery['archive'] = this.archive
+                  // console.log("this.archive", this.archive)
+
+                }
+              }
             } else if (item.hasOwnProperty('profile')) {
+
               const f_field = this._cache.fields.find(
                 i => i.name === item.field_name
               );
@@ -512,6 +519,7 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
               item.value = item.value === 'true';
             }
             this.locationNodeRestore();
+            this.locationGroupRestore();
           });
         }
         this.cdr.detectChanges();
@@ -644,7 +652,7 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
       'server_type_in',
       'server_type_out',
       'ipgroup_in',
-      'ipgroup_out',
+      'ipgroup_out'
     ].includes(item);
   }
   getTypeOfField(item): string {
@@ -660,10 +668,11 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
     if (item.type === 'boolean') {
       return 'check-box-field';
     }
-    if (item.type === 'array' && item.form_type !== 'input_multi_select' && !this.isMulti(item.field_name)) {
+    if (item.type === 'array' && item.form_type !== 'input_multi_select' && !this.isMulti(item.field_name) && !this.isAliasField(item.field_name)) {
       return 'type-array';
     }
-    if (item.form_type === 'input_multi_select' || this.isMulti(item.field_name)) {
+    if (item.form_type === 'input_multi_select' || this.isMulti(item.field_name) || this.isAliasField(item.field_name)) {
+
       return 'input-multi-select-with-chips';
     }
     if (item.type === 'array_string' && !this.isMulti(item.field_name) && !this.isAliasField(item.field_name)) {
@@ -679,7 +688,7 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
       item.type !== 'array'
     ) {
 
-      if (!item.form_default && (item.type !== 'number' && item.type !== 'integer')) {
+      if (!item.form_default && (item.type !== 'number' && item.type !== 'integer') && !this.isMulti(item.field_name) && !this.isAliasField(item.field_name)) {
         return 'Text-field-Default';
       }
       if (!item.form_default && (item.type === 'number' || item.type === 'integer')) {
@@ -712,7 +721,13 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
 
     this.fields = Functions.cloneObject(this.config.fields);
 
-    if (!this.config?.config?.protocol_profile) {
+    if (
+      !(
+        this.config &&
+        this.config.config &&
+        this.config.config.protocol_profile
+      )
+    ) {
       return;
     }
 
@@ -767,7 +782,22 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
             .toPromise()
             .then((list: any) => {
               if (list && list.data) {
-                i.form_default = list.data;
+
+
+                try {
+                  if (list.data[0].length) {
+                    i.form_default = list.data.map(m => ({ name: m, value: m }))
+                  } else {
+                    i.form_default = list?.data?.sort((a, b) => a?.name?.localeCompare(b?.name));
+                    i.form_default.forEach(item => {
+                      item.disabled = !item.online; // Check for server status in Node
+                    });
+
+                  }
+                } catch (e) {
+                  console.log(e)
+                }
+
               } else {
                 if (f.form_default) {
                   i.form_default = f.form_default;
@@ -775,25 +805,12 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
                 i.form_default = null;
               }
               this.locationNodeRestore();
+              this.locationGroupRestore();
             });
         }
         if (f?.form_default) {
           /* high priority */
           i.form_default = f.form_default;
-        } else if (i.form_api) {
-          /* seccond priority */
-          this.preferenceMappingProtocolService
-            .getListByUrl(i.form_api)
-            .toPromise()
-            .then((list: any) => {
-              if (list?.data) {
-                i.form_default = list.data;
-              } else {
-                i.form_default = null;
-              }
-            });
-        } else {
-          i.form_default = f?.form_default;
         }
         if (i?.form_default && i.form_type === 'input') {
           i.formControl = new FormControl();
@@ -833,14 +850,16 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
   private saveState() {
     if (this.isLoki) {
       this.searchQuery.fields = this.fields;
+
       this.searchService.setLocalStorageQuery(
         Functions.cloneObject(this.searchQuery)
       )
       this._sss.saveProtoSearchConfig(this.widgetId, this.searchQuery);
       return;
     }
+
     let protocol = this.config.config.protocol_id.value;
-    const profile = this.config.config.protocol_profile.value;
+    let profile = this.config.config.protocol_profile.value;
     this.searchQuery = {
       fields: this.fields
         .filter((item: any) => {
@@ -890,18 +909,30 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
         })),
       protocol_id: protocol + '_' + profile, // 1_call | 1_ default | 1_registration
     };
-
     const profile_custom_field = this.fields.find(i => i.hasOwnProperty('profile'));
     if (profile_custom_field?.value) {
-        this.searchQuery['profile_custom_field'] = profile_custom_field?.value;
+      this.searchQuery['profile_custom_field'] = profile_custom_field?.value;
     }
 
+    if (!this.fields.find(i => i.field_name === 'archive')) {
+      this.archive = false;
+    }
+    // console.log("this.archive", this.archive)
+    const locationGroupFeald = this.fields.find(i => i.field_name === 'nodesgroup');
+    if (locationGroupFeald) {
+      console.log({ locationGroupFeald })
+      this.searchQuery['locationGroup'] = {
+        value: locationGroupFeald.value || [],
+        mapping: 'group'
+      }; //locationGroupFeald.value;
+    }
     /* system params */
     this.fields.forEach((item: any) => {
       if (
         item.value &&
         item.hasOwnProperty('system_param') &&
         item.mapping !== ''
+        && item.field_name !== 'nodesgroup'
       ) {
         const [
           constParam,
@@ -928,16 +959,16 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
           }
         }
       }
+
+
       // if (
-      //   item.value &&
-      //   item.value !== '' &&
-      //   item.hasOwnProperty('profile')
+      //     item.value &&
+      //     item.value !== '' &&
+      //     item.hasOwnProperty('profile')
       // ) {
-      //   this.config.config.protocol_profile.value = item.value;
-      //   this.searchQuery['protocol_id'] = [
-      //     this.config.config.protocol_id.value,
-      //     this.config.config.protocol_profile.value
-      //   ].join('_')
+      //     this.config.config.protocol_profile.value = item.value;
+      //     // profile = item.value;
+      //     this.searchQuery['protocol_id'] = protocol + '_' + item.value;
       // }
     });
 
@@ -949,9 +980,9 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
     };
 
     this.fields.forEach((item: any) => {
-      const { virtual, transform, parent, id } = item.__mapping || { };
+      const { virtual, transform, parent, id } = item.__mapping || {};
       if (virtual && transform && parent) {
-        const sqf = this.searchQuery.fields.find(i => i.name === item.field_name) || { };
+        const sqf = this.searchQuery.fields.find(i => i.name === item.field_name) || {};
         sqf.source_value = item.value;
         sqf.value = transform
           .replace(rx.PARENT, parent)
@@ -961,6 +992,8 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
     });
 
     this.searchQuery['orlogic'] = this.orLogic;
+    this.searchQuery['archive'] = this.archive;
+    // console.log("this.archive", this.archive)
 
     this.searchService.setLocalStorageQuery(
       Functions.cloneObject(this.searchQuery)
@@ -974,6 +1007,8 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
     this.searchQuery.fields = this.searchQuery.fields.filter(
       (i) => i.name !== ConstValue.CONTAINER
     );
+
+
     this.cdr.detectChanges();
   }
 
@@ -981,7 +1016,11 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
     this.orLogic = this.orLogic ? false : true;
     this.cdr.detectChanges();
   }
-
+  onToggleArchive() {
+    this.archive = this.archive ? false : true;
+    // console.log("this.archive", this.archive)
+    this.cdr.detectChanges()
+  }
   onClearFields() {
     this.fields.forEach((item) => {
       if (item.field_name === ConstValue.CONTAINER) {
@@ -997,7 +1036,11 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
         item.func = '';
         item.value = [];
         this.chipsObj[item.selection] = [];
-      } else {
+      } if (item.form_type === 'checkbox') {
+        item.func = '';
+        item.value = false
+      }
+      else {
         item.func = '';
         item.value = '';
       }
@@ -1090,6 +1133,7 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
     });
     this.isConfig = true;
     this.isWidgetInited = true;
+    this.onChangeField();
     this.cdr.detectChanges();
   }
 
@@ -1103,9 +1147,10 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
     });
   }
 
-  onChangeField(event = null, item = null) {
-    if (event && item?.form_type === 'multiselect') {
-      item.value = event.value;
+  onChangeField(event: any = null, item = null) {
+    console.log({item, event})
+    if (event && item?.form_type === 'input_multi_select') {
+      item.value = event;
     }
 
     this.fields.forEach((i) => {
@@ -1117,6 +1162,12 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
         item?.field_name === i?.field_name &&
         i?.form_type === 'multiselect'
       ) {
+        // console.log(item, i)
+        i.value = item.value;
+      }
+      if (item?.field_name === i?.field_name &&
+        i?.field_name === 'archive') {
+        this.archive = item.value;
         i.value = item.value;
       }
       if (
@@ -1124,7 +1175,9 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
           i?.form_type === 'input_multi_select') ||
         (i?.field_name === item?.field_name &&
           this.isMulti(item?.field_name))
+
       ) {
+
         if (
           i.field_name === 'status' &&
           i?.value?.length === 1 &&
@@ -1132,7 +1185,9 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
         ) {
           i.value = '';
         }
+
         i.value = item.value;
+
       }
       if (
         i?.field_name === item?.field_name &&
@@ -1141,12 +1196,13 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
         i.value = parseInt(item.value?.replace(/\D/, ''), 10);
       }
     });
+
     this.saveState();
     this.cdr.detectChanges();
   }
 
-  addCustomItem(item: { value: string; name: string }): boolean {
-    return false; //{ value: item, name: item };
+  addCustomItem(item: { value: string; name: string }) {
+    return { value: item, name: item };
   }
 
   onChangeTargetResultsContainer() {
@@ -1154,10 +1210,10 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
     const Default = 'Default';
     const selectedFields = (this.fields.find(
       (f) => f.field_name === ConstValue.CONTAINER
-    ) || { })['value'];
+    ) || {})['value'];
     if (
       selectedFields?.length > 0 &&
-      (selectedFields[0] || { }).id === Default &&
+      (selectedFields[0] || {}).id === Default &&
       this.targetResultsContainerValue.value.length === 0
     ) {
       const firstWidget = this.widgetResultList.find(
@@ -1209,7 +1265,7 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
     if (containerValue === null ||
       (Array.isArray(containerValue) && containerValue[0] === null) ||
       (Array.isArray(containerValue) && !this.widgetResultList.some(
-        widget => widget.id === (containerValue?.[0] || { }).id
+        widget => widget.id === (containerValue?.[0] || {}).id
       ))
     ) {
       const firstWidget = this.widgetResultList.find(
@@ -1219,9 +1275,7 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
       this.targetResultsContainerValue.setValue([firstWidget || this.defaultContainer]);
 
       log('setValue', this.targetResultsContainerValue.value);
-      this.translateService.get('notifications.notice.resultContainerReset').subscribe(res => {
-        this.alertService.notice(res);
-      })
+      this.alertService.warning({ isTranslation: true, message: 'notifications.notice.resultContainerReset' });
       this.onChangeTargetResultsContainer();
     }
     const isResultContainer = !!this.fields.find(
@@ -1230,8 +1284,8 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
     const targetResult = this.targetResultId
       ? targetResultSelf
       : this.targetResultsContainerValue.value;
-
     let _targetResult: any;
+
     this.saveState();
 
     if (this.targetResultId || (targetResult && isResultContainer) || type !== 'normal') {
@@ -1273,6 +1327,7 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
 
             this.cdr.detectChanges();
           } else {
+
             this.dashboardService.setQueryToWidgetResult(
               target.id,
               this.searchQuery
@@ -1324,7 +1379,7 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
           window.open(tabLink, '_blank');
         });
       }
-      this.dosearch.emit({ });
+      this.dosearch.emit({});
 
       return;
     }
@@ -1333,12 +1388,12 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
 
     this.router.navigate(['search/result']);
 
-    this.dosearch.emit({ });
+    this.dosearch.emit({});
   }
 
   async onSearchTabAdd(searchObj) {
     const { id, title, query, name, config } = searchObj;
-    const searchTab: any = { };
+    const searchTab: any = {};
 
     searchTab.data = {
       auth: 'ok',
@@ -1385,7 +1440,7 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
             sWarning: false,
             minItemCols: 1,
             minItemRows: 1,
-            output: { },
+            output: {},
             rows: 5,
             strongIndex: 'ResultWidgetComponent',
             title: name,
@@ -1398,7 +1453,7 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
       total: 1,
     };
 
-    const { data } = searchTab || { };
+    const { data } = searchTab || {};
     if (data) {
       let dashboardData = {
         id: id,

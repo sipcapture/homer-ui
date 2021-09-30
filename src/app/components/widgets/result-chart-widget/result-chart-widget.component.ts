@@ -25,6 +25,7 @@ export class ResultChartWidgetComponent implements IWidget, OnInit, OnDestroy {
     @Input() id: string;
     @Input() config: any;
     @Output() changeSettings: EventEmitter<any> = new EventEmitter();
+    source = 'widget';
     title: string;
     constructor(
         public dialog: MatDialog,
@@ -32,11 +33,14 @@ export class ResultChartWidgetComponent implements IWidget, OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
+        if (this.config === null || typeof this.config === 'undefined') {
+            this.config = {};
+        } 
         WidgetArrayInstance[this.id] = this as IWidget;
         this.cdr.detectChanges();
     }
     chartChangeSettings(event) {
-        this.config = event;
+        this.config.chartConfig = event;
         this.saveConfig();
         this.cdr.detectChanges();
     }
@@ -54,7 +58,7 @@ export class ResultChartWidgetComponent implements IWidget, OnInit, OnDestroy {
     }
     private saveConfig() {
         const _f = Functions.cloneObject;
-        this.config['title'] = this.title;
+        this.config.title = this.title;
 
         this.changeSettings.emit({
             config: _f(this.config),

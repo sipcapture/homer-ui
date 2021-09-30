@@ -68,8 +68,8 @@ export class PreferenceMappingProtocolService {
     getMerged(): Observable<PreferenceMapping[]> {
         return this.pmps.httpObserver.pipe(map(data => this.margedCustomAndBaseMapping()));
     }
-    
-    getCurrentMapping(): Array<any> {
+
+    getCurrentMapping(custom_protocol_id?): Array<any> {
         if (!this.pmps.protocol_id) {
             const { protocol_id } =
                 getStorage(UserConstValue.SEARCH_QUERY) ||
@@ -79,9 +79,9 @@ export class PreferenceMappingProtocolService {
                 this.pmps.protocol_id = null;
             }, 1000);
         }
-
+        const _protocol_id = custom_protocol_id || this.pmps.protocol_id;
         const { fields_mapping }: any = this.margedCustomAndBaseMapping()?.find(
-            ({ hepid, profile }) => `${hepid}_${profile}` === this.pmps.protocol_id
+            ({ hepid, profile }) => `${hepid}_${profile}` === _protocol_id
         ) || { fields_mapping: [] };
         const mappingStatusItem: any = fields_mapping?.find(f => f.id === 'status') || { form_default: [] };
         return mappingStatusItem?.form_default;

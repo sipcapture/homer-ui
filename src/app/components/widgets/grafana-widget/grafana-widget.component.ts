@@ -79,8 +79,8 @@ export class IframeWidgetComponent implements IWidget, OnInit, OnDestroy {
 
     ngOnInit() {
         WidgetArrayInstance[this.id] = this as IWidget;
-        if (typeof this.config !== 'undefined') {
-            this.url = this.config?.configuredUrl;
+        if (typeof this.config !== 'undefined' && this.config !== null) {
+            this.url = this.config.configuredUrl;
         }
         this._config = {
             id: this.id,
@@ -100,15 +100,15 @@ export class IframeWidgetComponent implements IWidget, OnInit, OnDestroy {
             }
         };
         if (this.config) {
-            this._config.url = this.config?.url || this._config.url;
-            this._config.serverUrl = this.config?.serverUrl || this._config.serverUrl;
-            this._config.serverUrl = this.config?.configuredUrl || this._config.configuredUrl;
-            this._config.params = this.config?.params || this._config.params;
-            this.dashboardSource = this.config?.dashboardSource;
-            this.panelListValue = this.config?.panelListValue;
-            this._config.typeDataRange = this.config?.typeDataRange || this._config.typeDataRange;
-            this._config.title = this.config?.title || 'Grafana';
-            this._config.desc = this.config?.desc || this._config.desc;
+            this._config.url = this.config.url || this._config.url;
+            this._config.serverUrl = this.config.serverUrl || this._config.serverUrl;
+            this._config.serverUrl = this.config.configuredUrl || this._config.configuredUrl;
+            this._config.params = this.config.params || this._config.params;
+            this.dashboardSource = this.config.dashboardSource;
+            this.panelListValue = this.config.panelListValue;
+            this._config.typeDataRange = this.config.typeDataRange || this._config.typeDataRange;
+            this._config.title = this.config.title || 'Grafana';
+            this._config.desc = this.config.desc || this._config.desc;
         }
 
         this.buildUrl();

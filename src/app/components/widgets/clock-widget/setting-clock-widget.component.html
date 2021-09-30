@@ -1,4 +1,4 @@
-<mat-toolbar class="dialog-title" color="primary">
+<mat-toolbar class="title" color="primary">
   <div>{{'LINK.settings' | translate}}</div>
   <button mat-icon-button (click)="onNoClick()">
     <fa-icon icon="times"></fa-icon>
@@ -42,8 +42,8 @@
     <input type="number" autocomplete="off" [min]="minSize" [max]="maxSize" matInput [ngModel]="data.fontSizeDate" (ngModelChange)="data.fontSizeDate = validateValue($event)">
   </mat-form-field>
 </div>
-<mat-checkbox [(ngModel)]="data.showDate" labelPosition="before" (click)="onChange()">Show Date</mat-checkbox>
+<mat-checkbox color="primary" [(ngModel)]="data.showDate" labelPosition="before" (click)="onChange()">Show Date</mat-checkbox>
 <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
   <button mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="data" cdkFocusInitial>{{'LINK.buttons.save' | translate}}</button>
+  <button mat-raised-button class="setting-btn-ok" [mat-dialog-close]="data" cdkFocusInitial>{{'LINK.buttons.save' | translate}}</button>
 </div>

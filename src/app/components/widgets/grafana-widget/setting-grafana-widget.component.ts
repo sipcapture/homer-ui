@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { ProxyService } from '@services';
+import { ProxyService } from '../../../services/proxy.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SelectList, GroupedSelectList } from '../influxdbchart-widget/setting-influxdbchart-widget.component';
 import { TranslateService } from '@ngx-translate/core'
@@ -53,7 +53,7 @@ export class SettingIframeWidgetComponent implements OnInit {
 
     async onGetGrafanaOrg() {
         const res: any = await this._ps.getProxyGrafanaOrg().toPromise();
-        this.data.params.orgId = res?.id;
+        this.data.params.orgId = res.id;
         this.onSyncDashboard();
         this.cdr.detectChanges();
     }
@@ -61,12 +61,12 @@ export class SettingIframeWidgetComponent implements OnInit {
     async onSyncDashboard() {
         const res: any = await this._ps.getProxyGrafanaFolders().toPromise();
 
-        if (res && !Array.isArray(res) && res?.message === 'Invalid username or password') {
+        if (!Array.isArray(res) && res.message === 'Invalid username or password') {
             this.isLoggedIn = false;
         } else {
             this.isLoggedIn = true;
             const localDashboardList = [];
-            res?.forEach(unit => {
+            res.forEach(unit => {
                 if (unit.type === 'dash-db') {
                     this.unGroupedDashboardList.push(unit);
                     localDashboardList.push(unit);

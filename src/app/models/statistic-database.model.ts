@@ -10,6 +10,12 @@ export interface StatsDb {
         waitCount: number;
         waitDuration: number;
     };
+    db_error_count: number;
+    db_error_log: Array<{
+        critical: boolean;
+        error: string;
+        time: string;
+    }> | null;
     last_check: string;
     last_error: string;
     latency_avg: number;

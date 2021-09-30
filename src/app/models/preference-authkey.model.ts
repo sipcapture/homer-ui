@@ -10,5 +10,6 @@ export interface PreferenceAuthKey {
     name: string;
     usage_calls: number;
     user_object: Object;
+    usergroup: string;
     version: number;
 }

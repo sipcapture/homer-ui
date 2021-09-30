@@ -176,16 +176,14 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
     copy(rawData, isObject = false) {
-        this.translateService.get('notifications.success.messageCopy').subscribe(alert => {
-            // console.log(alert);
-            if (this.raw_isJSON || isObject) {
-                const message = JSON.stringify(rawData, null, 4);
-                this.copyService.copy(message, alert);
-
-            } else {
-                this.copyService.copy(this.copyData, alert);
-            }
-        });
+      this.translateService.get('notifications.success.messageCopy').subscribe(alert => {
+        if (this.raw_isJSON || isObject) {
+          const message = JSON.stringify(rawData, null, 4);
+          this.copyService.copy(message, alert);
+        } else {
+          this.copyService.copy(this.copyData, alert);
+        }
+      });
 
 
     }

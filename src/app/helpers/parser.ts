@@ -455,7 +455,7 @@ export class TransactionServiceProcessor {
   }
 
   public reCheckHost({ messages, hosts, alias }) {
-   
+
     const arrIPs = [].concat.apply([], messages.map(i => {
       try {
         const source_ipisIPv6 = i.source_ip.match(/\:/g)?.length > 1;
@@ -598,7 +598,7 @@ export class TransactionServiceProcessor {
         destination_port: dPORT,
         micro_ts: i.micro_ts,
         source_data: i,
-        typeItem: i.typeItem,
+        typeItem: eventName === FlowItemType.LOG ? FlowItemType.LOG : i.typeItem,
         QOS: i.QOS,
         MOS: i.MOS,
         pid: pid,
@@ -791,7 +791,7 @@ export class TransactionServiceProcessor {
           item.qosTYPE = qosDetails.TYPE;
           item.qosTYPEless = qosDetails.TYPE.slice(0, 1).toUpperCase();
         } catch (_) {
-       
+
           item.MOS = 0;
         }
       }

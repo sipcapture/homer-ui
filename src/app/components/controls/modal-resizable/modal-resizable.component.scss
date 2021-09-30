@@ -10,7 +10,7 @@
 	width: 1px;
 	height: 1px;
     margin: auto;
-    // 
+    //
     .active {
         width: 100vw;
         height: 100vh;
@@ -27,7 +27,7 @@
 	padding: 1.5rem;
 	overflow: hidden;
 	background: #fff;
-	border-radius: 4px;
+	border-radius: 8px;
 	z-index: 1;
 	opacity: 1;
 	// transition: all 0.3s;
@@ -48,7 +48,6 @@
 			overflow: hidden;
 			white-space: nowrap;
 			text-overflow: ellipsis;
-			margin-left: 10px;
 		}
 		div:last-child {
 			display: flex;
@@ -90,7 +89,7 @@
 	left: 0;
 	right: 0;
 	top: 45px;
-    bottom: 0.3rem;
+    bottom: 0;
     z-index: -1;
 }
 .animation-off {
@@ -101,7 +100,7 @@
     // background-color: rgb(144 238 144 / 50%);
 	&.right {
 		width: 0.5rem;
-		right: -0.3rem;
+		right: -6px;
 		height: 100%;
 		top: 0;
 		cursor: ew-resize;
