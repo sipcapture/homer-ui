@@ -43,7 +43,7 @@ export class ResultWidgetComponent implements IWidget, OnInit, AfterViewInit, On
 
     lastTimestamp: number;
     title: string;
-    isAutoRefrasher = false;
+    isAutoRefrasher = true;
     isLoaded = false;
     dashboard: any;
     source = 'widget';

@@ -216,4 +216,3 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
     }
 
 }
-

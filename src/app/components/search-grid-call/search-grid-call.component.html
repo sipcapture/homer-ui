@@ -15,7 +15,7 @@
             type="search"
             id="regexfilter"
             [(ngModel)]="filterGridValue"
-            (keyup)="setQuickFilter()">
+            (ngModelChange)="setExternalFilter()">
         <button matTooltip="{{'searchGridCall.filterResults' | translate }}"
             class="regex-button"
             (click)="toggleRegex()">
@@ -42,6 +42,8 @@
         [overlayNoRowsTemplate]="noRowsTemplate"
         [frameworkComponents]="frameworkComponents"
         [paginationPageSize]="this.agGridSizeControl.pageSize"
+        [isExternalFilterPresent]="isExternalFilterPresent"
+        [doesExternalFilterPass]="doesExternalFilterPass"
         (cellDoubleClicked)="onCellDoubleClicked($event)"
         (gridReady)="onGridReady($event)"
         (sortChanged)="sortChanged($event)"

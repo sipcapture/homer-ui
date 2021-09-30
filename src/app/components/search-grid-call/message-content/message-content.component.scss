@@ -1,134 +1,152 @@
 .message-container {
-	height: 100%;
-	.ngx-json-viewer  > *{
-		height: initial !important;
-		font-family:monospace !important;
-		color:gray !important;
-			.segment-key {
-				color: gray !important;
-			}
-			.segment-type-boolean > * {
-				color: lightskyblue !important;
-			}
-			.segment-type-string > * {
-				color: lightgreen !important;
-			}
-			.segment-type-number > * {
-				color:  lightcoral !important;
-			}
-		
-		
-	}
+  height: 100%;
+
+  .ngx-json-viewer>* {
+    height: initial !important;
+    font-family: monospace !important;
+    color: gray !important;
+
+    .segment-key {
+      color: gray !important;
+    }
+
+    .segment-type-boolean>* {
+      color: lightskyblue !important;
+    }
+
+    .segment-type-string>* {
+      color: lightgreen !important;
+    }
+
+    .segment-type-number>* {
+      color: lightcoral !important;
+    }
+
+
+  }
 }
+
 .message-container ::ng-deep .mat-tab-label {
-    min-width: inherit;
-	padding: 0 1rem;
+  min-width: inherit;
+  padding: 0 1rem;
 }
+
 table {
-	tr {
-		height: 38px;
-	}
-	.mat-cell {
-		font-size: 13px !important;
-	}
+  tr {
+    height: 38px;
+  }
+
+  .mat-cell {
+    font-size: 13px !important;
+  }
 }
 
 
 .pre-content {
-	font-family: Roboto;
-	font-size: 13px;
-	padding: 0.5rem 2rem;
-	height: 100%;
-	box-sizing: border-box;
-	margin: 0;
-	line-height: 24px;
-    margin-left: 6px;
-    margin-top: 6px;
+  font-family: Roboto;
+  font-size: 13px;
+  padding: 0.5rem 2rem;
+  height: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  line-height: 24px;
+  margin-left: 6px;
+  margin-top: 6px;
 }
+
 .raw-json {
-	white-space: pre-wrap;
-	font-size: 12px;
-	font-family: "Roboto Mono", monospace !important;
-	line-height: 16px;
-    margin-left: 12px;
-	margin-top: 6px;
-	color:hsl(0, 0%, 31%);
+  white-space: pre-wrap;
+  font-size: 12px;
+  font-family: "Roboto Mono", monospace !important;
+  line-height: 16px;
+  margin-left: 12px;
+  margin-top: 6px;
+  color: hsl(0, 0%, 31%);
 }
+
 .time-label {
-	font-size: 0.8rem;
-    padding: 1rem 0 0 1rem;
+  font-size: 0.8rem;
+  padding: 1rem 0 0 1rem;
 }
+
 .content-row {
 
-	padding: 3px;
-	margin-top:3px;
-	margin-bottom:3px;
-	background: hsl(0, 0%, 98%);
+  padding: 3px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  background: hsl(0, 0%, 98%);
 
 }
+
 .section-title {
-	padding:12px;
-	background:hsl(0, 0%, 98%);
-	font-size: 12px;
-	text-transform:uppercase;
+  padding: 12px;
+  background: hsl(0, 0%, 98%);
+  font-size: 12px;
+  text-transform: uppercase;
 }
+
 .subheader {
-	width: 100%;
-    height: 100%;
-    border-bottom: 2px solid lightgray;
-    font-size: 11px;
-    font-weight: bold;
-    color: grey;
-    text-transform: uppercase;
-    padding: 3px;
-    padding-left: 16px;
+  width: 100%;
+  height: 100%;
+  border-bottom: 2px solid lightgray;
+  font-size: 11px;
+  font-weight: bold;
+  color: grey;
+  text-transform: uppercase;
+  padding: 3px;
+  padding-left: 16px;
 }
+
 .sub-content {
-	padding:3px;
+  padding: 3px;
 }
+
 .parsed-row {
-	display: flex;
-	p{
-		display: grid;
-		flex-grow:1;
-		text-align:center;
-		span {
-			font-size:12px;
-			background: hsl(0, 0%, 94%);
-			padding:4px;
-			margin:2px;
-			border-radius:2px;
-			
-			&.parsed-name {
-				color:grey;
-				font-weight: bold;
-			}
-		}
-	}
-	
+  display: flex;
+
+  p {
+    display: grid;
+    flex-grow: 1;
+    text-align: center;
+
+    span {
+      font-size: 12px;
+      background: hsl(0, 0%, 94%);
+      padding: 4px;
+      margin: 2px;
+      border-radius: 2px;
+
+      &.parsed-name {
+        color: grey;
+        font-weight: bold;
+      }
+    }
+  }
+
 }
-.parsed-data{
-	padding:12px;
+
+.parsed-data {
+  padding: 12px;
 
 }
 
 .copy-message-button {
-    background: none;
-    border: transparent;
-    outline: none;
-    z-index: 1000;
-    transition: 0.25s all;
-	position:absolute;
-	top:12px;
-	right:8px;
+  background: none;
+  border: transparent;
+  outline: none;
+  z-index: 1000;
+  transition: 0.25s all;
+  position: absolute;
+  top: 12px;
+  right: 8px;
 
-    mat-icon {
-        font-size: 18px;
-        line-height: 18px;
-        
-    }
+  mat-icon {
+    font-size: 18px;
+    line-height: 18px;
 
-    :hover {
-        color: #253741;
-    }
+  }
+
+  :hover {
+    color: #253741;
+  }
 }

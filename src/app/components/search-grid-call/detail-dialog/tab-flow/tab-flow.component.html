@@ -1,4 +1,4 @@
-<div class="flowscreen" [style.min-width.px]="pageWidth + 16" [style.padding-top.px]="isExport ? 40 : 0" #flowscreen>    
+<div class="flowscreen" [style.min-width.px]="pageWidth + 16" [style.padding-top.px]="isExport ? 40 : 0" [style.width]="isExport ? 'calc(100% + 20px)' : '100%' " #flowscreen>    
     <!-- <div [style.min-width.px]="pageWidth + 16" style="padding: 1px;"></div> -->
     <!-- flow grid lines -->
     <div class="flow-grid-lines" [style.min-width.px]="pageWidth">
