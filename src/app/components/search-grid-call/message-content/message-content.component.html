@@ -1,10 +1,6 @@
 <app-webshark *ngIf="_data.frame_protocol; else baseContainer" [data]="_data.raw_source || _data.message">
 </app-webshark>
 <ng-template #baseContainer>
-  <button [matTooltip]="('transaction.messages.copyButton' | translate)" (click)="copy(copyData);"
-    class="close-message copy copy-message-button">
-    <mat-icon>content_copy</mat-icon>
-  </button>
   <mat-tab-group class="message-container" #matTabGroup (selectedTabChange)="onSelectedTab()">
     <mat-tab label="Message" *ngIf="raw" style="padding: 1rem;">
 
