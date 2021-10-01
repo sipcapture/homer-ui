@@ -1,61 +1,56 @@
 <button mat-icon-button
-  class="button-icon-right-top"
-  (click)="openInfo()">
-  <fa-icon icon="info-circle"></fa-icon>
+    class="button-icon-right-top"
+    (click)="openInfo()">
+    <fa-icon icon="info-circle"></fa-icon>
 </button>
 <!-- filter -->
 <div class="hidden-back"
-  [hidden]="!isInfoOpened"
-  (click)="hideInfo()"></div>
-<div class="button-icon-right-top info-container"
-  [hidden]="!isInfoOpened"
-  #filterContainer>
+    [hidden]="!isInfoOpened"
+    (click)="hideInfo()"></div>
+    <div class="button-icon-right-top info-container"
+    [hidden]="!isInfoOpened"
+    #filterContainer>
 
-  <!-- <br *ngIf="isFlowTab"> -->
-  <div style="margin: 0 -10px 5px -10px;">
-    <mat-accordion>
-      <mat-expansion-panel [hidden]='callIdList.length <= 1'>
-        <mat-expansion-panel-header>
-          <mat-panel-title><span class='callId'>{{'transactionInfo.total' | translate}}</span>
-            <span class="message-counter"
-              [matTooltip]="('transactionInfo.totalAmountOfMessages' | translate)"> {{_sipDataItem.data.messages.length
-              }}</span>
+    <!-- <br *ngIf="isFlowTab"> -->
+    <div style="margin: 0 -10px 5px -10px;">
+        <mat-accordion>
+            <mat-expansion-panel [hidden]='callIdList.length <= 1'>
+                <mat-expansion-panel-header>
+                    <mat-panel-title><span class='callId'>{{'transactionInfo.total' | translate}}</span>
+                        <span class="message-counter" [matTooltip]="('transactionInfo.totalAmountOfMessages' | translate)"> {{_sipDataItem.data.messages.length }}</span>
 
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div class='method-grid'>
-          <div class='method-key'>{{'transactionInfo.method' | translate}}</div>
-          <div class='method-value'>{{'transactionInfo.count' | translate}}</div>
-          <ng-container *ngFor="let method of methodTotal | keyvalue">
-            <div class='method-key'>{{method.key}} </div>
-            <div class='method-value'>{{method.value['count']}}</div>
-          </ng-container>
-        </div>
-      </mat-expansion-panel>
-      <mat-expansion-panel [expanded]="callIdList.length <= 1"
-        *ngFor="let callId of callIdList">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            <div class="swatch"
-              [style.background-color]='callId.color'></div>
-            <span class='callId'>{{callId.callid}}</span>
-            <span class="message-counter"
-              matTooltip="{{'transactionInfo.amountMessagesTransaction' | translate}}"> {{callId.count}}</span>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class='method-grid'>
+                    <div class='method-key'>{{'transactionInfo.method' | translate}}</div>
+                    <div class='method-value' >{{'transactionInfo.count' | translate}}</div>
+                    <ng-container *ngFor="let method of methodTotal | keyvalue">
+                        <div class='method-key'>{{method.key}} </div>
+                        <div class='method-value' >{{method.value?.['count']}}</div>
+                    </ng-container>
+                </div>
+            </mat-expansion-panel>
+            <mat-expansion-panel [expanded]="callIdList.length <= 1" *ngFor="let callId of callIdList" >
+                <mat-expansion-panel-header>
+                    <mat-panel-title >
+                        <div class="swatch" [style.background-color]='callId.color'></div>
+                        <span class='callId'>{{callId.callid}}</span>
+                        <span class="message-counter" matTooltip="{{'transactionInfo.amountMessagesTransaction' | translate}}"> {{callId.count}}</span>
 
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div style="display: flex; flex-flow: wrap; max-width: 360px;">
-          {{ 'transactionInfo.transactionDuration' | translate }} {{callId.duration}}
-        </div>
-        <div class='method-grid'>
-          <div class='method-key'>{{'transactionInfo.method' | translate}} </div>
-          <div class='method-value'>{{'transactionInfo.count'|translate}}</div>
-          <ng-container *ngFor="let method of callId.methods | keyvalue">
-            <div class='method-key'>{{method.key}} </div>
-            <div class='method-value'>{{method.value}}</div>
-          </ng-container>
-        </div>
-      </mat-expansion-panel>
-    </mat-accordion>
-  </div>
+                </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div style="display: flex; flex-flow: wrap; max-width: 360px;">
+                  {{ 'transactionInfo.transactionDuration' | translate }} {{callId.duration}}
+                </div>
+                <div class='method-grid'>
+                    <div class='method-key'>{{'transactionInfo.method' | translate}} </div>
+                    <div class='method-value' >{{'transactionInfo.count'|translate}}</div>
+                    <ng-container *ngFor="let method of callId.methods | keyvalue">
+                        <div class='method-key'>{{method.key}} </div>
+                        <div class='method-value' >{{method.value?.['count']}}</div>
+                    </ng-container>
+                </div>
+            </mat-expansion-panel>
+        </mat-accordion>
+    </div>
 </div>

@@ -24,7 +24,8 @@ import { TranslateService } from '@ngx-translate/core'
   className: 'RsearchWidgetComponent',
   submit: true,
   minHeight: 300,
-  minWidth: 300
+  minWidth: 300,
+  deprecated: true
 })
 export class RsearchWidgetComponent implements IWidget {
   @Input() id: string;
@@ -72,9 +73,9 @@ export class RsearchWidgetComponent implements IWidget {
 
     if (tagName !== 'textarea') {
       setTimeout(this.doSearchResult.bind(this), 100);
+      return false;
     }
-    return false;
-
+    return null;
   }
   onClearFields() {
     this.lokiQuery = '';

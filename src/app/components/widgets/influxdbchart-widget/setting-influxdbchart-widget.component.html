@@ -1,4 +1,4 @@
-<mat-toolbar class="dialog-title" color="primary">
+<mat-toolbar class="title" color="primary">
   <div>{{'LINK.settings' | translate}}</div>
   <button mat-icon-button (click)="onNoClick()">
     <fa-icon icon="times"></fa-icon>
@@ -59,7 +59,7 @@
         </mat-select>
       </mat-form-field>
 
-      <button mat-raised-button color="primary" (click)="addRecord()">{{ 'LINK.buttons.add' | translate }}</button>
+      <button mat-raised-button class="setting-btn-ok" (click)="addRecord()">{{ 'LINK.buttons.add' | translate }}</button>
     </div>
 
     <div>
@@ -194,7 +194,7 @@
               >
             </mat-form-field>
             <div>
-              <mat-checkbox [(ngModel)]="isSum" (change)="onDetails('sum')">{{ 'widgets.influxDBChart.settings.sum' | translate }}</mat-checkbox>
+              <mat-checkbox color="primary" [(ngModel)]="isSum" (change)="onDetails('sum')">{{ 'widgets.influxDBChart.settings.sum' | translate }}</mat-checkbox>
             </div>
           </div>
         </mat-tab>
@@ -222,5 +222,5 @@
 
 <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
   <button mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="outputObject" cdkFocusInitial [disabled]='isInvalid'>{{'LINK.buttons.save' | translate}}</button>
+  <button mat-raised-button class="setting-btn-ok" [mat-dialog-close]="outputObject" cdkFocusInitial [disabled]='isInvalid'>{{'LINK.buttons.save' | translate}}</button>
 </div>

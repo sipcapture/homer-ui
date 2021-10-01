@@ -144,7 +144,7 @@ export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit 
       }
     }, 10);
   }
-  onKeyUpDiv(event):void {
+  onKeyUpDiv(event): boolean | null | void {
     if (this.editor.innerText === '' || [17, 16].indexOf(event.keyCode) !== -1) {
       return;
     }
@@ -163,7 +163,7 @@ export class CodeStylePrometheusFieldComponent implements OnInit, AfterViewInit 
         return;
       }
       event.preventDefault();
-      return;
+      return false;
     }
     if ([219, 222, 188, 187, 192].indexOf(event.keyCode) !== -1) {
       const [getLastLetter] = window.getSelection().anchorNode.textContent.split('');

@@ -12,7 +12,7 @@
         <table style="min-width: 200px;">
             <tr *ngFor="let item of messageTable">
                 <td *ngIf="item.name === 'image' && isLinkImg" colspan="2" style="text-align: center;">
-                    <img [src]="item.value" />
+                    <img class="flow-alias-image" [src]="item.value" />
                 </td>
                 <td *ngIf="item.name === 'image' && !isLinkImg" colspan="2" style="text-align: center;">
                     <img [src]="'assets/' + item.value" />

@@ -1,3 +1,4 @@
+import { CallIDColor } from '@app/models/CallIDColor.model';
 import {
   Component,
   Input,
@@ -12,13 +13,13 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Functions, setStorage, getStorage } from '@app/helpers/functions';
 import { FlowItemType } from '@app/models/flow-item-type.model';
-import { 
-  PreferenceAdvancedService, 
-  PreferenceAgentsubService, 
-  AgentsubService, 
-  PreferenceHepsubService, 
-  SearchCallService, 
-  MessageDetailsService, 
+import {
+  PreferenceAdvancedService,
+  PreferenceAgentsubService,
+  AgentsubService,
+  PreferenceHepsubService,
+  SearchCallService,
+  MessageDetailsService,
   TooltipService
 } from '@app/services';
 import { AgentRequestModel } from '@app/models/agent-request-model';
@@ -42,6 +43,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
   @Input() snapShotTimeRange: any;
   @Input() rowData: any;
   @Input() config: any;
+  @Input() callIDColorList: Array<CallIDColor>;
   isWindow = true;
   _qosData: any;
   tabStringIndex = 'Flow';
@@ -138,7 +140,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     this._isLoaded = !!this._sipDataItem;
     const { callid, messages } = data.data || {};
     const [callidFirst] = callid || [];
-   
+
     this.tabs.qos = !!messages.find(i => i.QOS && i.typeItem === 'RTP');
 
     this.IdFromCallID = callidFirst;
@@ -191,10 +193,11 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
       headerColor: this.headerColor,
       isLoaded: this.isLoaded,
       request: this.request,
+      callIDColorList: this.callIDColorList
     };
   }
   async ngOnInit() {
-  
+
     this._route_paramsSubscription = this._route.params.subscribe((params: any) => {
       this.isWindow = !params?.uuid;
 
@@ -210,6 +213,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
         this.headerColor = storageData.headerColor;
         this.isLoaded = storageData.isLoaded;
         this.request = storageData.request;
+        this.callIDColorList = storageData.callIDColorList;
 
         localStorage.removeItem(params?.uuid);
         setTimeout(() => {
@@ -234,7 +238,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     this.tabs.logs = true;
     this.tabs.messages = this.tabs.flow = this.sipDataItem?.data?.messages?.length > 0;
     this.tabs.export = this.sipDataItem?.data?.messages && !!this.IdFromCallID;
-    this.tabs.callinfo = this.sipDataItem.data.messages.length > 0; 
+    this.tabs.callinfo = this.sipDataItem.data.messages.length > 0;
   }
   onTabQos(isVisible: boolean) {
     setTimeout(() => {
@@ -371,7 +375,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
       !isWebshark && this.tabs.messages && 'Message',
       'Flow',
       this.tabs.callinfo && 'Session Info',
-      this.tabs.qos && 
+      this.tabs.qos &&
       this.objectKeys(this.sipDataItem.data.hostinfo).length !== 0 && 'Events',
       this.agentsActive && 'Sub',
       this.tabs.logs && 'Logs',
@@ -421,7 +425,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
 
 
     const uuid = row?.data?.item?.uuid;
-   
+
     mData.data.messageDetailTableData = Object.entries(Functions.cloneObject(mData.data))
       .filter(([name]) => !['mouseEventData', 'raw', 'item'].includes(name))
       .map(([name, value]: any[]) => {

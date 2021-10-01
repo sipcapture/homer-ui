@@ -2,10 +2,10 @@ import { Component, Inject, ViewChild, ChangeDetectionStrategy, ChangeDetectorRe
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { FormControl } from '@angular/forms';
 import { MatTable } from '@angular/material/table';
-import { StatisticService } from '@services';
+import { StatisticService } from '../../../services/statistic.service';
 import { ChartType } from 'chart.js';
-import { AlertService } from '@services';
-import { DateTimeRangeService } from '@services';
+import { AlertService } from '../../../services/alert.service';
+import { DateTimeRangeService } from '../../../services/data-time-range.service';
 import { Functions } from '@app/helpers/functions';
 import { DialogAlarmComponent } from '../dialog-alarm/dialog-alarm.component';
 import { TranslateService } from '@ngx-translate/core'
@@ -115,7 +115,7 @@ export class SettingInfluxdbchartWidgetComponent {
                 data.dataquery.data.map((v, k) => ({
                     panel_queries: Functions.cloneObject(data.panel.queries[k]),
                     dataquery: Functions.cloneObject(v)
-                })).forEach(item => {
+                })).forEach((item: any) => {
                     this.dataSource.push({
                         id: item.panel_queries.name,
                         panelDataSource: item.panel_queries.type.name,
@@ -166,7 +166,7 @@ export class SettingInfluxdbchartWidgetComponent {
             this.table.renderRows();
             this.updateResult();
         } else {
-            this.alertService.error('error: need select all');
+            this.alertService.error({message:'error: need select all'});
             setTimeout(this.alertService.hide.bind(this), 5000);
         }
         this.cdr.detectChanges();
@@ -175,7 +175,7 @@ export class SettingInfluxdbchartWidgetComponent {
     async editRecord(element: any) {
         this.showDetail();
         const id = element.id;
-        this.selectedEditQuery = this.dataSource.find(item => item.id === id);
+        this.selectedEditQuery = this.dataSource.find((item: any) => item.id === id);
         if (!this.selectedEditQuery.detail) {
             this.selectedEditQuery.detail = {
                 measurement: '',
@@ -202,7 +202,7 @@ export class SettingInfluxdbchartWidgetComponent {
     }
 
     deleteRecord(id: any) {
-        this.dataSource = this.dataSource.filter(item => item.id !== id);
+        this.dataSource = this.dataSource.filter((item: any) => item.id !== id);
         this.table.renderRows();
         this.updateResult();
         this.cdr.detectChanges();

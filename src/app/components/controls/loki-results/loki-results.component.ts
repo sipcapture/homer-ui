@@ -25,6 +25,7 @@ export class LokiResultsComponent implements OnInit, AfterViewInit {
     @Input() dataItem: any;
     @Input() isDisplayResult = false;
     @Input() isResultPage = false;
+
     _logQlText = '';
     @Input() set logQlText(val) {
         this._logQlText = val;
@@ -32,7 +33,7 @@ export class LokiResultsComponent implements OnInit, AfterViewInit {
         this.isFirstSearch = true;
     }
 
-    @Input() customTimeRangeQuery: any = null;
+    @Input() customTimeRangeQuery: any | null = null;
 
     get logQlText() {
         return this._logQlText;
@@ -63,23 +64,18 @@ export class LokiResultsComponent implements OnInit, AfterViewInit {
         private _dtrs: DateTimeRangeService,
         private searchService: SearchService,
         private cdr: ChangeDetectorRef
-    ) {
-        log('LokiResultsComponent::constructor');
 
-        this.customTimeRangeQuery ||= this._dtrs.getDatesForQuery(true);
-     }
+    ) { }
 
     ngOnInit() {
-       
+        this.customTimeRangeQuery ||= this._dtrs.getDatesForQuery(true);
         this.getLabels();
-       
     }
     ngAfterViewInit() {
-        setTimeout(() => {
-            this.ready.emit({});
-            this.doSerchResult()
-        }, 35)
-    
+        window.requestAnimationFrame(() => {
+            this.ready.emit({ });
+            this.doSerchResult();
+        });
     }
 
     getLabels() {
@@ -118,7 +114,7 @@ export class LokiResultsComponent implements OnInit, AfterViewInit {
     }
     queryBuilder() {
         /** depricated, need use {SearchService} */
-      
+
         return {
             param: {
                 server: this.queryObject.serverLoki, // 'http://127.0.0.1:3100',
@@ -130,37 +126,37 @@ export class LokiResultsComponent implements OnInit, AfterViewInit {
         };
     }
 
-async doSerchResult() {  // here add loading when hit button
+    async doSerchResult() {  // here add loading when hit button
         this.queryStatsText = '';
         this.queryStatsNum = [];
         this.rxText = this.queryObject.rxText;
         this.isFirstSearch = false;
         this.loading = true;
-  
-             await this._srs.getData(this.queryBuilder()).toPromise().then(res => {
-              
-                   this.resultData = res && res.data ? (res.data as Array<any>) : [];
-                  
-                    if(this.resultData.length > 0) {
-                        this.loading = false;
-                        this.lokiLabels = this.resultData.map((l) => {
-                            l.custom_2 = this.labelsFormatter(l.custom_2);
-                            return l;
-                        });
-                        this.resultData = this.resultData.map((i) => {
-                            i.custom_1 = this.highlight(i.custom_1);
-                            return i;
-                        });
 
-                        this.resultsFound = true;
-                       
-                    } else {
-                        this.loading = false;
-                        this.resultsFound = false;
-                    }
-                 
-                })
+        await this._srs.getData(this.queryBuilder()).toPromise().then(res => {
+
+            this.resultData = res && res.data ? (res.data as Array<any>) : [];
+
+            if (this.resultData.length > 0) {
                 this.loading = false;
+                this.lokiLabels = this.resultData.map((l) => {
+                    l.custom_2 = this.labelsFormatter(l.custom_2);
+                    return l;
+                });
+                this.resultData = this.resultData.map((i) => {
+                    i.custom_1 = this.highlight(i.custom_1);
+                    return i;
+                });
+
+                this.resultsFound = true;
+
+            } else {
+                this.loading = false;
+                this.resultsFound = false;
+            }
+
+        })
+        this.loading = false;
         this.cdr.detectChanges();
     }
     onUpdateData(event) {
@@ -184,7 +180,8 @@ async doSerchResult() {  // here add loading when hit button
     private highlight(value: string = '') {
         let data;
         if (!!this.rxText) {
-            const rxText = this.rxText.replace(/\s|(\|=|\|~|!=|!~)|("|`)/g, '').split('|').sort((a, b) => b.length - a.length).join('|');
+            const rxText = this.rxText.replace(/\s|(\|=|\|~|!=|!~)|("|`)/g, '')
+                .split('|').sort((a, b) => b.length - a.length).join('|');
             const regex = new RegExp('(' + rxText + ')', 'g');
             data = value
                 .replace(/\</g, '&lt;')
@@ -197,16 +194,16 @@ async doSerchResult() {  // here add loading when hit button
         }
         return data;
     }
-    showLabel(idx){
-        let tag  = document.getElementById('label-'+idx) 
-        let icon = document.getElementById('icon-'+idx)
-        if(tag.style.display === 'none'){
+    showLabel(idx) {
+        let tag = document.getElementById('label-' + idx)
+        let icon = document.getElementById('icon-' + idx)
+        if (tag.style.display === 'none') {
             tag.style.cssText = `
             display:flex;
             flex-direction:column;
             `;
             icon.innerText = 'keyboard_arrow_down'
-            
+
         } else {
             tag.style.display = 'none'
             icon.innerText = 'navigate_next'

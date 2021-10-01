@@ -86,7 +86,7 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
             this.resultConfig.countFieldColumns = data.config.countFieldColumns || 1;
             this.mappingSortedData = Functions.cloneObject(data.mapping);
             if (data.isContainer) {
-                this.mappingSortedData = this.mappingSortedData.filter(item => {
+                this.mappingSortedData = this.mappingSortedData.filter((item: any) => {
                     return !(item.profile === 'default' && item.hepid === 2000 && item.hep_alias === 'LOKI');
                 });
             }
@@ -134,7 +134,6 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
             });
             this.proto.fields_mapping = ([].concat(pmActive.reverse(), pm)).filter(i => !!i);
             // this.cdr.detectChanges();
-            // console.log(this.mappingSortedData)
         } catch (err) {
             this.openDialog();
 
@@ -143,7 +142,6 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
         // this.cdr.detectChanges();
     }
     async openDialog() {
-        // console.log(this.data.isReset, 'IS RESET')
         const dialogRef = this.dialogAlarm.open(DialogAlarmComponent, {
             data: {
                 config: this.config,
@@ -200,7 +198,7 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
                     this.proto.profile : this.resultConfig.profile;
 
                 this.validate();
-                this.resultConfig.fields = this.proto.fields_mapping.filter(item => item.selected === true).map(item => {
+                this.resultConfig.fields = this.proto.fields_mapping.filter((item: any) => item.selected === true).map((item: any) => {
                     item.proto = this.proto.hep_alias + '-' + this.proto.profile;
                     return item;
                 });
@@ -210,7 +208,7 @@ export class SettingProtosearchWidgetComponent implements OnInit, OnDestroy {
     }
     validate() {
         try {
-            this.isValidForm = this.proto.fields_mapping.filter(item => item.selected === true).length > 0;
+            this.isValidForm = this.proto.fields_mapping.filter((item: any) => item.selected === true).length > 0;
             if (this.isValidForm) {
                 this.onChange();
             }

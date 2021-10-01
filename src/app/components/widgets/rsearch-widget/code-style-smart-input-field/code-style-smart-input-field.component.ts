@@ -225,7 +225,7 @@ export class CodeStyleSmartInputFieldComponent implements OnInit, AfterViewInit 
         return out;
     }
     getfieldCollectionFromQuery(obj: any) {
-        const out: any = Object.entries(obj).map(item => {
+        const out: any = Object.entries(obj).map((item: any) => {
             const [name, value] = item;
             return {
                 name,

@@ -352,7 +352,7 @@ export class TabExportComponent implements OnInit, AfterViewInit {
         this.url = data.data.url + data.data.uuid;
       }
     }
-    let notification = ''
+    let notification: any = ''
     this.translateService.get('notifications.success.shareLinkCopy').subscribe(res => {
       notification = res;
     })

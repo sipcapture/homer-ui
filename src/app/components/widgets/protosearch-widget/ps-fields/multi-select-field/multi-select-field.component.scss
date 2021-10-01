@@ -1,0 +1,99 @@
+button.close {
+  border: 1px solid #eee;
+  border-radius: 4px;
+  background-color: transparent;
+  margin: 2px 0;
+  cursor: pointer;
+  padding: 0;
+  min-width: 18px;
+  text-align: right;
+  font-family: monospace;
+  font-size: 10pt;
+
+  &.and:hover {
+    background-color: lightgreen;
+  }
+
+  &.or:hover {
+    background-color: lightyellow;
+  }
+
+  &.not:hover {
+    background-color: orangered;
+    color: yellow;
+  }
+
+}
+
+.additional-content {
+  float: right;
+  margin-top: 1rem;
+  margin-bottom: -1rem;
+  top: 0;
+  position: absolute;
+  right: 0;
+}
+
+:host ::ng-deep .mat-icon {
+  height: 12px !important;
+  width: 12px !important;
+  font-size: 12px !important;
+}
+
+.field-sticky.color {
+
+  .label {
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap:normal;
+    margin: 2px;
+    padding:1px;
+    padding-bottom: 0;
+    background-color: #eee;
+    padding: 1px 4px;
+    border-radius: 4px;
+    line-height: 19px;
+
+    .close {
+      //
+    }
+  }
+
+}
+
+.option {
+  padding: 2px;
+  height: 30px;
+  font-size: 10pt;
+}
+
+.bool {
+  display: inline;
+  padding: 3px;
+  background-color: #eee;
+  white-space: nowrap;
+  text-align: center;
+  width: 25px;
+  border-radius: 4px 0px 0px 4px;
+  margin-right:-8px;
+  border-bottom: 1px solid #eee;
+ 
+
+  &.and {
+    background-color: lightgreen;
+  }
+
+  &.or {
+    background-color: lightyellow;
+  }
+
+  &.not {
+    background-color: #eee;
+  
+
+  }
+
+  &.equal {
+    display: none;
+  }
+}

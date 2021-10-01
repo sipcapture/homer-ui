@@ -6,8 +6,8 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import { MatIconModule } from '@angular/material/icon';
-import { AlertModule } from '@app/components/controls/alert/alert.module';
-import { AlertService } from '@app/services/alert.service';
+import { AlertModule } from '@it-app/components/controls/alert/alert.module';
+import { AlertService } from '@it-app/services/alert.service';
 import { Router } from '@angular/router';
 
 @NgModule({

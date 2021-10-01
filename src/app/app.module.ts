@@ -1,3 +1,6 @@
+import { AlertWidgetComponent } from './components/widgets/alert-widget/alert-widget.component';
+import { ColorChromeModule } from 'ngx-color/chrome'; // <color-chrome></color-chrome>
+import { SettingAlertWidgetComponent } from './components/widgets/alert-widget/setting-alert-widget.component';
 import { TabQosModule } from './components/search-grid-call/detail-dialog/tab-qos/tab-qos.module';
 import { CustomAgGridModule } from './components/controls/custom-ag-grid/custom-ag-grid.module';
 import { WebsharkModule } from './components/controls/webshark/webshark.module';
@@ -295,6 +298,7 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     DialogExportComponent,
     DialogImportComponent,
     FullScreenComponent,
+    SettingAlertWidgetComponent,
 
 
     /**Cell types */
@@ -320,6 +324,7 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     LoadingCircleComponent,
     PageSystemOverviewComponent,
     TransactionGraphSettingsComponent,
+    AlertWidgetComponent
   ],
 
   imports: [
@@ -386,7 +391,8 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
         useClass: TranslateLinkCompiler,
         provide: TranslateCompiler
       }
-    })
+    }),
+    ColorChromeModule
   ],
   entryComponents: [
     MenuComponent,
@@ -435,12 +441,13 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     SettingResultWidgetComponent,
     SettingsAceEditorWidgetComponent,
     SettingSmartInputWidgetComponent,
-
+    AlertWidgetComponent,
     /** dashboard */
     AddDashboardDialogComponent,
     AddDialogComponent,
     DeleteDialogComponent,
     EditDialogComponent
+    // SettingAlertWidgetComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [

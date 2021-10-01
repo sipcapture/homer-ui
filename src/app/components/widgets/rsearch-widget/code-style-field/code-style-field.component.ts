@@ -178,7 +178,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
         }
 
     }
-    onKeyUpDiv(event):void {
+    onKeyUpDiv(event): boolean | null | void {
         // 16 - Shift
         // 13 - Enter
         // 17 - Ctrl
@@ -204,7 +204,7 @@ export class CodeStyleFieldComponent implements OnInit, AfterViewInit, OnChanges
                 return;
             }
             event.preventDefault();
-            return;
+            return false;
         }
         if ([219, 222, 188, 187, 192].indexOf(event.keyCode) !== -1) {
             // if (['[', '"', ',', '=', '`'].includes(event.key)) {

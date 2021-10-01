@@ -40,9 +40,8 @@ export class SettingsAceEditorWidgetComponent implements AfterViewInit {
     scriptValidate() {
         if(this.data.text.length > 20000 && !this.readOnly) {
             this.readOnly = true;
-            this.translateService.get('notifications.warning.textTooLong').subscribe(res => { 
-                this.alertService.warning(res); 
-            })
+            
+            this.alertService.warning({isTranslation: true, message:'notifications.warning.textTooLong'});
         };
     }
     onNoClick(): void {

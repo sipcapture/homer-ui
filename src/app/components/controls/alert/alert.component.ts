@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, Injectable, Inject, EventEmitter, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
 
-import { AlertService, CopyService } from '@services';
+import { AlertService, CopyService } from './../../../services';
 import { TranslateService } from '@ngx-translate/core'
 import { ALERT_OVERLAY } from './alert.tokens';
 @Component({

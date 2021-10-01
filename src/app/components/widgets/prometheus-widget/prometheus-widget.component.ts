@@ -71,7 +71,7 @@ export class PrometheusWidgetComponent implements IWidget {
     constructor(
         public dialog: MatDialog,
         private _dtrs: DateTimeRangeService,
-        private _ps: PrometheusService, 
+        private _ps: PrometheusService,
         public translateService: TranslateService
     ) {
         translateService.addLangs(['en'])
@@ -139,7 +139,7 @@ export class PrometheusWidgetComponent implements IWidget {
                     this.chartOptions.scales.yAxes[0].stacked = false;
                 }
 
-                data.forEach(dataItem => {
+                data.forEach((dataItem: any) => {
                     if (!dataItem.data.result || dataItem.data.result.length === 0) {
                         this.noChartData = this.noChartData || false;
                         return;
@@ -174,7 +174,7 @@ export class PrometheusWidgetComponent implements IWidget {
     private querybuilder(config: any) { /** depricated, need use {SearchService} */
         const dataquery: Array<any> = config.dataquery.data;
         let formattedQuery: Array<any> = [];
-        dataquery.forEach(item => {
+        dataquery.forEach((item: any) => {
             formattedQuery = formattedQuery.concat(item.prometheusLabels.map(i => i + encodeURIComponent(item.prometheusQuries)));
         });
         formattedQuery = formattedQuery[0] instanceof Array ? formattedQuery[0] : formattedQuery;
@@ -202,13 +202,13 @@ export class PrometheusWidgetComponent implements IWidget {
                 this.config.chart.type.value = result.chartType;
                 this.config.format.value = result.format;
 
-                this.config.dataquery.data = result.dataSource.map(item => ({
+                this.config.dataquery.data = result.dataSource.map((item: any) => ({
                     sum: item.detail.sum,
                     prometheusLabels: item.detail.prometheusLabels,
                     prometheusQuries: item.detail.prometheusQuries,
                 }));
 
-                this.config.panel.queries = result.dataSource.map(item => ({
+                this.config.panel.queries = result.dataSource.map((item: any) => ({
                     name: item.id,
                     type: {
                         name: item.panelDataSource,

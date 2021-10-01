@@ -20,7 +20,7 @@ export class DragDropListComponent implements OnInit {
         this._list = val;
         this.activeList = [];
         this.inactiveList = [];
-        this.list.forEach(item => {
+        this.list.forEach((item: any) => {
             if (item.selected) {
                 this.activeList.push(item);
             } else {
@@ -36,7 +36,7 @@ export class DragDropListComponent implements OnInit {
     ngOnInit () {
         if (this.sortlistactive && this.sortlistactive.length > 0) {
             const _activeList = [];
-            this.sortlistactive.forEach(item => {
+            this.sortlistactive.forEach((item: any) => {
                 _activeList.push(this.activeList.find(i => i.id === item.field_name));
 
             });
@@ -59,11 +59,11 @@ export class DragDropListComponent implements OnInit {
                 event.currentIndex
             );
         }
-        this.inactiveList.forEach(item => {
+        this.inactiveList.forEach((item: any) => {
             item.selected = false;
         });
 
-        this.activeList.forEach(item => {
+        this.activeList.forEach((item: any) => {
             item.selected = true;
         });
         const newProto = [].concat(this.activeList, this.inactiveList);

@@ -25,4 +25,5 @@ export interface IWidgetMetaData {
     submit?: boolean;
     minWidth?: number;
     minHeight?: number;
+    deprecated?: boolean;
 }

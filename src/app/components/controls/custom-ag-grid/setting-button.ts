@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, Input } from '@angular/core';
 import { Functions } from '@app/helpers/functions';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 
@@ -15,7 +15,7 @@ export class SettingButtonComponent implements ICellRendererAngularComp {
   allColumnIds: any[] = [];
   apiColumn: any;
   headerName = '';
-
+  @Input() isTab = false;
   constructor(private cdr: ChangeDetectorRef) { }
 
   agInit(params: any): void {

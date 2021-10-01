@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AlertService } from '@app/services';
+import { AlertMessage, AlertService } from '@it-app/services';
 import { CopyService } from '@app/services/copy.service';
 
 import { Subscription } from 'rxjs';
@@ -13,9 +13,9 @@ import { Subscription } from 'rxjs';
 export class CopyComponent implements OnInit {
     private subscription: Subscription;
     copyData: string;
-    notification: string;
+    notification: AlertMessage;
     @ViewChild('copyField', { static: false }) copyField: ElementRef;
-    constructor(
+    constructor(    
         private copyService: CopyService,
         private alertService: AlertService,
         private cdr: ChangeDetectorRef
@@ -35,14 +35,22 @@ export class CopyComponent implements OnInit {
         this.cdr.detectChanges()
         if (navigator.clipboard) {
             navigator.clipboard.writeText(this.copyData);
-            this.alertService.success(this.notification)
+            this.alertService.success({
+                isTranslation: this.notification.isTranslation,
+                message: this.notification.message,
+                translationParams: this.notification.translationParams
+            })
         } else {
             this.copyField.nativeElement.focus();
             this.copyField.nativeElement.select();
             try {
                 const successful = document.execCommand('copy');
                 if (successful) {
-                    this.alertService.success(this.notification)
+                    this.alertService.success({
+                        isTranslation: this.notification.isTranslation,
+                        message: this.notification.message,
+                        translationParams: this.notification.translationParams
+                    })
                 }
             } catch (err) {
             }
