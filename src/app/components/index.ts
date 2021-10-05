@@ -6,4 +6,4 @@ export * from './controls/modal-resizable/modal-resizable.component';
 export * from './search-grid-call/search-grid-call.component';
 export * from './controls/flow-tooltip/flow-tooltip.component';
 export * from './controls/custom-table/custom-table.component';
-export * from './preference/pages/page-api-doc/page-api-doc.component'
+export * from './preference/pages/page-api-doc/page-api-doc.component';
