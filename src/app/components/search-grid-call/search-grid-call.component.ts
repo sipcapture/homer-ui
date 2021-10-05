@@ -1245,12 +1245,12 @@ doesExternalFilterPass(node) {
     /**
      *   (DECODED)
      */
-    const uuid = row?.data?.item?.uuid;
-    if (!isLOG && uuid) {
+
+    if (!isLOG && uniqueId) {
       const _protocol_profile = row?.data?.profile || this.protocol_profile;
       let timestamp = {
-        from: row.data.micro_ts + this.limitRange.message_from, // - 1sec
-        to: row.data.micro_ts + this.limitRange.message_to, // + 1sec
+        from: row.data.create_ts + this.limitRange.message_from, // - 1sec
+        to: row.data.create_ts + this.limitRange.message_to, // + 1sec
       };
       if (!timestamp.from || !timestamp.to) {
         timestamp = this.config.timestamp;
@@ -1263,7 +1263,7 @@ doesExternalFilterPass(node) {
             location: row?.data?.node ? { node: [row.data.node] } : { },
             search: {
               [_protocol_profile]: {
-                uuid: [uuid],
+                id: uniqueId,
               }
             },
             transaction: {
@@ -1281,6 +1281,7 @@ doesExternalFilterPass(node) {
       }
 
       this._scs.getDecodedData(request).toPromise().then(res => {
+
         const [objDecoded] = res?.data || [];
         if (objDecoded) {
           const { decoded } = objDecoded;
