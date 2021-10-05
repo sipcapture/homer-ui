@@ -1,6 +1,5 @@
 import { VERSION } from '../../VERSION';
 import { Functions } from '@app/helpers/functions';
-
 const PREFIX = `HOMER-`;
 export const ConstValue = {
     SEARCH_QUERY_LOKI: `searchQueryLoki`,
