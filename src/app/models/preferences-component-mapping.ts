@@ -293,7 +293,6 @@ export class PreferencesComponentMapping {
     static links = {
         admin: [
             // 'about',
-            // 'api documentation',
             'users',
             'user settings',
             'alias',
@@ -304,7 +303,8 @@ export class PreferencesComponentMapping {
             // 'scripts',
             'agentsub',
             // 'system overview',
-            'reset'
+            'reset',
+            'api documentation'
         ],
         commonUser: ['users', 'user settings', 'advanced', 'reset'],
     };

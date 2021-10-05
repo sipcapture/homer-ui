@@ -61,7 +61,7 @@
       },
       "widget": "Widget",
       "grafana": "Grafana",
-      "hepic": "HEPIC",
+      "homer":  "HOMER",
       "words": {
           "success": {
               "successfully": "successfully",
@@ -314,7 +314,7 @@
           "grafanaControl": {
               "title": "@LINK.grafana@ Settings",
               "grafanaTimestamp": "Sync with @LINK.dashboard@",
-              "grafanaProxy": "Use @LINK.hepic@ proxy for @LINK.grafana@ iFrame"
+              "grafanaProxy": "Use @LINK.HOMER@ proxy for @LINK.grafana@ iFrame"
           },
           "export": "Export @LINK.dashboard@ Settings"
       },
@@ -511,7 +511,6 @@
       },
       "pages": {
           "about": "About",
-          "api documentation": "API Documentation",
           "users": "User Management ",
           "user settings": "User Settings",
           "ip aliases": "IP Aliases",
@@ -526,7 +525,8 @@
           "system overview": "System Overview",
           "reset": "Reset",
           "admin": "Config Snapshots",
-          "troubleshooting": "Troubleshooting"
+          "troubleshooting": "Troubleshooting",
+          "api documentation": "API Documentation"
       },
       "mappings": {
           "general-description": "Manage Protocol and @LINK.preferenceTerms.HepSub@ Mappings",
@@ -574,15 +574,15 @@
       "system overview": {
           "description": "Check System Status, Replication and License Agreement" ,
           "dialog": {
-              "title": "@LINK.hepic@ Config Nodes synchronisation",
-              "warning": "You are about to sync Configs between two @LINK.hepic@ nodes. Are you SURE?",
+              "title": "@LINK.homer@ Config Nodes synchronisation",
+              "warning": "You are about to sync Configs between two @LINK.homer@ nodes. Are you SURE?",
               "destination": "@LINK.callTerms.destination@",
               "source": "@LINK.callTerms.source@",
               "tables": "Tables"
           }
       },
       "api documentation": {
-          "description": "Hepic API Documentation"
+          "description": "Homer API Documentation"
       },
       "advanced": {
           "general-description": "Advanced UI Settings and Mapping Scripts",
@@ -730,11 +730,10 @@
           "make_pic_server_dump": "Dump Picserver Config",
           "logs":"Logs",
           "make_logs_dump": "Dump Logs Config",
-          "hepic_app":"Hepic App",
-          "make_hepic_app_dump": "Dump HepicAPP Config",
+          "homer_app":"Homer App",
+          "make_homer_app_dump": "Dump HomerAPP Config",
           "button_export": "Export",
           "button_dump": "Dump"
-
       },
       "agents status": {
           "description": "Overview of Agent Subscription Status"

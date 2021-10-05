@@ -140,7 +140,7 @@ export class ClickhouseChartWidgetComponent implements IWidget, OnInit, OnDestro
                     data: [{
                         sum: false,
                         main: { name: 'cpu', value: 'cpu' },
-                        database: 'hepic_data',
+                        database: 'homer_data',
                         table: 'sip_transaction_call',
                         timeColumn: 'record_datetime',
                         counter: 'duration',
@@ -155,7 +155,7 @@ export class ClickhouseChartWidgetComponent implements IWidget, OnInit, OnDestro
                     queries: [{
                         name: 'A1',
                         type: { name: 'Clickhouse', alias: 'Clickhouse' },
-                        database: { name: 'hepic_data' },
+                        database: { name: 'homer_data' },
                         table: { name: 'sip_transaction_call' },
                         value: 'query'
                     }]

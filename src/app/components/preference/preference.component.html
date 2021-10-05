@@ -39,5 +39,7 @@
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"reset"'></app-page-reset>
         <app-page-admin
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"admin"'></app-page-admin>
+        <app-page-api-doc 
+            [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"api documentation"'></app-page-api-doc>
     </ng-container>
 </div>

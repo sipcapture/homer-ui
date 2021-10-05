@@ -1,7 +1,7 @@
 import { VERSION } from '../../VERSION';
 import { Functions } from '@app/helpers/functions';
-// const PREFIX = `HEPIC-${VERSION}-`;
-const PREFIX = `HEPIC-`;
+
+const PREFIX = `HOMER-`;
 export const ConstValue = {
     SEARCH_QUERY_LOKI: `searchQueryLoki`,
     LOKI_PREFIX: `2000_loki`,

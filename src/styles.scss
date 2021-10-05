@@ -4,7 +4,7 @@
 @import "~bootstrap/dist/css/bootstrap.min.css";
 @import "~@angular/material/theming";
 @import "theme.scss";
-
+@import "swagger-styles.scss";
 @include mat-core();
 @import "./assets/roboto/roboto.scss";
 
