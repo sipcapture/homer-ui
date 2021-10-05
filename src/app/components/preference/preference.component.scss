@@ -455,3 +455,47 @@ td.mat-cell {
   padding: 2rem;
   overflow-y: auto
 }
+
+.tab-name {
+  text-align: left;
+  padding: 20px;
+  padding-left: 0px;
+
+  & h3 {
+    font-size: 1.25em;
+    font-weight: bold;
+    color: grey;
+    padding-bottom: 5px;
+    margin-bottom: 0px;
+    line-height: 0.75em;
+  }
+
+  & small {
+    color: grey;
+  }
+}
+::ng-deep .tab-name {
+  text-align: left;
+  padding: 20px;
+  padding-left: 0px;
+
+  & h3 {
+    display: inline-block;
+    font-size: 20px !important;
+    font-weight: bold;
+    color: hsl(0, 0%, 50%);
+    padding-bottom: 5px;
+    margin-bottom: 0px;
+    line-height: 15px !important;
+    margin-right: 10px;
+  }
+
+  & small {
+    color: grey;
+  }
+}
+::ng-deep .tab-description {
+display: inline-block;
+font-size: 15px;
+color: hsl(0, 0%, 65%);
+}

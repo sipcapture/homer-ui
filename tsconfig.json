@@ -26,6 +26,9 @@
       "dom"
     ],
     "paths": {
+      "path":[
+        "./node_modules/path-browserify"
+      ],
       "@app/*": [
         "src/app/*"
       ],
