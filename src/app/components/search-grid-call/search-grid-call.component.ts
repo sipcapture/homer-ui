@@ -1213,6 +1213,7 @@ doesExternalFilterPass(node) {
       headerColor: (isLOG ? 'black' : color) || '',
       mouseEventData: mouseEventData || row.data.mouseEventData,
       isBrowserWindow: arrowMetaData ? !!arrowMetaData.isBrowserWindow : false,
+      isDecoded: false
     };
     let _timestamp = {
       from: parseInt(moment(row.data.create_date).format('x'), 10) + this.limitRange.message_from, // - 1sec
@@ -1291,7 +1292,7 @@ doesExternalFilterPass(node) {
           if (decoded) {
             const [_decoded] = decoded || [];
             mData.data.decoded = _decoded?._source?.layers || _decoded || decoded;
-            this.cdr.detectChanges();
+            mData.isDecoded = true;
           }
         }
       }, err => { });

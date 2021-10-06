@@ -152,6 +152,7 @@
 
     </app-loading-circle>
     <app-message-content *ngIf="item.loaded"
+        [isDecoded]='item.isDecoded'
         [rowData]="rowData"
         [data]="item.data">
     </app-message-content>
