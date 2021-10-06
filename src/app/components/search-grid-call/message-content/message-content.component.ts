@@ -41,6 +41,9 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
 
     @ViewChild('matTabGroup', { static: false }) matTabGroup: MatTabGroup;
     @Input() rowData: any;
+    @Input() set isDecoded(val: boolean) {
+        this.cdr.detectChanges()
+    }
     @Input('data') set data(val) {
         this._data = val;
         // console.log('this._data', this._data);

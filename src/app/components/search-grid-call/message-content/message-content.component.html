@@ -1,4 +1,4 @@
-<app-webshark *ngIf="_data.frame_protocol; else baseContainer" [data]="_data.raw_source || _data.message">
+<app-webshark *ngIf="_data?.frame_protocol; else baseContainer" [data]="_data.raw_source || _data.message">
 </app-webshark>
 <ng-template #baseContainer>
   <mat-tab-group class="message-container" #matTabGroup (selectedTabChange)="onSelectedTab()">
