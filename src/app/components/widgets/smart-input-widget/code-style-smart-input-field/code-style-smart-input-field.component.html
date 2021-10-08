@@ -1,0 +1,47 @@
+<mat-label style="color: rgba(0, 0, 0, 0.54); font-size: 0.8em;">Smart Input</mat-label>
+<div class="smart-input-group div-container"
+  style="display: flex;">
+
+  <div ngDefaultControl
+    spellcheck="false"
+    name="divContainer"
+    contenteditable="true"
+    class="div-field"
+    (keyup)="onKeyUpDiv($event)"
+    (keydown)="onKeyDownDiv($event)"
+    style="flex-grow:1"
+    #divContainer>
+  </div>
+
+  <button class="history-icon"
+    (click)="getHistoryList()"
+    mat-icon-button
+    matTooltip="hot-key [ArrowUp]">
+    <mat-icon>history</mat-icon>
+  </button>
+
+  <div class="MY-matMenu"
+    [matMenuTriggerFor]="trigger"
+    style="position: absolute; top: 40px;"></div>
+
+  <mat-menu #trigger="matMenu">
+    <ng-container *ngIf="!popupList || popupList.length === 0; else menuList">
+      <p style="padding: 1rem">
+        <i style="color: #ccc;">History not yet</i>
+      </p>
+    </ng-container>
+    <ng-template #menuList>
+      <p class="menu-title"
+        *ngIf="menuTitle !== 'History'">{{menuTitle}}</p>
+      <button mat-menu-item
+        class="menu-item-button"
+        *ngFor="let item of popupList"
+        (click)="onMenuMessage(item)"
+        (keyup)="onMenuMessage(item, $event)">
+        <!-- {{ item }} -->
+        <div class="div-field menu-item"
+          [innerHTML]="setStyleCodeColors(item)"></div>
+      </button>
+    </ng-template>
+  </mat-menu>
+</div>

@@ -1,3 +1,4 @@
+import { CodeStyleSmartInputFieldComponent } from './components/widgets/smart-input-widget/code-style-smart-input-field/code-style-smart-input-field.component';
 import { AlertWidgetComponent } from './components/widgets/alert-widget/alert-widget.component';
 import { ColorChromeModule } from 'ngx-color/chrome'; // <color-chrome></color-chrome>
 import { SettingAlertWidgetComponent } from './components/widgets/alert-widget/setting-alert-widget.component';
@@ -61,8 +62,6 @@ import {
   AceEditorWidgetComponent,
   ClockWidgetComponent,
   CodeStylePrometheusFieldComponent,
-  CodeStyleSmartInputFieldComponent,
-  CodeProtoSelectorComponent,
   DialogAlarmComponent,
   DragDropListComponent,
   ChipsInputComponent,
@@ -200,6 +199,7 @@ import { TranslateLinkCompiler } from './helpers/translate-link-complier';
 import { TransactionGraphSettingsComponent } from './components/controls/transaction-graph-settings/transaction-graph-settings.component';
 import { CopyComponent } from './components/controls/copy/copy.component';
 import { CopyModule } from './components/controls/copy/copy.module';
+import { CodeProtoSelectorComponent } from './components/widgets/smart-input-widget/code-proto-selector/code-proto-selector.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
