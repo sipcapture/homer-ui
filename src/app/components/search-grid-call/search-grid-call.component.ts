@@ -1213,6 +1213,7 @@ doesExternalFilterPass(node) {
       headerColor: (isLOG ? 'black' : color) || '',
       mouseEventData: mouseEventData || row.data.mouseEventData,
       isBrowserWindow: arrowMetaData ? !!arrowMetaData.isBrowserWindow : false,
+      isDecoded: false
     };
     let _timestamp = {
       from: parseInt(moment(row.data.create_date).format('x'), 10) + this.limitRange.message_from, // - 1sec
@@ -1245,42 +1246,45 @@ doesExternalFilterPass(node) {
     /**
      *   (DECODED)
      */
-    const uuid = row?.data?.item?.uuid;
-    if (!isLOG && uuid) {
-      const _protocol_profile = row?.data?.profile || this.protocol_profile;
-      let timestamp = {
-        from: row.data.micro_ts + this.limitRange.message_from, // - 1sec
-        to: row.data.micro_ts + this.limitRange.message_to, // + 1sec
-      };
-      if (!timestamp.from || !timestamp.to) {
-        timestamp = this.config.timestamp;
-      }
-      const _is = name => !!_protocol_profile.match(name);
-      const request = {
-        param: {
-          ...Functions.cloneObject(this.config.param || { }),
-          ...{
-            location: row?.data?.node ? { node: [row.data.node] } : { },
-            search: {
-              [_protocol_profile]: {
-                uuid: [uuid],
-              }
-            },
-            transaction: {
-              call: _is('call'),
-              registration: _is('registration'),
-              rest: _is('default'),
-            }
-          }
-        },
-        timestamp
-      };
+
+     const uuid = row?.data?.item?.uuid || row?.data?.id;
+     if (!isLOG && uuid) {
+       const _protocol_profile = row?.data?.profile || this.protocol_profile;
+       let timestamp = {
+         from: row.data.micro_ts + this.limitRange.message_from, // - 1sec
+         to: row.data.micro_ts + this.limitRange.message_to, // + 1sec
+       };
+       if (!timestamp.from || !timestamp.to) {
+         timestamp = this.config.timestamp;
+       }
+       const _is = name => !!_protocol_profile.match(name);
+       const request = {
+         param: {
+           ...Functions.cloneObject(this.config.param || {}),
+           ...{
+             location: row?.data?.node ? { node: [row.data.node] } : {},
+             search: {
+               [_protocol_profile]: {
+                 uuid: [uuid],
+               }
+             },
+             transaction: {
+               call: _is('call'),
+               registration: _is('registration'),
+               rest: _is('default'),
+             }
+           }
+         },
+         timestamp
+       };
+ 
 
       if ((row.data?.dbnode || row.data?.node) && request.param.location?.node) {
         request.param.location.node = [row.data?.dbnode || row.data?.node];
       }
 
       this._scs.getDecodedData(request).toPromise().then(res => {
+
         const [objDecoded] = res?.data || [];
         if (objDecoded) {
           const { decoded } = objDecoded;
@@ -1288,6 +1292,7 @@ doesExternalFilterPass(node) {
           if (decoded) {
             const [_decoded] = decoded || [];
             mData.data.decoded = _decoded?._source?.layers || _decoded || decoded;
+            mData.isDecoded = true;
           }
         }
       }, err => { });

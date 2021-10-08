@@ -245,8 +245,6 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
     const shownHosts: any = isCombineByAlias ? this.hostsCA : this.hostsIPs;
     this.flowGridLines = Array.from({ length: shownHosts.length - 1 });
 
-    console.log('this.hosts', this.hosts, shownHosts, _arrayItems);
-
     const [lastHost] = shownHosts.slice(-1);
 
     _arrayItems.forEach((item) => {
@@ -324,7 +322,6 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
     const selected_hosts = sortHosts.map(
       i => hosts.find(j => [j.ip, j.host, j.alias].includes(i))
     )
-    console.log({ sortHosts, selected_hosts });
     return selected_hosts;
   }
   toggleLegend() {
