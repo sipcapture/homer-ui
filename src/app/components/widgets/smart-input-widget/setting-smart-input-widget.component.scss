@@ -1,16 +1,36 @@
 .chack-list {
-	margin-right: 1.3rem;
+  margin-right: 1.3rem;
 }
+
 .title {
-	margin: -1.5rem -1.5rem 2rem -1.5rem;
-	width: initial !important;
-	display: flex;
-	justify-content: space-between;
+  margin: -1.5rem -1.5rem 2rem -1.5rem;
+  width: initial !important;
+  display: flex;
+  justify-content: space-between;
 }
+
+.field-row-collection {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+}
+
+.c-box {
+  flex: 0;
+  min-width: 0rem;
+  margin: 1rem;
+}
+
 .example-container {
-	display: flex;
-	flex-direction: column;
-	& > * {
-		width: 100%;
-	}
+  display: flex;
+  flex-direction: column;
+
+  &>* {
+    width: 100%;
+  }
+}
+
+.float-right {
+  position: absolute;
+  right: -2rem;
 }
