@@ -1,71 +1,100 @@
 :host {
-	min-height: 500px;
+  min-height: 500px;
 }
+
 .chack-list {
-	margin-right: 1.3rem;
+  margin-right: 1.3rem;
 }
+
 .title {
-	margin: -1.5rem -1.5rem 2rem -1.5rem;
-	width: initial !important;
-	display: flex;
-	justify-content: space-between;
+  margin: -1.5rem -1.5rem 2rem -1.5rem;
+  width: initial !important;
+  display: flex;
+  justify-content: space-between;
 }
+
 .example-container-smart {
-	display: flex;
-	padding: 8px;
-	padding-top:0px;
-	& > * {
-		font-size: 10px;
-		line-height: 14px;
-		
-	}
+  display: grid;
+  grid-template-columns: 100%;
+  padding: 8px;
+  padding-top: 0px;
+
+  &>* {
+    font-size: 10px;
+    line-height: 14px;
+    width: calc(100% - 5px);
+  }
 }
+
+// .example-container {
+//   display: grid;
+//   grid-template-columns: 100%;
+//   padding: 10px;
+
+//   &>* {
+//       font-size: 13px;
+//       line-height: 13px;
+//       width: calc(100% - 5px);
+//   }
+// }
 .smartContainer {
-	width:100%;
+  width: 100%;
 }
+
 .hide {
-	display: none !important;
+  display: none !important;
 }
+
 .proto-buttons {
-	padding: 5px;
-	position: absolute;
-	bottom: 10px;
-	right: 10px;
-	& > button {
-		margin: 7px;
-		font-size: .65em;
-		text-transform: uppercase;
-		letter-spacing: 1px;
-		//color: #3f3f3f;
-	
-	}
+  padding: 5px;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+
+  &>button {
+    margin: 7px;
+    font-size: .65em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    //color: #3f3f3f;
+
+  }
 
 }
+
 .info-label {
-	display: inline-block;
-	position: absolute;
-	left: 0;
-	bottom: 0;
-	font-size: 12px;
-	color: #999;
-	background: #fff;
-	padding: 0.5rem 1rem;
-	border-radius: 4px;
-	z-index: -1;
+  display: inline-block;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  font-size: 12px;
+  color: #999;
+  background: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  z-index: -1;
 }
-.search-btn {color:white;}
-.clear-btn { color: #8a8a8a;}
+
+.search-btn {
+  color: white;
+}
+
+.clear-btn {
+  color: #8a8a8a;
+}
 
 .limit-selector {
-//	margin-bottom:6px;
-    margin-left:6px;
-   
-    color: grey;
-    height: 28px;
-    line-height: 26px;
-	font-size: 10px;
-	width:100px;
-	&.query{
-		width:65px
-	}
+  //	margin-bottom:6px;
+  margin-left: 6px;
+
+  color: grey;
+  height: 28px;
+  line-height: 26px;
+  font-size: 10px;
+  width: 100%;
+
+  &.query {
+    // width: 65px
+    width: 100%;
+  }
 }
