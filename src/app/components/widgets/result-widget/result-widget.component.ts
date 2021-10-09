@@ -62,8 +62,8 @@ export class ResultWidgetComponent implements IWidget, OnInit, AfterViewInit, On
     async ngOnInit() {
         this.title = this.id;
         WidgetArrayInstance[this.id] = this as IWidget;
-        this.isAutoRefrasher = !!this.dashboardService.loadWidgetParam(this.id, 'isAutoRefrasher');
-
+        const refresherFromService = this.dashboardService.loadWidgetParam(this.id, 'isAutoRefrasher')
+        this.isAutoRefrasher = refresherFromService !== null ? refresherFromService : this.isAutoRefrasher;
         if (this.dashboardService.dbs.currentDashboardType === 6) {
             this.source = 'tab';
         }

@@ -44,6 +44,8 @@ testem.log
 .DS_Store
 Thumbs.db
 
+package-lock.json
+
 #Env
 src/environments/environment.dev.ts
 src/environments/environment.prod.ts

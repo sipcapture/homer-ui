@@ -1,4 +1,4 @@
-<mat-toolbar class="dialog-title" color="primary">
+<mat-toolbar class="title" color="primary">
     <div>{{'LINK.settings' | translate}}</div>
     <button mat-icon-button (click)="onNoClick()">
       <fa-icon icon="times"></fa-icon>
@@ -58,7 +58,7 @@
           </mat-select>
         </mat-form-field>
   
-        <button mat-raised-button color="primary" (click)="addRecord()">{{'LINK.buttons.add' | translate}}</button>
+        <button mat-raised-button class="setting-btn-ok" (click)="addRecord()">{{'LINK.buttons.add' | translate}}</button>
       </div>
   
       <div>
@@ -90,11 +90,11 @@
               <fa-icon icon="edit"></fa-icon>
             </th>
             <td mat-cell *matCellDef="let element" style="text-align: right;">
-              <button mat-icon-button color="primary" aria-label="Delete"
+              <button mat-icon-button class="setting-btn-ok" aria-label="Delete"
                 (click)="deleteRecord(element.id)">
                 <fa-icon icon="trash-alt"></fa-icon>
               </button>
-              <button mat-icon-button color="primary" aria-label="Edit"
+              <button mat-icon-button class="setting-btn-ok" aria-label="Edit"
                 (click)="editRecord(element)">
                 <fa-icon icon="edit"></fa-icon>
               </button>
@@ -124,7 +124,7 @@
                     <mat-label>{{'widgets.clickhouseChart.settings.resolution' | translate}}</mat-label>
                     <input matInput type='number' class="resolution" [(ngModel)]="resolution" (ngModelChange)="onResolution()" [disabled]="autoMode">
                     <div matSuffix>S</div>
-                    <mat-checkbox matPrefix [(ngModel)]="autoMode" (ngModelChange)="onResolution()">{{ 'widgets.clickhouseChart.settings.autoMode' | translate }}</mat-checkbox>
+                    <mat-checkbox color="primary" matPrefix [(ngModel)]="autoMode" (ngModelChange)="onResolution()">{{ 'widgets.clickhouseChart.settings.autoMode' | translate }}</mat-checkbox>
                   </mat-form-field>
                 </div>
                 <mat-form-field appearance="fill" style="width: 100%;"><!-- Counter -->
@@ -203,6 +203,6 @@
   
   <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
     <button mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
-    <button mat-raised-button color="primary" [mat-dialog-close]="outputObject" cdkFocusInitial [disabled]='isInvalid'>{{'LINK.buttons.save' | translate}}</button>
+    <button mat-raised-button class="setting-btn-ok" [mat-dialog-close]="outputObject" cdkFocusInitial [disabled]='isInvalid'>{{'LINK.buttons.save' | translate}}</button>
   </div>
   

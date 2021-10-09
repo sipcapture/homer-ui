@@ -12,7 +12,7 @@
     #filterContainer>
     <mat-slide-toggle class="slide-toggle"
         *ngIf="isFlowTab"
-        color="warn"
+        color="primary"
         [(ngModel)]="isSimplify"
         (click)="doFilterMessages()">
         {{ isSimplify ? 'Extended Format' : 'Simple Format'}}
@@ -23,7 +23,7 @@
         [(ngModel)]="combineType"
         class="filter-radio-group"
         (change)="doFilterMessages()">
-        <mat-radio-button color="warn"
+        <mat-radio-button color="primary"
             class="filter-radio-button"
             *ngFor="let type of listCombineTypes | keyvalue; let idx = index"
             [disabled]="_isSingleIP && idx > 0"
@@ -41,7 +41,7 @@
                     <ng-container *ngFor="let item of checkboxListFilterPayloadType">
                         <mat-checkbox *ngIf="isMediaReportsTab ? item.title === 'RTP' || item.title === 'RTCP' : true"
                             class="example-margin checkbox-filter"
-                            color="warn"
+                            color="primary"
                             (click)="doFilterMessages()"
                             [(ngModel)]="item.selected">{{ item.title }}</mat-checkbox>
                     </ng-container>
@@ -55,7 +55,7 @@
                     <ng-container *ngFor="let item of checkboxListFilterAliases">
                         <mat-checkbox *ngIf="isMediaReportsTab ? item.title === 'RTP' || item.title === 'RTCP' : true"
                             class="example-margin checkbox-filter"
-                            color="warn"
+                            color="primary"
                             (click)="doFilterMessages('alias')"
                             [(ngModel)]="item.selected">{{ item.title }}</mat-checkbox>
                     </ng-container>
@@ -68,7 +68,7 @@
                 <div style="display: flex; flex-flow: wrap; max-width: 360px;">
                     <ng-container *ngFor="let item of checkboxListFilterIP">
                         <mat-checkbox class="example-margin checkbox-filter"
-                            color="warn"
+                            color="primary"
                             (click)="doFilterMessages('ip')"
                             [(ngModel)]="item.selected">
                             {{ item.title }}
@@ -83,7 +83,7 @@
 
                 <div class="checkbox-container">
                     <mat-checkbox class="example-margin checkbox-filter"
-                        color="warn"
+                        color="primary"
                         *ngFor="let item of checkboxListFilterCallId"
                         (click)="doFilterMessages()"
                         [(ngModel)]="item.selected">

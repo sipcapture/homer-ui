@@ -1,4 +1,4 @@
-import { AlertService } from '@app/services/alert.service';
+import { AlertService } from '@it-app/services/alert.service';
 import { PcapUploaderService } from './pcap-uploader.service';
 import { Component, Input, Output, EventEmitter, AfterViewInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { Widget } from '@app/helpers/widget';
@@ -41,7 +41,7 @@ export class PcapUploaderWidgetComponent implements IWidget, AfterViewInit {
         private cdr: ChangeDetectorRef,
         public alertService: AlertService,
        public translateService: TranslateService
-    ) {
+    ) { 
         translateService.addLangs(['en'])
         translateService.setDefaultLang('en')
     }
@@ -76,15 +76,16 @@ export class PcapUploaderWidgetComponent implements IWidget, AfterViewInit {
         this.inProgress = true;
         this.pcapUploaderService.postFile(this.fileToUpload, this.isDataTimeNow).subscribe(data => {
             this.inProgress = false;
-            this.translateService.get('notifications.success.fileUpload').subscribe(res => {
-                this.alertService.success(res);
-            })
+            this.alertService.success({
+                isTranslation: true, 
+                message: 'notifications.success.fileUpload'
+            });
             this.filename = '';
             this.cdr.detectChanges();
         }, error => {
             this.filename = '';
             this.inProgress = false;
-            // console.log(error);
+            console.log(error);
         });
     }
     openDialog(): void { }

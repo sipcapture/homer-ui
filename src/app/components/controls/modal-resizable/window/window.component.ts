@@ -9,7 +9,8 @@ import {
     Input,
     ChangeDetectionStrategy,
     ElementRef,
-    ChangeDetectorRef
+    ChangeDetectorRef,
+    SimpleChanges
 } from '@angular/core';
 
 @Component({
@@ -51,7 +52,9 @@ export class WindowComponent implements OnInit, OnDestroy {
     ) {
         this.winId = `win-id-${Math.random()}`;
     }
-
+    ngOnChanges(change: SimpleChanges) {
+        // console.log(change)
+    }
     ngOnInit() {
         if (this._isWindow) {
             this.setWindow();
@@ -61,7 +64,7 @@ export class WindowComponent implements OnInit, OnDestroy {
     openWindow() {
         const left = (screen.width - this.width) / 2;
         const top = (screen.height - this.height) / 4;
-
+        console.log(this.sharedUrl)
         return window.open(this.sharedUrl || '', this.winId,
             `toolbar=no,
             location=no,
@@ -99,6 +102,7 @@ export class WindowComponent implements OnInit, OnDestroy {
         }
 
         if (this.sharedUrl) {
+            console.log(this.objectData)
             this.externalWindow['objectData'] = this.objectData;
             this.externalWindow.onload = e => {
                 this.externalWindow.onbeforeunload = evt => {

@@ -1,3 +1,7 @@
+import { CodeStyleSmartInputFieldComponent } from './components/widgets/smart-input-widget/code-style-smart-input-field/code-style-smart-input-field.component';
+import { AlertWidgetComponent } from './components/widgets/alert-widget/alert-widget.component';
+import { ColorChromeModule } from 'ngx-color/chrome'; // <color-chrome></color-chrome>
+import { SettingAlertWidgetComponent } from './components/widgets/alert-widget/setting-alert-widget.component';
 import { TabQosModule } from './components/search-grid-call/detail-dialog/tab-qos/tab-qos.module';
 import { CustomAgGridModule } from './components/controls/custom-ag-grid/custom-ag-grid.module';
 import { WebsharkModule } from './components/controls/webshark/webshark.module';
@@ -58,8 +62,6 @@ import {
   AceEditorWidgetComponent,
   ClockWidgetComponent,
   CodeStylePrometheusFieldComponent,
-  CodeStyleSmartInputFieldComponent,
-  CodeProtoSelectorComponent,
   DialogAlarmComponent,
   DragDropListComponent,
   ChipsInputComponent,
@@ -115,7 +117,8 @@ import {
   PageUserSettingsComponent,
   PageUsersComponent,
   PageAdminComponent,
-  PageAliasComponent
+  PageAliasComponent,
+  PageApiDocComponent
 } from '@app/components/preference/pages';
 import {
   AddDashboardDialogComponent,
@@ -196,6 +199,7 @@ import { TranslateLinkCompiler } from './helpers/translate-link-complier';
 import { TransactionGraphSettingsComponent } from './components/controls/transaction-graph-settings/transaction-graph-settings.component';
 import { CopyComponent } from './components/controls/copy/copy.component';
 import { CopyModule } from './components/controls/copy/copy.module';
+import { CodeProtoSelectorComponent } from './components/widgets/smart-input-widget/code-proto-selector/code-proto-selector.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
@@ -295,6 +299,7 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     DialogExportComponent,
     DialogImportComponent,
     FullScreenComponent,
+    SettingAlertWidgetComponent,
 
 
     /**Cell types */
@@ -317,9 +322,11 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     PageAboutComponent,
     PageAdminComponent,
     PageAliasComponent,
+    PageApiDocComponent,
     LoadingCircleComponent,
     PageSystemOverviewComponent,
     TransactionGraphSettingsComponent,
+    AlertWidgetComponent
   ],
 
   imports: [
@@ -386,7 +393,8 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
         useClass: TranslateLinkCompiler,
         provide: TranslateCompiler
       }
-    })
+    }),
+    ColorChromeModule
   ],
   entryComponents: [
     MenuComponent,
@@ -435,12 +443,13 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     SettingResultWidgetComponent,
     SettingsAceEditorWidgetComponent,
     SettingSmartInputWidgetComponent,
-
+    AlertWidgetComponent,
     /** dashboard */
     AddDashboardDialogComponent,
     AddDialogComponent,
     DeleteDialogComponent,
     EditDialogComponent
+    // SettingAlertWidgetComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [

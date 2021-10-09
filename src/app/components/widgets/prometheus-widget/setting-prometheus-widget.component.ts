@@ -70,7 +70,7 @@ export class SettingPrometheusWidgetComponent {
                 data.dataquery.data.map((v, k) => ({
                     panel_queries: Functions.cloneObject(data.panel.queries[k]),
                     dataquery: Functions.cloneObject(v)
-                })).forEach(item => {
+                })).forEach((item: any) => {
                     this.prometheusQuery = item.dataquery.prometheusQuries;
                     this.dataSource.push({
                         id: item.panel_queries.name,
@@ -116,7 +116,7 @@ export class SettingPrometheusWidgetComponent {
             this.table.renderRows();
             this.updateResult();
         } else {
-            this.alertService.error('error: need select all');
+            this.alertService.error({message:'error: need select all'});
             setTimeout(() => {
                 this.alertService.hide();
             }, 5000);
@@ -125,7 +125,7 @@ export class SettingPrometheusWidgetComponent {
 
     editRecord(element: any) {
         const id = element.id;
-        this.selecedEditQuery = this.dataSource.find(item => item.id === id);
+        this.selecedEditQuery = this.dataSource.find((item: any) => item.id === id);
         if (!this.selecedEditQuery.detail) {
             this.selecedEditQuery.detail = {
                 prometheusLabels: [],
@@ -176,7 +176,7 @@ export class SettingPrometheusWidgetComponent {
     }
 
     deleteRecord(id: any) {
-        this.dataSource = this.dataSource.filter(item => item.id !== id);
+        this.dataSource = this.dataSource.filter((item: any) => item.id !== id);
         this.table.renderRows();
         this.updateResult();
     }

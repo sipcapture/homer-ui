@@ -15,7 +15,6 @@ import { BaseChartDirective, Label } from 'ng2-charts';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { IWidget } from '../IWidget';
-
 @Component({
     selector: 'app-clickhousechart-widget',
     templateUrl: './clickhousechart-widget.component.html',
@@ -177,7 +176,7 @@ export class ClickhouseChartWidgetComponent implements IWidget, OnInit, OnDestro
     generateLegend() {
         if (typeof this._chart !== 'undefined' && typeof this._chart.chart !== 'undefined') {
             this.legendItems = this._chart.chart.generateLegend();
-            this.legendItems.forEach(item => {
+            this.legendItems.forEach((item: any) => {
 
                 const wordRegex = "[a-zA-Z]+_*[a-zA-Z]*";
                 const functionRegex = new RegExp(`((count\\(${wordRegex}\\))|(avg\\(${wordRegex}\\))|(max\\(${wordRegex}\\))|(min\\(${wordRegex}\\))),\\s`);
@@ -204,7 +203,7 @@ export class ClickhouseChartWidgetComponent implements IWidget, OnInit, OnDestro
         this._chart.hideDataset(index, !hidden);
 
         /* if(!event.ctrlKey) { // Grafana-like legend behavior (normal click hides everything except click-target, ctrl-click hides the target), very high impact on performance
-            this.legendItems.forEach(item => {
+            this.legendItems.forEach((item: any) => {
                 if(item.datasetIndex !== index) {
                     this.legendItems[index].hidden = !item.hidden;
                     this._chart.hideDataset(item.datasetIndex, !item.hidden);
@@ -237,7 +236,7 @@ export class ClickhouseChartWidgetComponent implements IWidget, OnInit, OnDestro
                 this.config.title = result.chartTitle;
                 this.config.chart.type.value = result.chartType;
                 this.config.format.value = result.format;
-                this.config.dataquery.data = result.dataSource.map(item => {
+                this.config.dataquery.data = result.dataSource.map((item: any) => {
                     return {
                         timeColumn: item.detail.timeColumn,
                         resolution: item.detail.resolution,
@@ -251,7 +250,7 @@ export class ClickhouseChartWidgetComponent implements IWidget, OnInit, OnDestro
                         limit: item.detail.limit
                     };
                 });
-                this.config.panel.queries = result.dataSource.map(item => ({
+                this.config.panel.queries = result.dataSource.map((item: any) => ({
                     name: item.id,
                     type: {
                         name: item.panelDataSource,
@@ -288,7 +287,7 @@ export class ClickhouseChartWidgetComponent implements IWidget, OnInit, OnDestro
     querybuilder(config: any) {
         const dataquery: Array<any> = config.dataquery.data;
         const formattedQuery: Array<any> = [];
-        dataquery.forEach(item => {
+        dataquery.forEach((item: any) => {
             const timeRange = this._dtrs.getDatesForQuery();
             let operator = item.operator;
             if (item.counter) {
@@ -346,7 +345,7 @@ export class ClickhouseChartWidgetComponent implements IWidget, OnInit, OnDestro
                                 data: res.data,
                                 chartType: chartType
                             }),
-                            './workers/clickhouse.worker', this.id);
+                            '@app/workers/clickhouse.worker', this.id);
 
 
                         this.multiDataArr = this.multiDataArr.concat(s);
@@ -370,7 +369,7 @@ export class ClickhouseChartWidgetComponent implements IWidget, OnInit, OnDestro
                 chartType: chartType,
                 options: Functions.cloneObject(this.chartOptions)
             }),
-            './workers/clickhouse.worker');
+            '@app/workers/clickhouse.worker');
         // this.chartOptions = workerResults.options;
         this.chartLabels = workerResults.labels;
         chartType = workerResults.chartType;

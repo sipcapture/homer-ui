@@ -1,3 +1,5 @@
+import { agGridColors } from './../../models/ag-grid-colors.model';
+import { CallIDColor } from '@app/models/CallIDColor.model';
 import { GridController } from './grid-controller';
 import { FlowItemType } from '@app/models/flow-item-type.model';
 import { ColDef, GridOptions } from 'ag-grid-community';
@@ -188,6 +190,8 @@ export class SearchGridCallComponent
   private subscriptionRangeUpdateTimeout: Subscription;
   public subscriptionDashboardEvent: Subscription;
   private _latestQuery: string;
+  colorList = agGridColors.colors;
+  callIDColorList: Array<CallIDColor> = [];
   private dateFormat: DateFormat;
   copyData: string;
   copyTimeout;
@@ -466,15 +470,15 @@ export class SearchGridCallComponent
         const regexWithSlashes =   this.filterGridValue?.startsWith('/') &&  this.filterGridValue?.endsWith('/') &&  this.filterGridValue?.length > 2;
         const firstAsterisk = this.filterGridValue?.startsWith('*');
         const lastAsterisk = this.filterGridValue?.endsWith('*');
-        const cleanedUpFilter = regexWithSlashes ? this.filterGridValue.slice(1,-1) 
-                                                : firstAsterisk ? '.' + this.filterGridValue 
-                                                : lastAsterisk ? this.filterGridValue.replace(this.filterGridValue[this.filterGridValue.length -1], ".*") 
+        const cleanedUpFilter = regexWithSlashes ? this.filterGridValue.slice(1,-1)
+                                                : firstAsterisk ? '.' + this.filterGridValue
+                                                : lastAsterisk ? this.filterGridValue.replace(this.filterGridValue[this.filterGridValue.length -1], ".*")
                                                 : this.filterGridValue;
         this.filterRegex = new RegExp(cleanedUpFilter, 'i');
         this.filterCleaned = cleanedUpFilter;
         this.gridApi.onFilterChanged();
     }, 200);
-    }   
+    }
 
   chartChangeSettings(event) {
     if (this.inChartContainer) {
@@ -802,7 +806,7 @@ export class SearchGridCallComponent
     }
     return bool;
   }
-  isExternalFilterPresent() {        
+  isExternalFilterPresent() {
     const filterValue = this.context.componentParent.filterGridValue.toLowerCase().trim();
     return filterValue !== '';
 }
@@ -819,9 +823,9 @@ doesExternalFilterPass(node) {
         switch (item) {
             case 'status':
                 return regex.test(node.data[item]?.toString()?.toLowerCase()) || regex.test(statusFormDefaults.find(({ value }) => value === node?.data?.[item]).name.toLowerCase());
-            case 'destination_ip': 
+            case 'destination_ip':
                 return regex.test(node.data.aliasDst?.toString().toLowerCase()) || regex.test(node.data[item]?.toLowerCase());
-            case 'source_ip': 
+            case 'source_ip':
                 return regex.test(node.data.aliasSrc?.toString().toLowerCase()) || regex.test(node.data[item]?.toLowerCase());
             case 'mos': {
                 return regex.test((node.data[item] / 100).toString()) || regex.test(node.data[item].toString());
@@ -837,7 +841,7 @@ doesExternalFilterPass(node) {
                 return regex.test(node.data[item]?.toString()?.toLowerCase());
         }
     });
-    
+
 }
   public update(isImportant = false) {
 
@@ -987,10 +991,27 @@ doesExternalFilterPass(node) {
   }
 
   private getBkgColorTable(params) {
+    const param = Functions.cloneObject(params);
+    let index = 0;
+    if (params.rowIndex >= this.colorList.length) {
+      const multiplier = (param.rowIndex / this.colorList.length);
+      const remainder = param.rowIndex % Math.round(multiplier);
+
+      index = params.rowIndex % this.colorList.length;
+    } else {
+      index = param.rowIndex;
+    }
+    const color = this.colorList[index];
+    const formattedColor: CallIDColor = {
+      callID: param?.data?.callid,
+      backgroundColor: `hsla(${color?.hue || 0}, ${color?.saturation || 60}%, ${color?.lightness || 80}%, ${color?.alpha || 0.8})`,
+      decompiledColor: color,
+      textColor: `hsla(${(color?.hue + 180) || 180}, 100%, 15%, 1)`,
+    }
+    this.callIDColorList.push(formattedColor);
     return {
       'background-color': this.isLokiQuery ?
-        '#fff' :
-        Functions.getColorByString(params.data.callid, 60, 80, 0.8)
+        '#fff' : formattedColor?.backgroundColor || '#f40'
     };
   }
 
@@ -1192,6 +1213,7 @@ doesExternalFilterPass(node) {
       headerColor: (isLOG ? 'black' : color) || '',
       mouseEventData: mouseEventData || row.data.mouseEventData,
       isBrowserWindow: arrowMetaData ? !!arrowMetaData.isBrowserWindow : false,
+      isDecoded: false
     };
     let _timestamp = {
       from: parseInt(moment(row.data.create_date).format('x'), 10) + this.limitRange.message_from, // - 1sec
@@ -1224,42 +1246,45 @@ doesExternalFilterPass(node) {
     /**
      *   (DECODED)
      */
-    const uuid = row?.data?.item?.uuid;
-    if (!isLOG && uuid) {
-      const _protocol_profile = row?.data?.profile || this.protocol_profile;
-      let timestamp = {
-        from: row.data.micro_ts + this.limitRange.message_from, // - 1sec
-        to: row.data.micro_ts + this.limitRange.message_to, // + 1sec
-      };
-      if (!timestamp.from || !timestamp.to) {
-        timestamp = this.config.timestamp;
-      }
-      const _is = name => !!_protocol_profile.match(name);
-      const request = {
-        param: {
-          ...Functions.cloneObject(this.config.param || { }),
-          ...{
-            location: row?.data?.node ? { node: [row.data.node] } : { },
-            search: {
-              [_protocol_profile]: {
-                uuid: [uuid],
-              }
-            },
-            transaction: {
-              call: _is('call'),
-              registration: _is('registration'),
-              rest: _is('default'),
-            }
-          }
-        },
-        timestamp
-      };
+
+     const uuid = row?.data?.item?.uuid || row?.data?.id;
+     if (!isLOG && uuid) {
+       const _protocol_profile = row?.data?.profile || this.protocol_profile;
+       let timestamp = {
+         from: row.data.micro_ts + this.limitRange.message_from, // - 1sec
+         to: row.data.micro_ts + this.limitRange.message_to, // + 1sec
+       };
+       if (!timestamp.from || !timestamp.to) {
+         timestamp = this.config.timestamp;
+       }
+       const _is = name => !!_protocol_profile.match(name);
+       const request = {
+         param: {
+           ...Functions.cloneObject(this.config.param || {}),
+           ...{
+             location: row?.data?.node ? { node: [row.data.node] } : {},
+             search: {
+               [_protocol_profile]: {
+                 uuid: [uuid],
+               }
+             },
+             transaction: {
+               call: _is('call'),
+               registration: _is('registration'),
+               rest: _is('default'),
+             }
+           }
+         },
+         timestamp
+       };
+ 
 
       if ((row.data?.dbnode || row.data?.node) && request.param.location?.node) {
         request.param.location.node = [row.data?.dbnode || row.data?.node];
       }
 
       this._scs.getDecodedData(request).toPromise().then(res => {
+
         const [objDecoded] = res?.data || [];
         if (objDecoded) {
           const { decoded } = objDecoded;
@@ -1267,6 +1292,7 @@ doesExternalFilterPass(node) {
           if (decoded) {
             const [_decoded] = decoded || [];
             mData.data.decoded = _decoded?._source?.layers || _decoded || decoded;
+            mData.isDecoded = true;
           }
         }
       }, err => { });

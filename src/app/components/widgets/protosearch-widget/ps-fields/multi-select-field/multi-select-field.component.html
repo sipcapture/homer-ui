@@ -1,0 +1,68 @@
+<!-- <form class="example-form"> -->
+<div style="position: relative;">
+  <mat-form-field [style.width.%]="100"
+    appearance="legacy">
+    <div style="width: calc(100% - 100px);">
+      <div class="field-sticky color"
+        style="flex: 0;">
+        <ng-container *ngFor="let item of collection; let idx = index">
+          <span class="label"
+            *ngIf="item.type === 'label'"
+            [matMenuTriggerFor]="menu">
+            {{ item.value }}
+            <button mat-button-icon
+              class="close"
+              (click)="deleteChip(item)">
+              <mat-icon>close</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu"
+              yPosition="above">
+              <button mat-menu-item
+                *ngFor="let bool of [NOT,EQUAL]"
+                (click)="changeLogicChip(idx, bool)">{{bool}}</button>
+              <!-- <button mat-icon-button
+              (click)="deleteChip(item)">{{EQUAL}}</button> -->
+            </mat-menu>
+          </span>
+
+          <span class="bool {{ checkClassCss[item.value] }}"
+            *ngIf="item.type === 'bool'"
+            [matMenuTriggerFor]="menu">
+            {{ item.value }}
+            <mat-menu #menu="matMenu"
+              yPosition="above">
+              <button mat-icon-button
+                *ngFor="let bool of [NOT]"
+                (click)="item.value = bool; emit()">{{bool}}</button>
+
+              <button mat-menu-item
+                (click)="deleteChip(item)">{{EQUAL}}</button>
+            </mat-menu>
+          </span>
+        </ng-container>
+      </div>
+      <input matInput
+        style="flex: 1;"
+        type="text"
+        class="field-sticky"
+        [placeholder]="placeholder"
+        (click)="openPanel()"
+        [formControl]="myControl"
+        [matAutocomplete]="auto"
+        (keyup)="onKeyUpFilterTree($event)">
+    </div>
+    <mat-autocomplete #auto="matAutocomplete"
+      (optionSelected)="openPanel();acClick()">
+      <mat-option *ngFor="let option of filteredOptions  | async"
+        [value]="checkText(myControl.value, option.value)"
+        class="option">
+        {{ option.value }}
+      </mat-option>
+    </mat-autocomplete>
+
+  </mat-form-field>
+  <div class="additional-content">
+    <ng-content></ng-content>
+  </div>
+</div>
+<!-- </form> -->

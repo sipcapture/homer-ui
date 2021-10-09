@@ -1,34 +1,132 @@
-<mat-toolbar class="dialog-title" color="primary">
+<mat-toolbar class="title"
+  color="primary">
   <div>{{'LINK.settings' | translate}}</div>
-  <button mat-icon-button (click)="onNoClick()">
+  <button mat-icon-button
+    (click)="onNoClick()">
     <fa-icon icon="times"></fa-icon>
   </button>
 </mat-toolbar>
 
-<div mat-dialog-content>
+<div mat-dialog-content
+  style="overflow: hidden">
   <div class="example-container">
+    <!-- TITLE -->
     <mat-form-field>
       <mat-label>{{ 'widgets.smartInput.settings.title' | translate }}</mat-label>
-      <input matInput [(ngModel)]="resultConfig.title" (keydown)="onChange()" (ngModelChange)='validate($event)'>
+      <input matInput
+        [(ngModel)]="resultConfig.title"
+        (keydown)="onChange()"
+        (ngModelChange)='validate($event)'>
     </mat-form-field>
+
+    <!-- is Button -->
+    <mat-checkbox [(ngModel)]="resultConfig.isButton"
+      color="primary"
+      labelPosition="before"
+      (click)="onChange()"
+      [checked]="true">Search Button</mat-checkbox>
+
+    <!-- COUNT FIELD COLUMNS -->
     <mat-form-field>
-      <mat-label>Proto</mat-label>
-      <mat-select
-          [compareWith]="compareProto"
+      <mat-label>{{ 'widgets.protosearch.settings.columns' | translate }}</mat-label>
+      <input matInput
+        [(ngModel)]="resultConfig.countFieldColumns"
+        type="number"
+        (keydown)="onChange()">
+    </mat-form-field>
+    <!-- PROTO -->
+    <div class="field-row-collection">
+      <mat-form-field style="flex: 1;">
+        <mat-label>Proto</mat-label>
+        <mat-select [compareWith]="compareProto"
           [(ngModel)]="proto"
           (valueChange)="onChange()"
           (selectionChange)="onChange()"
-        name="hep_alias"
-        ngDefaultControl>
-        <mat-option *ngFor="let protoItem of mappingSortedData" [value]="protoItem">
-          {{protoItem.hep_alias}} - {{protoItem.profile}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+          name="hep_alias"
+          ngDefaultControl>
+          <mat-option *ngFor="let protoItem of mappingSortedData"
+            [value]="protoItem">
+            {{protoItem.hep_alias}} - {{protoItem.profile}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-checkbox class="c-box"
+        labelPosition="after"
+        color="primary"
+        (change)="onChange()"
+        [(ngModel)]="proto.shown"
+        matTooltip="show/hide this field on widget panel"></mat-checkbox>
+    </div>
+
+    <!-- QUERY LIMIT -->
+    <div class="field-row-collection">
+      <mat-form-field style="flex: 1;">
+        <mat-label>Query limit</mat-label>
+        <input matInput
+          [(ngModel)]="field_limit.value"
+          (keydown)="onChange()"
+          (ngModelChange)='validate($event)'>
+      </mat-form-field>
+      <mat-checkbox class="c-box"
+        labelPosition="after"
+        color="primary"
+        (change)="onChange()"
+        [(ngModel)]="field_limit.shown"
+        matTooltip="show/hide this field on widget panel"></mat-checkbox>
+    </div>
+    <!-- RESULT CONTAINER SELECTOR-->
+    <div class="field-row-collection">
+      <!-- <mat-form-field style="flex: 1;">
+        <mat-label>Result Container</mat-label>
+        <mat-select multiple
+          [compareWith]="compareResultListItem"
+          [formControl]="targetResultsContainerValue"
+          (valueChange)="onChange()"
+          (selectionChange)="onChange()"
+          name="ResultContainer"
+          ngDefaultControl>
+          <mat-option *ngFor="let listItem of data.widgetResultList"
+            [value]="listItem">
+            {{listItem.type === 'widget' ? 'widget: ' : ''}} {{listItem.title}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field> -->
+      <!--  -->
+      <mat-form-field style="flex: 1;">
+        <mat-label>Result Container</mat-label>
+        <mat-select multiple
+          [formControl]="targetResultsContainerValue"
+          [compareWith]="compareResultListItem"
+          (selectionChange)="onChange()"
+          name="targetResultsContainer"
+          ngDefaultControl>
+          <mat-option *ngFor="let listItem of data.widgetResultList"
+            [value]="listItem">
+            {{listItem.type === 'widget' ? 'widget: ' : ''}} {{listItem.title}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-checkbox class="c-box"
+        color="primary"
+        [(ngModel)]="field_targetResultsContainer.shown"
+        labelPosition="after"
+        (change)="onChange()"
+        matTooltip="show/hide this field on widget panel"></mat-checkbox>
+    </div>
+
   </div>
 </div>
 
-<div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
-  <button mat-raised-button class="clear-btn" (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
-  <button mat-raised-button class="search-btn" [mat-dialog-close]="resultConfig" cdkFocusInitial [disabled]='isInvalid'>{{'LINK.buttons.save' | translate}}</button>
-</div> 
+<div mat-dialog-actions
+  style="float: right; margin-bottom: 0rem;">
+  <button mat-raised-button
+    class="clear-btn"
+    (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
+  <button mat-raised-button
+    class="search-btn"
+    [mat-dialog-close]="resultConfig"
+    cdkFocusInitial
+    [disabled]='isInvalid'>{{'LINK.buttons.save' | translate}}</button>
+</div>

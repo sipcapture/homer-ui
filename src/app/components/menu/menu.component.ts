@@ -153,25 +153,8 @@ export class MenuComponent implements OnInit, OnDestroy {
                     this.updateTabList();
                 }
             });
-        this.validateUser();
-        // console.log((<any>data).methods);
     }
-    async validateUser() {
-        const guid = this.currentUser.scope;
-        this._pus.getAll().toPromise().then(result => {
-            const currentUser = result.data.find(user => user.guid === guid);
-            const isAdmin = currentUser.usergroup === 'admin' || currentUser.usergroup === 'admins' || currentUser.usergroup === 'Admin';
-            const username = currentUser.username;
-            if (isAdmin !== this.currentUser.user.admin || username !== this.currentUser.user.username) {
-                setTimeout(() => {
-                    this.logout();
-                    this.translateService.get('notifications.warning.userChanged').subscribe(res => { 
-                        this.alertService.warning(res);   
-                    })
-                }, 2000);
-            }
-        });
-    }
+
     async ngOnInit() {
         const wArr = widgets; /* hack for init all widget on prodaction mode - DON'T REMOVE IT!!!! */
         await this.getFormat();

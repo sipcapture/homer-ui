@@ -1,9 +1,12 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, ElementRef, ViewChild, Injectable } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { AlertService } from '@services'
+
+import { AlertService } from './../../../services';
 import { TranslateService } from '@ngx-translate/core'
 import { AlertOverlayService } from './alert-overlay.service';
 import { AlertOverlayRef } from './alert-ref';
+
+
 
 @Component({
     selector: 'alert',
@@ -28,8 +31,8 @@ export class AlertSourceComponent implements OnInit, OnDestroy {
         translateService.setDefaultLang('en')
     }
     ngOnInit() {
-        this.subscription = this.alertService.getMessage().subscribe(message => {
-            if (Object.keys(message).length === 0 || message.text === '' ) {
+        this.subscription = this.alertService.getMessage().subscribe((message: any | null) => {
+            if (!message || message?.text === '') {
                 return;
             }
             this.dialogRef = this.alertOverlay.open({
@@ -43,7 +46,7 @@ export class AlertSourceComponent implements OnInit, OnDestroy {
             this.message = message;
             this.cdr.detectChanges();
         });
-    }    
+    }
     ngOnDestroy() {
         this.subscription.unsubscribe();
     }

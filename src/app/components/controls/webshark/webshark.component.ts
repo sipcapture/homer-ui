@@ -47,7 +47,7 @@ export class WebsharkComponent implements OnInit, AfterViewInit {
 
     @Input() set sipDataItem(val: any) {
         this.rowData = val.data.messages.map(msg => msg.source_data);
-        // console.log('Webshark::sipDataItem', { val: this.rowData });
+
     }
     get sipDataItem(): any {
         return {};
@@ -305,7 +305,7 @@ export class WebsharkComponent implements OnInit, AfterViewInit {
     }
 
     showMessage(event) {
-        // console.log('click'/*, event.row?.item?.data*/);
+
         const d = event.row?.item?.message || event.row?.item?.raw_source;
         if (d) {
             this.data = d;
@@ -350,5 +350,8 @@ export class WebsharkComponent implements OnInit, AfterViewInit {
         const data = event?.row?.item;
         data.uniqueId = Functions.md5object(data);
         this.dblclick.emit({data});
+    }
+    ngOnDestroy() {
+        this.tooltipService.hide();
     }
 }

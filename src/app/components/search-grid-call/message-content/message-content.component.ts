@@ -8,7 +8,6 @@ import jwt_decode from 'jwt-decode';
 import { AlertService } from '@app/services/alert.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DateFormat, TimeFormattingService } from '@app/services/time-formatting.service';
-import { CopyService } from '@app/services/copy.service';
 
 const parsip = _parsip;
 const moment = _moment;
@@ -26,7 +25,6 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
     type;
     raw_isJSON = false;
     labelList = {};
-    copyData;
     private _interval: any;
     _pt: any;
     tableObj = {};
@@ -43,6 +41,9 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
 
     @ViewChild('matTabGroup', { static: false }) matTabGroup: MatTabGroup;
     @Input() rowData: any;
+    @Input() set isDecoded(val: boolean) {
+        this.cdr.detectChanges()
+    }
     @Input('data') set data(val) {
         this._data = val;
         // console.log('this._data', this._data);
@@ -128,7 +129,6 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
         if (typeof this.raw === 'string') {
             this.raw = Functions.JSON_parse(this.raw) || Functions.JSON_parse(this._data.raw_source) || this.raw;
         }
-        this.copyData = typeof this.data.raw_source !== 'undefined' ? this.data.raw_source : JSON.stringify(this.data.raw);
         this.raw_isJSON = typeof this.raw !== 'string';
 
         // console.log('this.raw, this.raw_isJSON', this.raw, this.raw_isJSON, JSON.parse(this.raw));
@@ -141,8 +141,7 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
         private cdr: ChangeDetectorRef,
         private _tfs: TimeFormattingService,
         public alertService: AlertService,
-        public translateService: TranslateService,
-        private copyService: CopyService
+        public translateService: TranslateService
 
     ) { }
 
@@ -175,20 +174,6 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
         }
     }
 
-    copy(rawData, isObject = false) {
-        this.translateService.get('notifications.success.messageCopy').subscribe(alert => {
-            // console.log(alert);
-            if (this.raw_isJSON || isObject) {
-                const message = JSON.stringify(rawData, null, 4);
-                this.copyService.copy(message, alert);
-
-            } else {
-                this.copyService.copy(this.copyData, alert);
-            }
-        });
-
-
-    }
     onSelectedTab() {
         const tabs = this.matTabGroup._tabs['_results'].reduce((a, b) => {
             return { ...a, [b.isActive]: b.textLabel };
@@ -208,7 +193,6 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
 
         };
 
-        this.copyData = tabsInfo[actualTab];
 
     }
     objString(s) {

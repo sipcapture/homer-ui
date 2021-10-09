@@ -12,6 +12,7 @@ export interface User {
     token?: string;
     user?: {
         admin: boolean;
+        force_password: boolean;
         username: string;
     }
 }

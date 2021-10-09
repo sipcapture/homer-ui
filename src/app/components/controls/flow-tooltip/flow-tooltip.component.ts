@@ -59,7 +59,7 @@ export class FlowTooltipComponent implements OnInit, OnDestroy {
             this.onMouseMove(evt);
         })
         this.subscription = this.tooltipService.getMessage().subscribe(message => {
-            this.isMessage = Object.keys(message).length !== 0;
+            this.isMessage = !!message;
             if (typeof message === 'string') {
                 this.type = 'string';
             

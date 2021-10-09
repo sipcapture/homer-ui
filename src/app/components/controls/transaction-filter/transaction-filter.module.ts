@@ -13,21 +13,22 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 @NgModule({
-    imports: [
-        CommonModule,
-        MatRadioModule,
-        MatSlideToggleModule,
-        MatExpansionModule,
-        MatCheckboxModule,
-        FontAwesomeModule,
-        MatButtonModule,
-        FormsModule
-    ],
-    declarations: [TransactionFilterComponent],
-    exports: [TransactionFilterComponent]
+  imports: [
+    CommonModule,
+    MatRadioModule,
+    MatSlideToggleModule,
+    MatExpansionModule,
+    MatCheckboxModule,
+    FontAwesomeModule,
+    MatButtonModule,
+    FormsModule
+  ],
+  declarations: [TransactionFilterComponent],
+  exports: [TransactionFilterComponent],
+  providers: [TransactionFilterService]
 })
 export class TransactionFilterModule {
-    constructor(library: FaIconLibrary) {
-        library.addIconPacks(fas, fab, far);
-    }
+  constructor(library: FaIconLibrary) {
+    library.addIconPacks(fas, fab, far);
+  }
 }

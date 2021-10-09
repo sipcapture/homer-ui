@@ -5,8 +5,8 @@ import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, Change
 import { TranslateService } from '@ngx-translate/core';
 import { ChartType, ChartDataSets } from 'chart.js';
 import { Label } from 'ng2-charts';
-import { StatisticService } from '@services/statistic.service';
-import { DateTimeRangeService, DateTimeTick, Timestamp } from '@services';
+import { StatisticService } from '../../../services/statistic.service';
+import { DateTimeRangeService, DateTimeTick, Timestamp } from '../../../services/data-time-range.service';
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
 import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
@@ -122,7 +122,7 @@ export class InfluxdbchartWidgetComponent implements IWidget {
     querybuilder(config: any) {
         const dataquery: Array<any> = config.dataquery.data;
         const formattedQuery: Array<any> = [];
-        dataquery.forEach(item => {
+        dataquery.forEach((item: any) => {
             formattedQuery.push({
                 main: item.main.value + '', // "cpu",
                 database: `"${item.database.name}"`, // "\"homer\"",
@@ -253,7 +253,7 @@ export class InfluxdbchartWidgetComponent implements IWidget {
         }, {});
 
         this.chartLabels = data
-            .map(item => moment(item.reporttime * 1000).format('HH:mm'))
+            .map((item: any) => moment(item.reporttime * 1000).format('HH:mm'))
             .filter((i, k, a) => i !== a[k + 1]);
 
         let fillKey = 0;
@@ -298,7 +298,7 @@ export class InfluxdbchartWidgetComponent implements IWidget {
         this.config.title = result.chartTitle;
         this.config.chart.type.value = result.chartType;
         this.config.format.value = result.format;
-        this.config.dataquery.data = result.dataSource.map(item => ({
+        this.config.dataquery.data = result.dataSource.map((item: any) => ({
             sum: item.detail.sum,
             main: {
                 name: item.detail.measurement,
@@ -314,7 +314,7 @@ export class InfluxdbchartWidgetComponent implements IWidget {
             })),
             raw: item.detail.raw || '',
         }));
-        this.config.panel.queries = result.dataSource.map(item => ({
+        this.config.panel.queries = result.dataSource.map((item: any) => ({
             name: item.id,
             type: {
                 name: item.panelDataSource,

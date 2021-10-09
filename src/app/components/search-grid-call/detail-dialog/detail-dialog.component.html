@@ -25,6 +25,7 @@
 
         <app-filter [hidden]="!isFilterIcon()"
             [dataItem]="sipDataItem"
+            [callIDColorList]='callIDColorList'
             [type]="tabStringIndex">
         </app-filter>
 
@@ -61,14 +62,16 @@
                     <app-tab-flow
                         [callid]="titleId"
                         (ready)="showLoader=false"
+                        [callIDColorList]='callIDColorList'
                         [dataItem]="sipDataItem"></app-tab-flow>
                 </ng-template>
-   
+
                 <ng-template ngSwitchCase="Session Info">
                     <app-tab-callinfo [dataItem]="sipDataItem.data"
+                    [callIDColorList]='callIDColorList'
                         (ready)="showLoader=false"></app-tab-callinfo>
                 </ng-template>
-              
+
                 <ng-template ngSwitchCase="QoS">
                     <app-tab-qos [callid]="titleId" [dataItem]="sipDataItem?.data" [qosData]="_qosData" [id]="IdFromCallID"
                         (haveData)="onTabQos($event)"
@@ -106,6 +109,7 @@
                             <app-tab-flow [callid]="titleId"
                                 [dataItem]="sipDataItem"
                                 [exportAsPNG]="exportAsPNG"
+                                [callIDColorList]='callIDColorList'
                                 (pngReady)="exportAsPNG=false">
                             </app-tab-flow>
                         </div>
