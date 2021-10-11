@@ -22,12 +22,12 @@
 
   <div class="MY-matMenu"
     [matMenuTriggerFor]="trigger"
-    style="position: absolute; top: 40px;"></div>
+    style="position: absolute; top: 62px;"></div>
 
   <mat-menu #trigger="matMenu">
     <ng-container *ngIf="!popupList || popupList.length === 0; else menuList">
       <p style="padding: 1rem">
-        <i style="color: #ccc;">History not yet</i>
+        <i style="color: #ccc;">No history yet</i>
       </p>
     </ng-container>
     <ng-template #menuList>
