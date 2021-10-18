@@ -632,7 +632,9 @@ export class TransactionServiceProcessor {
         }
       };
       return outDataItem;
-    }).map(i => (i.__item__index__ = i.messageData.uniqueId = Functions.md5object(i), i));
+    })
+      .filter(i => i.callid)
+      .map(i => (i.__item__index__ = i.messageData.uniqueId = Functions.md5object(i), i));
   }
   stylingRowText(raw: string) {
     if (!raw) {
