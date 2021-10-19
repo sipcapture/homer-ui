@@ -1,3 +1,4 @@
+import { environment } from '@environments/environment';
 import { Md5 } from 'ts-md5/dist/md5';
 
 import * as moment from 'moment';
@@ -50,7 +51,7 @@ class Functions {
       '35': 'RTP-FULL-R',
       '100': 'LOG',
       '1000': 'JSON-DYN',
-    }[payload] || 'HEP-' + payload;
+    }[payload] || 'HEP-' + (payload || '*');
   }
   static tosCheck(tos: number) {
 
@@ -192,7 +193,7 @@ export class TransactionServiceProcessor {
       }, {});
 
     alias = Object.assign({}, ipaliasesAggrigated, aliasNonIps);
-    const fullCallData = messages.map((messageItem: any) => {
+    let fullCallData = messages.map((messageItem: any) => {
       const callDataItem = calldata.find((j: any) => {
         return j.create_date === messageItem.create_date && j.id === messageItem.id;
       });
@@ -239,6 +240,13 @@ export class TransactionServiceProcessor {
         } catch (_) { }
       });
     });
+    if (environment?.isHomerAPI) {
+      fullCallData = fullCallData.filter(i =>
+        !(i.proto === 'rtcp' && i.typeItem === FlowItemType.SIP) &&
+        !(i.proto === 'log' && i.typeItem === FlowItemType.SIP)
+      );
+      console.log({fullCallData})
+    }
     const getAliasByIp = ip => this.getAliasByIp(ip, alias);
     let fullHosts = Object.values(hosts).map((m: any) => {
 
@@ -632,9 +640,7 @@ export class TransactionServiceProcessor {
         }
       };
       return outDataItem;
-    })
-      .filter(i => i.callid)
-      .map(i => (i.__item__index__ = i.messageData.uniqueId = Functions.md5object(i), i));
+    }).map(i => (i.__item__index__ = i.messageData.uniqueId = Functions.md5object(i), i));
   }
   stylingRowText(raw: string) {
     if (!raw) {

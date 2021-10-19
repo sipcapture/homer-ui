@@ -322,7 +322,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
     const selected_hosts = sortHosts.map(
       i => hosts.find(j => [j.ip, j.host, j.alias].includes(i))
     )
-    return selected_hosts;
+    return selected_hosts.filter(host => !!host);
   }
   toggleLegend() {
     this.hidden = !this.hidden;
@@ -354,23 +354,29 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
         }
       }
     })
-    this.hostsCA = aggregatedHosts.filter(h => !h.invisible);
+    this.hostsCA = aggregatedHosts.filter(h => !!h && !h.invisible);
   }
   getHostPosition(ip, port, alias) {
     ip = ip.replace(/\[|\]/g, '');
     const hosts = this._isCombineByAlias ? this.hostsCA : this.hostsIPs;
-    return hosts?.findIndex(host =>
-      this._isCombineByAlias ?
-        (
-          host.alias && alias ?
-            host.alias === alias :
-            host.ip === ip
-        ) : (
-          this.isSimplifyPort ?
-            host.ip === ip :
-            host.ip === ip && host.port * 1 === port * 1
-        )
-    );
+    return hosts.filter(i => !!i)?.findIndex(host => {
+      try {
+
+        return this._isCombineByAlias ?
+          (
+            host.alias && alias ?
+              host.alias === alias :
+              host.ip === ip
+          ) : (
+            this.isSimplifyPort ?
+              host.ip === ip :
+              host.ip === ip && (host.port * 1 === port * 1 || !port)
+          )
+
+      } catch (err) {
+        throw host;
+      }
+    });
   }
 
   ngAfterViewInit() {
