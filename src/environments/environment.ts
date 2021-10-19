@@ -12,7 +12,7 @@ export const environment = {
   production: false,
   environment: VERSION,
   isHomerAPI: true,
-  apiUrl: window.location.protocol + '//' + (window.location.host) + '/api/v3'
+  apiUrl: location.protocol + '//' + (location.host) + '/api/v3'
 
 };
 
