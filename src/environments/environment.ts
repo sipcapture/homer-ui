@@ -11,6 +11,7 @@ import { VERSION } from '../VERSION';
 export const environment = {
   production: false,
   environment: VERSION,
+  isHomerAPI: true,
   apiUrl: window.location.protocol + '//' + (window.location.host) + '/api/v3'
 
 };
