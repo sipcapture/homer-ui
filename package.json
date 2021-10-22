@@ -4,11 +4,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 80",
-    "dev": "ng serve --configuration=development --port=80",
-    "webapp": "ng serve --configuration=development --port=8099",
-    "build": "ng build --prod && gzip -9 ./dist/homer-ui/*.js",
+    "dev": "ng serve --configuration=development --port=80 --disable-host-check",
+    "webapp": "ng serve --host 0.0.0.0 --configuration=development --port=8099 --disable-host-check",
+    "build": "ng build --configuration=production && gzip -9 ./dist/homer-ui/*.js",
     "build-noenv": "ng build --configuration=production-noenv",
-    "build-keep-js": "ng build --prod && gzip -9 -k ./dist/homer-ui/*.js",
+    "build-keep-js": "ng build --configuration=production && gzip -9 -k ./dist/homer-ui/*.js",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
