@@ -13,7 +13,8 @@ import {
     OnDestroy,
     ChangeDetectionStrategy
 } from '@angular/core';
-
+import { WindowService } from '@app/services/window.service';
+import * as moment from 'moment';
 @Component({
     selector: 'app-modal-resizable',
     templateUrl: './modal-resizable.component.html',
@@ -55,6 +56,7 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
         return this._objectData;
     }
     @Input() title: string;
+    @Input() id: string;
     @Input() set headerColor (val: string) {
         this._headerColor = val;
         this.cdr.detectChanges();
@@ -84,12 +86,15 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
 
     constructor(
         private messageDetailsService: MessageDetailsService,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private windowService: WindowService
     ) {
         this.cdr.detach();
     }
 
+
     ngOnInit() {
+        this.windowService.windowList.set(this.id, moment().unix())
         this.cdr.detectChanges();
     }
 
@@ -153,15 +158,23 @@ export class ModalResizableComponent implements OnInit, AfterViewInit, OnDestroy
         el.style.transform = `translate3d(${positionLocal.x}px, ${positionLocal.y}px, 0px)`;
     }
     onClose() {
-        this.close.emit({});
-        this.cdr.detectChanges();
+        if (this.id === this.windowService.currentWindow) {
+            this.windowService.close(this.id)
+            this.close.emit({});
+            this.cdr.detectChanges();
+        }
     }
 
-    onFocus() {
-        this.layerZIndex.nativeElement.style.zIndex = '' + ((ModalResizableComponent.ZIndex += 2) + this.startZIndex);
-        if (this.outWindow?.onFocus) {
-            this.outWindow.onFocus();
-            this.cdr.detectChanges();
+    onFocus() {        
+        if(this.windowService.currentWindow !== this.id) {
+            this.windowService.currentWindow = this.id;
+            this.windowService.windowList.set(this.id,moment().unix());
+            this.layerZIndex.nativeElement.style.zIndex = '' + ((ModalResizableComponent.ZIndex += 2) + this.startZIndex);
+        
+            if (this.outWindow?.onFocus) {
+                this.outWindow.onFocus();
+                this.cdr.detectChanges();
+            }
         }
     }
 
