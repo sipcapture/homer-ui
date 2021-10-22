@@ -31,6 +31,25 @@
   cursor: pointer;
   float: right;
 }
+.oauth-submit {
+    border: none;
+    background: #808080;
+    border-radius: 3px;
+    width: 100% !important;
+    height: 35px;
+    margin-top: 20px;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+    float: right;
+}
+.oauth-menu {
+    width: 100% !important;
+    max-width: unset !important;
+}
+.oauth-dropdown-submit {
+    justify-content: center !important;
+}
 .login-logo {
   margin-bottom: 36px;
   img {

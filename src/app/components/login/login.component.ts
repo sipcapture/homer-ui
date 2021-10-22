@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, ChangeDetectionStrategy, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
@@ -19,7 +19,8 @@ import { TranslateService } from '@ngx-translate/core';
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit {    
+    @ViewChild('oAuthButton', { static: false }) oAuthButton;
     loginForm: FormGroup;
     authTypes: any;
     loading = false;
@@ -35,6 +36,7 @@ export class LoginComponent implements OnInit {
     caps_lock = false;
     isReady = false;
     localDictionary;
+    oAuthTypes;
     // authentication;
     constructor(
         private formBuilder: FormBuilder,
@@ -76,6 +78,7 @@ export class LoginComponent implements OnInit {
         let authTypes = null;
         try {
             authTypes = await this.authenticationService.getAuthList().toPromise();
+            this.cdr.detectChanges()
         } catch (err) {
             // this.typesError = true;
         }
@@ -83,6 +86,7 @@ export class LoginComponent implements OnInit {
             data: {}
         };
         this.types = Object.values(data);
+        this.oAuthTypes = data?.oauth2.filter(type => type.enable)
         this.enabledTypes = this.getEnabledTypes(data);
         this.loginForm = this.formBuilder.group({
             username: ['', Validators.required],
@@ -94,12 +98,23 @@ export class LoginComponent implements OnInit {
         });
 
         this.isReady = true;
+        setTimeout(() => {
+            
+        console.log(this.oAuthButton._elementRef.nativeElement.clientWidth)
+        }, 1000);
         this.cdr.detectChanges();
     }
     getEnabledTypes(types: object) {
         return Object.values(types)
             .filter((f) => f.enable === true)
             .map((m) => m.type);
+    }
+    goOauth(type) {
+        console.log(type.url)
+        // this.router.navigate([type.url], {relativeTo: this.route}).then;
+        this.router.navigate([]).then((result) => {
+            window.location.href = `http://homer.null.qxip.net${type.url}`;
+        });
     }
     async ngOnInit() {
 

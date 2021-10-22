@@ -61,6 +61,34 @@
 
         <button mat-flat-button
           class="login-submit">{{ 'login.signInButton' | translate }}</button>
+        <button mat-flat-button class="oauth-submit" 
+        href="oAuthTypes[0].url"
+        (click)='goOauth(oAuthTypes[0])'
+        *ngIf='oAuthTypes.length === 1'>
+                <fa-icon *ngIf="oAuthTypes[0].provider_name && !oAuthTypes[0].provider_image" [icon]="['fab', oAuthTypes[0].provider_name]"></fa-icon>
+                <img *ngIf="oAuthTypes[0].provider_image" [src]="oAuthTypes[0].provider_image" width="15" height="15">
+                {{oAuthTypes[0].name}}
+        </button>
+        <button 
+            #oAuthButton
+            mat-flat-button 
+            class="oauth-submit" 
+            [matMenuTriggerFor]="nodeMenu" 
+            *ngIf='oAuthTypes.length > 1'>
+            OAuth
+        </button>
+        <mat-menu #nodeMenu="matMenu" class='oauth-menu'>
+            <button mat-button *ngFor="let type of oAuthTypes"
+            class="oauth-dropdown-submit"
+            [style.width]='oAuthButton?._elementRef?.nativeElement?.clientWidth + "px"'
+            (click)='goOauth(type)'
+                style="display: flex;justify-content: space-between;">
+                <fa-icon *ngIf="type.provider_name && !type.provider_image" [icon]="['fab', type.provider_name]"></fa-icon>
+                <img *ngIf="type.provider_image" [src]="type.provider_image" width="15" height="15">
+
+                {{type.name}}
+            </button>
+        </mat-menu>
       </form>
       <!-- <ng-template #noApiResponse> -->
       <div *ngIf="typesError && !translateError"
