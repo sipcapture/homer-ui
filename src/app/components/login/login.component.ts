@@ -86,7 +86,7 @@ export class LoginComponent implements OnInit {
             data: {}
         };
         this.types = Object.values(data);
-        this.oAuthTypes = data?.oauth2.filter(type => type.enable)
+        this.oAuthTypes = data?.oauth2?.filter(type => type.enable)
         this.enabledTypes = this.getEnabledTypes(data);
         this.loginForm = this.formBuilder.group({
             username: ['', Validators.required],
@@ -98,10 +98,6 @@ export class LoginComponent implements OnInit {
         });
 
         this.isReady = true;
-        setTimeout(() => {
-            
-        console.log(this.oAuthButton._elementRef.nativeElement.clientWidth)
-        }, 1000);
         this.cdr.detectChanges();
     }
     getEnabledTypes(types: object) {
