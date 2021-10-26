@@ -158,7 +158,7 @@ export class MenuComponent implements OnInit, OnDestroy {
     async ngOnInit() {
         const wArr = widgets; /* hack for init all widget on prodaction mode - DON'T REMOVE IT!!!! */
         await this.getFormat();
-        
+
         this.isDashboardAdd = await this.userSecurityService.isDashboardAdd();
         this.updateTabList();
 
@@ -224,8 +224,7 @@ export class MenuComponent implements OnInit, OnDestroy {
         } else {
             this.notify = this.dashboardService.dbs.currentWidgetList
                 .filter(({ name }) => name.toLowerCase() === 'result')
-                .map(
-                    ({ id }) => !this.dashboardService.loadWidgetParam(id, 'isAutoRefrasher'))
+                .map(({ id }) => this.dashboardService.loadWidgetParam(id, 'isAutoRefrasher') === true)
                 .reduce((a, b) => a || b, false);
         }
         this.isRefreshClicked = false;
@@ -297,9 +296,9 @@ export class MenuComponent implements OnInit, OnDestroy {
     }
     async onTabRemove(id) {
         const data = this._puss.delete(id).toPromise();
-        if (data) { 
-            this.translateService.get('notifications.success.tabRemoved').subscribe(res => { 
-                this.alertService.success(res);   
+        if (data) {
+            this.translateService.get('notifications.success.tabRemoved').subscribe(res => {
+                this.alertService.success(res);
             })
         }
     }

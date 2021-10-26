@@ -1302,8 +1302,33 @@ export class SearchGridCallComponent
 
           if (decoded) {
             const [_decoded] = decoded || [];
-            mData.data.decoded = _decoded?._source?.layers || _decoded || decoded;
+            const out = _decoded?._source?.layers || _decoded || decoded;
+
+            /** sort items */
+            let outSortied = {
+              ...{
+                frame: null,
+                eth: null,
+                ip: null,
+                udp: null,
+                tcp: null,
+                sctp: null,
+                sip: null
+              },
+              ...out
+            };
+            /** clear from empty items */
+            outSortied = Object.entries(outSortied)
+              .reduce((a, [key, value]) => {
+                if (value) {
+                  a[key] = value;
+                }
+                return a;
+              }, {});
+            mData.data.decoded = outSortied;
             mData.isDecoded = true;
+
+            this.cdr.detectChanges();
           }
         }
       }, err => { });
