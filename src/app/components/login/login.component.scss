@@ -45,12 +45,17 @@
 }
 .oauth-wrapper {
     margin-top: 10px;
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
     width: 100%;
-    justify-items: center;
     row-gap: 10px;
     overflow: scroll;
+}
+.oauth-button-wrapper {
+    flex: 0 0 20%;
+    display: flex;
+    justify-content: center;
 }
 .login-logo {
   margin-bottom: 36px;
