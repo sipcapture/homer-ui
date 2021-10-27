@@ -87,7 +87,7 @@
             </mat-error>
           </mat-form-field>
         </div>
-        <div>
+        <!-- <div>
 
           <mat-form-field type="number"
             style="padding-right: 1rem">
@@ -103,7 +103,7 @@
             <mat-error *ngIf="partid?.errors?.max">{{'validators.maxNumber' | translate }} 100</mat-error>
             <mat-error *ngIf="partid?.errors?.pattern">{{'validators.patternNumber' | translate }}</mat-error>
           </mat-form-field>
-        </div>
+        </div> -->
         <div>
           <mat-checkbox [(ngModel)]="data.data.status">{{data.data.status ? 'Active' : 'Inactive'}}</mat-checkbox>
         </div>

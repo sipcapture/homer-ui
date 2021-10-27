@@ -7,6 +7,7 @@ import { emailValidator } from '@app/helpers/email-validator.directive';
 
 import { TranslateService } from '@ngx-translate/core'
 import * as moment from 'moment';
+import { lastValueFrom } from 'rxjs';
 @Component({
     selector: 'app-dialog-users',
     templateUrl: './dialog-users.component.html',
@@ -28,7 +29,8 @@ export class DialogUsersComponent implements OnInit {
     timeout: any;
     lastPasswordChange: string;
     lastLogin: string;
-    username = new FormControl('', [
+    username = new FormControl(
+        {value:'', disabled: true},[
         Validators.required,
         Validators.minLength(3),
         Validators.maxLength(100),
@@ -42,7 +44,8 @@ export class DialogUsersComponent implements OnInit {
         Validators.pattern(this.regString)
     ]); */
     usergroup = new FormControl('');
-    partid = new FormControl('', [
+    partid = new FormControl(
+        {value:'', disabled: true}, [
         Validators.required,
         Validators.minLength(1),
         Validators.maxLength(100),
@@ -79,13 +82,12 @@ export class DialogUsersComponent implements OnInit {
     ]);
 
     department = new FormControl('', [
-        Validators.required,
         Validators.minLength(1),
         Validators.maxLength(100),
         Validators.pattern(this.regDept)
     ]);
 
-    groupList = ['admin', 'support', 'user']
+    groupList: Array<string>;
     bufferGroupList: any;
     dateFormat: string;
     hasStatistics = false;
@@ -118,6 +120,10 @@ export class DialogUsersComponent implements OnInit {
 
         const userData = this.authenticationService.currentUserValue;
         this.isAdmin = userData?.user?.admin === true;
+        if (this.isAdmin) {
+            this.username.enable();
+            this.partid.enable();
+        }
         this.isCopy = data.isCopy;
         if (this.isCopy) {
             this.bufferName = data.data.username;
@@ -145,21 +151,15 @@ export class DialogUsersComponent implements OnInit {
 
     }
     async ngOnInit() {
-                this.bufferGroupList = this.groupList
-        if (!this.groupList.some(item => item.toLowerCase() === this.data.data.usergroup.toLowerCase())) {
-            this.groupList.push(this.data.data.usergroup);
-        }
+        await lastValueFrom(this.userService
+          .getAllGroups())
+          .then((groups: any) => {
+            this.groupList = groups.data;
+          });
         await this.getFormat();
-    }
+      }
     onNoClick(): void {
         this.dialogRef.close();
-    }
-    updateGroup(e) {
-        const list = Functions.cloneObject(this.bufferGroupList);
-        list.push(e.target.value);
-        if (!this.groupList?.some(item => item.toLowerCase() === e.target.value.toLowerCase())) {
-            this.groupList = list;
-        }
     }
     onSubmit() {
         if (!this.username?.invalid &&

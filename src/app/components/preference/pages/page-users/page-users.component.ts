@@ -129,7 +129,8 @@ export class PageUsersComponent implements OnInit, OnDestroy, AfterViewInit {
                 .toPromise()
                 .then(() => {
                     this.updateData();
-                    if (_result.usergroup !== bufferGroup && _result.data.username === this.username) {
+                    const isThisUser = _result.data.username === this.username;
+                    if ((_result.data.usergroup !== bufferGroup && isThisUser) || (_result.data.password && isThisUser)) {
                         this.userSecurityService.removeUserSettings();
                         this.authenticationService.logout();
                         this.router.navigate([{ outlets: { primary: null, system: 'login' } }]);

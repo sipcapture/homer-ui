@@ -174,7 +174,7 @@ export class PreferencesComponentMapping {
             'user settings': [
                 'ID',
                 'Username',
-                'Partid',
+                // 'Partid',
                 'Category',
                 'Name',
                 'Param',
@@ -230,7 +230,13 @@ export class PreferencesComponentMapping {
                 'Status',
                 'tools',
             ],
-            advanced: ['Partid', 'Category', 'Param', 'Data', 'tools'],
+            advanced: [
+                // 'Partid', 
+                'Category', 
+                'Param', 
+                'Data',
+                'tools'
+            ],
             mapping: [
                 // 'Partid',
                 'Profile',
@@ -280,13 +286,18 @@ export class PreferencesComponentMapping {
             users: ['Firstname', 'Lastname', 'Username', 'Email', 'tools'],
             'user settings': [
                 'Username',
-                'Partid',
+                // 'Partid',
                 'Category',
                 'Param',
                 'Data',
                 'tools',
             ],
-            advanced: ['Partid', 'Category', 'Param', 'Data'],
+            advanced: [
+                // 'Partid', 
+                'Category', 
+                'Param', 
+                'Data'
+            ],
         }
     };
 

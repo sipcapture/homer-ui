@@ -59,14 +59,14 @@
             {{ param?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
           </mat-error>
         </mat-form-field>
-        <mat-form-field style="padding-right: 1rem;">
+        <!-- <mat-form-field style="padding-right: 1rem;">
           <mat-label>{{ 'preference.userSettings.dialog.partition' | translate }}</mat-label>
           <input matInput [(ngModel)]="data.data.partid" [formControl]="partid" autocomplete="off" [disabled]="!isAdmin">
           <mat-error *ngIf="partid?.errors?.required">{{'validators.required' | translate }}</mat-error>
           <mat-error *ngIf="partid?.errors?.min">{{'validators.minNumber' | translate }} 1</mat-error>
           <mat-error *ngIf="partid?.errors?.max">{{'validators.maxNumber' | translate }} 99</mat-error>
           <mat-error *ngIf="partid?.errors?.pattern">{{'validators.patternNumber' | translate }}</mat-error>
-        </mat-form-field>
+        </mat-form-field> -->
       </div>
     </mat-tab>
     <mat-tab [label]="'preference.userSettings.dialog.data' | translate">
