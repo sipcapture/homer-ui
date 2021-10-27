@@ -70,4 +70,7 @@ export class PreferenceUserService {
         });
     }
 
+    getAllGroups() {
+        return this.http.get(`${this.url}/groups`);
+    }
 }
