@@ -37,6 +37,7 @@ export class LoginComponent implements OnInit {
     isReady = false;
     localDictionary;
     oAuthTypes;
+    oAuthToken: string;
     // authentication;
     constructor(
         private formBuilder: FormBuilder,
@@ -63,8 +64,23 @@ export class LoginComponent implements OnInit {
 
         this.translateService.setDefaultLang('en')
 
-
-
+        const search = window.location.search
+        const query = decodeURIComponent(search).replace(/(?:returnUrl=\/[a-zA-Z]+\/[a-zA-Z]+)?\?/gm, "");
+        const params = new URLSearchParams(query);
+        this.oAuthToken = params.get("token");
+        if (this.oAuthToken) {
+            this.authenticationService.loginOAuth(this.oAuthToken).pipe(first()).subscribe((data) => {
+                if (data) {
+                    this.router.navigateByUrl(this.returnUrl);
+                    this.userSecurityService.getAdmin();
+                } 
+            },
+            (error) => {
+                this.alertService.error(error);
+                this.loading = false;
+                this.cdr.detectChanges();
+            })
+        }
         const browserLang = translateService.getBrowserLang();
         this.translateService.get('LINK').subscribe(data => {
             return data;
@@ -106,7 +122,6 @@ export class LoginComponent implements OnInit {
             .map((m) => m.type);
     }
     goOauth(type) {
-        console.log(type.url)
         // this.router.navigate([type.url], {relativeTo: this.route}).then;
         this.router.navigate([]).then((result) => {
             window.location.href = `http://homer.null.qxip.net${type.url}`;

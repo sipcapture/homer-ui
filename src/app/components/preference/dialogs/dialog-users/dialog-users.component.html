@@ -12,7 +12,7 @@
       <p [ngClass]="isCopy && isNotChanged ? 'copy-warning': ''">
         <span *ngIf="isCopy && isNotChanged">{{ 'preference.users.dialog.userCopy' | translate }}</span>
       </p>
-      <div style="display: grid; grid-template-columns: 30% 30% 30%; width: 100%; grid-gap: 10px; ">
+      <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 10px); grid-gap: 10px; ">
         <mat-form-field *ngIf="username">
           <mat-label>{{ 'preference.users.dialog.username' | translate }}</mat-label>
           <input matInput
@@ -39,17 +39,8 @@
 
         <mat-form-field>
           <mat-label>{{ 'preference.users.dialog.group' | translate }}</mat-label>
-          <input matInput
-            autocomplete="off"
-            [formControl]="usergroup"
-            [disabled]="!isAdmin"
-            (click)='groupSelect.open()'
-            (keydown)='groupSelect.close()'
-            (input)='updateGroup($event)'
-            #groupInput
-            required />
-          <mat-select matSuffix [formControl]="usergroup" 
-          [disabled]="!isAdmin" #groupSelect (selectionChange)='usergroup.setValue($event.value)'>
+          <mat-select [formControl]="usergroup" [disabled]="!isAdmin"
+        (selectionChange)='usergroup.setValue($event.value)' required>
               <mat-option *ngFor="let item of groupList"  [value]='item'>
                     {{item}}
               </mat-option>
@@ -65,7 +56,7 @@
             {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or "."]
           </mat-error>
         </mat-form-field>
-        <mat-form-field>
+        <!-- <mat-form-field>
           <mat-label>{{ 'preference.users.dialog.partition' | translate }}</mat-label>
           <input matInput
             autocomplete="off"
@@ -76,10 +67,10 @@
           <mat-error *ngIf="partid?.errors?.min">{{'validators.minNumber' | translate }} 1</mat-error>
           <mat-error *ngIf="partid?.errors?.max">{{'validators.maxNumber' | translate }} 99</mat-error>
           <mat-error *ngIf="partid?.errors?.pattern">{{'validators.patternNumber' | translate }}</mat-error>
-        </mat-form-field>
+        </mat-form-field> -->
       </div>
 
-      <div style="display: grid; grid-template-columns: 30% 30%; width: 100%; grid-gap: 10px;">
+      <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 10px); grid-gap: 10px;">
         <mat-form-field>
           <input matInput
             autocomplete="new-password"
@@ -126,7 +117,7 @@
 </div>
       <strong>{{ 'preference.users.dialog.personalInfo' | translate }}</strong>
       <hr />
-      <div style="display: grid; grid-template-columns: 30% 30%; width: 100%; grid-gap: 10px;">
+      <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 10px); grid-gap: 10px;">
         <mat-form-field>
           <mat-label>{{ 'preference.users.dialog.firstName' | translate }}</mat-label>
           <input matInput
@@ -160,7 +151,7 @@
           </mat-error>
         </mat-form-field>
       </div>
-      <div style="display: grid; grid-template-columns: 30% 30%; width: 100%; grid-gap: 10px;">
+      <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 10px); grid-gap: 10px;">
         <mat-form-field>
           <mat-label>{{ 'preference.users.dialog.email' | translate }}</mat-label>
           <input matInput

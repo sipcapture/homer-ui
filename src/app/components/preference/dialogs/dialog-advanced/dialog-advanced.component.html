@@ -7,14 +7,14 @@
 <ng-container *ngIf="type !== 'data-preview'; else dataPreview">
 <div mat-dialog-content>
   <div>
-    <mat-form-field style="padding-right: 1rem;">
+    <!-- <mat-form-field style="padding-right: 1rem;">
       <mat-label>{{ 'preference.advanced.dialog.partition' | translate }}</mat-label>
       <input matInput [(ngModel)]="data.data.partid" autocomplete="off" [disabled]="!isAdmin">
       <mat-error *ngIf="partid?.errors?.required">{{'validators.required' | translate }}</mat-error>
       <mat-error *ngIf="partid?.errors?.min">{{'validators.minNumber' | translate }} 1</mat-error>
       <mat-error *ngIf="partid?.errors?.max">{{'validators.maxNumber' | translate }} 100</mat-error>
       <mat-error *ngIf="partid?.errors?.pattern && !partid?.errors?.min">{{'validators.patternNumber' | translate }}</mat-error>
-    </mat-form-field>
+    </mat-form-field> -->
     <mat-form-field style="padding-right: 1rem;">
       <mat-label>{{ 'preference.advanced.dialog.category' | translate }}</mat-label>
       <input matInput [(ngModel)]="data.data.category" autocomplete="off" [formControl]="category" [disabled]="!isAdmin">
