@@ -21,34 +21,41 @@
 
 .login-submit {
   border: none;
-  background: #484848;
+  background: hsl(0, 0%, 28%);
   border-radius: 3px;
   width: 100% !important;
   height: 35px;
-  margin-top: 20px;
+  margin-top: 20px !important;
   color: white;
   font-size: 15px;
   cursor: pointer;
   float: right;
 }
 .oauth-submit {
+    display: inline-block !important;
     border: none;
-    background: #808080;
     border-radius: 3px;
-    width: 100% !important;
-    height: 35px;
-    margin-top: 20px;
+    padding: 0 !important;
+    min-width: unset !important;
+    width: 40px !important;
+    height: 40px;
     color: white;
-    font-size: 15px;
+    font-size: 20px;
     cursor: pointer;
-    float: right;
 }
-.oauth-menu {
-    width: 100% !important;
-    max-width: unset !important;
+.oauth-wrapper {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    width: 100%;
+    row-gap: 10px;
+    overflow: scroll;
 }
-.oauth-dropdown-submit {
-    justify-content: center !important;
+.oauth-button-wrapper {
+    flex: 0 0 20%;
+    display: flex;
+    justify-content: center;
 }
 .login-logo {
   margin-bottom: 36px;
@@ -73,7 +80,7 @@
   & form {
     padding-top: 0px;
     display: grid;
-    height: 225px;
+    row-gap: 15px;
   }
 
   & .mat-form-field-wrapper {

@@ -49,6 +49,29 @@ export class AuthenticationService {
     getAuthList() {
         return this.http.get<any>(`${environment.apiUrl}/auth/type/list`);
     }
+    loginOAuth(token: string) {
+        console.log('test1')
+        return this.http.post<any>(`${environment.apiUrl}/oauth2/token`, { token })
+            .pipe(map(user => {
+                // login successful if there's a jwt token in the response
+                if (user?.token ) {
+                    user.user.username = "OAuth";
+                    // store user details and jwt token in local storage to keep user logged in between page refreshes
+                    setStorage(ConstValue.CURRENT_USER, user);
+                    this.currentUserSubject.next(user);
+                    setTimeout(() => {
+                        this.getUserSettingTimeZone(user, "OAuth");
+                    });
+                } else {
+                    user.user.username = "OAuth";
+                    this.currentUserSubject.next(user);
+                    setTimeout(() => {
+                        this.getUserSettingTimeZone(user, "OAuth");
+                    });
+                }
+                return user;
+            }));
+    }
     login(username: string, password: string, type: string) {
         return this.http.post<any>(`${environment.apiUrl}/auth`, { username, password, type })
             .pipe(map(user => {

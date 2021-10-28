@@ -10,7 +10,8 @@ export class WindowService {
     constructor() {}
     close(id) {
         clearTimeout(this.closeTimeout)
-        this.closeTimeout = setTimeout(() => {        
+        this.closeTimeout = setTimeout(() => {       
+            this.currentWindow = ''; 
             this.windowList.delete(id);
             const arrFromMap = [...this.windowList];
             if(arrFromMap.length > 0) {

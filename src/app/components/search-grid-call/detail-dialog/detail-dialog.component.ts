@@ -379,7 +379,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
       this.objectKeys(this.sipDataItem.data.hostinfo).length !== 0 && 'Events',
       this.agentsActive && 'Sub',
       this.tabs.logs && 'Logs',
-      this.sipDataItem?.data?.qosData && 'QoS',
+      this._qosData && (this._qosData.rtcp.total > 0 || this._qosData.rtp.total > 0) && 'QoS',
       'Export',
     ].filter(i => !!i);
   }
