@@ -419,7 +419,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
     const username = this.authenticationService.getUserName();
     this.isFirstLoadOfDashboard = true;
-    console.log({ params }, params?.id)
     this.dashboardService.setCurrentDashBoardId(params?.id);
 
     this.isHome = params?.id === 'home';
@@ -436,6 +435,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isShared = dashboard.data.shared && dashboard.owner !== username;
     this.isSharedOwner = dashboard.data.shared && dashboard.owner === username;
     this.isIframe = this.dashboardCollection.data.type === 2 || this.dashboardCollection.data.type === 7;
+    if (this.isIframe) {
+        this.deleteAllWidgets();
+    }
     if (this.isIframe) {
       if (!this.subscription) {
         this.subscription = this._dtrs.castRangeUpdateTimeout.subscribe((dtr: DateTimeTick) => {
@@ -482,8 +484,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       }
 
       this.changedOptions();
-      this.dashboardArray = this.dashboardCollection.data.widgets;
-
+      if(!this.isIframe) {
+        this.dashboardArray = this.dashboardCollection.data.widgets;
+      }
     } else {
       this.dashboardArray = [];
     }
@@ -774,7 +777,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   deleteAllWidgets() {
     const ls = Functions.JSON_parse(localStorage.getItem(UserConstValue.USER_SETTINGS));
-    this.dashboardArray.forEach(widget => {
+    this.dashboardArray?.forEach(widget => {
       if (widget.strongIndex === 'ResultWidgetComponent') {
         const lsIndexUser = UserConstValue.RESULT_STATE;
         localStorage.removeItem(`${lsIndexUser}-${widget.id}`);
