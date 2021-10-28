@@ -74,7 +74,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     callinfo: true,
     export: false,
   };
-
+  
   public metricType = 'mos';
   public metricTypes = {
     'mos': 'Mean MOS (0-4.5)',
@@ -238,7 +238,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     this.tabs.logs = true;
     this.tabs.messages = this.tabs.flow = this.sipDataItem?.data?.messages?.length > 0;
     this.tabs.export = this.sipDataItem?.data?.messages && !!this.IdFromCallID;
-    this.tabs.callinfo = this.sipDataItem.data.messages.length > 0;
+    this.tabs.callinfo = this.sipDataItem?.data?.messages?.filter(f => f?.source_data?.profile === '1_call' || f?.source_data?.profile === '1_registration')?.length > 0;
   }
   onTabQos(isVisible: boolean) {
     setTimeout(() => {
