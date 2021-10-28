@@ -435,6 +435,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
       return;
     }
     let row: any, SDPbuffer;
+    console.log(item.typeItem)
     switch (item.typeItem) {
       case FlowItemType.SIP:
         row = item.messageData;
@@ -467,6 +468,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
         row.raw_source = `${item.info_date} ${item.description} ${DTMFbuffer}`;
         break;
       case FlowItemType.LOG:
+      case 'HEP-LOG':
         SDPbuffer = JSON.stringify(item.source_data);
         row = item.source_data;
         row.raw = item.source_data?.item?.message || [
@@ -480,7 +482,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
         break;
 
     }
-    row.id = row.id || `(${item.typeItem}) ${item.info_date} ${item.description}`;
+    row.id = row?.id || `(${item.typeItem}) ${item.info_date} ${item.description}`;
     row.mouseEventData = event;
     this.messageDetailsService.open(row, {
       isLeft,
