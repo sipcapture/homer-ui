@@ -1025,8 +1025,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.prevDash = Functions.cloneObject(this.gridOptions);
     this.prevWidgArray = Functions.cloneObject(this.dashboardArray);
     this.prevWidgArray?.forEach(f => {
-      f.height = document.getElementById(f.id).clientHeight;
-      f.width = document.getElementById(f.id).clientWidth;
+      f.height = document.getElementById(f.id)?.clientHeight;
+      f.width = document.getElementById(f.id)?.clientWidth;
     });
     _d.config = _d.config || { pushing: true };
     const bufferConfig = Functions.cloneObject(_d);

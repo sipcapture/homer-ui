@@ -62,7 +62,7 @@
     },
     "widget": "Widget",
     "grafana": "Grafana",
-    "hepic": "HEPIC",
+    "homer": "Homer",
     "words": {
       "success": {
         "successfully": "successfully",
@@ -169,7 +169,7 @@
     "amountMessagesTransaction": "Quantity of Messages in this Transaction"
   },
   "login": {
-    "header": "Homer Login",
+    "header": "@LINK.homer@ Login",
     "username": "@LINK.login.username@",
     "password": "@LINK.login.password@",
     "authentication": "Authentication",
@@ -310,7 +310,7 @@
       "grafanaControl": {
         "title": "@LINK.grafana@ Settings",
         "grafanaTimestamp": "Sync with @LINK.dashboard@",
-        "grafanaProxy": "Use @LINK.hepic@ proxy for @LINK.grafana@ iFrame"
+        "grafanaProxy": "Use @LINK.homer@ proxy for @LINK.grafana@ iFrame"
       },
       "export": "Export @LINK.dashboard@ Settings"
     },
@@ -393,6 +393,9 @@
   "cellTypes": {
     "lastError": "Last Error",
     "noDatabaseErrors": "No Database Errors"
+  },
+  "tabCallFlow": {
+      "item_was_filtered": "All items were filtered, check the filter settings."
   },
   "tabCallInfo": {
     "session": "Session",
@@ -544,15 +547,15 @@
     },
     "system-overview": {
       "dialog": {
-        "title": "@LINK.hepic@ Config Nodes synchronisation",
-        "warning": "You are about to sync Configs between two @LINK.hepic@ nodes. Are you SURE?",
+        "title": "@LINK.homer@ Config Nodes synchronisation",
+        "warning": "You are about to sync Configs between two @LINK.homer@ nodes. Are you SURE?",
         "destination": "@LINK.callTerms.destination@",
         "source": "@LINK.callTerms.source@",
         "tables": "Tables"
       }
     },
     "api documentation": {
-        "description": "Hepic API Documentation"
+        "description": "@LINK.homer@ API Documentation"
     },
     "advanced": {
       "dialog": {
@@ -694,8 +697,8 @@
       "make_pic_server_dump": "Dump Picserver Config",
       "logs": "Logs",
       "make_logs_dump": "Dump Logs Config",
-      "hepic_app": "Hepic App",
-      "make_hepic_app_dump": "Dump HepicAPP Config",
+      "hepic_app": "@LINK.homer@ App",
+      "make_hepic_app_dump": "Dump HomerAPP Config",
       "button_export": "Export",
       "button_dump": "Dump"
     }
