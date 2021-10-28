@@ -52,7 +52,11 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
 
             return;
         }
-        this.type = val.type || '';
+
+
+        this.type = val.type || val.typeItem === 'HEP-LOG' && 'LOG'  || '';
+        console.log('val', val);
+        console.log('this.type', val.typeItem, this.type);
         /** parse tabs */
         try {
             if (this._data?.raw_source) {
@@ -104,7 +108,13 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
                 }
             });
         } catch (e) { }
-
+        if (val.typeItem==='HEP-LOG') {
+          this.type='LOG';
+          this.raw_isJSON=false;
+          this.raw=val.raw[2].raw_source;
+          this.cdr.detectChanges();
+          return;
+        }
         this.raw = this._data.item.raw;
 
         if (this._data.tabType === 'UAReport') {
