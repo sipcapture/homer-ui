@@ -139,6 +139,7 @@ export class CodeStyleSmartInputFieldComponent implements AfterViewInit {
   }
 
   async getLabels() {
+    // console.log('getLabels')
     try {
       this.menuTitle = 'Labels';
       this.popupList = ['loading...'];
@@ -166,7 +167,7 @@ export class CodeStyleSmartInputFieldComponent implements AfterViewInit {
     } catch (error) {
       this.trigger.closeMenu();
       this.updateEditor(true);
-      // console.error({ error });
+      console.error({ error });
     }
   }
 
@@ -233,9 +234,6 @@ export class CodeStyleSmartInputFieldComponent implements AfterViewInit {
     ) {
       this.updateEditor();
       this.getLabels();
-      if (this.editor) {
-        this.editor.focus();
-      }
     } else if (event.key === 'ArrowUp') {
       // console.log(`event.key === 'ArrowUp'`)
       this.updateEditor(true);
@@ -449,7 +447,7 @@ export class CodeStyleSmartInputFieldComponent implements AfterViewInit {
   }
   getLastFragment(str) {
     const arr = str.match(/([\w\.]+)|([\W^\.]+)/g) || [];
-    const lastFragment = arr[arr.length - 1];
+    const lastFragment = arr[arr.length - 1] || '';
     if (lastFragment.match(/^[\w\.]+$/g)) {
       return lastFragment
     }

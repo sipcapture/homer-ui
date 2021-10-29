@@ -26,52 +26,66 @@
               </div>
               <div id="{{ trans.callid }}">
                   <div [ngStyle]="{ 'border-top': '1px solid ' + color(trans.callid) }" class="call-data-panel">
-                      <div *ngIf="trans['ua_src']" class="__uac"> {{ trans["ua_src"].title }} -->
-                          {{ trans["ua_dst"].title }}:
-                          <strong>{{ trans["ua_src"].body }} --> {{ trans["ua_dst"].body }}</strong>
-                      </div>
-                      <table class="call-info-data" style="font-size: 12px;">
-                          <tr style="opacity: 0.7">
-                              <td><strong>duration</strong></td>
-                              <td colspan="2"><strong>from</strong></td>
-                              <td colspan="2"><strong>ruri</strong></td>
-                              <td colspan="2"> <strong>src ip:port</strong> </td>
-                              <td colspan="2"> <strong>dst ip:port</strong> </td>
-                          </tr>
-                          <tr>
-                              <td>{{ secFormatter(trans.Duration) }}</td>
-                              <td colspan="2"> {{ trans.from_user }}@{{trans.from_domain}} </td>
-                              <td colspan="2">
-                                  {{ trans.ruri_user || trans.to_user }}@{{trans.ruri_domain || ""}}
-                              </td>
-                              <td colspan="2">
-                                  {{trans.source_ip + ":" + trans.source_port }}
-                              </td>
-                              <td colspan="2">
-                                  {{ trans.destination_ip  + ":" + trans.destination_port }}
-                              </td>
-                          </tr>
-                      </table>
+
+<div class="data-header">
+
+    <div *ngIf="trans.chart" class="trans-chart" style="flex:1">
+
+
+        <!-- <div *ngFor="let item of task.data | keyvalue">
+            <div>{{item.key}}: <b>{{item.value}}</b></div>
+        </div>
+    -->
+    <div class="chart-cont">
+        <canvas baseChart [data]=" chartGetData(trans.chart, 'data') "
+        [labels]=" chartGetData(trans.chart, 'label') " [options]="pieChartOptions"
+        [legend]="false" [chartType]="pieChartType">
+    </canvas>
+    <div style="font-size: 12px;">{{ trans.chart.title }}</div>
+    </div>
+
+
+
+</div>
+
+<div class="data tables">
+    <div *ngIf="trans['ua_src']" class="__uac"> {{ trans["ua_src"].title }} -->
+        {{ trans["ua_dst"].title }}:
+        <strong>{{ trans["ua_src"].body }} --> {{ trans["ua_dst"].body }}</strong>
+    </div>
+    <table class="call-info-data" style="font-size: 12px;">
+        <tr style="opacity: 0.7">
+            <td><strong>duration</strong></td>
+            <td colspan="2"><strong>from</strong></td>
+            <td colspan="2"><strong>ruri</strong></td>
+            <td colspan="2"> <strong>src ip:port</strong> </td>
+            <td colspan="2"> <strong>dst ip:port</strong> </td>
+        </tr>
+        <tr>
+            <td>{{ secFormatter(trans.Duration) }}</td>
+            <td colspan="2"> {{ trans.from_user }}@{{trans.from_domain}} </td>
+            <td colspan="2">
+                {{ trans.ruri_user || trans.to_user }}@{{trans.ruri_domain || ""}}
+            </td>
+            <td colspan="2">
+                {{trans.source_ip + ":" + trans.source_port }}
+            </td>
+            <td colspan="2">
+                {{ trans.destination_ip  + ":" + trans.destination_port }}
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+
+
+</div>
+
+      
                   </div>
   <div class="squares-cont">
-      <div *ngIf="trans.chart" class="trans-chart">
 
-
-          <!-- <div *ngFor="let item of task.data | keyvalue">
-              <div>{{item.key}}: <b>{{item.value}}</b></div>
-          </div>
-      -->
-      <div class="chart-cont">
-          <canvas baseChart [data]=" chartGetData(trans.chart, 'data') "
-          [labels]=" chartGetData(trans.chart, 'label') " [options]="pieChartOptions"
-          [legend]="false" [chartType]="pieChartType">
-      </canvas>
-      <div style="font-size: 12px;">{{ trans.chart.title }}</div>
-      </div>
-
-
-
-  </div>
       <div class="task-wrapper">
           <ng-container *ngFor="let task of trans.task">
 

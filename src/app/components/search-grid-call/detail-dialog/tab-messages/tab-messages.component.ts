@@ -194,6 +194,7 @@ export class TabMessagesComponent implements OnInit, AfterViewInit, OnDestroy {
         row.id = `(DTMF) ${item.info_date} ${item.description}`;
         break;
       case FlowItemType.LOG:
+      case 'HEP-LOG':
         row = item.source_data;
         row.raw = item.source_data?.item?.message;
         row.id = `(${item.typeItem}) ${item.description}`;

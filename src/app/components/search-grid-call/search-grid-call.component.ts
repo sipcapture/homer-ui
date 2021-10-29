@@ -695,11 +695,12 @@ export class SearchGridCallComponent
         });
 
       }
+      console.log({marData})
       marData?.forEach((h: any) => {
         const idColumn = h?.id?.split('.').pop();
 
         /* skip if skip == true */
-        if (['raw', ConstValue.LIMIT].includes(idColumn) || h.skip) {
+        if ([/* 'raw', */ ConstValue.LIMIT].includes(idColumn) || h.skip) {
           return;
         }
         /* default column values */
