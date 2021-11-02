@@ -12,7 +12,9 @@
 </div>
 <mat-form-field appearance="fill">
     <input matInput placeholder="Filter"
-        [(ngModel)]="filter" (ngModelChange)='applyFilter()' />
+        [(ngModel)]="filter" (ngModelChange)='applyFilter()' 
+        autocomplete="off"
+        />
 </mat-form-field>
 <table mat-table [dataSource]='dataSource'  mat-table [dataSource]="dataSource"
 class="mat-elevation-z8" matSort>

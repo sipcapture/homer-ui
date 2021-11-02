@@ -77,17 +77,17 @@ export class TabCallinfoComponent implements AfterViewInit {
 
     for (const callid in this.callDataByCallid) {
 
-      if (this.callDataByCallid.hasOwnProperty(callid)) {
+      if (this.callDataByCallid?.hasOwnProperty(callid)) {
 
         let profile = '';
-        if (this.callDataByCallid[callid][0]) {
-          profile = this.callDataByCallid[callid][0].profile;
+        if (this.callDataByCallid?.[callid][0]) {
+          profile = this.callDataByCallid?.[callid][0]?.profile;
         }
 
         if (profile === '1_call') {
 
           this.transactionProfile = 'call';
-          const messages = this.callDataByCallid[callid];
+          const messages = this.callDataByCallid?.[callid];
 
           const trans = {
             SessionRequestDelay: 0,
@@ -135,38 +135,38 @@ export class TabCallinfoComponent implements AfterViewInit {
           messages.forEach((message) => {
             const reply = parseInt(message.method, 10);
             const messageTime = Math.round((message.timeSeconds * 1000000 + message.timeUseconds) / 1000);
-            if (!trans.methods[message.method]) {
+            if (!trans?.methods?.[message?.method]) {
               trans.methods[message.method] = 0;
             }
             if (message.method) {
               trans.methods[message.method]++;
             }
 
-            if (trans.FirstMessage == 0 || trans.FirstMessage > messageTime) {
+            if (trans?.FirstMessage == 0 || trans?.FirstMessage > messageTime) {
               trans.FirstMessage = messageTime;
             }
 
-            if (trans.LastMessage < messageTime) {
+            if (trans?.LastMessage < messageTime) {
               trans.LastMessage = messageTime;
             }
 
-            trans.SessionDurationTime = trans.LastMessage - trans.FirstMessage;
+            trans.SessionDurationTime = trans?.LastMessage - trans?.FirstMessage;
 
-            if (message.method === 'INVITE' && trans.timeInvite === 0) {
+            if (message?.method === 'INVITE' && trans?.timeInvite === 0) {
               trans.timeInvite = messageTime;
-              trans.CdrStartTime = trans.timeInvite;
+              trans.CdrStartTime = trans?.timeInvite;
               if (message.user_agent !== '') {
-                trans.UAC = message.user_agent;
+                trans.UAC = message?.user_agent;
               }
-              trans.from_user = message.from_user;
-              trans.ruri_user = message.ruri_user;
-              trans.to_user = message.to_user;
-              trans.source_ip = message.srcIp;
-              trans.source_port = message.srcPort;
-              trans.destination_port = message.dstPort;
-              trans.destination_ip = message.dstIp;
-              trans.from_domain = message.from_domain;
-              trans.ruri_domain = message.ruri_domain;
+              trans.from_user = message?.from_user;
+              trans.ruri_user = message?.ruri_user;
+              trans.to_user = message?.to_user;
+              trans.source_ip = message?.srcIp;
+              trans.source_port = message?.srcPort;
+              trans.destination_port = message?.dstPort;
+              trans.destination_ip = message?.dstIp;
+              trans.from_domain = message?.from_domain;
+              trans.ruri_domain = message?.ruri_domain;
 
               trans.Status = 1;
             } else if (message.method === 'BYE' && trans.timeBye === 0) {
@@ -198,7 +198,7 @@ export class TabCallinfoComponent implements AfterViewInit {
             } else if (reply >= 100 && reply < 700) {
 
               let cSeqMethod = 'UNKNOWN';
-              const cRes = message.raw.match(regexpCseq);
+              const cRes = message?.raw.match(regexpCseq);
               if (cRes && cRes.length > 0) {
                 const dataCseq = cRes[0].split(' ');
                 if (dataCseq[2] && dataCseq[2] !== '') {
@@ -213,7 +213,7 @@ export class TabCallinfoComponent implements AfterViewInit {
               if (reply > 100 && reply < 200 && trans.SuccessfulSessionSetupDelay === 0) {
                 trans.SuccessfulSessionSetupDelay = messageTime - trans.timeInvite;
                 if (message.user_agent !== '') {
-                  trans.UAS = message.user_agent;
+                  trans.UAS = message?.user_agent;
                 }
               }
 
@@ -235,7 +235,7 @@ export class TabCallinfoComponent implements AfterViewInit {
                   trans.RingingTime = trans.CdrConnectTime - trans.CdrRingingTime;
                 }
                 if (message.user_agent !== '') {
-                  trans.UAS = message.user_agent;
+                  trans.UAS = message?.user_agent;
                 }
               }
               else if (reply > 400 && reply < 700 && reply !== 401 && reply !== 402 && reply !== 407 && reply !== 487
@@ -485,24 +485,24 @@ export class TabCallinfoComponent implements AfterViewInit {
               trans.timeRegister = messageTime;
               trans.CdrStartTime = trans.timeRegister;
               if (message.user_agent !== '') {
-                trans.UAC = message.user_agent;
+                trans.UAC = message?.user_agent;
               }
-              trans.from_user = message.from_user;
-              trans.ruri_user = message.ruri_user;
-              trans.to_user = message.to_user;
-              trans.source_ip = message.srcIp;
-              trans.source_port = message.srcPort;
-              trans.destination_port = message.dstPort;
-              trans.destination_ip = message.dstIp;
-              trans.from_domain = message.from_domain;
-              trans.ruri_domain = message.ruri_domain;
+              trans.from_user = message?.from_user;
+              trans.ruri_user = message?.ruri_user;
+              trans.to_user = message?.to_user;
+              trans.source_ip = message?.srcIp;
+              trans.source_port = message?.srcPort;
+              trans.destination_port = message?.dstPort;
+              trans.destination_ip = message?.dstIp;
+              trans.from_domain = message?.from_domain;
+              trans.ruri_domain = message?.ruri_domain;
 
               trans.Status = 1;
             } else if (reply >= 100 && reply < 700) {
 
               if (reply > 100 && reply < 200) {
                 if (message.user_agent !== '') {
-                  trans.UAS = message.user_agent;
+                  trans.UAS = message?.user_agent;
                 }
               }
 
@@ -517,7 +517,7 @@ export class TabCallinfoComponent implements AfterViewInit {
                 // reset if we seen MOVE
                 trans.Status = 3;
                 if (message.user_agent !== '') {
-                  trans.UAS = message.user_agent;
+                  trans.UAS = message?.user_agent;
                 }
               }
 
