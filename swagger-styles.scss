@@ -585,14 +585,15 @@
   font-size: 14px;
   font-weight: 700;
   padding: 2px 6px;
+  height:35px;
   -webkit-transition: all .3s;
   transition: all .3s;
-  border: 2px solid #888;
   border-radius: 4px;
-  background: transparent;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
+  background:white;
+  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
   font-family: Roboto, sans-serif;
-  color: #3b4151
+  color: #3b4151;
+  border:none !important;
 }
 
 .swagger-ui .btn[disabled] {
@@ -613,8 +614,6 @@
 .swagger-ui .btn.authorize {
   line-height: 1;
   display: inline;
-  color: #49cc90;
-  border-color: #49cc90
 }
 
 .swagger-ui .btn.authorize span {
@@ -729,7 +728,9 @@
 
 .swagger-ui button {
   cursor: pointer;
-  outline: none
+  outline: none;
+  border: none;
+  background:white;
 }
 
 .swagger-ui select {
@@ -776,7 +777,7 @@
   background: #fff
 }
 .swagger-ui .scheme-container .schemes > label select {
-  padding:6px;
+  height:35px;
 }
 .swagger-ui input[type=email].invalid, .swagger-ui input[type=password].invalid, .swagger-ui input[type=search].invalid, .swagger-ui input[type=text].invalid {
   -webkit-animation: shake .4s 1;
@@ -936,7 +937,7 @@
   max-width: 650px;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
-  border: 1px solid #ebebeb;
+  border:none;
   border-radius: 4px;
   background: #fff;
   box-shadow: 0 10px 30px 0 rgba(0, 0, 0, .2)
@@ -970,8 +971,8 @@
   display: -ms-flexbox;
   display: flex;
   padding: 12px 0;
-  border-bottom: 1px solid #ebebeb;
-  background:#fafafa;
+  color:white;
+  background:black;
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center
@@ -983,7 +984,8 @@
   background: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  appearance: none
+  appearance: none;
+  svg { fill: white;}
 }
 
 .swagger-ui .dialog-ux .modal-ux-header h3 {
@@ -995,7 +997,7 @@
   -ms-flex: 1;
   flex: 1;
   font-family: Roboto, sans-serif;
-  color: #3b4151
+  color: white;
 }
 
 .swagger-ui .model {
@@ -1734,16 +1736,19 @@ width: 100%;
  }
 
  .swagger-ui .btn.authorize {
-   line-height: 1;
-   display: inline;
-   color: #3f51b5;
-   border-color: #3f51b5;
-   padding:4px;
-   margin-bottom: 4px;
+  background: #009cbf;
+  padding: 3px 6px;
+  height:35px;
+  border-radius: 3px;
+  border:none !important;
+  margin-right:10px;
+  color: white;
+  cursor: pointer;
+  line-height: 14px;
  }
 
  .swagger-ui .btn.authorize svg {
-   fill: #3f51b5;
+   fill: white;
  }
 
  body {
