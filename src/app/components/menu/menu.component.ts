@@ -26,12 +26,13 @@ import {
     WidgetModel,
     DashboardModel,
     ConstValue,
+    UserProfile,
 } from '@app/models';
 import { MatDialog } from '@angular/material/dialog';
 import { AddDashboardDialogComponent } from '../dashboard/';
 import { Router, ActivationEnd } from '@angular/router';
 import * as moment from 'moment';
-import { Subscription } from 'rxjs';
+import { lastValueFrom, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { environment } from '@environments/environment';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -118,6 +119,7 @@ export class MenuComponent implements OnInit, OnDestroy {
     dashboardList: any;
     dateFormat: string;
     firstInit = true;
+    userProfile: UserProfile;
     @ViewChild('favList', { static: true }) favList: ElementRef;
     @ViewChild('tabList', { static: true }) tabList: ElementRef;
     constructor(
@@ -158,7 +160,7 @@ export class MenuComponent implements OnInit, OnDestroy {
     async ngOnInit() {
         const wArr = widgets; /* hack for init all widget on prodaction mode - DON'T REMOVE IT!!!! */
         await this.getFormat();
-
+        await this.getProfile();
         this.isDashboardAdd = await this.userSecurityService.isDashboardAdd();
         this.updateTabList();
 
@@ -446,12 +448,16 @@ export class MenuComponent implements OnInit, OnDestroy {
     async getFormat() {
         this.dateFormat = await this._tfs.getFormat().then(res => res.dateTime);
     }
+    async getProfile() {
+        const { data } = await lastValueFrom(this._pus.getCurrentUser())
+        this.userProfile = data;
+    }
     onRefrasher(delay: number) {
         this._dtrs.setDelay(delay);
     }
 
-    onPreference() {
-        this.router.navigate(['preference/users']);
+    onPreference(page: string = "users") {
+        this.router.navigate([`preference/${page}`]);
     }
 
     refresh() {

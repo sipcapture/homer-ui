@@ -121,10 +121,37 @@
                     {{ item.title }}
                 </button>
             </mat-menu>
-
-            <button [matTooltip]="('menu.logout'|translate)" mat-button (click)="logout()">
-                <mat-icon>exit_to_app</mat-icon>
+            <button mat-button [matTooltip]="userProfile?.displayname" class="profile-button"
+            [matMenuTriggerFor]="profileDropdown"
+            >
+                <img *ngIf="userProfile?.avatar !== ''; else noAvatar" [src]="userProfile?.avatar" alt="" class="profile-icon">
+                <ng-template #noAvatar>
+                    <div [style.background-color]="'hsl(358, 85%, 47%)'" class="profile-icon">
+                        {{userProfile?.displayname[0]}}
+                    </div>
+                </ng-template>
             </button>
+            <mat-menu #profileDropdown="matMenu">
+                 <div class="profile-menu-card" (click)="$event.preventDefault(); $event.stopPropagation()">
+                    
+                        <img *ngIf="userProfile?.avatar !== ''; else noAvatarMenu" [src]="userProfile?.avatar" alt="" class="profile-menu-icon">
+                        <ng-template #noAvatarMenu>
+                            <div [style.background-color]="'hsl(358, 85%, 47%)'" class="profile-menu-icon">
+                                {{userProfile?.displayname[0]}}
+                            </div>
+                        </ng-template>
+                    <span>
+                        {{userProfile?.displayname}}
+                    </span>
+                </div>
+                <hr>
+                <button [matTooltip]="('menu.logout'|translate)" mat-button (click)="onPreference('profile')" class="profile-menu-item">
+                    <mat-icon>account_circle</mat-icon> User profile
+                </button>
+                <button [matTooltip]="('menu.logout'|translate)" mat-button (click)="logout()" class="profile-menu-item">
+                    <mat-icon>exit_to_app</mat-icon> Logout
+                </button>
+            </mat-menu>
         </div>
     </div>
 </mat-toolbar>

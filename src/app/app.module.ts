@@ -200,6 +200,7 @@ import { TransactionGraphSettingsComponent } from './components/controls/transac
 import { CopyComponent } from './components/controls/copy/copy.component';
 import { CopyModule } from './components/controls/copy/copy.module';
 import { CodeProtoSelectorComponent } from './components/widgets/smart-input-widget/code-proto-selector/code-proto-selector.component';
+import { PageProfileComponent } from './components/preference/pages/page-profile/page-profile.component';
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
 }
@@ -326,7 +327,8 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     LoadingCircleComponent,
     PageSystemOverviewComponent,
     TransactionGraphSettingsComponent,
-    AlertWidgetComponent
+    AlertWidgetComponent,
+    PageProfileComponent
   ],
 
   imports: [

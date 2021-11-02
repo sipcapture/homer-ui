@@ -11,6 +11,9 @@
     </div>
     <!-- Pages -->
     <ng-container [ngSwitch]="pageId">
+        
+        <app-page-profile
+            [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"profile"'></app-page-profile>
         <app-page-about
             [pageID]="pageId" [page]="i18n(pageId)" class="other-pages-wrapper" *ngSwitchCase='"about"'></app-page-about>
         <app-page-users

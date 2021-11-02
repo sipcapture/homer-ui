@@ -2,10 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
 import { environment } from '@environments/environment';
-import { PreferenceUsers } from '@app/models';
+import { PreferenceUsers, UserProfile } from '@app/models';
 interface GetAllUsers {
     count: number;
     data: PreferenceUsers[];
+}
+interface GetUserProfile {
+    count: number;
+    data: UserProfile;
 }
 @Injectable({ providedIn: 'root' })
 export class PreferenceUserService {
@@ -14,10 +18,12 @@ export class PreferenceUserService {
     getAll() {
         return this.http.get<GetAllUsers>(`${this.url}`);
     }
-    getById(id: number) {
-        return this.http.get(`${this.url}/${id}`);
+    getById(id: string) {
+        return this.http.get<GetAllUsers>(`${this.url}/${id}`);
     }
-
+    getCurrentUser() {
+        return this.http.get<GetUserProfile>(`${this.url}/profile`);
+    }
     add(user: PreferenceUsers) {
         if (!user.version) {
             user.version = 1;
