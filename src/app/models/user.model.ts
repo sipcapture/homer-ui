@@ -14,5 +14,16 @@ export interface User {
         admin: boolean;
         force_password: boolean;
         username: string;
+        isExternal?: boolean
     }
+}
+export interface UserProfile {
+    admin: boolean
+    avatar: string
+    displayname: string
+    external_auth: boolean
+    external_profile: string
+    group: string
+    username: string
+    guid: string
 }

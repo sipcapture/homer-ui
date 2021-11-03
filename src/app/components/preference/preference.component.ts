@@ -33,6 +33,7 @@ import { AdminService } from '@app/services/preferences/admin.service';
 export class PreferenceComponent implements OnInit, OnDestroy, AfterViewInit {
     isLoading = false;
     isAdmin = false;
+    isExternal = false;
     isTest = true;
     isHasLocalStorage = false;
     isErrorResponse = false;
@@ -62,7 +63,7 @@ export class PreferenceComponent implements OnInit, OnDestroy, AfterViewInit {
     ngAfterViewInit() {
         this._route.params.subscribe((params) => {
             this.pageId = decodeURI(params['id']);
-            if (this.links.indexOf(this.pageId) === -1) {
+            if (this.links?.indexOf(this.pageId) === -1) {
                 this.router.navigateByUrl('/dashboard/home');
                 return;
             }
@@ -82,7 +83,8 @@ export class PreferenceComponent implements OnInit, OnDestroy, AfterViewInit {
         const ADMIN = 'admin';
         const userData = this.authenticationService.currentUserValue;
         this.isAdmin = userData?.user?.admin === true;
-        const access = ['commonUser', ADMIN][+this.isAdmin];
+        this.isExternal = userData?.user?.isExternal === true;
+        const access = this.isAdmin ? ADMIN : this.isExternal ? 'external' : 'commonUser';
         const { accessMapping, pagesStructureMapping, links } = PreferencesComponentMapping || {};
         this.isAccess = accessMapping[access];
         this.pagesStructure = pagesStructureMapping[access];

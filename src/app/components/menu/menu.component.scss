@@ -21,7 +21,39 @@
   animation-fill-mode: none;
   animation-play-state: running;
 }
-
+.profile-button {
+    .profile-icon {
+        height: 30px;
+        width: 30px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        font-size: 15px;
+    }
+}
+.profile-menu-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    flex-direction: column;
+    .profile-menu-icon {
+        height: 60px;
+        width: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 30px;
+        border-radius: 50%;
+    }
+}
+.profile-menu-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+}
 .logo-base {
   display: flex;
   align-items: center;

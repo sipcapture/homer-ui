@@ -1,0 +1,27 @@
+
+.profile-card {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    .profile-icon {
+        height: 100px;
+        width: 100px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        color: white;
+        font-size: 50px;
+    }
+    .profile-name {
+        font-size: 25px;
+    }
+    .profile-username {
+        font-size:15px;
+    }
+    .profile-userdata {
+        width: 100%;
+    }
+}
