@@ -131,9 +131,7 @@ export class PageProfileComponent implements OnInit {
       return res;
     })
     this.userProfile = data;
-    console.log(this.userProfile);
     this.profileColor = this.idColorHash(this.userProfile.guid)
-	    console.log(this.profileColor)
     this.cdr.detectChanges();
   }
   async getUser(guid) {
