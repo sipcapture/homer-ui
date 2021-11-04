@@ -1,27 +1,56 @@
-
 .profile-card {
     width: 100%;
     display: flex;
     justify-content: center;
+    padding: 10px;
+    min-width:220px;
+    margin: 10px;
+    border-radius: 5px;
     align-items: center;
     flex-direction: column;
     .profile-icon {
-        height: 100px;
-        width: 100px;
+        height: 75px;
+        width: 75px;
         display: inline-flex;
         justify-content: center;
+        font-weight:bold;
         align-items: center;
         border-radius: 50%;
         color: white;
         font-size: 50px;
+        margin-bottom: 10px;
     }
     .profile-name {
         font-size: 25px;
     }
     .profile-username {
-        font-size:15px;
+        font-size: 15px;
     }
     .profile-userdata {
         width: 100%;
     }
+}
+
+.profile-body {
+    padding: 2rem;
+    display: flex;
+    min-width: fit-content;
+}
+.user-settings {
+    padding: 1rem;
+    margin: 1rem;
+}
+.dept-label {
+    margin: 5px;
+    padding: 3px;
+    border-radius: 3px;
+    width: 100px;
+    text-align: center;
+}
+.personal-actions {
+    
+        display: flex;
+        margin-right: 12px;
+        justify-content: flex-end;
+    
 }

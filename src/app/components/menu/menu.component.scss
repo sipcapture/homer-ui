@@ -22,37 +22,43 @@
   animation-play-state: running;
 }
 .profile-button {
-    .profile-icon {
-        height: 30px;
-        width: 30px;
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 50%;
-        font-size: 15px;
-    }
+  background: none;
+  border: none;
+  color: white;
+  .profile-icon {
+    height: 30px;
+    width: 30px;
+    font-weight: bold;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    font-size: 15px;
+  }
 }
 .profile-menu-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  flex-direction: column;
+  .profile-menu-icon {
+    margin: 5px;
+    height: 40px;
+    width: 40px;
     display: flex;
-    align-items: center;
     justify-content: center;
-    width: 100%;
-    flex-direction: column;
-    .profile-menu-icon {
-        height: 60px;
-        width: 60px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: white;
-        font-size: 30px;
-        border-radius: 50%;
-    }
+    align-items: center;
+    color: white;
+    font-size: 24px;
+    border-radius: 50%;
+    font-weight: bold;
+  }
 }
 .profile-menu-item {
-    display: block;
-    width: 100%;
-    text-align: left;
+  display: block;
+  width: 100%;
+  text-align: left;
 }
 .logo-base {
   display: flex;
@@ -76,9 +82,7 @@
   background: none;
   font-size: 16px;
   color: white;
-
 }
-
 
 .btn-refrash-timer {
   border-left: 1px solid #fff;
@@ -116,22 +120,21 @@ button {
 }
 
 .logo-text {
-  
   box-sizing: border-box;
   color: rgb(255, 255, 255);
   display: inline-block;
-  font-family:  Helvetica, Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
   font-size: 20px;
- 
+
   padding-bottom: 0px;
   padding-left: 10px;
 
   padding-top: 0px;
- 
+
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   &:first-letter {
-    color: #E0121A;
+    color: #e0121a;
   }
 }
 
@@ -225,7 +228,7 @@ button {
 
 .tab-title::after {
   display: inline-block;
-  content: 'TABS:';
+  content: "TABS:";
   color: #ffffffaf;
   font-size: 12px;
   margin-right: 12px;
@@ -244,8 +247,7 @@ button {
 .cdk-drag-preview {
   box-sizing: border-box;
   border-radius: 4px;
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
 
 .cdk-drag-placeholder {

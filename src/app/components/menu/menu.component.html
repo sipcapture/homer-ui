@@ -121,7 +121,7 @@
                     {{ item.title }}
                 </button>
             </mat-menu>
-            <button mat-button [matTooltip]="userProfile?.displayname" class="profile-button"
+            <button [matTooltip]="userProfile?.displayname" class="profile-button"
             [matMenuTriggerFor]="profileDropdown"
             >
                 <img *ngIf="userProfile?.avatar !== ''; else noAvatar" [src]="userProfile?.avatar" alt="" class="profile-icon">
@@ -145,10 +145,10 @@
                     </span>
                 </div>
                 <hr>
-                <button [matTooltip]="('menu.logout'|translate)" mat-button (click)="onPreference('profile')" class="profile-menu-item">
+                <button [style.color]="'#666'" [matTooltip]="('menu.logout'|translate)" mat-button (click)="onPreference('profile')" class="profile-menu-item">
                     <mat-icon>account_circle</mat-icon> User profile
                 </button>
-                <button [matTooltip]="('menu.logout'|translate)" mat-button (click)="logout()" class="profile-menu-item">
+                <button [style.color]="'#666'" [matTooltip]="('menu.logout'|translate)" mat-button (click)="logout()" class="profile-menu-item">
                     <mat-icon>exit_to_app</mat-icon> Logout
                 </button>
             </mat-menu>

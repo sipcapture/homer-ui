@@ -2,22 +2,43 @@
     <h3>{{page | titlecase}}</h3>
 </div>
 <app-loading-circle *ngIf='isLoading'></app-loading-circle>
-<div #content [hidden]='isLoading'>
-    <div class="profile-card">
-        <img *ngIf="userProfile?.avatar !== ''; else noAvatar" [src]="userProfile?.avatar" alt="" (onError)="userProfile.avatar = ''" class="profile-icon">
+<div #content 
+class="profile-body mat-elevation-z8"
+[hidden]='isLoading'>
+
+    <div class="profile-card" [style.background-color]="profileColor + 22">
+        <img *ngIf="userProfile?.avatar !== ''; else noAvatar" 
+        [src]="userProfile?.avatar" alt="" 
+        (onError)="userProfile.avatar = ''" 
+        class="profile-icon">
+
         <ng-template #noAvatar>
             <div [style.background-color]="profileColor" class="profile-icon">
                 {{userProfile?.displayname[0]}}
             </div>
         </ng-template>
         <span class="profile-name">
-            {{userProfile?.displayname}}
+            {{userProfile?.displayname}} 
         </span>
         <span class="profile-username" *ngIf='isExternal'>
             {{userProfile?.username}}
-        </span>
+        </span> 
         <span class="profile-username" *ngIf='isExternal'>
             Group: {{userProfile?.group}}
+        </span>
+        <span *ngIf="email.value">
+            {{email.value}}
+        </span>
+        <span 
+        [style.background-color]="profileColor + 22" 
+        *ngIf="department.value"
+        class="dept-label"
+        >
+            <strong [style.color]="profileColor"
+          
+            >
+                {{department.value}}
+            </strong>
         </span>
     </div>
 
@@ -30,176 +51,182 @@
     <div *ngIf='!isExternal'>
     <mat-tab-group>
         <mat-tab [label]="'preference.users.dialog.title' | translate:{username: 'User'}">
-        <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 10px); grid-gap: 10px; ">
-            <mat-form-field *ngIf="username">
-            <mat-label>{{ 'preference.users.dialog.username' | translate }}</mat-label>
-            <input matInput
-                autocomplete="off"
-                [formControl]="username"
-                [disabled]="!isAdmin"
-                required />
+<div class="user-settings">
+    <strong>{{ 'preference.users.dialog.personalInfo' | translate }}</strong>
+    <hr />
+    <div style="display: grid; grid-template-columns: repeat(4, 24%); width: calc(100% - 10px); grid-gap: 10px;">
+        <mat-form-field>
+        <mat-label>{{ 'preference.users.dialog.firstName' | translate }}</mat-label>
+        <input matInput
+            autocomplete="off"
+            [formControl]="firstname"
+            required />
+        <mat-error *ngIf="firstname?.errors?.required">{{'validators.required' | translate }}</mat-error>
+        <mat-error *ngIf="firstname?.errors?.minlength">
+            {{ firstname?.errors?.minlength?.requiredLength }} Characters
+            min
+        </mat-error>
+        <mat-error *ngIf="firstname?.errors?.maxlength">
+            {{ firstname?.errors?.maxlength?.requiredLength }} Characters
+            max
+        </mat-error>
+        <mat-error *ngIf="firstname?.errors?.pattern && !firstname?.errors?.minlength">
+            {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or "."]
+        </mat-error>
+        </mat-form-field>
 
-            <mat-error *ngIf="username?.errors?.required">{{'validators.required' | translate }}</mat-error>
-            <mat-error *ngIf="username?.errors?.minlength">
-                {{ username?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
-            </mat-error>
-            <mat-error *ngIf="username?.errors?.maxlength">
-                {{ username?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
-            </mat-error>
-            <mat-error *ngIf="username?.errors?.pattern && !username?.errors?.minlength">
-                {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or "."
-            </mat-error>
-            <mat-error *ngIf="username?.errors?.userNameNotAvailable">
-                Username not available
-            </mat-error>
-            </mat-form-field>
+        <mat-form-field>
+        <mat-label>{{ 'preference.users.dialog.lastName' | translate }}</mat-label>
+        <input matInput
+            autocomplete="off"
+            [formControl]="lastname"
+            />
+        <mat-error *ngIf="lastname?.errors?.maxlength">
+            {{ lastname?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+        </mat-error>
+        <mat-error *ngIf="lastname?.errors?.pattern && !lastname?.errors?.maxlength">
+            {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or "."]
+        </mat-error>
+        </mat-form-field>
 
-            <mat-form-field>
-            <mat-label>{{ 'preference.users.dialog.group' | translate }}</mat-label>
-            <mat-select [formControl]="usergroup" [disabled]="!isAdmin"
-            (selectionChange)='usergroup.setValue($event.value)' required>
-                <mat-option *ngFor="let item of groupList"  [value]='item'>
-                        {{item}}
-                </mat-option>
-            </mat-select>
-            <mat-error *ngIf="usergroup?.errors?.required">{{'validators.required' | translate }}</mat-error>
-            <mat-error *ngIf="usergroup?.errors?.minlength">
-                {{ usergroup?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
-            </mat-error>
-            <mat-error *ngIf="usergroup?.errors?.maxlength">
-                {{ usergroup?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
-            </mat-error>
-            <mat-error *ngIf="usergroup?.errors?.pattern && !usergroup?.errors?.minlength">
-                {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or "."]
-            </mat-error>
-            </mat-form-field>
-            <!-- <mat-form-field>
-            <mat-label>{{ 'preference.users.dialog.partition' | translate }}</mat-label>
-            <input matInput
-                autocomplete="off"
-                [formControl]="partid"
-                [disabled]="!isAdmin"
-                required />
-            <mat-error *ngIf="partid?.errors?.required">{{'validators.required' | translate }}</mat-error>
-            <mat-error *ngIf="partid?.errors?.min">{{'validators.minNumber' | translate }} 1</mat-error>
-            <mat-error *ngIf="partid?.errors?.max">{{'validators.maxNumber' | translate }} 99</mat-error>
-            <mat-error *ngIf="partid?.errors?.pattern">{{'validators.patternNumber' | translate }}</mat-error>
-            </mat-form-field> -->
-        </div>
 
-        <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 10px); grid-gap: 10px;">
-            <mat-form-field>
-            <input matInput
-                autocomplete="new-password"
-                [placeholder]="'preference.users.dialog.password' | translate"
-                [type]="hidePass1 ? 'password' : 'text'"
-                [formControl]="password"
-                required />
-            <mat-error *ngIf="data?.isNew && password?.errors?.required">The password {{'validators.required' | translate }}</mat-error>
-            <mat-error *ngIf="password?.errors?.minlength">
-                {{ password?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
-            </mat-error>
-            <mat-error *ngIf="password?.errors?.maxlength">
-                {{ password?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
-            </mat-error>
-            
-            <mat-icon matSuffix
-                style="cursor: pointer"
-                (click)="hidePass1 = !hidePass1"
-                [attr.aria-label]="'Hide password'"
-                [attr.aria-pressed]="hidePass1"
-                [matTooltip]="hidePass1 ? 'Show password' : 'Hide password'">
-                {{ hidePass1 ? "visibility_off" : "visibility" }}
-            </mat-icon>
-            </mat-form-field>
 
-            <mat-form-field>
-            <input matInput
-                autocomplete="new-password"
-                [placeholder]="'preference.users.dialog.confirm' | translate"
-                [type]="hidePass1 ? 'password' : 'text'"
-                [formControl]="password2"
-                required />
-            <mat-error *ngIf="password?.value !== password2?.value">
-                The password and its confirmation do not coincide
-            </mat-error>
-            <mat-error *ngIf="password2?.errors?.minlength">
-                {{ password2?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
-                min
-            </mat-error>
-            <mat-error *ngIf="password2?.errors?.maxlength">
-                {{ password2?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
-            </mat-error>
-            </mat-form-field>
+        <mat-form-field>
+        <mat-label>{{ 'preference.users.dialog.email' | translate }}</mat-label>
+        <input matInput
+            autocomplete="off"
+            [formControl]="email"
+            required />
+        <mat-error *ngIf="email?.invalid">{{
+            getErrorMessage()
+            }}</mat-error>
+        </mat-form-field>
+
+
+        <mat-form-field>
+        <mat-label>{{ 'preference.users.dialog.department' | translate }}</mat-label>
+        <input matInput
+            autocomplete="off"
+            [formControl]="department"
+            required />
+        <mat-error *ngIf="department?.errors?.required">{{'validators.required' | translate }}</mat-error>
+        <mat-error *ngIf="department?.errors?.minlength">
+            {{ department?.errors?.minlength?.requiredLength }} Characters
+            min
+        </mat-error>
+        <mat-error *ngIf="department?.errors?.maxlength">
+            {{ department?.errors?.maxlength?.requiredLength }} Characters
+            max
+        </mat-error>
+        <mat-error *ngIf="department?.errors?.pattern && !department?.errors?.minlength">
+            {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" , "." or empty space]
+        </mat-error>
+        </mat-form-field>
+
     </div>
-        <strong>{{ 'preference.users.dialog.personalInfo' | translate }}</strong>
-        <hr />
-        <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 10px); grid-gap: 10px;">
-            <mat-form-field>
-            <mat-label>{{ 'preference.users.dialog.firstName' | translate }}</mat-label>
-            <input matInput
-                autocomplete="off"
-                [formControl]="firstname"
-                required />
-            <mat-error *ngIf="firstname?.errors?.required">{{'validators.required' | translate }}</mat-error>
-            <mat-error *ngIf="firstname?.errors?.minlength">
-                {{ firstname?.errors?.minlength?.requiredLength }} Characters
-                min
-            </mat-error>
-            <mat-error *ngIf="firstname?.errors?.maxlength">
-                {{ firstname?.errors?.maxlength?.requiredLength }} Characters
-                max
-            </mat-error>
-            <mat-error *ngIf="firstname?.errors?.pattern && !firstname?.errors?.minlength">
-                {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or "."]
-            </mat-error>
-            </mat-form-field>
-            <mat-form-field>
-            <mat-label>{{ 'preference.users.dialog.lastName' | translate }}</mat-label>
-            <input matInput
-                autocomplete="off"
-                [formControl]="lastname"
-                />
-            <mat-error *ngIf="lastname?.errors?.maxlength">
-                {{ lastname?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
-            </mat-error>
-            <mat-error *ngIf="lastname?.errors?.pattern && !lastname?.errors?.maxlength">
-                {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or "."]
-            </mat-error>
-            </mat-form-field>
-        </div>
-        <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 10px); grid-gap: 10px;">
-            <mat-form-field>
-            <mat-label>{{ 'preference.users.dialog.email' | translate }}</mat-label>
-            <input matInput
-                autocomplete="off"
-                [formControl]="email"
-                required />
-            <mat-error *ngIf="email?.invalid">{{
-                getErrorMessage()
-                }}</mat-error>
-            </mat-form-field>
 
-            <mat-form-field>
-            <mat-label>{{ 'preference.users.dialog.department' | translate }}</mat-label>
-            <input matInput
-                autocomplete="off"
-                [formControl]="department"
-                required />
-            <mat-error *ngIf="department?.errors?.required">{{'validators.required' | translate }}</mat-error>
-            <mat-error *ngIf="department?.errors?.minlength">
-                {{ department?.errors?.minlength?.requiredLength }} Characters
-                min
-            </mat-error>
-            <mat-error *ngIf="department?.errors?.maxlength">
-                {{ department?.errors?.maxlength?.requiredLength }} Characters
-                max
-            </mat-error>
-            <mat-error *ngIf="department?.errors?.pattern && !department?.errors?.minlength">
-                {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" , "." or empty space]
-            </mat-error>
-            </mat-form-field>
-        </div>
+
+<div style="display: grid; grid-template-columns: repeat(4, 24%); width: calc(100% - 10px); grid-gap: 10px; ">
+    <mat-form-field *ngIf="username">
+    <mat-label>{{ 'preference.users.dialog.username' | translate }}</mat-label>
+    <input matInput
+        autocomplete="off"
+        [formControl]="username"
+        [disabled]="!isAdmin"
+        required />
+
+    <mat-error *ngIf="username?.errors?.required">{{'validators.required' | translate }}</mat-error>
+    <mat-error *ngIf="username?.errors?.minlength">
+        {{ username?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+    </mat-error>
+    <mat-error *ngIf="username?.errors?.maxlength">
+        {{ username?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+    </mat-error>
+    <mat-error *ngIf="username?.errors?.pattern && !username?.errors?.minlength">
+        {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or "."
+    </mat-error>
+    <mat-error *ngIf="username?.errors?.userNameNotAvailable">
+        Username not available
+    </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+    <mat-label>{{ 'preference.users.dialog.group' | translate }}</mat-label>
+    <mat-select [formControl]="usergroup" [disabled]="!isAdmin"
+    (selectionChange)='usergroup.setValue($event.value)' required>
+        <mat-option *ngFor="let item of groupList"  [value]='item'>
+                {{item}}
+        </mat-option>
+    </mat-select>
+    <mat-error *ngIf="usergroup?.errors?.required">{{'validators.required' | translate }}</mat-error>
+    <mat-error *ngIf="usergroup?.errors?.minlength">
+        {{ usergroup?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+    </mat-error>
+    <mat-error *ngIf="usergroup?.errors?.maxlength">
+        {{ usergroup?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+    </mat-error>
+    <mat-error *ngIf="usergroup?.errors?.pattern && !usergroup?.errors?.minlength">
+        {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or "."]
+    </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+    <input matInput
+        autocomplete="new-password"
+        [placeholder]="'preference.users.dialog.password' | translate"
+        [type]="hidePass1 ? 'password' : 'text'"
+        [formControl]="password"
+        required />
+    <mat-error *ngIf="data?.isNew && password?.errors?.required">The password {{'validators.required' | translate }}</mat-error>
+    <mat-error *ngIf="password?.errors?.minlength">
+        {{ password?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+    </mat-error>
+    <mat-error *ngIf="password?.errors?.maxlength">
+        {{ password?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+    </mat-error>
+    
+    <mat-icon matSuffix
+        style="cursor: pointer"
+        (click)="hidePass1 = !hidePass1"
+        [attr.aria-label]="'Hide password'"
+        [attr.aria-pressed]="hidePass1"
+        [matTooltip]="hidePass1 ? 'Show password' : 'Hide password'">
+        {{ hidePass1 ? "visibility_off" : "visibility" }}
+    </mat-icon>
+    </mat-form-field>
+
+    <mat-form-field>
+    <input matInput
+        autocomplete="new-password"
+        [placeholder]="'preference.users.dialog.confirm' | translate"
+        [type]="hidePass1 ? 'password' : 'text'"
+        [formControl]="password2"
+        required />
+    <mat-error *ngIf="password?.value !== password2?.value">
+        The password and its confirmation do not coincide
+    </mat-error>
+    <mat-error *ngIf="password2?.errors?.minlength">
+        {{ password2?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+        min
+    </mat-error>
+    <mat-error *ngIf="password2?.errors?.maxlength">
+        {{ password2?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+    </mat-error>
+    </mat-form-field>
+</div>
+<div class="personal-actions">
+    <button mat-raised-button
+        class="setting-btn-ok"
+        (click)="onSubmit()"
+        cdkFocusInitial>
+        {{'LINK.buttons.save' | translate}}
+    </button>
+    </div>
+
+
+</div>
+         
+
         </mat-tab>
         
         
@@ -219,20 +246,12 @@
                 {{lastPasswordChange}}
             </div>
         </mat-tab>
+   
+        
     </mat-tab-group>
 
 
 
-    <div mat-dialog-actions
-    style="float: right; margin-bottom: 0rem">
-    <!-- <button mat-raised-button
-        (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button> -->
-    <button mat-raised-button
-        class="setting-btn-ok"
-        (click)="onSubmit()"
-        cdkFocusInitial>
-        {{'LINK.buttons.save' | translate}}
-    </button>
-    </div>
+
     </div>
 </div>
