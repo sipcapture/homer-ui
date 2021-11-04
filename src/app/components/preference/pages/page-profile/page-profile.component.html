@@ -6,7 +6,7 @@
     <div class="profile-card">
         <img *ngIf="userProfile?.avatar !== ''; else noAvatar" [src]="userProfile?.avatar" alt="" (onError)="userProfile.avatar = ''" class="profile-icon">
         <ng-template #noAvatar>
-            <div [style.background-color]="'hsl(358, 85%, 47%)'" class="profile-icon">
+            <div [style.background-color]="profileColor" class="profile-icon">
                 {{userProfile?.displayname[0]}}
             </div>
         </ng-template>

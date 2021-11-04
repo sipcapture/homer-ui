@@ -20,6 +20,7 @@ export interface User {
 export interface UserProfile {
     admin: boolean
     avatar: string
+    color: string
     displayname: string
     external_auth: boolean
     external_profile: string

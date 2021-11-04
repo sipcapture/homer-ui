@@ -2,6 +2,7 @@ import { Component, Input, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } 
 import { AbstractControl, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { emailValidator } from '@app/helpers/email-validator.directive';
+import { Functions } from '@app/helpers/functions';
 import { UserProfile } from '@app/models';
 import { AlertService, AuthenticationService, PreferenceUserService, UserSecurityService } from '@app/services';
 import { lastValueFrom } from 'rxjs';
@@ -22,7 +23,9 @@ export class PageProfileComponent implements OnInit {
   originalUser = '';
   hasStatistics = false;
   hidePass1 = true;
+  idColorHash = Functions.idColorHash
   groupList: Array<string>;
+  profileColor = ''
   username = new FormControl(
       {value:'', disabled: true},[
       Validators.required,
@@ -128,6 +131,9 @@ export class PageProfileComponent implements OnInit {
       return res;
     })
     this.userProfile = data;
+    console.log(this.userProfile);
+    this.profileColor = this.idColorHash(this.userProfile.guid)
+	    console.log(this.profileColor)
     this.cdr.detectChanges();
   }
   async getUser(guid) {
@@ -215,7 +221,7 @@ export class PageProfileComponent implements OnInit {
         this.department.markAsTouched();
     }
   }
-  
+
   getErrorMessage() {
     return this.email.hasError('required') ? 'You must enter a value' : 'Not a valid email';
   }

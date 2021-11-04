@@ -451,6 +451,7 @@ export class MenuComponent implements OnInit, OnDestroy {
     async getProfile() {
         const { data } = await lastValueFrom(this._pus.getCurrentUser())
         this.userProfile = data;
+        this.userProfile.color = Functions.idColorHash(this.userProfile.guid)
     }
     onRefrasher(delay: number) {
         this._dtrs.setDelay(delay);

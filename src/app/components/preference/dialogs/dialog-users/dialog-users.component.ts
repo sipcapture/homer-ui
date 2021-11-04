@@ -112,7 +112,7 @@ export class DialogUsersComponent implements OnInit {
                 email: '',
                 lastname: '',
                 department: '',
-                guid: Functions.newGuid(),
+		guid: Functions.newGuid(),
            
             };
 
