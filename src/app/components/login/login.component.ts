@@ -124,7 +124,7 @@ export class LoginComponent implements OnInit {
     goOauth(type) {
         // this.router.navigate([type.url], {relativeTo: this.route}).then;
         this.router.navigate([]).then((result) => {
-            window.location.href = `http://homer.null.qxip.net${type.url}`;
+            window.location.href = `${type.url}`;
         });
     }
     async ngOnInit() {
