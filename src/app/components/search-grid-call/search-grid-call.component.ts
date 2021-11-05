@@ -948,8 +948,9 @@ export class SearchGridCallComponent
     }
   }
   copy(e) {
-    this.translateService.get('notifications.success.cellCopy').subscribe(alert => {
-      this.copyService.copy(e, alert);
+    this.copyService.copy(e, {
+      message:'notifications.success.cellCopy',
+      isTranslation: true
     });
   }
   ngAfterViewInit() {
