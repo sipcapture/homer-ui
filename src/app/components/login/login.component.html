@@ -61,7 +61,7 @@
 
         <button mat-flat-button
           class="login-submit">{{ 'login.signInButton' | translate }}</button>
-        <span class="oauth-wrapper"
+        <span class="oauth-wrapper" *ngIf="oAuthTypes?.length > 0"
         [style.min-height.px]="oAuthTypes?.length > 5 ? 100 : 50"
         [style.max-height.px]="oAuthTypes?.length > 5 ? 100 : 50"
         >
