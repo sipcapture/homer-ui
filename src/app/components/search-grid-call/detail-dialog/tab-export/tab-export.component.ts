@@ -346,17 +346,16 @@ export class TabExportComponent implements OnInit, AfterViewInit {
   async onCopyLink() {
     if (this.url === '') {
       const data = await this._ecs.postShareLink(this.getQuery()).toPromise();
-      if (data.data.url === '/share/#') {
-        this.url = window.location.origin + data.data.url + data.data.uuid;
-      } else {
-        this.url = data.data.url + data.data.uuid;
-      }
+        if (data.data.url === '/share/#') {
+          this.url = window.location.origin + data.data.url + data.data.uuid;
+        } else {
+          this.url = data.data.url + data.data.uuid;
+        }
     }
-    let notification: any = ''
-    this.translateService.get('notifications.success.shareLinkCopy').subscribe(res => {
-      notification = res;
-    })
-    this.copyService.copy(this.url, notification);
+    this.copyService.copy(this.url, {
+        message: 'notifications.success.shareLinkCopy',
+        isTranslation: true,
+    });
   }
   onExportFlowAsPNG() {
     this.exportFlowAsPNG.emit({});
