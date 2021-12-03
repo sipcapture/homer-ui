@@ -187,8 +187,8 @@
                         [(ngModel)]="timepickerTimezone"
                         (ngModelChange)="timeZoneChanged($event)">
                         <mat-optgroup *ngFor="let region of parsedTimeZones | keyvalue"
-                            [label]="region.key +''">
-                            <mat-option *ngFor='let timeZone of region.value | keyvalue'
+                            [label]="region.key">
+                            <mat-option *ngFor='let timeZone of region.value'
                                 [value]="timeZone">
                                 {{timeZone | timeZone:'location'}} {{timeZone | timeZone:'offset'}}
                             </mat-option>
