@@ -8,6 +8,7 @@ import { WorkerService } from '../worker.service';
 import { WorkerCommands } from '../../models/worker-commands.module';
 import { log, Functions } from '@app/helpers/functions';
 import { PreferenceHepsubService } from '../preferences';
+import { DateTimeRangeService } from '@services/data-time-range.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -18,7 +19,8 @@ export class FullTransactionService {
     private callTransactionService: CallTransactionService,
     private hepLogService: HepLogService,
     private agentsubService: AgentsubService,
-    private preferenceHepsubService: PreferenceHepsubService
+    private preferenceHepsubService: PreferenceHepsubService,
+    private dateTimeRangeService: DateTimeRangeService
   ) { }
 
   public getTransactionData(requestTransaction, dateFormat): Observable<any> {
@@ -52,6 +54,7 @@ export class FullTransactionService {
       const rt = requestTransaction;
       this.callTransactionService.getTransaction(rt).toPromise().then(async (data) => {
         data.dateFormat = dateFormat;
+        data.timeZone = this.dateTimeRangeService.getTimezoneForQuery();
         tData = await _worker({ tData: data, type: 'full' });
         ready('transaction');
         Object.values(rt.param.search).forEach((i: any) => i.callid = tData.callid);

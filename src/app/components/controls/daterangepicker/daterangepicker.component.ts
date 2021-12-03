@@ -9,13 +9,20 @@ import { LocaleService } from './locale.service';
 import { DateTimeRangeService } from '@app/services/data-time-range.service';
 import { Functions } from '@app/helpers/functions';
 import { TranslateService } from '@ngx-translate/core'
+import { DashboardService } from '@app/services';
 const moment = _moment;
 
 export enum SideEnum {
     left = 'left',
     right = 'right'
 }
-
+export interface TimeZones {
+    Africa: Array<string>
+    Europe: Array<string>
+    ETC: Array<string>
+    America: Array<string>
+    Australia: Array<string>
+}
 @Component({
     selector: 'ngx-daterangepicker-material',
     styleUrls: ['./daterangepicker.component.scss'],
@@ -39,7 +46,7 @@ export class DaterangepickerComponent implements OnInit {
     timepickerTimezone = moment.tz.guess(true);
     timepickerListZones = moment.tz.names();
     daterangepicker: { start: FormControl, end: FormControl } = { start: new FormControl(), end: new FormControl() };
-    parsedTimeZones: any;
+    parsedTimeZones: TimeZones;
 
     public form: FormGroup;
 
@@ -193,6 +200,7 @@ export class DaterangepickerComponent implements OnInit {
     NUMERIC_REGEX = /[^0-9]/g;
 
     constructor(
+        private dashboardService: DashboardService,
         private el: ElementRef,
         private dateTimeRangeService: DateTimeRangeService,
         private _ref: ChangeDetectorRef,
@@ -225,7 +233,6 @@ export class DaterangepickerComponent implements OnInit {
 
         var timestamp = this.dateTimeRangeService.getDatesForQuery(true);
         this.timepickerTimezone = this.dateTimeRangeService.getTimezoneForQuery();
-
         moment.tz.setDefault(this.timepickerTimezone);
         this.groupTimeZones();
 
@@ -343,6 +350,7 @@ export class DaterangepickerComponent implements OnInit {
                 listTimeZones['ETC'].push(timeZone);
             }
         });
+        console.log(listTimeZones)
         this.parsedTimeZones = listTimeZones;
 
     }
@@ -1004,8 +1012,7 @@ export class DaterangepickerComponent implements OnInit {
     timeZoneChanged(timeEvent: any) {
         /* changed moment to new timezone */
         moment.tz.setDefault(this.timepickerTimezone);
-
-
+        DateTimeRangeService.dateTimeRangr.timezone = this.timepickerTimezone;
 
         this.startDate.tz(this.timepickerTimezone);
         this.endDate.tz(this.timepickerTimezone);
@@ -1020,6 +1027,7 @@ export class DaterangepickerComponent implements OnInit {
         this.renderTimePicker(SideEnum.left);
         this.renderTimePicker(SideEnum.right);
 
+        this.dashboardService.update(false, true); // true param is important refresh for all
         // if (this.autoApply) {
         //     this.clickApply();
         // }

@@ -1,6 +1,7 @@
 import { environment } from '@environments/environment';
 import { Md5 } from 'ts-md5/dist/md5';
 
+import 'moment-timezone';
 import * as moment from 'moment';
 import { FlowItemType } from '@app/models/flow-item-type.model';
 import { WorkerCommands } from '@app/models/worker-commands.module';
@@ -629,9 +630,11 @@ export class TransactionServiceProcessor {
       alias,
       data,
       dateFormat = 'YYYY-MM-DD HH:mm:ss.SSS Z',
+      timeZone = 'UTC'
     },
     __type = false
   ) {
+    moment.tz.setDefault(timeZone)
     const { transaction } = data || {};
     let prevTs = 0;
     let diffTs = 0;
