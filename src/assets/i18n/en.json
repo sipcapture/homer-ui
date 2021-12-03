@@ -256,7 +256,8 @@
     "refreshResults": "Refresh Results",
     "sharedBy": " @LINK.dashboardTerms.sharedBy@: ",
     "changeRefreshRange": "Change Refresh Range",
-    "logout": "Logout"
+    "logout": "Logout",
+    "profile": "Profile"
   },
   "dashboard": {
     "sharedBy": "@LINK.dashboardTerms.sharedBy@: ",
