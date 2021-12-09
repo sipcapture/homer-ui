@@ -363,7 +363,7 @@ export class SearchGridCallComponent
             this.config.param.location[lm] = lv;
           }
 
-          if (this.localData?.orlogic) {
+          if (this.localData) {
             this.config.param.orlogic = this.localData?.orlogic;
           }
 
