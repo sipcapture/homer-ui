@@ -126,6 +126,7 @@ export class TabCallinfoComponent implements AfterViewInit {
             from_tag: '',
             ruri_domain: '',
             ruri_user: '',
+            server: '',
             callid: callid,
             task: []
           };
@@ -155,9 +156,11 @@ export class TabCallinfoComponent implements AfterViewInit {
             if (message?.method === 'INVITE' && trans?.timeInvite === 0) {
               trans.timeInvite = messageTime;
               trans.CdrStartTime = trans?.timeInvite;
-              if (message.user_agent !== '') {
-                trans.UAC = message?.user_agent;
-              }
+              trans.UAC = message?.user_agent !== ''
+              ? message?.user_agent 
+              : message?.server && message?.server !== '' 
+              ? message?.server
+              : 'Unknown'
               trans.from_user = message?.from_user;
               trans.ruri_user = message?.ruri_user;
               trans.to_user = message?.to_user;
@@ -167,9 +170,11 @@ export class TabCallinfoComponent implements AfterViewInit {
               trans.destination_ip = message?.dstIp;
               trans.from_domain = message?.from_domain;
               trans.ruri_domain = message?.ruri_domain;
+              trans.server = message?.server;
 
               trans.Status = 1;
             } else if (message.method === 'BYE' && trans.timeBye === 0) {
+    
               trans.timeBye = messageTime;
               trans.CdrStopTime = trans.timeBye;
               trans.Status = 10;
@@ -212,9 +217,11 @@ export class TabCallinfoComponent implements AfterViewInit {
 
               if (reply > 100 && reply < 200 && trans.SuccessfulSessionSetupDelay === 0) {
                 trans.SuccessfulSessionSetupDelay = messageTime - trans.timeInvite;
-                if (message.user_agent !== '') {
-                  trans.UAS = message?.user_agent;
-                }
+                trans.UAS = message?.user_agent !== ''
+                ? message?.user_agent 
+                : message?.server && message?.server !== ''
+                ? message?.server
+                : 'Unknown'
               }
 
               if (reply === 183 && trans.CdrRingingTime === 0) {
@@ -234,9 +241,12 @@ export class TabCallinfoComponent implements AfterViewInit {
                   && trans.CdrRingingTime < trans.CdrConnectTime) {
                   trans.RingingTime = trans.CdrConnectTime - trans.CdrRingingTime;
                 }
-                if (message.user_agent !== '') {
-                  trans.UAS = message?.user_agent;
-                }
+
+                trans.UAS = message?.user_agent !== ''
+                ? message?.user_agent 
+                : message?.server && message?.server !== '' 
+                ? message?.server
+                : 'Unknown'
               }
               else if (reply > 400 && reply < 700 && reply !== 401 && reply !== 402 && reply !== 407 && reply !== 487
                 && trans.FailedSessionSetupDelay === 0 && cSeqMethod === 'INVITE') {
@@ -484,9 +494,11 @@ export class TabCallinfoComponent implements AfterViewInit {
             if (message.method === 'REGISTER' && trans.timeRegister === 0) {
               trans.timeRegister = messageTime;
               trans.CdrStartTime = trans.timeRegister;
-              if (message.user_agent !== '') {
-                trans.UAC = message?.user_agent;
-              }
+              trans.UAC = message?.user_agent !== '' 
+              ? message?.user_agent 
+              : message?.server && message?.server !== '' 
+              ? message?.server
+              : 'Unknown'
               trans.from_user = message?.from_user;
               trans.ruri_user = message?.ruri_user;
               trans.to_user = message?.to_user;
@@ -501,9 +513,11 @@ export class TabCallinfoComponent implements AfterViewInit {
             } else if (reply >= 100 && reply < 700) {
 
               if (reply > 100 && reply < 200) {
-                if (message.user_agent !== '') {
-                  trans.UAS = message?.user_agent;
-                }
+                trans.UAS = message?.user_agent !== '' 
+                ? message?.user_agent 
+                : message?.server && message?.server !== '' 
+                ? message?.server
+                : 'Unknown'
               }
 
               if (reply === 200) {
@@ -513,15 +527,14 @@ export class TabCallinfoComponent implements AfterViewInit {
                   trans.RegistrationRequestDelay = messageTime - trans.timeRegister;
                   trans.Duration = trans.RegistrationRequestDelay;
                 }
-
                 // reset if we seen MOVE
                 trans.Status = 3;
-                if (message.user_agent !== '') {
-                  trans.UAS = message?.user_agent;
-                }
+                trans.UAS = message?.user_agent !== ''
+                ? message?.user_agent 
+                : message?.server && message?.server !== '' 
+                ? message?.server
+                : 'Unknown'
               }
-
-
 
               if (reply > 400 && reply < 700 && reply !== 401 && reply !== 407 && reply !== 487
                 && trans.FailedRegistrationRequestDelay === 0) {
