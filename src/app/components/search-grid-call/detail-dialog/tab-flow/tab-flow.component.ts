@@ -11,7 +11,7 @@ import {
   ViewEncapsulation,
   Output
 } from '@angular/core';
-import { VirtualScrollerComponent } from 'ngx-virtual-scroller';
+// import { VirtualScrollerComponent } from 'ngx-virtual-scroller';
 import { Functions } from '@app/helpers/functions';
 import * as html2canvas from 'html2canvas';
 import { FlowItemType } from '@app/models/flow-item-type.model';
@@ -20,8 +20,8 @@ import {
   MessageDetailsService,
   ArrowEventState,
 } from '@app/services/message-details.service';
-import { FixedSizeVirtualScrollStrategy, VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
-import { AfterViewChecked, OnDestroy } from '@angular/core';
+import { CdkVirtualScrollViewport, FixedSizeVirtualScrollStrategy, VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
+import { AfterViewChecked, OnDestroy, HostListener } from '@angular/core';
 import { TransactionFilterService } from '@app/components/controls/transaction-filter/transaction-filter.service';
 import { Subscription } from 'rxjs';
 import { CallIDColor } from '@app/models/CallIDColor.model';
@@ -46,11 +46,14 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
   @ViewChild('flowscreen', { static: true }) flowscreen: ElementRef;
   @ViewChild('canvas', { static: true }) canvas: ElementRef;
   @ViewChild('downloadLink', { static: true }) downloadLink: ElementRef;
-  @ViewChild('virtualScroll') virtualScroll: VirtualScrollerComponent;
+  @ViewChild('virtualScroll') virtualScroll: any;
   @ViewChild('virtualScrollbar') virtualScrollbar: ElementRef;
+  @ViewChild('VScrollWrapper') VScrollWrapper: ElementRef;
   @ViewChild('labelContainer') labelContainer: ElementRef;
   @Input() callIDColorList: Array<CallIDColor>;
 
+  _interval = null;
+  public getVirtualScrollHeight: string = `translateY(1px)`;
   public isSimplifyPort = false;
   _isCombineByAlias = false;
   private _dataItem: any;
@@ -82,6 +85,12 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
   timeout;
   @Input() callid: any;
 
+  outEventDelayOff = 0;
+
+  get outEventOff() {
+    //
+    return this.outEventDelayOff + 1000 < performance.now();
+  }
   @Input() set isSimplify(v: boolean) {
     this._isSimplify = v;
     this.virtualScroll?.refresh();
@@ -159,6 +168,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
   ) { }
 
   ngOnInit() {
+    this.getVirtualScrollHeight = `translateY(1px)`;
     this.filterSubscription = this.transactionFilterService.listen.subscribe(filters => {
       this.setFilters(filters)
     });
@@ -183,6 +193,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
         });
       }
     });
+    this.outEvent();
     this.cdr.detectChanges();
   }
 
@@ -287,6 +298,13 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
     this.setVirtualScrollItemsArray();
     setTimeout(() => this.cdr.detectChanges(), 10);
   }
+  setVirtualScrollItemsArray() {
+    this.virtualScrollerItemsArray = [
+      { _step: 'top' },
+      ...this.arrayItemsVisible,
+      { _step: 'bottom' },
+    ];
+  }
   getHostsByMessage(arrayItems: Array<any>, isCombineByAlias, isSimplifyPort) {
     const hosts = Functions.cloneObject(this.hosts);
 
@@ -378,11 +396,24 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
       }
     });
   }
-
+  updateDOMScroller() {
+    /**
+     * hack for scroll DOM update
+     */
+    const _vs = this.virtualScrollbar?.nativeElement;
+    _vs.style.bottom = '1px';
+    setTimeout(() => {
+      _vs.style.bottom = '0px';
+      this.setVirtualScrollHeight();
+      setTimeout(() => {
+        this.updateDOMScroller();
+      }, 2000);
+    }, 300);
+  }
   ngAfterViewInit() {
-
-    window.requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
       this.ready.emit({});
+      this.updateDOMScroller();
     });
   }
   ngAfterViewChecked() {
@@ -530,17 +561,8 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
       return 'hsla(0, 0%, 30%, 0.5)'
     }
   }
-  onClickLabel(callidInput) {
-    return
-    const isEnable = this.filters.CallId.every(callid => callidInput === callid.title || !callid.selected);
-    this.filters.CallId.forEach(callid => {
-      if (callid.title !== callidInput) {
-        callid.selected = isEnable
-      } else {
-        callid.selected = true;
-      }
-    });
-    this.setFilters(this.filters)
+  onClickLabel(_?) {
+    return;
   }
   startCopy() {
     this.copyTimer = Date.now();
@@ -564,19 +586,165 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
   setScrollTarget(targetString: string) {
     this.ScrollTarget = targetString;
   }
-  onScrollVScrollWrapper({ target: { scrollLeft } }: any) {
+  onScrollVScrollWrapper(event?: any) {
     try {
+      const { scrollLeft } = event?.target || {};
       this.flowscreen.nativeElement.style.marginLeft = `${-scrollLeft}px`;
-    } catch (e) { }
-
+    } catch (e) {}
   }
-  setVirtualScrollItemsArray() {
-    this.virtualScrollerItemsArray = [{ _step: 'top' }, ...this.arrayItemsVisible, { _step: 'bottom' }];
+
+  cdkWheelScroll(event?: any) {
+    if (!event.shiftKey && Math.abs(event.deltaX) < Math.abs(event.deltaY)) {
+      event.preventDefault();
+    }
+  }
+
+  @HostListener('mousemove', ['$event'])
+  middleclickEvent(event) {
+    if (event.which === 2) {
+      event.preventDefault();
+      this.setVirtualScrollHeight();
+    }
+  }
+
+  @HostListener('wheel', ['$event'])
+  onWheelScrollWrapper(event?) {
+    if (event?.shiftKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+      return;
+    }
+    const scrollbar = this.virtualScrollbar?.nativeElement;
+    let movingAverageArray = [];
+    const ma = (p) => {
+      const valMA = 6;
+      if (movingAverageArray.length < valMA) {
+        movingAverageArray = Array.from({ length: valMA }, (x) => p);
+      }
+      movingAverageArray.push(p);
+      movingAverageArray = movingAverageArray.slice(-valMA);
+      return movingAverageArray.reduce((a, b) => a + b, 0) / valMA;
+    };
+    ma(scrollbar?.scrollTop);
+    const positionTarget = scrollbar?.scrollTop - event.wheelDelta;
+    const sUpdate = () => {
+      const t =
+        event?.animation === false ? positionTarget : ma(positionTarget);
+      scrollbar?.scrollTo({
+        top: t,
+      });
+      this.setVirtualScrollHeight();
+      if (t !== positionTarget) {
+        requestAnimationFrame(sUpdate);
+      }
+    };
+    sUpdate();
+  }
+  @HostListener('document:keydown', ['$event'])
+  onKeydownHandler(event: KeyboardEvent) {
+    switch (event.code) {
+      case 'PageDown':
+        event.preventDefault();
+        event.stopPropagation();
+        this.onWheelScrollWrapper({ wheelDelta: -500 });
+        break;
+      case 'PageUp':
+        event.preventDefault();
+        event.stopPropagation();
+        this.onWheelScrollWrapper({ wheelDelta: 500 });
+        break;
+      case 'ArrowDown':
+        event.preventDefault();
+        event.stopPropagation();
+        this.onWheelScrollWrapper({ wheelDelta: -150 });
+        break;
+      case 'ArrowUp':
+        event.preventDefault();
+        event.stopPropagation();
+        this.onWheelScrollWrapper({ wheelDelta: 150 });
+        break;
+      case 'Home':
+        event.preventDefault();
+        event.stopPropagation();
+        this.setVirtualScrollHeight({ position: 'start' });
+        break;
+      case 'End':
+        event.preventDefault();
+        event.stopPropagation();
+        this.setVirtualScrollHeight({ position: 'end' });
+        break;
+    }
+  }
+  outEvent() {
+    if (this.outEventOff) {
+      const container = this.virtualScroll?.elementRef.nativeElement;
+      if (!container) {
+        return;
+      }
+      const scrollbar = this.virtualScrollbar?.nativeElement;
+      scrollbar?.scrollTo({ top: container.scrollTop });
+    }
+    this.cdr.detectChanges();
+  }
+  setVirtualScrollHeight(e?) {
+    this.outEventDelayOff = performance.now();
+    const container = this.virtualScroll?.elementRef.nativeElement;
+    if (!container) {
+      this.getVirtualScrollHeight = `translateY(1px)`;
+      this.cdr.detectChanges();
+      return;
+    }
+    const scrollbar = this.virtualScrollbar?.nativeElement;
+    const { scrollHeight } = container;
+    switch (e?.position) {
+      case 'start':
+        scrollbar.scrollTo({ top: 0 });
+        break;
+
+      case 'end':
+        scrollbar.scrollTo({ top: scrollHeight + 500 });
+        this.onWheelScrollWrapper({ wheelDelta: -500 });
+        break;
+    }
+    this.virtualScroll.scrollTo({ top: scrollbar.scrollTop });
+    const _h = Math.floor(scrollHeight);
+    this.getVirtualScrollHeight = `translateY(${_h}px)`;
+    this.cdr.detectChanges();
   }
   ngOnDestroy() {
+    if (this._interval) {
+      clearInterval(this._interval);
+    }
     this.hideTooltip();
     if (this.filterSubscription) {
       this.filterSubscription.unsubscribe();
     }
+  }
+  __toucheStartY = 0;
+  __toucheStartX = 0;
+  public onEvent(event?: any, type?) {
+    const { x: currentX, y: currentY } = Object.values(event?.touches || {})
+      ?.map((i: any) => [i?.clientX, i?.clientY])
+      .reduce(
+        (a, [x, y], k, arr) => {
+          a.x += x / arr.length;
+          a.y += y / arr.length;
+          return a;
+        },
+        { x: 0, y: 0 }
+      );
+
+    if (type === 'touchmove') {
+      event.preventDefault();
+      event.stopPropagation();
+
+      this.onWheelScrollWrapper({
+        wheelDelta: currentY - this.__toucheStartY,
+        animation: false,
+      });
+      const vsw = this.VScrollWrapper.nativeElement;
+      vsw.scrollTo({ left: vsw.scrollLeft - (currentX - this.__toucheStartX) });
+
+    }
+    this.__toucheStartY = currentY;
+    this.__toucheStartX = currentX;
   }
 }

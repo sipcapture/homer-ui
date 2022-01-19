@@ -45,7 +45,8 @@
             class="tab-content-container">
             <div class="tab-content-container-wrapper"
                 [style.overflow-y]="tabStringIndex !== 'Flow' && tabStringIndex !== 'Media Reports' ? 'auto': 'hidden'"
-                [style.margin-right.px]="tabStringIndex === 'Flow' ? 16 : 0">
+                >
+                <!-- [style.margin-right.px]="tabStringIndex === 'Flow' ? 16 : 0" -->
                 <!-- wrapper  -->
                 <ng-template ngSwitchCase="Webshark">
                     <app-webshark
