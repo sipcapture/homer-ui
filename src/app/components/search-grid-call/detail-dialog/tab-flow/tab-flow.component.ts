@@ -93,8 +93,10 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
   }
   @Input() set isSimplify(v: boolean) {
     this._isSimplify = v;
-    this.virtualScroll?.refresh();
-    setTimeout(() => this.cdr.detectChanges());
+    try {
+      this.virtualScroll._contentWrapper;
+    } catch (e) {}
+    requestAnimationFrame(() => this.cdr.detectChanges());
   }
   get isSimplify(): boolean {
     return this._isSimplify;
