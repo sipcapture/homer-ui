@@ -165,6 +165,7 @@ import { ChartsModule } from 'ng2-charts';
 import { MarkdownModule } from 'ngx-markdown';
 import { NgxDaterangepickerMd } from './components/controls/daterangepicker';
 import { UpdateAlertComponent } from './components/controls/update-alert/update-alert.component';
+import {APP_BASE_HREF} from '@angular/common';
 import {
   NgxMatDatetimePickerModule,
   NgxMatNativeDateModule,
@@ -460,6 +461,7 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     { provide: ACE_CONFIG, useValue: DEFAULT_ACE_CONFIG },
     { provide: MAT_COLOR_FORMATS, useValue: CUSTOM_MAT_COLOR_FORMATS },
     { provide: PreferencesContentMapping, useClass: PreferencesContentMapping },
+    { provide: APP_BASE_HREF, useValue: window['base-href'] },
     TransactionFilterService
   ],
   bootstrap: [AppComponent]
