@@ -467,6 +467,6 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
 
 export class AppModule {
   constructor(library: FaIconLibrary) {
-    library.addIconPacks(fas, fab, far);
+    library.addIconPacks(fas as any, fab as any, far as any);
   }
 }
