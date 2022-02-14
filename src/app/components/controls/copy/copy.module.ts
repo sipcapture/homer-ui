@@ -23,6 +23,6 @@ import { Router } from '@angular/router';
 })
 export class CopyModule {
     constructor(library: FaIconLibrary) {
-        library.addIconPacks(fas, fab, far);
+        library.addIconPacks(fas as any, fab as any, far as any);
     }
 }

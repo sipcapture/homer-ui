@@ -37,6 +37,6 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class TransactionInfoModule {
     constructor(library: FaIconLibrary) {
-        library.addIconPacks(fas, fab, far);
+        library.addIconPacks(fas as any, fab as any, far as any);
     }
 }
