@@ -335,13 +335,13 @@ export class TabExportComponent implements OnInit, AfterViewInit {
   //   window.open(this.url, '_blank');
   // }
   getOrigin() {
-    return window.location.origin + window["base-href"]
+    return (window.location.origin + window["base-href"]).replace(/\/$/, '')
   }
   onShareLink() {
     // const param = Functions.getUriJson();
     const json = this.getQueryForShareLink();
     const queryJson = encodeURIComponent(JSON.stringify(json)) + '=';
-    const url = this.getOrigin() + '/search/result?' + queryJson;
+    const url = this.getOrigin() + 'search/result?' + queryJson;
 
     window.open(url, '_blank');
   }
