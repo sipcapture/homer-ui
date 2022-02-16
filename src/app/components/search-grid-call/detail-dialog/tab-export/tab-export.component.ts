@@ -341,7 +341,7 @@ export class TabExportComponent implements OnInit, AfterViewInit {
     // const param = Functions.getUriJson();
     const json = this.getQueryForShareLink();
     const queryJson = encodeURIComponent(JSON.stringify(json)) + '=';
-    const url = this.getOrigin() + 'search/result?' + queryJson;
+    const url = this.getOrigin() + '/search/result?' + queryJson;
 
     window.open(url, '_blank');
   }
