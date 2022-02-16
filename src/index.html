@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <base href="/" />
+    <base />
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <title>HOMER</title>
     <meta http-equiv="Access-Control-Allow-Origin" content="*">
     <meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=1.0, user-scalable=no" />
+    <script>
+       window['base-href'] = window.location.pathname;
+    </script>
     <style type="text/css">
         @keyframes rot001 {
             0% {            stroke-dashoffset: 268.60617px; transform: rotate(0);
@@ -45,7 +48,7 @@
             width: 190px;
             margin-bottom: 6rem;
         }
-        
+
         .loader-container > .spiner {
             animation-delay: 0s;
             animation-direction: normal;
@@ -73,7 +76,7 @@
             transform: matrix(6.12323e-17, -1, 1, 6.12323e-17, 0, 0);
             transform-origin: 50px 50px;
             width: 100px;
-            
+
         }
         .loader-container > .spiner > svg > circle {
             animation-duration: 4s;
