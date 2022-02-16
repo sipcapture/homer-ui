@@ -327,19 +327,21 @@ export class TabExportComponent implements OnInit, AfterViewInit {
   //   if (this.url === '') {
   //     const data = await this._ecs.postShareLink(this.getQuery()).toPromise();
   //     if (data.data.url === '/share/#') {
-  //       this.url = window.location.origin + data.data.url + data.data.uuid;
+  //       this.url = this.getOrigin() + data.data.url + data.data.uuid;
   //     } else {
   //       this.url = data.data.url + data.data.uuid;
   //     }
   //   }
   //   window.open(this.url, '_blank');
   // }
-
+  getOrigin() {
+    return window.location.origin + window["base-href"]
+  }
   onShareLink() {
     // const param = Functions.getUriJson();
     const json = this.getQueryForShareLink();
     const queryJson = encodeURIComponent(JSON.stringify(json)) + '=';
-    const url = window.location.origin + '/search/result?' + queryJson;
+    const url = this.getOrigin() + '/search/result?' + queryJson;
 
     window.open(url, '_blank');
   }
@@ -347,7 +349,7 @@ export class TabExportComponent implements OnInit, AfterViewInit {
     if (this.url === '') {
       const data = await this._ecs.postShareLink(this.getQuery()).toPromise();
         if (data.data.url === '/share/#') {
-          this.url = window.location.origin + data.data.url + data.data.uuid;
+          this.url = this.getOrigin() + data.data.url + data.data.uuid;
         } else {
           this.url = data.data.url + data.data.uuid;
         }
