@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <base />
+    <base href="/" />
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <title>HOMER</title>
     <meta http-equiv="Access-Control-Allow-Origin" content="*">
     <meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=1.0, user-scalable=no" />
     <script>
-       window['base-href'] = window.location.pathname;
+        /**
+            If app running not on root folder, for example: http://domain/sub-folder/
+
+            then window['base-href'] should be equal "/sub-folder/"
+
+            EXAMPLE:
+            window['base-href'] = '/sub-folder/';
+        */
+        window['base-href'] = '/';
+        document.head.querySelector('base').href = window['base-href'];
     </script>
     <style type="text/css">
         @keyframes rot001 {
