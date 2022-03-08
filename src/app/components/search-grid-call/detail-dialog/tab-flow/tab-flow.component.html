@@ -113,10 +113,17 @@
     [style.min-width.px]="pageWidth + 100"
   >
     <div style="height: 92px"></div>
+    <!--<app-flow-item-->
+      <!--*ngFor="let item of arrayItemsVisible; let idx = index"-->
+      <!--[item]="item"-->
+      <!--[idx]="idx"-->
+      <!--[isSimplify]="false"-->
+    <!--&gt;-->
+    <!--</app-flow-item>-->
     <app-flow-item
       *ngFor="let item of arrayItemsVisible; let idx = index"
-      [item]="item"
-      [idx]="idx"
+      [txItem]="item"
+      [txidx]="idx"
       [isSimplify]="false"
     >
     </app-flow-item>
@@ -158,13 +165,24 @@
           <div style="height: 92px"></div>
         </ng-template>
         <ng-template ngSwitchDefault>
+          <!--<app-flow-item-->
+            <!--[item]="item"-->
+            <!--[idx]="idx"-->
+            <!--[isGroupByAlias]="_isCombineByAlias"-->
+            <!--[isSimplify]="isSimplify"-->
+            <!--[isAbsolute]="false"-->
+            <!--(itemClick)="onClickMessage($event.idx, $event.event, item)"-->
+          <!--&gt;-->
+          <!--</app-flow-item>-->
+
           <app-flow-item
-            [item]="item"
-            [idx]="idx"
+            [txItem]="item"
+            [txidx]="idx"
             [isGroupByAlias]="_isCombineByAlias"
             [isSimplify]="isSimplify"
             [isAbsolute]="false"
-            (itemClick)="onClickMessage($event.idx, $event.event, item)"
+            (itemClick)="onClickMessage($event.idx, $event.event, $event.item)"
+            (clickItemShow)="onClickItemShow($event.idx, $event.even)"
           >
           </app-flow-item>
         </ng-template>

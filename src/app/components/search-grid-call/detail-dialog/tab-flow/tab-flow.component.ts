@@ -12,6 +12,7 @@ import {
   Output
 } from '@angular/core';
 // import { VirtualScrollerComponent } from 'ngx-virtual-scroller';
+import * as moment from 'moment';
 import { Functions } from '@app/helpers/functions';
 import * as html2canvas from 'html2canvas';
 import { FlowItemType } from '@app/models/flow-item-type.model';
@@ -297,9 +298,72 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
       item.invisibleDisplayNone = item.invisible;
     });
     this.arrayItemsVisible = this.arrayItems.filter(i => !i.invisibleDisplayNone);
+
+    // @TODO current
+    this.setArrayItem()
     this.setVirtualScrollItemsArray();
     setTimeout(() => this.cdr.detectChanges(), 10);
   }
+  // @TODO current
+
+  setArrayItem() {
+    const getTxdiffTs = ( dataList = []) => {
+      const callData = Functions.cloneObject(dataList);
+      if (callData.length < 1) {
+        return 0;
+      }
+      callData.sort(function (a, b) {
+        return (a.micro_ts || 0) - (b.micro_ts || 0);
+      });
+      return (callData[callData.length - 1].micro_ts -  callData[0].micro_ts);
+    };
+
+    const { min, max, abs } = Math;
+    const {transaction_elements, hosts} = this.dataItem.data.data
+    this.arrayItemsVisible = transaction_elements.map((vitem, index) => {
+      let transaction = Object.assign({}, vitem)
+      const txSrcId = vitem.host && vitem.host.length ? vitem.host[0] : '',
+        txDstId = vitem.host && vitem.host.length ? vitem.host[vitem.host.length - 1] : '';
+      const [txSrcIp = '', txSrcPort = ''] = txSrcId.split(':'),
+        [txDstIp = '', txDstPort = ''] = txDstId.split(':')
+      const txSrcPosition = this.getHostPosition(txSrcIp, txSrcPort, txSrcId),
+        txDstPosition = this.getHostPosition(txDstIp, txDstPort, txDstId);
+      // transaction line
+      const txSid = vitem.call_data && vitem.call_data.length ? vitem.call_data[0].sid : '';
+      const name = vitem?.name || '' ;
+      const txDiff = `${getTxdiffTs(vitem.call_data).toFixed(3)}ms`;
+      const unfoldTransaction = false // this.arrayItemsVisible.length ? !!this.arrayItemsVisible[index].unfoldTransaction : false
+      Object.assign(transaction, {
+        unfoldTransaction,
+        txDiffTs: txDiff,
+        txSrcPort,
+        txDstPort,
+        txBeginDate: moment(vitem.begin_date).format('YYYY-MM-DD HH:mm:ss.SSS Z'),
+        txOptions : {
+          txColor:  Functions.getColorByString(txSid, 100, 40, 1),
+          bgColor:  Functions.getColorByString(txSid, 100, 80, 1),
+          txStart: min(txSrcPosition, txDstPosition),
+          txMiddle: abs(txSrcPosition - txDstPosition),
+          txDirection: txSrcPosition > txDstPosition,
+          txRightEnd: hosts - 1 - max(txSrcPosition, txDstPosition),
+          txIsRedialArrow: txSrcPosition === txDstPosition
+        }
+      });
+
+      transaction.call_data = transaction.call_data.map(item => {
+        return this.arrayItemsVisible.find(arrayItem => arrayItem.id === item.id)
+      })
+
+      return transaction
+    })
+  }
+
+  onClickItemShow(index: any, event: any) {
+    index = index - 1
+    const unfoldTransaction = this.arrayItemsVisible[index].unfoldTransaction;
+    this.arrayItemsVisible[index].unfoldTransaction = !unfoldTransaction;
+  }
+
   setVirtualScrollItemsArray() {
     this.virtualScrollerItemsArray = [
       { _step: 'top' },
@@ -448,8 +512,17 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
 
   onClickMessage(id: any, event = null, sitem = null) {
     const arrData: Array<any> = this.arrayItemsVisible as Array<any>;
+    // const index = arrData.findIndex(({ __item__index__ }) => __item__index__ === sitem.__item__index__);
+    // const data: any = arrData[index];
     const index = arrData.findIndex(({ __item__index__ }) => __item__index__ === sitem.__item__index__);
-    const data: any = arrData[index];
+    let data: any = {}
+    arrData.some(item => {
+      let currentData = item.call_data.find(cItem => cItem.id === sitem.id)
+      if(currentData) {
+        data = currentData
+      }
+      return !!currentData
+    })
     this.onClickMessageRow(data, {
       clientX: event && event.pageX,
       clientY: event && event.pageY,

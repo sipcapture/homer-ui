@@ -221,7 +221,8 @@ export class TabQosComponent implements OnInit, AfterViewInit {
     }
   }
   ngOnInit() {
-    this.labels = this.dataItem.data.calldata.map(i => i.sid).reduce((a, b) => {
+
+    this.labels = this.dataItem.data.transaction_elements.map(i => i.call_data.map(q => q.sid )).join(',').split(',').reduce((a, b) => {
       if (a.indexOf(b) === -1) {
         a.push(b);
       }

@@ -1,68 +1,138 @@
-<div class="item-flow-packet-container">
-  <div class="bg-color-polygon"
-    [style.background-color]="item.options.color"></div>
-  <!-- background-color -->
+<div class="tx-item">
+  <div class="item-flow-packet-container">
+    <div class="bg-color-polygon"
+         [style.background-color]="txItem.txOptions.bgColor"></div>
+    <!-- background-color -->
 
-  <div [style.flex]="item.options.start || 0.0000001"></div>
-  <!-- left space -->
-  <div class="item-flow-packet"
-    (click)="onClickItem(idx, $event)"
-    [style.flex]="item.options.middle || 0.0000001"
-    [style.text-align]="item.options.direction ? 'right' : 'left'">
+    <div [style.flex]="txItem.txOptions.txStart || 0.0000001"></div>
+    <!-- left space -->
+    <div class="item-flow-packet"
+         (click)="onClickItemShow()"
+         [style.flex]="txItem.txOptions.txMiddle || 0.0000001"
+         [style.text-align]="txItem.txOptions.txDirection ? 'right' : 'left'">
 
-    <!-- content -->
-    <div class="call_text"
-      [style.color]="item.options.color_method || 'initial'">
-      {{ item.method_text }}
-      <span *ngIf="item.QOS && item.QOS.MOS"
-        class="blinkLamp"
-        [style.backgroundColor]="MOSColorGradient(item.QOS.MOS)"></span>
-      {{ item.QOS ? (item.QOS.MOS ? (item.QOS.MOS + " [" + item.QOS.qosTYPEless + "]") : 'UA Report') : "" }}
-    </div>
+      <!-- content -->
+      <div class="call_text">
+        {{ txItem.name }}
+      </div>
 
 
-    <div class="call_text-mini"
-      [style.height.px]=" !isSimplify ? 15 : 0 ">
-      {{ item.description }}
-    </div>
-    <div [ngClass]="'port-label-' + (!item.options.direction ? 'left' : 'right')"
-      [matTooltip]="isGroupByAlias && item.source_ip || ''"
-    >
-      {{ item.source_port }}
-    </div>
-    <div *ngIf="!item.options.isRadialArrow"
-      [ngClass]="
-                'arrow' +
-                (item.options.direction ? ' left' : '') +
-                (item.options.arrowStyleSolid ? ' arrow-solid' : ' arrow-dotted')
-            "
-      [ngStyle]="{ color: item.options.color }"></div>
-    <div *ngIf="item.options.isRadialArrow"
-      [ngClass]="(item.options.isLastHost ? 'radial-arrow-end' : 'radial-arrow') +
-                                    (item.options.arrowStyleSolid ? ' arrow-solid' : ' arrow-dotted')"
-      [style.color]="item.options.color">
-    </div>
-    <!-- <div *ngIf="item.description !== item.ipDirection"
-      class="call_text-mini"
-      [style.height.px]=" !isSimplify ? 15 : 0 ">
-      {{ item.ipDirection }}
-    </div> -->
-    <div *ngIf="!item.options.isLastHost"
-      [ngClass]="'port-label-' + (item.options.direction ? 'left' : 'right')"
-      [style.left.px]="item.options.isRadialArrow && -47"
-      [matTooltip]="isGroupByAlias && item.destination_ip || ''"
+      <div class="call_text-mini"
+           [style.height.px]=" !isSimplify ? 15 : 0 ">
+        {{txItem.from_user}} - {{txItem.to_user}}
+        <span *ngIf="txItem.error_name" class="col-warning">
+                    ({{txItem.error_name}})
+                </span>
+      </div>
+      <div [ngClass]="'port-label-' + (!txItem.txOptions.txDirection ? 'left' : 'right')"
+           [matTooltip]="isGroupByAlias && txItem.txSrcPort || ''"
       >
-      {{ item.destination_port }}
+        {{ txItem.txSrcPort}}
+      </div>
+      <div *ngIf="!txItem.txOptions.txIsRedialArrow"
+           [ngClass]="
+                  'arrow' +
+                  (txItem.txOptions.txDirection  ? ' left' : '') +
+                  ' arrow-solid'
+              "
+           [ngStyle]="{ color: txItem.txOptions.txColor }"></div>
+      <div *ngIf="txItem.txOptions.txIsRedialArrow"
+           [ngClass]="('radial-arrow') + ' arrow-solid'"
+           [style.color]="txItem.txOptions.txColor">
+      </div>
+      <!-- <div *ngIf="item.description !== item.ipDirection"
+        class="call_text-mini"
+        [style.height.px]=" !isSimplify ? 15 : 0 ">
+        {{ item.ipDirection }}
+      </div> -->
+      <div
+           [ngClass]="'port-label-' + (txItem.txOptions.txDirection ? 'left' : 'right')"
+           [style.left.px]="txItem.txOptions.txIsRedialArrow && -47"
+           [matTooltip]="isGroupByAlias && txItem.txDstPort || ''"
+      >
+        {{ txItem.txDstPort  }}
+      </div>
+      <!--<div *ngIf="item.options.isLastHost"-->
+           <!--class="port-label-right">{{ item.destination_port }}</div>-->
+      <div class="call-text-date"
+           [style.max-height.px]="!isSimplify ? 50 : 0 ">
+        {{ txItem.txBeginDate}} {{ txItem.txDiffTs }}
+      </div>
     </div>
-    <div *ngIf="item.options.isLastHost"
-      class="port-label-right">{{ item.destination_port }}</div>
-    <div class="call-text-date"
-      [style.max-height.px]="!isSimplify ? 50 : 0 ">
-      {{ item.info_date }}
+    <div
+      [style.flex]="txItem.txOptions.txRightEnd || 0.0000001">
     </div>
-    <div class="call-text-date">{{ isAbsolute ? item.diff_absolute : item.diff ? item.diff : "+0.00ms" }}</div>
   </div>
-  <div
-    [style.flex]="(item.options.rightEnd - (item.options.isRadialArrow && !item.options.isLastHost ? 1 : 0 )) || 0.0000001">
+
+  <!-- transaction item -->
+  <div *ngIf="!!txItem.unfoldTransaction">
+    <div class="item-flow-packet-container" *ngFor="let item of txItem.call_data; let callDataIdx = index">
+      <div class="bg-color-polygon"
+           [style.background-color]="item.options.color"></div>
+      <!-- background-color -->
+
+      <div [style.flex]="item.options.start || 0.0000001"></div>
+      <!-- left space -->
+      <div class="item-flow-packet"
+           (click)="onClickItem(callDataIdx, $event, item)"
+           [style.flex]="item.options.middle || 0.0000001"
+           [style.text-align]="item.options.direction ? 'right' : 'left'">
+
+        <!-- content -->
+        <div class="call_text"
+             [style.color]="item.options.color_method || 'initial'">
+          {{ item.method_text }}
+          <span *ngIf="item.QOS && item.QOS.MOS"
+                class="blinkLamp"
+                [style.backgroundColor]="MOSColorGradient(item.QOS.MOS)"></span>
+          {{ item.QOS ? (item.QOS.MOS ? (item.QOS.MOS + " [" + item.QOS.qosTYPEless + "]") : 'UA Report') : "" }}
+        </div>
+
+
+        <div class="call_text-mini"
+             [style.height.px]=" !isSimplify ? 15 : 0 ">
+          {{ item.description }}
+        </div>
+        <div [ngClass]="'port-label-' + (!item.options.direction ? 'left' : 'right')"
+             [matTooltip]="isGroupByAlias && item.source_ip || ''"
+        >
+          {{ item.source_port }}
+        </div>
+        <div *ngIf="!item.options.isRadialArrow"
+             [ngClass]="
+                  'arrow' +
+                  (item.options.direction ? ' left' : '') +
+                  (item.options.arrowStyleSolid ? ' arrow-solid' : ' arrow-dotted')
+              "
+             [ngStyle]="{ color: item.options.color }"></div>
+        <div *ngIf="item.options.isRadialArrow"
+             [ngClass]="(item.options.isLastHost ? 'radial-arrow-end' : 'radial-arrow') +
+                                      (item.options.arrowStyleSolid ? ' arrow-solid' : ' arrow-dotted')"
+             [style.color]="item.options.color">
+        </div>
+        <!-- <div *ngIf="item.description !== item.ipDirection"
+          class="call_text-mini"
+          [style.height.px]=" !isSimplify ? 15 : 0 ">
+          {{ item.ipDirection }}
+        </div> -->
+        <div *ngIf="!item.options.isLastHost"
+             [ngClass]="'port-label-' + (item.options.direction ? 'left' : 'right')"
+             [style.left.px]="item.options.isRadialArrow && -47"
+             [matTooltip]="isGroupByAlias && item.destination_ip || ''"
+        >
+          {{ item.destination_port }}
+        </div>
+        <div *ngIf="item.options.isLastHost"
+             class="port-label-right">{{ item.destination_port }}</div>
+        <div class="call-text-date"
+             [style.max-height.px]="!isSimplify ? 50 : 0 ">
+          {{ item.info_date }}
+        </div>
+        <div class="call-text-date">{{ isAbsolute ? item.diff_absolute : item.diff ? item.diff : "+0.00ms" }}</div>
+      </div>
+      <div
+        [style.flex]="(item.options.rightEnd - (item.options.isRadialArrow && !item.options.isLastHost ? 1 : 0 )) || 0.0000001">
+      </div>
+    </div>
   </div>
 </div>
