@@ -31,6 +31,6 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class LokiResultsModule {
     constructor(library: FaIconLibrary) {
-        library.addIconPacks(fas, fab, far);
+        library.addIconPacks(fas as any, fab as any, far as any);
     }
  }
