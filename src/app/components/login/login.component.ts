@@ -104,7 +104,7 @@ export class LoginComponent implements OnInit {
         this.types = Object.values(data);
         this.oAuthTypes = data?.oauth2?.filter(type => type.enable)
         const autoRedirect = this.oAuthTypes?.find(type => type.auto_redirect === true);
-        if (autoRedirect && !this.isDirect) {
+        if (autoRedirect && !this.isDirect && !this.oAuthToken) {
             this.goOauth(autoRedirect);
         }
         this.enabledTypes = this.getEnabledTypes(data);
