@@ -46,7 +46,7 @@
             {{ category?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
           </mat-error>
           <mat-error *ngIf="category?.errors?.pattern && !category?.errors?.minlength">
-            {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-" or "_"]
+            {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or "."
           </mat-error>
         </mat-form-field>
       </div>

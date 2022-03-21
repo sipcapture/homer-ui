@@ -13,7 +13,7 @@ export class DialogUserSettingsComponent {
     isValidForm = false;
     isAdmin = false;
     regNum = /^[0-9]+$/;
-    regString = /^[a-zA-Z0-9\-\_]+$/;
+    regString = /^[a-zA-Z0-9\-\_\.]+$/;
     currentUser = '';
     userList: any;
     type: string;

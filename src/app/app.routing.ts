@@ -29,10 +29,13 @@ const appRoutes: Routes = [{
     path: 'transaction/:uuid',
     component: DetailDialogComponent,
     canActivate: [AuthGuard]
-}, {
+},{
     path: 'login',
     component: LoginComponent,
     outlet: 'system'
+}, {
+    path: 'direct-login',
+    redirectTo: "/(system:login)?direct=true"
 }, {
     path: '',
     redirectTo: 'dashboard/home',
@@ -42,5 +45,4 @@ const appRoutes: Routes = [{
 }, {
     path: 'dashboard/home/**', redirectTo: 'dashboard/home'
 }];
-
 export const routing = RouterModule.forRoot(appRoutes, { enableTracing: false });
