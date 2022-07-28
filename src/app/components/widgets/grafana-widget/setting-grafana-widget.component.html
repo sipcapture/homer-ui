@@ -1,112 +1,127 @@
 <mat-toolbar class="title" color="primary">
-  <div>{{'LINK.settings' | translate}}</div>
-  <button mat-icon-button (click)="onNoClick()">
-    <fa-icon icon="times"></fa-icon>
-  </button>
-</mat-toolbar>
-
-<div mat-dialog-content>
-  <div class="example-container">
-    <mat-form-field>
-      <mat-label>{{'LINK.title' | translate}}</mat-label>
-      <input matInput [(ngModel)]="data.title" (ngModelChange)='validate($event)'>
-    </mat-form-field>
-
-    
-    <div>
-      <label>{{ 'widgets.grafana.settings.theme' | translate }} </label>
-      <mat-radio-group
-        aria-labelledby="example-radio-group-label"
-        class="example-radio-group"
-        [(ngModel)]="data.params.theme">
-        <mat-radio-button style="padding-left: 0.5rem;" *ngFor="let season of ['light', 'dark']" [value]="season">
-          {{season}}
-        </mat-radio-button>
-      </mat-radio-group>
-    </div>
-    
-    <div>
-      <label>{{ 'widgets.grafana.settings.timeRange' | translate }}</label>
-      <mat-radio-group
-        aria-labelledby="example-radio-group-label"
-        class="example-radio-group"
-        [(ngModel)]="data.typeDataRange">
-        <mat-radio-button style="padding-left: 0.5rem;" 
-          *ngFor="let season of [
-            {name: 'Dashboard', value: 'global'},
-            {name: 'Grafana', value: 'grafana'}
-          ]" [value]="season.value">
-          {{season.name}}
-        </mat-radio-button>
-      </mat-radio-group>
-      
-    </div>
-    <div *ngIf="data.typeDataRange === 'grafana'">
-      <mat-form-field>
-        <mat-label>{{ 'widgets.grafana.settings.from' | translate }}</mat-label>
-        <input matInput [(ngModel)]="data.params.from">
-      </mat-form-field>
-    
-      <mat-form-field style="padding-left: 0.5rem;">
-        <mat-label>{{ 'widgets.grafana.settings.to' | translate }}</mat-label>
-        <input matInput [(ngModel)]="data.params.to">
-      </mat-form-field>
-
-      
-      <mat-form-field style="padding-left: 0.5rem;">
-        <mat-label>{{ 'widgets.grafana.settings.refresh' | translate }}</mat-label>
-        <input matInput [(ngModel)]="data.params.refresh">
-      </mat-form-field>
-      <p>{{ 'widgets.grafana.settings.refreshDescription' | translate }}</p>
-
-      <div>
-        <a [href]="'widgets.grafana.settings.documentationLink'" target="_blank">
-            {{ 'widgets.grafana.settings.documentation' | translate }}
-        </a>
-      </div>
-      <hr>
-    </div>
-
-    <div>   
-      <mat-form-field *ngIf="isLoggedIn">
-        <mat-label>{{'LINK.dashboard' | translate}}</mat-label>
-        <mat-select
-          [compareWith]="compareDashboard"
-          [(ngModel)]="dashboardSource"
-          (selectionChange)="onDashboardChange()"> 
-          <mat-optgroup *ngFor='let group of dashboardList' [label]='group.group'>        
-            <mat-option *ngFor="let item of group.list" [value]="item">
-                    {{ item.title }}
-            </mat-option>
-            </mat-optgroup>   
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field style="padding-left: 0.5rem;" *ngIf="isLoggedIn">
-        <mat-label>{{ 'widgets.grafana.settings.panel' | translate }}</mat-label>
-        <mat-select
-          [compareWith]="comparePanel"
-          [(ngModel)]="panelListValue"
-          (selectionChange)="onPanelSelect()">
-            <mat-option *ngFor="let item of panelList" [value]="item">
-              {{ item.title }}
-            </mat-option>
-          </mat-select>
-      </mat-form-field>
-      <h6 *ngIf="!isLoggedIn">{{ 'widgets.grafana.settings.loginError' | translate }}</h6>
-    </div>
-
+    <div>{{'LINK.settings' | translate}}</div>
+    <button mat-icon-button (click)="onNoClick()">
+      <fa-icon icon="times"></fa-icon>
+    </button>
+  </mat-toolbar>
+  
+  <div mat-dialog-content>
     <div class="example-container">
       <mat-form-field>
-        <mat-label>{{ 'widgets.grafana.settings.description' | translate }}</mat-label>
-        <input matInput [(ngModel)]="data.desc">
+        <mat-label>{{'LINK.title' | translate}}</mat-label>
+        <input matInput [(ngModel)]="data.title" (ngModelChange)='validate($event)'>
       </mat-form-field>
+  
+      
+      <div>
+        <label>{{ 'widgets.grafana.settings.theme' | translate }} </label>
+        <mat-radio-group
+          aria-labelledby="example-radio-group-label"
+          class="example-radio-group"
+          [(ngModel)]="data.params.theme">
+          <mat-radio-button style="padding-left: 0.5rem;" *ngFor="let season of ['light', 'dark']" [value]="season">
+            {{season}}
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
+      
+      <div>
+        <label>{{ 'widgets.grafana.settings.timeRange' | translate }}</label>
+        <mat-radio-group
+          aria-labelledby="example-radio-group-label"
+          class="example-radio-group"
+          [(ngModel)]="data.typeDataRange">
+          <mat-radio-button style="padding-left: 0.5rem;" 
+            *ngFor="let season of [
+              {name: 'Dashboard', value: 'global'},
+              {name: 'Grafana', value: 'grafana'}
+            ]" [value]="season.value">
+            {{season.name}}
+          </mat-radio-button>
+        </mat-radio-group>
+        
+      </div>
+
+      <div *ngIf="data.typeDataRange === 'grafana'">
+        <mat-form-field>
+          <mat-label>{{ 'widgets.grafana.settings.from' | translate }}</mat-label>
+          <input matInput [(ngModel)]="data.params.from">
+        </mat-form-field>
+      
+        <mat-form-field style="padding-left: 0.5rem;">
+          <mat-label>{{ 'widgets.grafana.settings.to' | translate }}</mat-label>
+          <input matInput [(ngModel)]="data.params.to">
+        </mat-form-field>
+  
+        
+        <mat-form-field style="padding-left: 0.5rem;">
+          <mat-label>{{ 'widgets.grafana.settings.refresh' | translate }}</mat-label>
+          <input matInput [(ngModel)]="data.params.refresh">
+        </mat-form-field>
+        <p>{{ 'widgets.grafana.settings.refreshDescription' | translate }}</p>
+  
+        <div>
+          <a [href]="'widgets.grafana.settings.documentationLink'" target="_blank">
+              {{ 'widgets.grafana.settings.documentation' | translate }}
+          </a>
+        </div>
+        <hr>
+      </div>
+      <div *ngIf="isSameOrigin">
+        <mat-checkbox
+            [(ngModel)]="data.params.hasVariables"
+        >
+        {{ 'widgets.grafana.settings.hasVariables' | translate }}
+        </mat-checkbox>
+      </div>
+  
+      <div>   
+        <mat-form-field *ngIf="isLoggedIn">
+          <mat-label>{{'LINK.dashboard' | translate}}</mat-label>
+          <mat-select
+            [disabled]='dashboardList?.length == 0'
+            [compareWith]="compareDashboard"
+            [(ngModel)]="dashboardSource"
+            (selectionChange)="onDashboardChange()"> 
+            <mat-optgroup *ngFor='let group of dashboardList' [label]='group.group'>        
+              <mat-option *ngFor="let item of group.list" [value]="item">
+                      {{ item.title }}
+              </mat-option>
+              </mat-optgroup>   
+          </mat-select>
+        </mat-form-field>
+  
+        <mat-form-field style="padding-left: 0.5rem;" *ngIf="isLoggedIn">
+          <mat-label>{{ 'widgets.grafana.settings.panel' | translate }}</mat-label>
+          <mat-select
+          style="max-height: 300px;"
+          [disabled]='dashboardList?.length == 0'
+            [compareWith]="comparePanel"
+            [(ngModel)]="panelListValue"
+            (selectionChange)="onPanelSelect()">
+              <mat-option *ngFor="let item of panelList" [value]="item">
+                {{ item.title }}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <h6 *ngIf="!isLoggedIn" class="login-error"><mat-icon>warning</mat-icon>
+          <span *ngIf="errorCode !== 1048">{{ 'widgets.grafana.settings.error' | translate: {error: errorMessage} }}</span> 
+          <span *ngIf="errorCode === 1048">{{ 'widgets.grafana.settings.grafanaError' | translate: {error: errorMessage} }}</span> 
+        </h6>
+      </div>
+  
+      <div class="example-container">
+        <mat-form-field>
+          <mat-label>{{ 'widgets.grafana.settings.description' | translate }}</mat-label>
+          <input matInput [(ngModel)]="data.desc">
+        </mat-form-field>
+      </div>
+  
     </div>
-
   </div>
-</div>
-
-<div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
-  <button mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
-  <button mat-raised-button class="setting-btn-ok" [mat-dialog-close]="data" cdkFocusInitial [disabled]='isInvalid'>{{'LINK.buttons.save' | translate}}</button>
-</div>
+  
+  <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
+    <button mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
+    <button mat-raised-button class="setting-btn-ok" [mat-dialog-close]="data" cdkFocusInitial [disabled]='isInvalid'>{{'LINK.buttons.save' | translate}}</button>
+  </div>
+  
