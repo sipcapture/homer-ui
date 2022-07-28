@@ -5,6 +5,7 @@ import { AuthenticationService } from '@app/services/authentication.service';
 import { DashboardService } from '@app/services/dashboard.service';
 import { DeleteDialogComponent } from '../delete-dialog/delete-dialog.component';
 import { TranslateService } from '@ngx-translate/core'
+import { environment } from '@environments/environment';
 export interface DashboardConfig {
     name: string;
     type: number;
@@ -16,6 +17,7 @@ export interface DashboardConfig {
     pushing: boolean;
     grafanaTimestamp: boolean;
     grafanaProxy: boolean;
+    hasVariables: boolean;
 }
 
 @Component({
@@ -25,8 +27,10 @@ export interface DashboardConfig {
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditDialogComponent implements OnInit {
+    private envUrl = `${environment.apiUrl.replace('/api/v3', '')}`;
     onDeleteWidgets = new EventEmitter();
     onTile = new EventEmitter();
+    isSameOrigin: boolean = false;
     typeList = [];
     typeBoolean = {
         CUSTOM: {
@@ -119,6 +123,7 @@ export class EditDialogComponent implements OnInit {
         });
     }
     async ngOnInit() {
+        this.isSameOrigin = this.envUrl === `${window.location.protocol}//${window.location.host}`;
         const resData: any = await this.dashboardService.getDashboardInfo(0).toPromise();
         const currentUser = this.authenticationService.getUserName();
         if (resData?.data) {

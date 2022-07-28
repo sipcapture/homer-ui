@@ -10,7 +10,8 @@ import {
   ViewChild,
   HostListener,
   ChangeDetectionStrategy,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  ElementRef
 } from '@angular/core';
 import {
   DashboardService,
@@ -86,8 +87,10 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   subscription: Subscription;
   isIframe = false;
-  isHome = false;
+  isIframeLoaded: boolean = false;
+  isSameOrigin: boolean = false;
   iframeUrl: string;
+  isHome = false;
   postSaveHash: string;
   _interval: any;
   params: any;
@@ -113,6 +116,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChildren('widgets') widgets: QueryList<IWidget>;
   @ViewChild('customWidget', { static: false }) customWidget: any;
   @ViewChild('gridster', { static: false }) gridster: any;
+  @ViewChild('frame', { static: false }) frame: ElementRef;
   @HostListener('window:resize')
   onResize() {
     if (typeof this.gridster !== 'undefined' && this.gridster !== null) {
@@ -192,6 +196,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
+    this.isSameOrigin = this.envUrl === `${window.location.protocol}//${window.location.host}`;
     // Grid options
     this.params = {
       refresh: '1h',
@@ -518,35 +523,49 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   buildUrl() {
     if (!this.dashboardCollection?.data?.param) {
-      return;
+        return;
     }
     if (this.dashboardCollection.data.config.grafanaTimestamp) {
-      if (/from=\d*/.test(this.dashboardCollection.data.param)) {
-        this.dashboardCollection.data.param = this.dashboardCollection.data.param.replace(/from=\d*/, `from=${this.params.from}`);
-      } else {
-        this.dashboardCollection.data.param += `&from=${this.params.from}`;
-      }
-      if (/to=\d*/.test(this.dashboardCollection.data.param)) {
-        this.dashboardCollection.data.param = this.dashboardCollection.data.param.replace(/to=\d*/, `to=${this.params.to}`);
-      } else {
-        this.dashboardCollection.data.param += `&to=${this.params.to}`;
-      }
-      if (!/&kiosk/.test(this.dashboardCollection.data.param)) {
-        this.dashboardCollection.data.param += `&kiosk`;
-      }
+        if (/from=\d*/.test(this.dashboardCollection.data.param)) {
+            this.dashboardCollection.data.param =
+                this.dashboardCollection.data.param.replace(
+                    /from=\d*/,
+                    `from=${this.params.from}`
+                );
+        } else {
+            this.dashboardCollection.data.param += `&from=${this.params.from}`;
+        }
+        if (/to=\d*/.test(this.dashboardCollection.data.param)) {
+            this.dashboardCollection.data.param =
+                this.dashboardCollection.data.param.replace(
+                    /to=\d*/,
+                    `to=${this.params.to}`
+                );
+        } else {
+            this.dashboardCollection.data.param += `&to=${this.params.to}`;
+        }
+        if (!/&kiosk/.test(this.dashboardCollection.data.param)) {
+            this.dashboardCollection.data.param += `&kiosk`;
+        }
     }
+    this.iframeUrl = '';
+    this.cdr.detectChanges();
     if (this.dashboardCollection.data.config.grafanaProxy) {
-      const currentUser = this.authenticationService.currentUserValue;
-      const shortToken = currentUser.token.slice(currentUser.token.length - 15);
-      const url = new URL(this.dashboardCollection.data.param);
-      const formattedUrl = `${url.pathname}${url.search}`;
-      this.iframeUrl = `${this.envUrl}${formattedUrl}&JWT=${shortToken}`;
+        const currentUser = this.authenticationService.currentUserValue;
+        const shortToken = currentUser.token.slice(currentUser.token.length - 15);
+        const url = new URL(this.dashboardCollection.data.param);
+        let formattedUrl = `${url.pathname}${url.search}`;
+        if (this.isSameOrigin && this.dashboardCollection.data.config.hasVariables ) {
+            formattedUrl = formattedUrl.replace('/d-solo/', '/d/').replace('&kiosk',`&kiosk=full`);
+        }
+        this.iframeUrl = `${this.envUrl}${formattedUrl}&JWT=${shortToken}`;
+        console.log(url)
     } else {
-      this.iframeUrl = this.dashboardCollection.data.param;
+        this.iframeUrl = this.dashboardCollection.data.param;
     }
 
     this.cdr.detectChanges();
-  }
+}
   submitCheck() {
     const submitWidgets: Array<any> = [];
     const dashboardSubmitWidgets: Array<any> = [];
@@ -1046,6 +1065,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
         pushing: !!_d.config.pushing,
         grafanaTimestamp: _d.config.grafanaTimestamp,
         grafanaProxy: _d.config.grafanaProxy,
+        hasVariables: _d.config.hasVariables,
         ignoreMinSize: _d.config.ignoreMinSize || 'warning',
         gridType: _d.config.gridType || GridType.Fit,
       }
@@ -1090,6 +1110,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       dd.config.pushing = data.pushing;
       dd.config.grafanaTimestamp = data.grafanaTimestamp;
       dd.config.grafanaProxy = data.grafanaProxy;
+      dd.config.hasVariables = data.hasVariables;
       dd.config.ignoreMinSize = data.ignoreMinSize;
       dd.config.gridType = data.gridType;
 
@@ -1318,4 +1339,35 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       this.gridOptions?.api?.optionsChanged();
     } catch (err) { }
   }
+  // To work on Grafana "Variables" feature you have to have setup with same origin for backend and UI 
+  // or set ---disable-site-isolation-trials flag in chrome, DON'T FORGET TO REMOVE FLAG AFTERWARDS, IT IS UNSAFE
+  onLoadIframe() {
+    if (this.iframeUrl !== '') {
+        this.isIframeLoaded = true;
+        if (this.isSameOrigin && this.dashboardCollection.data.config.hasVariables) {
+            let isHeader = false
+            let interval = setInterval(() => {
+                isHeader = !!this.frame.nativeElement.contentWindow.document.querySelector('header')
+                if (isHeader) {
+                    clearInterval(interval)
+                    this.frame.nativeElement.contentWindow.document.querySelector('header').hidden = true;
+                    this.frame.nativeElement.contentWindow.document.querySelector('.track-vertical').style.setProperty('width', '0', 'important')
+                    this.frame.nativeElement.contentWindow.document.querySelector('.react-grid-layout').style.setProperty('height', '0', 'important')
+                    const submenu = this.frame.nativeElement.contentWindow.document.querySelector('.submenu-controls')
+                    if (submenu) {
+                        submenu.style.setProperty('padding-top', '5px', 'important')
+                        submenu.style.setProperty('margin-left', '16px', 'important')
+                    }
+                    this.frame.nativeElement.contentWindow.document.querySelectorAll('.scrollbar-view')[1].children[0].style.setProperty('padding', '0', 'important')
+                    const sidemenu = this.frame.nativeElement.contentWindow.document.querySelector('.sidemenu')
+                    if (sidemenu) {
+                        sidemenu.style.setProperty('display', 'none', 'important')
+                    }
+                }
+            }, 10);
+        }
+
+        this.cdr.detectChanges();
+    }
+}
 }

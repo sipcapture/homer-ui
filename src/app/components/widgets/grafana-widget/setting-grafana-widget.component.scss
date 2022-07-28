@@ -9,3 +9,22 @@
 		width: 100%;
 	}
 }
+.login-error {
+	background:#ff440033;
+	border:1px solid #ff4400;
+	color:#ff4400;
+	padding:10px;
+	font-size: 13px;
+	text-align: center;
+	border-radius:4px;
+	margin:3px 0px;
+	display:flex;
+	align-items: center;
+	justify-content: center;
+	mat-icon {
+		font-size: 15px;
+		height:16px;
+		width:16px;
+		margin-right:2px;
+	}
+  }
