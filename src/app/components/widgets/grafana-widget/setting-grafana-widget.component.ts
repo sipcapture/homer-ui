@@ -11,13 +11,6 @@ import { lastValueFrom } from 'rxjs';
     styleUrls: ['./setting-grafana-widget.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-@Component({
-    selector: 'app-grafana-rsearch-widget-component',
-    templateUrl: 'setting-grafana-widget.component.html',
-    styleUrls: ['./setting-grafana-widget.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
-})
-
 export class SettingIframeWidgetComponent implements OnInit {
 
     private envUrl = `${environment.apiUrl.replace('/api/v3', '')}`;
