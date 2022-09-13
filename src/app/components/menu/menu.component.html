@@ -23,7 +23,7 @@
             <span (click)="panelName = favorite.name; dashboardGo(favorite.href)">
                 {{favorite.name}}
             </span>
-            <button (click)="addDashboardFavorite(favorite)">
+            <button (click)="toggleDashboardFavorite(favorite)">
                 <mat-icon>close</mat-icon>
             </button>
         </div>
@@ -67,7 +67,7 @@
                     </button>
                     <button mat-button *ngIf="dashboardItem.type !== 6"
                         [className]="'addToFavorites' + (hasFav(dashboardItem,favoriteDashboardsList) ? ' activeFavorite': '')"
-                        (click)="addDashboardFavorite(dashboardItem)">
+                        (click)="toggleDashboardFavorite(dashboardItem)">
                         <mat-icon>grade</mat-icon>
                     </button>
                 </div>
@@ -84,7 +84,7 @@
                     </button>
                     <button mat-button *ngIf="dashboardItem.type !== 6"
                         [className]="'addToFavorites' + (hasFav(dashboardItem,favoriteDashboardsList) ? ' activeFavorite': '')"
-                        (click)="addDashboardFavorite(dashboardItem)">
+                        (click)="toggleDashboardFavorite(dashboardItem)">
                         <mat-icon>grade</mat-icon>
                     </button>
                 </div>
