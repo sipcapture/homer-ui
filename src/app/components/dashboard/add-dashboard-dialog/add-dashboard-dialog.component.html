@@ -51,8 +51,17 @@
     <hr class="hr-or">
     <form>
       <div class="file-upload-container">
-      <label for="fileSelect" [className]="'fileselect' + (idDrugOver ? ' drugOver' : '')"></label>
-        <input placeholder="" value="" type="file" id="fileSelect" #fileSelect></div>
+      <label for="fileSelect" [className]="'fileselect' + (idDrugOver ? ' drugOver' : '')"></label>      
+      <div *ngIf="fileNames" class="file-list">
+        <div *ngFor="let fn of fileNames" class="file-item">
+          {{fn}}
+        </div>
+      </div>
+        <input placeholder="" 
+        (change)="onJsonChange($event)"
+        value="" type="file" id="fileSelect" #fileSelect>
+    
+      </div>
     </form>
   </div>
   <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">

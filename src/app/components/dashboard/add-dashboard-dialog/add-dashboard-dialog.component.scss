@@ -59,3 +59,13 @@
 		opacity: 0;
 	}
 }
+.file-list {
+	display:flex;
+	.file-item {
+		margin:5px;
+		background:#f7f7f7;
+		border:1px solid #f3f3f3;
+		padding:4px 8px;
+		border-radius:3px;
+	}
+}
