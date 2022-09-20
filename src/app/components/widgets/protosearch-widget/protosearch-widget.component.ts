@@ -789,10 +789,6 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
                     i.form_default = list.data.map(m => ({ name: m, value: m }))
                   } else {
                     i.form_default = list?.data?.sort((a, b) => a?.name?.localeCompare(b?.name));
-                    i.form_default.forEach(item => {
-                      item.disabled = !item.online; // Check for server status in Node
-                    });
-
                   }
                 } catch (e) {
                   console.log(e)

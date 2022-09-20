@@ -245,13 +245,10 @@ export class MenuComponent implements OnInit, OnDestroy {
         const resData: any = await this.dashboardService.getDashboardInfo(0).toPromise();
         if (resData?.data) {
             const currentUser = this.authenticationService.getUserName();
-            this.dashboards = resData.data.sort((...aa: any[]) => {
-                const [a, b] = aa.map(({ name }: { name: string }) => name.charCodeAt(0));
-                return a < b ? -1 : a > b ? 1 : 0;
-            }).filter(item => item.shared === false || item.owner === currentUser);
-            this.sharedDashboards = resData.data.sort((...aa: any[]) => {
-                const [a, b] = aa.map(({ name }: { name: string }) => name.charCodeAt(0));
-                return a < b ? -1 : a > b ? 1 : 0;
+            this.dashboards = resData.data.filter(item => item.shared === false || item.owner === currentUser);
+            this.sortDashboards();
+            this.sharedDashboards = resData.data.sort((a,b) => {
+                return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
             }).filter(item => item.shared === true && item.owner !== currentUser);
             try {
                 this.currentDashboardId = this.dashboardService.getCurrentDashBoardId();
@@ -357,7 +354,7 @@ export class MenuComponent implements OnInit, OnDestroy {
         }
     }
 
-    addDashboardFavorite(dashboardItem) {
+    toggleDashboardFavorite(dashboardItem) {
         if (
             this.favoriteDashboardsList.some((f) => f.id === dashboardItem.id)
         ) {
@@ -367,18 +364,33 @@ export class MenuComponent implements OnInit, OnDestroy {
         } else {
             this.favoriteDashboardsList.push(dashboardItem);
         }
-        this.favoriteDashboardsList = Array.from(
-            this.favoriteDashboardsList
-        ).sort((a: any, b: any) => {
-            const aname = a.name;
-            const bname = b.name;
-            return aname.localeCompare(bname, 'en', { sensitivity: 'base' });
+        this.favoriteDashboardsList.sort((a: any, b: any) => {
+            return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
         });
+        this.sortDashboards();
 
         this._sss.saveFavoritesConfig(this.favoriteDashboardsList);
         this.cdr.detectChanges();
     }
+    sortDashboards() {
+        this.dashboards.sort((a,b) => {
+            return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
 
+        })
+        if (this.favoriteDashboardsList.length > 0) {
+            this.dashboards.sort((a,b) => {
+                if( this.favoriteDashboardsList.find(dashboard => a.name === dashboard.name)) {
+                    
+                    if(this.favoriteDashboardsList.length > 1 && this.favoriteDashboardsList.find(dashboard => b.name === dashboard.name)) {
+                    
+                        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+                    }
+                    return -1
+                }
+                return 1
+            })
+        }
+    }
     async deleteSearchTab(searchTab) {
         const sourceLink = searchTab.source_link;
         const currentLocation = this.dashboardService.getCurrentDashBoardId();
