@@ -10,9 +10,11 @@ import { environment } from '@environments/environment';
   selector: 'app-add-dashboard-dialog',
   templateUrl: './add-dashboard-dialog.component.html',
   styleUrls: ['./add-dashboard-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddDashboardDialogComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AddDashboardDialogComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @ViewChild('fileSelect', { static: true }) fileSelect;
 
   private envUrl = `${environment.apiUrl.replace('/api/v3', '')}`;
@@ -21,7 +23,7 @@ export class AddDashboardDialogComponent implements OnInit, AfterViewInit, OnDes
   typeBoolean = {
     CUSTOM: {
       isActive: true,
-      type: 1
+      type: 1,
     },
     FRAME: {
       isActive: true,
@@ -29,7 +31,7 @@ export class AddDashboardDialogComponent implements OnInit, AfterViewInit, OnDes
     },
     HOME: {
       isActive: true,
-      type: 3
+      type: 3,
     },
     SEARCH: {
       isActive: true,
@@ -37,24 +39,27 @@ export class AddDashboardDialogComponent implements OnInit, AfterViewInit, OnDes
     },
     ALARM: {
       isActive: true,
-      type: 5
+      type: 5,
     },
     GRAFANA: {
       isActive: true,
-      type: 7 // not an error, workaround because "Search TAB" is type 6
-    }
+      type: 7, // not an error, workaround because "Search TAB" is type 6
+    },
   };
   dashboards: any;
   isInvalid = false;
   regString = /^[a-zA-Z0-9\-\_\s]+$/;
   isConfirmed = false;
+  fileNames = [];
   isSameOrigin: boolean = false;
-  nameNewPanel = new FormControl('', [
-    Validators.required,
-    Validators.minLength(3),
-    Validators.maxLength(40),
-    Validators.pattern(this.regString)
-  ],
+  nameNewPanel = new FormControl(
+    '',
+    [
+      Validators.required,
+      Validators.minLength(3),
+      Validators.maxLength(40),
+      Validators.pattern(this.regString),
+    ],
     this.dNameValidator.bind(this)
   );
   constructor(
@@ -66,64 +71,114 @@ export class AddDashboardDialogComponent implements OnInit, AfterViewInit, OnDes
     private cdr: ChangeDetectorRef,
     @Inject(MAT_DIALOG_DATA) public data: any = {}
   ) {
-    translateService.addLangs(['en'])
-    translateService.setDefaultLang('en')
-    this.dashboardService.getDashboardInfo().toPromise().then((list: any) => {
-      if (list?.data?.length > 0) {
-        this.typeBoolean.HOME.isActive = !!list.data.find(i => i.id === 'home');
-        this.typeBoolean.SEARCH.isActive = !!list.data.find(i => i.id === 'search');
-      }
-      this.typeList = Object.keys(this.typeBoolean).map(item => ({
-        type: this.typeBoolean[item].type,
-        name: item
-      })).filter(i => this.typeBoolean[i.name].isActive);
-    });
+    translateService.addLangs(['en']);
+    translateService.setDefaultLang('en');
+    this.dashboardService
+      .getDashboardInfo()
+      .toPromise()
+      .then((list: any) => {
+        if (list?.data?.length > 0) {
+          this.typeBoolean.HOME.isActive = !!list.data.find(
+            (i) => i.id === 'home'
+          );
+          this.typeBoolean.SEARCH.isActive = !!list.data.find(
+            (i) => i.id === 'search'
+          );
+        }
+        this.typeList = Object.keys(this.typeBoolean)
+          .map((item) => ({
+            type: this.typeBoolean[item].type,
+            name: item,
+          }))
+          .filter((i) => this.typeBoolean[i.name].isActive);
+      });
   }
   async ngOnInit() {
-    
-    this.isSameOrigin = this.envUrl === `${window.location.protocol}//${window.location.host}`;
-    const resData: any = await this.dashboardService.getDashboardInfo(0).toPromise();
+    this.isSameOrigin =
+      this.envUrl === `${window.location.protocol}//${window.location.host}`;
+    const resData: any = await this.dashboardService
+      .getDashboardInfo(0)
+      .toPromise();
     const currentUser = this.authenticationService.getUserName();
     if (resData?.data) {
-      this.dashboards = resData.data.sort((...aa: any[]) => {
-        const [a, b] = aa.map(({ name }: { name: string }) => name.charCodeAt(0));
-        return a < b ? -1 : a > b ? 1 : 0;
-      })
-        .filter(item => item.shared === false || item.owner === currentUser)
-        .map(dashboard => dashboard.name.replace(/\s+/, ' ').toLowerCase().trim());
+      this.dashboards = resData.data
+        .sort((...aa: any[]) => {
+          const [a, b] = aa.map(({ name }: { name: string }) =>
+            name.charCodeAt(0)
+          );
+          return a < b ? -1 : a > b ? 1 : 0;
+        })
+        .filter((item) => item.shared === false || item.owner === currentUser)
+        .map((dashboard) =>
+          dashboard.name.replace(/\s+/, ' ').toLowerCase().trim()
+        );
     }
   }
 
   ngAfterViewInit() {
-    const hsp = e => {
+    const hsp = (e) => {
       this.idDrugOver = e.type === 'dragover';
       e.preventDefault();
       e.stopPropagation();
     };
-    const handlerDrop = e => {
+    const handlerDrop = (e) => {
       hsp(e);
+      this.onJsonChange(e);
       Array.from(e.dataTransfer.files).forEach(this.handlerUpload.bind(this));
     };
     const objEvents = {
-      submit: hsp, drag: hsp, dragstart: hsp, dragend: hsp,
-      dragover: hsp, dragenter: hsp, dragleave: hsp,
-      drop: handlerDrop, change: e => this.handlerUpload(e.target.files[0])
+      submit: hsp,
+      drag: hsp,
+      dragstart: hsp,
+      dragend: hsp,
+      dragover: hsp,
+      dragenter: hsp,
+      dragleave: hsp,
+      drop: handlerDrop,
+      change: (e) => this.handlerUpload(e.target.files[0]),
     };
-    Object.keys(objEvents).forEach(eventName => {
-      this.fileSelect.nativeElement.addEventListener(eventName, objEvents[eventName]);
+    Object.keys(objEvents).forEach((eventName) => {
+      this.fileSelect.nativeElement.addEventListener(
+        eventName,
+        objEvents[eventName]
+      );
     });
   }
   private async handlerUpload(file: any) {
     if (!this.data) {
       this.data = {};
     }
-    const text = await file.text();
+    const text = (await file?.text()) || '{}';
     const dashboard = Functions.JSON_parse(text);
-    this.data.nameNewPanel = dashboard.data.name;
-    this.data.type = dashboard.data.type || 1;
-    this.data.param = dashboard.data.param || '';
-    this.data.dashboard = dashboard.data;
+    this.nameNewPanel.setValue(dashboard?.data?.name);
+    this.data.type = dashboard?.data?.type || 1;
+    this.data.param = dashboard?.data?.param || '';
+    this.data.dashboard = dashboard?.data;
+    delete this.data.dashboard.alias;
+    delete this.data.dashboard.id;
+    delete this.data.dashboard.dashboardId;
+    if (this.nameNewPanel.invalid) {
+      delete this.data.dashboard.name;
+      this.nameNewPanel.markAsTouched();
+      this.cdr.detectChanges();
+    }
   }
+  onJsonChange($e) {
+    $e.preventDefault();
+    let files = Object.keys($e.target.files).reduce(
+        (a, b) => [...a, $e.target.files[b].name],
+        []
+    );
+    if ($e.dataTransfer) {
+    const dataTransferFiles = Object?.keys($e?.dataTransfer?.files)?.reduce(
+        (a, b) => [...a, $e?.dataTransfer?.files[b].name],
+        []
+    );
+    files = files.concat(dataTransferFiles)
+    }
+    this.fileNames = [...files];
+    this.cdr.detectChanges();
+ }
   onNoClick(): void {
     this.dialogRef.close();
   }
@@ -135,7 +190,12 @@ export class AddDashboardDialogComponent implements OnInit, AfterViewInit, OnDes
       return;
     }
     event = event.toLowerCase().trim();
-    if (this.dashboards?.some(dashboard => dashboard === event.replace(/\s+/, ' ')) || event === 'home') {
+    if (
+      this.dashboards?.some(
+        (dashboard) => dashboard === event.replace(/\s+/, ' ')
+      ) ||
+      event === 'home'
+    ) {
       this.isInvalid = true;
     } else {
       this.isInvalid = false;
@@ -144,47 +204,58 @@ export class AddDashboardDialogComponent implements OnInit, AfterViewInit, OnDes
     this.cdr.detectChanges();
   }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {}
 
   dNameValidator(dashboardControl: AbstractControl) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       let validated = false;
-      this.isTaken(dashboardControl.value.replace(/\s+/, ' ').trim()).then(data => {
-        validated = data;
-        if (validated) {
-          resolve({ dashboardNotAvailable: true });
-          setTimeout(() => {
-            this.nameNewPanel.markAsTouched();
-            this.cdr.detectChanges();
-          }, 10);
-        } else {
-          resolve(null);
-          setTimeout(() => {
-            this.nameNewPanel.markAsTouched();
-            this.cdr.detectChanges();
-          }, 10);
+      this.isTaken(dashboardControl.value.replace(/\s+/, ' ').trim()).then(
+        (data) => {
+          validated = data;
+          if (validated) {
+            resolve({ dashboardNotAvailable: true });
+            setTimeout(() => {
+              this.nameNewPanel.markAsTouched();
+              this.cdr.detectChanges();
+            }, 10);
+          } else {
+            resolve(null);
+            setTimeout(() => {
+              this.nameNewPanel.markAsTouched();
+              this.cdr.detectChanges();
+            }, 10);
+          }
         }
-      });
+      );
     });
   }
   async isTaken(dashboard) {
     if (this.dashboards?.length > 0) {
-      return ([].concat(this.dashboards) || []).includes(dashboard.toLowerCase());
+      return ([].concat(this.dashboards) || []).includes(
+        dashboard.toLowerCase()
+      );
     }
     return null;
   }
   onSubmit() {
     if (!this.nameNewPanel?.invalid) {
-      (d => {
+      ((d) => {
         d.nameNewPanel = this.nameNewPanel?.value;
       })(this.data);
-      if ((this.data.type === 2 || this.data.type === 7) && this.data.param === '' && !this.isConfirmed) {
-        this.dialog.open(UrlWarningDialog, { width: '350px', data: {} }).afterClosed().toPromise().then(res => {
-          if (res) {
-
-            this.isConfirmed = true;
-          }
-        });
+      if (
+        (this.data.type === 2 || this.data.type === 7) &&
+        this.data.param === '' &&
+        !this.isConfirmed
+      ) {
+        this.dialog
+          .open(UrlWarningDialog, { width: '350px', data: {} })
+          .afterClosed()
+          .toPromise()
+          .then((res) => {
+            if (res) {
+              this.isConfirmed = true;
+            }
+          });
       } else {
         this.dialogRef.close(this.data);
       }
@@ -192,5 +263,4 @@ export class AddDashboardDialogComponent implements OnInit, AfterViewInit, OnDes
       this.nameNewPanel.markAsTouched();
     }
   }
-
 }
