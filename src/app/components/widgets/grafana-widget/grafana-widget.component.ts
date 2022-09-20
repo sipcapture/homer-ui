@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, ElementRef, ViewChild } from '@angular/core';
 import { SettingIframeWidgetComponent } from './setting-grafana-widget.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DateTimeRangeService, DateTimeTick, Timestamp } from '@app/services/data-time-range.service';
@@ -27,6 +27,7 @@ export interface IframeConfig {
         panelId: number;
         theme: string;
         rand?: string;
+        hasVariables?: boolean;
     };
 }
 
@@ -52,7 +53,9 @@ export class IframeWidgetComponent implements IWidget, OnInit, OnDestroy {
     @Input() id: string;
     @Output() changeSettings = new EventEmitter<any>();
 
-    private envUrl = `${environment.apiUrl.replace('/api/v3', '')}/grafana`;
+    @ViewChild('frame', { static: true }) frame: ElementRef;
+    private envUrl = `${environment.apiUrl.replace('/api/v3', '')}`;
+    private grafanaUrl = `${this.envUrl}/grafana`;
     url: string;
     serverUrl: string;
     _config: IframeConfig;
@@ -66,6 +69,7 @@ export class IframeWidgetComponent implements IWidget, OnInit, OnDestroy {
     iframeLoaded = true;
     _interval: any;
 
+    isSameOrigin: boolean = false;
     constructor(
         public dialog: MatDialog,
         private _dtrs: DateTimeRangeService,
@@ -84,8 +88,8 @@ export class IframeWidgetComponent implements IWidget, OnInit, OnDestroy {
         }
         this._config = {
             id: this.id,
-            title: 'Frame title',
-            typeDataRange: 'grafana',
+            title: 'Grafana',
+            typeDataRange: 'global',
             desc: '',
             url: 'none',
             serverUrl: 'none',
@@ -122,6 +126,7 @@ export class IframeWidgetComponent implements IWidget, OnInit, OnDestroy {
                 this.cdr.detectChanges();
             }
         });
+        this.isSameOrigin = this.envUrl === `${window.location.protocol}//${window.location.host}`;
         this.cdr.detectChanges();
     }
 
@@ -133,6 +138,8 @@ export class IframeWidgetComponent implements IWidget, OnInit, OnDestroy {
     async buildUrl(noCache: boolean = false) {
         const currentUser = this.auths.currentUserValue;
         const shortToken = currentUser.token.slice(currentUser.token.length - 15);
+        this.url = '';
+        this.cdr.detectChanges();
         if (this._config.url === 'none' || typeof this.panelListValue === 'undefined') {
             this.iframeLoaded = false;
             return;
@@ -143,17 +150,44 @@ export class IframeWidgetComponent implements IWidget, OnInit, OnDestroy {
         }
         const paramString = Object.keys(params).map(i => `${i}=${params[i]}`).join('&');
         this.url = `${this._config.url}?${paramString}`;
-        this.url = `${this.envUrl}${this.url}&JWT=${shortToken}`;
+        this.url = this.url.replace('/d-solo/', '');
+        const modifier = this.isSameOrigin && this._config.params.hasVariables ? '/d/' : '/d-solo/';
+        this.url = `${this.grafanaUrl}${modifier}${this.url}&JWT=${shortToken}&kiosk=full`;
         this._config.configuredUrl = this.url;
         this.cdr.detectChanges();
     }
-
+        // To work on Grafana "Variables" feature you have to have setup with same origin for backend and UI 
+    // or set ---disable-site-isolation-trials flag in chrome, DON'T FORGET TO REMOVE FLAG AFTERWARDS, IT IS UNSAFE
     onLoadIframe() {
         if (typeof this._config !== 'undefined' && this._config.url !== 'none') {
             this.iframeLoaded = true;
+            if (this.isSameOrigin && this._config.params.hasVariables) {
+                let isHeader = false
+                let interval = setInterval(() => {
+                    isHeader = !!this.frame.nativeElement.contentWindow.document.querySelector('header')
+                    if (isHeader) {
+                        clearInterval(interval)
+                        this.frame.nativeElement.contentWindow.document.querySelector('header').hidden = true;
+                        this.frame.nativeElement.contentWindow.document.querySelector('.track-vertical').style.setProperty('width', '0', 'important')
+                        this.frame.nativeElement.contentWindow.document.querySelector('.react-grid-layout').style.setProperty('height', '0', 'important')
+                        const submenu = this.frame.nativeElement.contentWindow.document.querySelector('.submenu-controls')
+                        if (submenu) {
+                            submenu.style.setProperty('padding-top', '5px', 'important')
+                            submenu.style.setProperty('margin-left', '16px', 'important')
+                        }
+                        this.frame.nativeElement.contentWindow.document.querySelectorAll('.scrollbar-view')[1].children[0].style.setProperty('padding', '0', 'important')
+                        const sidemenu = this.frame.nativeElement.contentWindow.document.querySelector('.sidemenu')
+                        if (sidemenu) {
+                            sidemenu.style.setProperty('display', 'none', 'important')
+                        }
+                    }
+                }, 10);
+            }
+
             this.cdr.detectChanges();
         }
     }
+
 
     openDialog(): void {
         const dialogRef = this.dialog.open(SettingIframeWidgetComponent, {

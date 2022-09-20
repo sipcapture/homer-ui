@@ -38,6 +38,7 @@ export class LoginComponent implements OnInit {
     localDictionary;
     oAuthTypes;
     oAuthToken: string;
+    isDirect = false;
     // authentication;
     constructor(
         private formBuilder: FormBuilder,
@@ -102,6 +103,10 @@ export class LoginComponent implements OnInit {
         };
         this.types = Object.values(data);
         this.oAuthTypes = data?.oauth2?.filter(type => type.enable)
+        const autoRedirect = this.oAuthTypes?.find(type => type.auto_redirect === true);
+        if (autoRedirect && !this.isDirect && !this.oAuthToken) {
+            this.goOauth(autoRedirect);
+        }
         this.enabledTypes = this.getEnabledTypes(data);
         this.loginForm = this.formBuilder.group({
             username: ['', Validators.required],
@@ -121,18 +126,16 @@ export class LoginComponent implements OnInit {
             .map((m) => m.type);
     }
     goOauth(type) {
-        // this.router.navigate([type.url], {relativeTo: this.route}).then;
         this.router.navigate([]).then((result) => {
             window.location.href = `${type.url}`;
         });
     }
     async ngOnInit() {
-
-
-        this.getTypes();
+        this.getTypes()
         this.titleService.setTitle(this.title);
-        const { returnUrl } = this.route.snapshot.queryParams;
+        const { returnUrl, direct: isDirect } = this.route.snapshot.queryParams;
         this.returnUrl = returnUrl || '/';
+        this.isDirect = isDirect;
     }
 
     // convenience getter for easy access to form fields

@@ -5,6 +5,7 @@ import { Functions } from '@app/helpers/functions';
 import { AbstractControl, FormControl, Validators } from '@angular/forms';
 import { UrlWarningDialog } from './url-warning-dialog/url-warning-dialog.component';
 import { TranslateService } from '@ngx-translate/core'
+import { environment } from '@environments/environment';
 @Component({
   selector: 'app-add-dashboard-dialog',
   templateUrl: './add-dashboard-dialog.component.html',
@@ -14,6 +15,7 @@ import { TranslateService } from '@ngx-translate/core'
 export class AddDashboardDialogComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fileSelect', { static: true }) fileSelect;
 
+  private envUrl = `${environment.apiUrl.replace('/api/v3', '')}`;
   idDrugOver = false;
   typeList = [];
   typeBoolean = {
@@ -46,6 +48,7 @@ export class AddDashboardDialogComponent implements OnInit, AfterViewInit, OnDes
   isInvalid = false;
   regString = /^[a-zA-Z0-9\-\_\s]+$/;
   isConfirmed = false;
+  isSameOrigin: boolean = false;
   nameNewPanel = new FormControl('', [
     Validators.required,
     Validators.minLength(3),
@@ -77,6 +80,8 @@ export class AddDashboardDialogComponent implements OnInit, AfterViewInit, OnDes
     });
   }
   async ngOnInit() {
+    
+    this.isSameOrigin = this.envUrl === `${window.location.protocol}//${window.location.host}`;
     const resData: any = await this.dashboardService.getDashboardInfo(0).toPromise();
     const currentUser = this.authenticationService.getUserName();
     if (resData?.data) {

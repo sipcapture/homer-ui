@@ -1,4 +1,4 @@
-<iframe class="frame-base" [src]="url | safe" (load)="onLoadIframe()"
+<iframe class="frame-base" [src]="url | safe" (load)="onLoadIframe()" #frame
     [ngStyle]="{'display' : iframeLoaded ? 'block' : 'none' }"></iframe>
 <div *ngIf="!iframeLoaded">
     <button mat-raised-button class="setting-btn-ok" (click)="openDialog()">
