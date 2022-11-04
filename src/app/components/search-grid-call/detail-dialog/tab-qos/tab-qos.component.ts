@@ -136,17 +136,17 @@ export class TabQosComponent implements OnInit, AfterViewInit {
     this.worker = new WorkerService(new Worker(new URL('@app/workers/qos.worker', import.meta.url), { type: 'module' }));
 
   }
-  
-    @ViewChild('containerRTP', { static: false }) containerRTP: ElementRef;
-    @ViewChild('flagsRTP', { static: false }) flagsRTP: ElementRef;
-    @ViewChild('containerRTCP', { static: false }) containerRTCP: ElementRef;
-    @ViewChild('flagsRTCP', { static: false }) flagsRTCP: ElementRef;
-    @HostListener('window:resize')
-    onResize() {
-        this.chartHeightRTP = this.containerRTP?.nativeElement?.clientHeight - this.flagsRTP?.nativeElement?.clientHeight;        
-        this.chartHeightRTCP = this.containerRTCP?.nativeElement?.clientHeight - this.flagsRTCP?.nativeElement?.clientHeight;
-        this.cdr.detectChanges();
-    }
+
+  @ViewChild('containerRTP', { static: false }) containerRTP: ElementRef;
+  @ViewChild('flagsRTP', { static: false }) flagsRTP: ElementRef;
+  @ViewChild('containerRTCP', { static: false }) containerRTCP: ElementRef;
+  @ViewChild('flagsRTCP', { static: false }) flagsRTCP: ElementRef;
+  @HostListener('window:resize')
+  onResize() {
+    this.chartHeightRTP = this.containerRTP?.nativeElement?.clientHeight - this.flagsRTP?.nativeElement?.clientHeight;
+    this.chartHeightRTCP = this.containerRTCP?.nativeElement?.clientHeight - this.flagsRTCP?.nativeElement?.clientHeight;
+    this.cdr.detectChanges();
+  }
   initQOSData() {
     const isData = this.qosData?.rtcp?.data?.length > 0 || this.qosData?.rtp?.data?.length > 0;
     this.haveData.emit(isData);
