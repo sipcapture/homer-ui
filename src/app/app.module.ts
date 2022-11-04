@@ -354,7 +354,7 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     NgxJsonViewerModule,
     NgxQRCodeModule,
     AceModule,
-    // AceEditorModule,
+    AceEditorModule,
     FontAwesomeModule,
     MarkdownModule.forRoot(),
     NgxDaterangepickerMd.forRoot(),
