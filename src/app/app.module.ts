@@ -346,7 +346,6 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
     routing,
     AppRoutingModule,
     HomerMaterialModule,
-    // MatIconModule,
     Ng2SearchPipeModule,
     NgSelectModule,
     OverlayModule,

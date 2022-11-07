@@ -50,15 +50,15 @@ export class ErrorInterceptor implements HttpInterceptor {
 
                 }
             }
-            if(err.name === 'HttpErrorResponse' && err.message.match(/i18n/) ) {
+            if(err?.name === 'HttpErrorResponse' && err?.message.match(/i18n/) ) {
                 console.log('%cBroken translate file, please contact Support Service.','font-weight: bold; margin:10px;border-radius:3px;padding:10px;background:black;color:white')
                 this.alertService.error({
                         message:'Broken translate file, please contact Support Service.',
                         fullObject: JSON.stringify(err)
                     })
             }
-            const error = err.error.message || err.statusText;
-            if (err.error.message !== 'invalid or expired jwt' && err.status !== 0 && !err.message.match(/i18n/) && !err.message.match(/api/)) {
+            const error = err?.error?.message || err?.statusText;
+            if (err?.error?.message !== 'invalid or expired jwt' && err.status !== 0 && !err?.message.match(/i18n/) && !err?.message.match(/api/)) {
                 this.alertService.error({message:error, fullObject: JSON.stringify(err)});
             } else if (err.status === 0) {
                 this.alertService.error({isTranslation: true ,message:'notifications.error.noInternetError', fullObject: JSON.stringify(err)});

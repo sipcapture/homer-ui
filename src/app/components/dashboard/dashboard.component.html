@@ -76,7 +76,7 @@
 <div style="height:calc(100% - 95px)"
     cdkDropListGroup>
     <div *ngIf="isIframe">
-        <iframe [src]="iframeUrl | safe"></iframe>
+        <iframe [src]="iframeUrl | safe" (load)="onLoadIframe()" #frame></iframe>
     </div>
     <gridster *ngIf="!isIframe"
         [options]="gridOptions"

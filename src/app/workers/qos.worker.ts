@@ -359,7 +359,7 @@ class QosProcessor {
     data.forEach(item => {
       const i = item.raw
 
-      if (![200, 201, 202].includes(1 * i.type)) {
+      if (![200, 201, 202, 207].includes(1 * i.type)) {
         return;
       }
 
