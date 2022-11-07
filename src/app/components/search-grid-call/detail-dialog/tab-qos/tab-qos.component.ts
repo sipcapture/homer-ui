@@ -160,13 +160,6 @@ export class TabQosComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.ready.emit({});
     }, 35);
-    setTimeout(() => {
-        console.log(this.dataItem, this.qosData)
-        const ip = this.qosData.rtcp.data[0].dstIp
-        const port = this.qosData.rtcp.data[0].dstPort
-        console.log(`${ip}:5064`, this.dataItem.alias)
-        console.log(this.dataItem.alias[`${ip}:${port}`])
-    }, 5000);
   }
   async update(workerCommand: string, mosFraction: boolean, data: any) {
 
@@ -227,9 +220,6 @@ export class TabQosComponent implements OnInit, AfterViewInit {
       const t = performance.now();
       this.cdr.detectChanges();
     }
-  }
-  test(i) {
-      console.log(i)
   }
   ngOnInit() {
     this.labels = this.dataItem.data.calldata.map(i => i.sid).reduce((a, b) => {

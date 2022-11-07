@@ -169,7 +169,6 @@
                         <div style="display: flex; align-items: center; align-content: center;">
                             <span>{{ aliases[item.srcIp + ":" + item.srcPort] !== undefined ? aliases[item.srcIp + ":" + item.srcPort] : item.srcIp }}</span>
                             <mat-icon>trending_flat</mat-icon>
-                            {{test(item)}}
                             <span>{{ aliases[item.dstIp + ":" + item.dstPort] !== undefined ? aliases[item.dstIp + ":" + item.dstPort] : item.dstIp }}</span>
                         </div>
                     </mat-checkbox>
