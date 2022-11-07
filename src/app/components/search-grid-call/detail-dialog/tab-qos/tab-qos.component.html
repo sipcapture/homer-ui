@@ -65,9 +65,9 @@
                         [(indeterminate)]="item._indeterminate"
                         (change)="onChangeCheckBoxRTP(item, null, true)">
                         <div style="display: flex; align-items: center; align-content: center;">
-                            <span>{{ item.srcIp }}</span>
+                            <span>{{ aliases[item.srcIp + ":" + item.srcPort] !== undefined ? aliases[item.srcIp + ":" + item.srcPort] : item.srcIp }}</span>
                             <mat-icon>trending_flat</mat-icon>
-                            <span>{{ item.dstIp }}</span>
+                            <span>{{ aliases[item.dstIp + ":" + item.dstPort] !== undefined ? aliases[item.dstIp + ":" + item.dstPort] : item.dstIp }}</span>
                         </div>
                     </mat-checkbox>
                     <div style="padding-left: 2rem; display: flex; flex-direction: column;">
@@ -167,9 +167,10 @@
                         [(indeterminate)]="item._indeterminate"
                         (change)="onChangeCheckBoxRTCP(item, null, true)">
                         <div style="display: flex; align-items: center; align-content: center;">
-                            <span>{{ item.srcIp }}</span>
+                            <span>{{ aliases[item.srcIp + ":" + item.srcPort] !== undefined ? aliases[item.srcIp + ":" + item.srcPort] : item.srcIp }}</span>
                             <mat-icon>trending_flat</mat-icon>
-                            <span>{{ item.dstIp }}</span>
+                            {{test(item)}}
+                            <span>{{ aliases[item.dstIp + ":" + item.dstPort] !== undefined ? aliases[item.dstIp + ":" + item.dstPort] : item.dstIp }}</span>
                         </div>
                     </mat-checkbox>
                     <div style="padding-left: 2rem; display: flex; flex-direction: column;">
