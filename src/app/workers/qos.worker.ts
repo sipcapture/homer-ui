@@ -224,6 +224,8 @@ class QosProcessor {
         this.streamsRTP.push({
           dstIp: item.dstIp,
           srcIp: item.srcIp,
+          dstPort: item.dstPort,
+          srcPort: item.srcPort,
           create_date: [],
           _indeterminate: true,
           _checked: true,
@@ -367,6 +369,8 @@ class QosProcessor {
         this.streamsRTCP.push({
           dstIp: item.dstIp,
           srcIp: item.srcIp,
+          dstPort: item.dstPort,
+          srcPort: item.srcPort,
           create_date: [],
           _indeterminate: true,
           _checked: false,

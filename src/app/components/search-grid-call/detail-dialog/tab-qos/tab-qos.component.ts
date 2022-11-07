@@ -64,6 +64,7 @@ export class TabQosComponent implements OnInit, AfterViewInit {
   isRTP = false;
   isNoDataRTP = false;
   isNoDataRTCP = false;
+  aliases: Array<string>;
   public chartDataRTP: ChartDataSets[] = [];
 
   public chartLabelsRTP: Label[] = [];
@@ -159,6 +160,13 @@ export class TabQosComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       this.ready.emit({});
     }, 35);
+    setTimeout(() => {
+        console.log(this.dataItem, this.qosData)
+        const ip = this.qosData.rtcp.data[0].dstIp
+        const port = this.qosData.rtcp.data[0].dstPort
+        console.log(`${ip}:5064`, this.dataItem.alias)
+        console.log(this.dataItem.alias[`${ip}:${port}`])
+    }, 5000);
   }
   async update(workerCommand: string, mosFraction: boolean, data: any) {
 
@@ -220,6 +228,9 @@ export class TabQosComponent implements OnInit, AfterViewInit {
       this.cdr.detectChanges();
     }
   }
+  test(i) {
+      console.log(i)
+  }
   ngOnInit() {
     this.labels = this.dataItem.data.calldata.map(i => i.sid).reduce((a, b) => {
       if (a.indexOf(b) === -1) {
@@ -227,6 +238,7 @@ export class TabQosComponent implements OnInit, AfterViewInit {
       }
       return a;
     }, []);
+    this.aliases = this.dataItem.alias;
     this.initQOSData();
     this.color = Functions.getColorByString(this.callid, 75, 60, 1);
     this.cdr.detectChanges();
