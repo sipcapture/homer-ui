@@ -8,6 +8,7 @@ import { WorkerService } from '../worker.service';
 import { WorkerCommands } from '../../models/worker-commands.module';
 import { log, Functions } from '@app/helpers/functions';
 import { PreferenceHepsubService } from '../preferences';
+import { PreferenceAgentsubService } from '@app/services';
 import { DateTimeRangeService } from '@services/data-time-range.service';
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,9 @@ export class FullTransactionService {
     private hepLogService: HepLogService,
     private agentsubService: AgentsubService,
     private preferenceHepsubService: PreferenceHepsubService,
+    private _pass: PreferenceAgentsubService,
     private dateTimeRangeService: DateTimeRangeService
+
   ) { }
 
   public getTransactionData(requestTransaction, dateFormat): Observable<any> {
@@ -52,6 +55,7 @@ export class FullTransactionService {
         });
       });
       const rt = requestTransaction;
+      let typeRequest = 'cdr';
       this.callTransactionService.getTransaction(rt).toPromise().then(async (data) => {
         data.dateFormat = dateFormat;
         data.timeZone = this.dateTimeRangeService.getTimezoneForQuery();
@@ -59,8 +63,22 @@ export class FullTransactionService {
         ready('transaction');
         Object.values(rt.param.search).forEach((i: any) => i.callid = tData.callid);
         try {
-          const agentSubList: any = await this.agentsubService.getAgentCdr('cdr').toPromise();
-          const { uuid, type } = agentSubList.data.find(i => i.type === 'cdr');
+
+          const agents: any = await this._pass.getAll().toPromise();
+          if (agents && agents.data) {
+            const hsData: any = await this.preferenceHepsubService.getAll().toPromise();
+            if (hsData) {
+              const HepList = hsData.data?.map(({ mapping: { lookup_profile } }) => lookup_profile) || [];
+              agents.data.forEach(agent => {
+                /** if exist an agent on hepsub list */
+                typeRequest = agent.type;
+                return;
+              });
+            }
+          }
+
+          const agentSubList: any = await this.agentsubService.getAgentCdr(typeRequest).toPromise();
+          const { uuid, type } = agentSubList.data.find(i => i.type === typeRequest);
 
           const query = Functions.cloneObject(rt);
           const [protocol] = Object.keys(query?.param?.search || {});
@@ -116,7 +134,7 @@ export class FullTransactionService {
           tData.qosData = qosData;
         } catch (err) { onError('qos'); }
         ready('qos');
-       
+
 
       }, onError('transaction'));
     });
