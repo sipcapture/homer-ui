@@ -695,7 +695,7 @@ export class SearchGridCallComponent
         });
 
       }
-      console.log({marData})
+      console.log({ marData })
       marData?.forEach((h: any) => {
         const idColumn = h?.id?.split('.').pop();
 
@@ -949,7 +949,7 @@ export class SearchGridCallComponent
   }
   copy(e) {
     this.copyService.copy(e, {
-      message:'notifications.success.cellCopy',
+      message: 'notifications.success.cellCopy',
       isTranslation: true
     });
   }
@@ -1362,8 +1362,8 @@ export class SearchGridCallComponent
         mData.loaded = true;
         return;
       } else {
-        const result: any = await this._scs.getMessage(request).toPromise();
 
+        const result: any = await this._scs.getMessage(request).toPromise();
         mData.data = result && result.data && result.data[0] ? result.data[0] : {};
         mData.data.item = {
           raw: mData && mData.data && mData.data.raw ? mData.data.raw : 'raw is empty'
@@ -1384,6 +1384,21 @@ export class SearchGridCallComponent
         mData.data.item.raw = mData.data.raw;
         mData.loaded = true;
         this.cdr.detectChanges();
+      }
+    } else {
+      if (!mData.data.messageDetailTableData) {
+        mData.data.messageDetailTableData = Object.keys(mData.data).map(i => {
+          let val;
+          if (i === 'create_date') {
+            val = moment(mData.data[i]).format('DD-MM-YYYY hh:mm:ss.SSS');
+          } else if (i === 'timeSeconds') {
+            val = mData.data[i];
+          } else {
+            val = mData.data[i];
+          }
+          return { name: i, value: val };
+        }).filter(i => typeof i.value !== 'object' && i.name !== 'raw');
+
       }
     }
     mData.loaded = true;
