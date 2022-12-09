@@ -62,61 +62,73 @@ export class FullTransactionService {
         tData = await _worker({ tData: data, type: 'full' });
         ready('transaction');
         Object.values(rt.param.search).forEach((i: any) => i.callid = tData.callid);
-        try {
 
-          const agents: any = await this._pass.getAll().toPromise();
-          if (agents && agents.data) {
-            const hsData: any = await this.preferenceHepsubService.getAll().toPromise();
-            if (hsData) {
-              const HepList = hsData.data?.map(({ mapping: { lookup_profile } }) => lookup_profile) || [];
-              agents.data.forEach(agent => {
-                /** if exist an agent on hepsub list */
-                typeRequest = agent.type;
-                return;
-              });
-            }
-          }
+        const query = Functions.cloneObject(rt);
+        const [protocol] = Object.keys(query?.param?.search || {});
 
-          const agentSubList: any = await this.agentsubService.getAgentCdr(typeRequest).toPromise();
-          const { uuid, type } = agentSubList.data.find(i => i.type === typeRequest);
+        const { data: hData }: any = await this.preferenceHepsubService.getAll().toPromise();
+        const { mapping } = hData.find(({ hepid, profile }) => `${hepid}_${profile}` === protocol) || {};
 
-          const query = Functions.cloneObject(rt);
-          const [protocol] = Object.keys(query?.param?.search || {});
+        const { messages, calldata } = tData?.data || {};
 
-          const { data: hData }: any = await this.preferenceHepsubService.getAll().toPromise();
-          const { mapping } = hData.find(({ hepid, profile }) => `${hepid}_${profile}` === protocol) || {};
-
-          const { messages, calldata } = tData?.data || {};
-
-          // source_field - string
-          const { source_field } = mapping || {};
-          if (source_field) {
-            const [, fName] = source_field.split('.');
-            const fValue = [...messages, ...calldata]
+        // source_field - string (HEPSUB mapping contains single lookup property source_field)
+        const { source_field } = mapping || {};
+        if (source_field) {
+          const [, fName] = source_field.split('.');
+          query.param.search[protocol][fName] = [...messages, ...calldata]
+            .filter(i => i[fName])
+            .map(i => i[fName]).sort()
+            .filter((i, k, a) => i !== a[k + 1]);
+        }
+        // source_fields - object (HEPSUB mapping contains multiple lookup properties source_fields)
+        const { source_fields } = mapping || {};
+        if (source_fields) {
+          Object.entries(source_fields).forEach(([key, value]: any) => {
+            const [, fName] = value.split('.');
+            query.param.search[protocol][key] = [...messages, ...calldata]
               .filter(i => i[fName])
               .map(i => i[fName]).sort()
               .filter((i, k, a) => i !== a[k + 1]);
+          })
+        }
 
-            query.param.search[protocol][fName] = fValue;
+        try {
+          // load all subscribed agents
+          const agents: any = await this._pass.getAll().toPromise();
+          // load all HEPSUB mappings (but why?!)
+          const hsData: any = await this.preferenceHepsubService.getAll().toPromise();
+          if (agents && agents.data) {
+            if (hsData) {
+              // HepList has no purpose here - useful if we wanted to reduce the agent list to those with valid mappings but FNYI
+              // const HepList = hsData.data?.map(({ mapping: { lookup_profile } }) => lookup_profile) || [];
+              // iterating all agents to get the type seems odd, surely the correct thing to do is filter where type not wanted?
+
+              // modify forEach() iterator to some() so we can exit once we've found a match (otherwise we'd have to aggregate under tData.agentCdr - not clear on use case)
+              agents.data.some(agent => {
+                /** if exist an agent on hepsub list */
+                typeRequest = agent.type;
+                /////////////////////////
+                // this section needs to move into loop above, how to extract output, we only expect one match so perhaps we just perform sync and assign result if we get a match?
+                // ideally we'd reduce this list by RTP source IP (from RTCP?) matching agent ip, probably not a flexible setup
+
+                // no need to repeat this lookup - instead just check the type of the agent sub we are iterating
+                // const agentSubList: any = this.agentsubService.getAgentCdr(typeRequest).toPromise();
+                // const { uuid, type } = agentSubList.data.find(i => i.type === typeRequest);
+
+                // console.log({ mapping, protocol, query, agentSubList, hData, source_field, tData });
+
+                // perform sync lookup of the type data against each subscriber
+                let getAgentCustomType: any = this.agentsubService.getHepsubElements({ uuid: agent.uuid, type: agent.type, data: query });
+                // todo consider additional checks that confirm we have the data, initially expect the server to return 404 when not found
+                if (getAgentCustomType.status == 200 && getAgentCustomType.data) {
+                  tData.agentCdr = getAgentCustomType;
+                  return true; // halt iteration on first match
+                }
+                // try next agent/subscriber
+                return false;
+              });
+            }
           }
-          // source_fields - object
-          const { source_fields } = mapping || {};
-          if (source_fields) {
-            Object.entries(source_fields).forEach(([key, value]: any) => {
-              const [, fName] = value.split('.');
-              const fValue = [...messages, ...calldata]
-                .filter(i => i[fName])
-                .map(i => i[fName]).sort()
-                .filter((i, k, a) => i !== a[k + 1]);
-
-              query.param.search[protocol][key] = fValue;
-            })
-          }
-
-          // console.log({ mapping, protocol, query, agentSubList, hData, source_field, tData });
-
-          const getAgentCdr: any = await this.agentsubService.getHepsubElements({ uuid, type, data: query }).toPromise();
-          tData.agentCdr = getAgentCdr;
         } catch (err) { onError('agentCdr'); }
 
         try {
