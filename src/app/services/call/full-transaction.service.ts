@@ -99,21 +99,9 @@ export class FullTransactionService {
           const hsData: any = await this.preferenceHepsubService.getAll().toPromise();
           if (agents && agents.data) {
             if (hsData) {
-              // HepList has no purpose here - useful if we wanted to reduce the agent list to those with valid mappings but FNYI
-              // const HepList = hsData.data?.map(({ mapping: { lookup_profile } }) => lookup_profile) || [];
-              // iterating all agents to get the type seems odd, surely the correct thing to do is filter where type not wanted?
-
-              // modify forEach() iterator to some() so we can exit once we've found a match (otherwise we'd have to aggregate under tData.agentCdr - not clear on use case)
               agents.data.some(agent => {
                 /** if exist an agent on hepsub list */
                 typeRequest = agent.type;
-                /////////////////////////
-                // this section needs to move into loop above, how to extract output, we only expect one match so perhaps we just perform sync and assign result if we get a match?
-                // ideally we'd reduce this list by RTP source IP (from RTCP?) matching agent ip, probably not a flexible setup
-
-                // no need to repeat this lookup - instead just check the type of the agent sub we are iterating
-                // const agentSubList: any = this.agentsubService.getAgentCdr(typeRequest).toPromise();
-                // const { uuid, type } = agentSubList.data.find(i => i.type === typeRequest);
 
                 // console.log({ mapping, protocol, query, agentSubList, hData, source_field, tData });
 
