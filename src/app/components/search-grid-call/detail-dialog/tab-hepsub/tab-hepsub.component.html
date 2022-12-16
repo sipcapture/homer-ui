@@ -5,11 +5,34 @@
     <app-tab-logs [data]="dataLogs"></app-tab-logs>
   </mat-tab>
 
-   
   <mat-tab *ngFor="let item of subTabList"
     [label]="'HEPSUB:' + item.title">
-    
-    <ngx-json-viewer [json]="jsonData" [expanded]="true"></ngx-json-viewer>
+
+    <div style="margin:13px;">
+      <div style="padding: 13px; background-color: #ededed; font-size: 0.9rem; font-weight: 300;">
+        <h3 style="color: #343434; margin-bottom: 13px;">PCAP available!</h3>
+        <p style="">Agent node: {{ agentNode }}</p>
+        <p style="">Agent file path: {{ agentPathPcap }}</p>
+        <p style="">Date modified: {{ timestampString }}</p>
+      </div>
+
+      <div style="margin-top: 16px;">
+        <button mat-raised-button
+                class="setting-btn"
+                (click)="getPcap()">
+          <fa-icon icon="download"></fa-icon>
+          <!-- {{'tabExport.exportPCAP'|translate}} -->
+          Download PCAP from < {{ agentNode }} >
+        </button>
+      </div>
+
+      <div style="padding: 13px; margin-top: 16px;">
+        <h3 style="color: #343434; margin-bottom: 13px;">Request Data</h3>
+        <!-- display json -->
+        <ngx-json-viewer [json]="jsonData" [expanded]="true"></ngx-json-viewer>
+      </div>
+
+    </div>
   </mat-tab>
 
 
