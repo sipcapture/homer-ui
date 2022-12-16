@@ -23,11 +23,11 @@ export class AgentsubService {
     getFields(): Observable<PreferenceAgentsub> {
         return this.http.get<PreferenceAgentsub>(`${this.url}/fields`);
     }
-    /**
-    *
-     */
-    getHepsubElements({ uuid, type, data }): Observable<any> {
-        return this.http.post<any>(`${this.url}/search/${uuid}/${type}`, data);
+
+    // perform lookup for data type against HEPSUB subscriber UUID, if type is download file data will be returned
+    getHepsubElements({uuid, type, data}): Observable<any> {
+        let options = type === 'download' ? {responseType: 'blob' as 'json'} : undefined;
+        return this.http.post<any>(`${this.url}/search/${uuid}/${type}`, data, options);
     }
 
     // type = 'cdr' | 'wav' | 'json'
@@ -43,7 +43,6 @@ export class AgentsubService {
          * [domain:port-1]/api/v3/agent/type/cdr
          */
         return this.http.get(`${this.url}/type/${type}`);
-
     }
 
     getData(agent: any, type?: string): Observable<any> {
