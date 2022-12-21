@@ -1,15 +1,16 @@
 import { AgentsubService } from '@app/services/agentsub.service';
 import { Injectable } from '@angular/core';
-import { CallReportService } from './report.service';
-import { CallTransactionService } from './transaction.service';
+import { CallReportService } from '@app/services';
+import { CallTransactionService } from '@app/services';
 import { Observable } from 'rxjs';
-import { HepLogService } from './hep-log.service';
+import { HepLogService } from '@app/services';
 import { WorkerService } from '../worker.service';
-import { WorkerCommands } from '../../models/worker-commands.module';
-import { log, Functions } from '@app/helpers/functions';
-import { PreferenceHepsubService } from '../preferences';
+import { WorkerCommands } from '@app/models/worker-commands.module';
+import { Functions, log } from '@app/helpers/functions';
+import { PreferenceHepsubService } from '@app/services';
 import { PreferenceAgentsubService } from '@app/services';
 import { DateTimeRangeService } from '@services/data-time-range.service';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -23,7 +24,6 @@ export class FullTransactionService {
     private preferenceHepsubService: PreferenceHepsubService,
     private _pass: PreferenceAgentsubService,
     private dateTimeRangeService: DateTimeRangeService
-
   ) { }
 
   public getTransactionData(requestTransaction, dateFormat): Observable<any> {
@@ -55,7 +55,6 @@ export class FullTransactionService {
         });
       });
       const rt = requestTransaction;
-      let typeRequest = 'cdr';
       this.callTransactionService.getTransaction(rt).toPromise().then(async (data) => {
         data.dateFormat = dateFormat;
         data.timeZone = this.dateTimeRangeService.getTimezoneForQuery();
@@ -99,22 +98,19 @@ export class FullTransactionService {
           const hsData: any = await this.preferenceHepsubService.getAll().toPromise();
           if (agents && agents.data) {
             if (hsData) {
-              agents.data.some(agent => {
-                /** if exist an agent on hepsub list */
-                typeRequest = agent.type;
-
-                // console.log({ mapping, protocol, query, agentSubList, hData, source_field, tData });
-
-                // perform sync lookup of the type data against each subscriber
-                let getAgentCustomType: any = this.agentsubService.getHepsubElements({ uuid: agent.uuid, type: agent.type, data: query });
-                // todo consider additional checks that confirm we have the data, initially expect the server to return 404 when not found
-                if (getAgentCustomType.status == 200 && getAgentCustomType.data) {
-                  tData.agentCdr = getAgentCustomType;
-                  return true; // halt iteration on first match
+              // collect all promises and wait for all responses
+              const allAgentPromises = agents.data.map(async agent => {
+                return await this.agentsubService.getHepsubElements({ uuid: agent.uuid, type: agent.type, data: query }).toPromise();
+              })
+              const allAgentResponses = await Promise.all(allAgentPromises)
+              // check for data in any of the responses, if we get data back capture into model
+              allAgentResponses.forEach(
+                (agent: any) => {
+                  if (agent.data) {
+                    tData.agentCdr = agent;
+                  }
                 }
-                // try next agent/subscriber
-                return false;
-              });
+              )
             }
           }
         } catch (err) { onError('agentCdr'); }
@@ -125,7 +121,6 @@ export class FullTransactionService {
           tData.heplogs = hepLogRes.data;
         } catch (err) { onError('heplogs'); }
 
-
         try {
           const callIdArr = tData?.data?.calldata.map(i => i.sid).sort().filter((i, k, a) => i !== a[k - 1]) || [];
           Object.values(rt.param.search).forEach((i: any) => i.callid = callIdArr);
@@ -134,7 +129,6 @@ export class FullTransactionService {
           tData.qosData = qosData;
         } catch (err) { onError('qos'); }
         ready('qos');
-
 
       }, onError('transaction'));
     });
