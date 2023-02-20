@@ -167,6 +167,8 @@ export class PreferencesComponentMapping {
         'Status', 'Active', 'Master', 'Online', // True-false green-red column
         'DB Stats', // DB stats with tooltip
         'Last Error', //  Column with tooltip with error details
+        'Expire', 'Expire Date', 'Stop' // Column with linethrough when expired
+
     ]
     static pagesStructureMapping = {
         admin: {

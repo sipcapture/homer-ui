@@ -4,13 +4,14 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { environment } from '@environments/environment';
-import { User } from '@app/models';
+import { User, UserJWT } from '@app/models';
 import { PreferenceUserSettingsService } from './preferences/user-settings.service';
 import * as _moment from 'moment';
 import { ConstValue } from '../models/const-value.model';
 import { AlertService } from './alert.service';
 import { Functions, setStorage } from '@app/helpers/functions';
 import { TranslateService } from '@ngx-translate/core';
+import jwt_decode from 'jwt-decode';
 
 const moment: any = _moment;
 
@@ -28,6 +29,12 @@ export class AuthenticationService {
         let ls: any;
         try {
             ls = JSON.parse(localStorage.getItem(ConstValue.CURRENT_USER));
+            if (ls) {
+                const decodedToken = jwt_decode<UserJWT>(ls.token);
+                if (moment().unix() > decodedToken?.exp) {
+                    throw 'Expired JWT';
+                }
+            }
         } catch (err) {
             console.error(err);
             setTimeout(() => {

@@ -1,0 +1,11 @@
+td.mat-mdc-cell {
+    padding-left: 5px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    word-break: break-all;
+  }
+  .expired{
+      color:orangered;
+      text-decoration: line-through;
+  }

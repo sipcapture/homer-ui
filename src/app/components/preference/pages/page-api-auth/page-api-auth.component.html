@@ -25,6 +25,8 @@ class="mat-elevation-z8" matSort>
             <!-- Generic column -->
             <app-generic-cell [column]='column' *ngIf="!specialColumns.includes(column)">
             </app-generic-cell>
+            <app-expire-cell  [column]='column' [timeFormat]="dateFormat" [page]='page' [isAccess]='isAccess' *ngIf="column === 'Expire Date'">
+            </app-expire-cell>
             <!-- Button column -->
             <app-tool-cell [column]='column' [page]='page' [isAccess]='isAccess' *ngIf="column === 'tools'" (settingDialog)='settingDialog($event.item, $event.type)' (deleteDialog)='deleteDialog($event)'>
             </app-tool-cell>
