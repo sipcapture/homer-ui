@@ -223,7 +223,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
         }, 1000);
 
       }
-      this.getAgents();
+      //this.getAgents();
       this.setTabByAdvanced();
       this.cdr.detectChanges();
     });
@@ -324,15 +324,17 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
 
     this.agents = agents.data;
     const HepList = hData.data?.map(({ mapping: { lookup_profile } }) => lookup_profile) || [];
+
+
     this.agents.forEach(agent => {
       /** if exist an agent on hepsub list */
+
       if (HepList.includes(agent.type)) {
         const agReq = this.formatRequest(agent, this.agentRequest);
       }
     });
-
-
   }
+
   formatRequest(agent: any, agObj: any) {
     Object.entries(agent).forEach(([key, value]) => {
       agObj[key] = value;

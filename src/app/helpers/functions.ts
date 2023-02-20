@@ -264,6 +264,21 @@ export class Functions {
   static secondsToHour(data: number = 0) {
     return new Date(data * 1000).toISOString().substr(11, 8);
   }
+  // getTimestamp produces a timestamp in format YYYYMMDDHHMMSS
+  static getTimestamp(date: Date = new Date()): string {
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    let hh = date.getHours();
+    let mm = date.getMinutes();
+    let ss = date.getSeconds();
+    return "" + year +
+      (month < 10 ? "0" + month : month) +
+      (day < 10 ? "0" + day : day) +
+      (hh < 10 ? "0" + hh : hh) +
+      (mm < 10 ? "0" + mm : mm) +
+      (ss < 10 ? "0" + ss : ss);
+  }
   static originalOrder(a: KeyValue<number, string>, b: KeyValue<number, string>): number {
     return 0;
   }
