@@ -24,7 +24,7 @@ import {
     PreferenceAuthKey,
 } from '@app/models';
 
-import { AlertService, AuthenticationService } from '@app/services';
+import { AlertService, AuthenticationService, TimeFormattingService } from '@app/services';
 import { PreferencesComponentMapping } from '@app/models/preferences-component-mapping';
 
 @Component({
@@ -45,6 +45,7 @@ export class PageApiAuthComponent implements OnInit, AfterViewInit, OnDestroy {
     specialColumns = [];
     isAccess: any;
     filter = '';
+    dateFormat: string;
 
     constructor(
         private authenticationService: AuthenticationService,
@@ -52,6 +53,7 @@ export class PageApiAuthComponent implements OnInit, AfterViewInit, OnDestroy {
         private service: PreferenceAuthKeyService,
         public dialog: MatDialog,
         private cdr: ChangeDetectorRef,
+        private _tfs: TimeFormattingService
     ) {
         const userData = this.authenticationService.currentUserValue;
         this.isAdmin =
@@ -69,6 +71,9 @@ export class PageApiAuthComponent implements OnInit, AfterViewInit, OnDestroy {
             this.columns = PreferencesComponentMapping.pagesStructureMapping.commonUser[this.pageID];
         }
         this.specialColumns =  PreferencesComponentMapping.specialColumns;
+    }
+    async getFormat() {
+        this.dateFormat = await this._tfs.getFormat().then(res => res.dateTime);
     }
     ngAfterViewInit() {
         this.updateData();
