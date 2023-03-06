@@ -186,6 +186,8 @@ export class SearchGridCallComponent
     message_to: 5000, // + 1sec
   };
 
+  searchAllNode = false;
+
   public isThisSelfQuery = false;
   _interval: any;
   private subscriptionRangeUpdateTimeout: Subscription;
@@ -417,6 +419,12 @@ export class SearchGridCallComponent
       }
       this.getHeaders();
     }
+
+    this._pas.getAll().subscribe(advanced => {
+      this.searchAllNode = advanced?.data
+        ?.find(i => i?.category === 'search' && i?.param === 'node')
+          ?.data?.searchAllNode === true || false;
+    });
 
     this.config.config = Functions.cloneObject(this.searchSliderConfig.config);
     this.messageDetailsService.event.subscribe((data) => {
@@ -1104,37 +1112,41 @@ export class SearchGridCallComponent
       )
     );
 
-    const tomeArray_from = selectedRows.length
+    const timeArray_from = selectedRows.length
       ? Math.round(Math.min.apply(this, tomeArray) / 1000)
       : Math.round(row.data.cdr_start / 1000 || row.data.create_date);
 
-    const tomeArray_to = selectedRows.length
+    const timeArray_to = selectedRows.length
       ? Math.round(Math.max.apply(this, tomeArray) / 1000)
       : Math.round(row.data.cdr_stop / 1000 || row.data.create_date);
-
+    const locations = selectedRows
+      .map((row) => row.node)
+      .filter((row) => typeof row !== 'undefined');
     const request = {
       param: {
         ...Functions.cloneObject(this.config.param || ({} as any)),
         ...{
-          location: row?.data?.node ? { node: [row.data.node] } : {},
+          location: this.searchAllNode ?
+            this.config.param.location :
+              (locations.length > 0 ? { node: locations } : {}),
           search: {
             [_protocol_profile]: {
               id: row.data.id,
               ['callid']: selectedCallId.length > 0 ? selectedCallId : [sid],
               // uuid: [],
-            }
+            },
           },
           transaction: {
             call: !!_protocol_profile.includes('call'),
             registration: !!_protocol_profile.includes('registration'),
             rest: !!_protocol_profile.includes('default'),
-          }
-        }
+          },
+        },
       },
       timestamp: {
-        from: tomeArray_from + this.limitRange.from,
-        to: tomeArray_to + this.limitRange.to,
-      }
+        from: timeArray_from + this.limitRange.from,
+        to: timeArray_to + this.limitRange.to,
+      },
     };
 
     return request;
