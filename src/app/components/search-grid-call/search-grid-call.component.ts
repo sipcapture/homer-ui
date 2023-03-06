@@ -186,6 +186,8 @@ export class SearchGridCallComponent
     message_to: 5000, // + 1sec
   };
 
+  searchAllNode = false;
+
   public isThisSelfQuery = false;
   _interval: any;
   private subscriptionRangeUpdateTimeout: Subscription;
@@ -417,6 +419,12 @@ export class SearchGridCallComponent
       }
       this.getHeaders();
     }
+
+    this._pas.getAll().subscribe(advanced => {
+      this.searchAllNode = advanced?.data
+        ?.find(i => i?.category === 'search' && i?.param === 'node')
+          ?.data?.searchAllNode === true || false;
+    });
 
     this.config.config = Functions.cloneObject(this.searchSliderConfig.config);
     this.messageDetailsService.event.subscribe((data) => {
@@ -1118,7 +1126,9 @@ export class SearchGridCallComponent
       param: {
         ...Functions.cloneObject(this.config.param || ({} as any)),
         ...{
-          location: locations.length > 0 ? { node: locations } : {},
+          location: this.searchAllNode ?
+            this.config.param.location :
+              (locations.length > 0 ? { node: locations } : {}),
           search: {
             [_protocol_profile]: {
               id: row.data.id,

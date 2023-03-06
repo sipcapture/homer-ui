@@ -7,10 +7,10 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip'
 import { TranslateModule } from '@ngx-translate/core';
 import {OverlayModule} from '@angular/cdk/overlay';
 import { AlertOverlayService } from './alert-overlay.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 @NgModule({
     imports: [
         CommonModule,
@@ -22,7 +22,6 @@ import { AlertOverlayService } from './alert-overlay.service';
     ],
     declarations: [AlertComponent, AlertSourceComponent],
     exports: [AlertComponent, AlertSourceComponent],
-    entryComponents: [AlertSourceComponent],
     providers: [AlertOverlayService]
 })
 export class AlertModule {
