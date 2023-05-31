@@ -215,15 +215,8 @@ export class CodeStyleSmartInputFieldComponent implements AfterViewInit {
   onKeyUpDiv(event) {
     if (!!{ Shift: 1, Control: 1, Alt: 1, Backspace: 1 }[event.key]) {
       this.trigger.closeMenu();
-      // this.updateEditor();
       return;
     }
-
-    // if (!!({ ArrowDown: 0, ArrowUp: 0, Enter: 0 })[event.key]) {
-    //   this.triggerNavMenu(event);
-    //   event.preventDefault();
-    //   return;
-    // }
 
     if ((
         (this.editor.innerText + '').split('').reverse()[0] === event.key &&
@@ -291,7 +284,6 @@ export class CodeStyleSmartInputFieldComponent implements AfterViewInit {
         let str = this.editor.innerText.replace(/[\w\d]*\.\s*$/g, '');
         str = this.formattedTextBeforePasteParam(str);
         this.typeInTextarea(str + item + '=', true);
-        // console.log('onMenuMessage::', { str, item })
       }
       this.updateEditor(true);
     }
