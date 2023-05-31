@@ -59,7 +59,7 @@ export class SmartInputWidgetComponent
   @Input() set fields(val) {
     this._fields = Functions.cloneObject(val);
     console.log(this._fields);
-    this.cdr.detectChanges();
+    this.domRefresh();
     this.initSliderSmartInput(true);
   }
   get fields() {
@@ -222,7 +222,7 @@ export class SmartInputWidgetComponent
   }
 
   private initSliderSmartInput(onlyFieldsDoParse = false) {
-    this.cdr.detectChanges();
+    this.domRefresh();
     if (this.onlySmartFieldElement) {
       const configData =
         this.config && this.config.param && this.config.param.search;
@@ -255,7 +255,7 @@ export class SmartInputWidgetComponent
         }
       }
 
-      this.cdr.detectChanges();
+      this.domRefresh();
       this.onlySmartFieldElement.setQueryText(this.onlySmartFieldTEXT);
     }
   }
@@ -373,7 +373,7 @@ export class SmartInputWidgetComponent
             }
           });
         }
-        this.cdr.detectChanges();
+        this.domRefresh();
       }
     );
 
@@ -506,13 +506,15 @@ export class SmartInputWidgetComponent
 
           i.formControl.setValue(i.value);
           this.autocompliteFiltring(i);
-          this.cdr.detectChanges();
+          this.domRefresh();
         }
       });
     }
-    this.cdr.detectChanges();
+    this.domRefresh();
   }
-
+  domRefresh() {
+    requestAnimationFrame(() => this.cdr.detectChanges())
+  }
   private autocompliteFiltring(item: any) {
     const options: Array<any> = item.form_default;
     const _filter = (value: string): string[] => {
@@ -533,7 +535,7 @@ export class SmartInputWidgetComponent
     );
 
     item.filteredOptions = filteredOptions;
-    this.cdr.detectChanges();
+    this.domRefresh();
   }
   private saveState() {
     if (this.isLoki) {
@@ -625,7 +627,7 @@ export class SmartInputWidgetComponent
     this.searchQuery.fields = this.searchQuery.fields.filter(
       (i) => ![ConstValue.CONTAINER, ConstValue.SELECT_PROTO].includes(i.name)
     );
-    this.cdr.detectChanges();
+    this.domRefresh();
   }
 
   onClearFields() {
@@ -642,7 +644,7 @@ export class SmartInputWidgetComponent
       }
     });
     this._sss.removeProtoSearchConfig(this.widgetId);
-    this.cdr.detectChanges();
+    this.domRefresh();
   }
 
   public async openDialog() {
@@ -706,10 +708,10 @@ export class SmartInputWidgetComponent
     this.onChangeTargetResultsContainer();
 
     this.isConfig = true;
-    this.cdr.detectChanges();
+    this.domRefresh();
 
     setTimeout(() => {
-      this.cdr.detectChanges();
+      this.domRefresh();
     }, 100)
   }
 
@@ -730,7 +732,7 @@ export class SmartInputWidgetComponent
       }
     });
     this.saveState();
-    this.cdr.detectChanges();
+    this.domRefresh();
   }
   onChangeTargetResultsContainer() {
     this.fields.forEach((i) => {
@@ -739,7 +741,7 @@ export class SmartInputWidgetComponent
       }
     });
     this.saveState();
-    this.cdr.detectChanges();
+    this.domRefresh();
   }
   doSearchResult() {
     const targetResultSelf = {
@@ -766,12 +768,12 @@ export class SmartInputWidgetComponent
         }
       });
       this.dosearch.emit({});
-      this.cdr.detectChanges();
+      this.domRefresh();
       return;
     }
     this.router.navigate(['search/result']);
     this.dosearch.emit({});
-    this.cdr.detectChanges();
+    this.domRefresh();
   }
 
   compareResultListItem(a: any, b: any): boolean {
@@ -787,7 +789,7 @@ export class SmartInputWidgetComponent
     ).value;
     this.searchQuery.protocol_id = ConstValue.LOKI_PREFIX;
     this.searchQuery.fields = [];
-    this.cdr.detectChanges();
+    this.domRefresh();
   }
   onSmartInputCodeData(event, item = null) {
     if (this.onlySmartField) {
@@ -829,7 +831,7 @@ export class SmartInputWidgetComponent
       });
       this.saveState();
     }
-    this.cdr.detectChanges();
+    this.domRefresh();
   }
   private get isLoki(): boolean {
     return this.fields.filter((i) => i.field_name === 'loki').length !== 0;
@@ -868,7 +870,7 @@ export class SmartInputWidgetComponent
       }
     });
     this.saveState();
-    this.cdr.detectChanges();
+    this.domRefresh();
   }
 
   ngOnDestroy() {
