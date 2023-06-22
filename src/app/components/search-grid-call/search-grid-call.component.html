@@ -1,72 +1,44 @@
 <ng-container *ngIf="isLokiQuery; else base">
-    <app-loki-results [isDisplayResult]="true"
-        [isResultPage]="!id"
-        [logQlText]="queryTextLoki"></app-loki-results>
+    <app-loki-results [isDisplayResult]="true" [isResultPage]="!id" [logQlText]="queryTextLoki"></app-loki-results>
 </ng-container>
 <ng-template #base>
 
 
     <div class="regex-container" *ngIf="!inChartContainer"
         [className]="'regex-container' + (source !== 'resultPage' ? '' : ' inContainer')">
-        <input *ngIf="showRegex"
-            class="regex-filter"
-            [ngStyle]="{'width': inChartContainer ? '0px' : ''}"
-            placeholder="Regex Results Filter"
-            type="search"
-            id="regexfilter"
-            [(ngModel)]="filterGridValue"
+        <input *ngIf="showRegex" class="regex-filter" [ngStyle]="{'width': inChartContainer ? '0px' : ''}"
+            placeholder="Regex Results Filter" type="search" id="regexfilter" [(ngModel)]="filterGridValue"
             (ngModelChange)="setExternalFilter()">
-        <button matTooltip="{{'searchGridCall.filterResults' | translate }}"
-            class="regex-button"
+        <button matTooltip="{{'searchGridCall.filterResults' | translate }}" class="regex-button"
             (click)="toggleRegex()">
             <fa-icon icon="search"></fa-icon>
         </button>
     </div>
 
-    <ag-grid-angular *ngIf="loader === false"
-        [ngStyle]="{
+    <ag-grid-angular *ngIf="loader === false" [ngStyle]="{
         'height': source !== 'resultPage' ? 'calc(100% - 56px)' : 'calc(100vh - 45px - 56px)',
         'width': '100%',
         'display': inChartContainer ? 'none' : 'block'
-    }"
-        class="ag-theme-material"
-        [defaultColDef]="defaultColDef"
-        [gridOptions]="gridOptions"
-        [rowData]="rowData"
-        [columnDefs]="columnDefs"
-        [enableRangeSelection]="true"
-        [rowMultiSelectWithClick]="true"
-        [pagination]="true"
-        [context]="context"
-        [enableCellTextSelection]="true"
-        [overlayNoRowsTemplate]="noRowsTemplate"
-        [frameworkComponents]="frameworkComponents"
-        [paginationPageSize]="this.agGridSizeControl.pageSize"
-        [isExternalFilterPresent]="isExternalFilterPresent"
-        [doesExternalFilterPass]="doesExternalFilterPass"
-        (cellDoubleClicked)="onCellDoubleClicked($event)"
-        (gridReady)="onGridReady($event)"
-        (sortChanged)="sortChanged($event)"
-        (columnMoved)="sortChanged($event)">
+    }" class="ag-theme-material" [defaultColDef]="defaultColDef" [gridOptions]="gridOptions" [rowData]="rowData"
+        [columnDefs]="columnDefs" [enableRangeSelection]="true" [rowMultiSelectWithClick]="true" [pagination]="true"
+        [context]="context" [enableCellTextSelection]="true" [overlayNoRowsTemplate]="noRowsTemplate"
+        [frameworkComponents]="frameworkComponents" [paginationPageSize]="this.agGridSizeControl.pageSize"
+        [isExternalFilterPresent]="isExternalFilterPresent" [doesExternalFilterPass]="doesExternalFilterPass"
+        [tooltipShowDelay]="50" (cellDoubleClicked)="onCellDoubleClicked($event)" (gridReady)="onGridReady($event)"
+        (sortChanged)="sortChanged($event)" (columnMoved)="sortChanged($event)">
     </ag-grid-angular>
-    <mat-paginator class="paginator"
-        [length]="totalPages"
-        [pageSize]="agGridSizeControl.pageSize"
-        [pageSizeOptions]="[25, 50, 100, 200, 500]"
-        (page)='paginationControls($event)'>
+    <mat-paginator class="paginator" [length]="totalPages" [pageSize]="agGridSizeControl.pageSize"
+        [pageSizeOptions]="[25, 50, 100, 200, 500]" (page)='paginationControls($event)'>
     </mat-paginator>
 
     <!-- search slider -->
 
-    <div *ngIf="source !== 'widget'"
-        class="search-slider-footer"
+    <div *ngIf="source !== 'widget'" class="search-slider-footer"
         [ngStyle]="{'bottom': !isSearchPanel ? '-20rem': null}">
 
         <div style="float: right; opacity: 0.7">
 
-            <button matTooltip="{{'searchGridCall.close' | translate}}"
-                (click)="isSearchPanel=false"
-                mat-icon-button>
+            <button matTooltip="{{'searchGridCall.close' | translate}}" (click)="isSearchPanel=false" mat-icon-button>
                 <mat-icon>close</mat-icon>
             </button>
 
@@ -75,20 +47,14 @@
 
             <!-- search slider container -->
 
-            <app-smart-input-widget [onlySmartField]="true"
-                [targetResultId]="id"
-                [fields]="searchSliderFields"
-                [config]="config"
-                [autoline]="true"
-                (dosearch)="isThisSelfQuery = true; update(true);"
-                #searchSlider>
+            <app-smart-input-widget [onlySmartField]="true" [targetResultId]="id" [fields]="searchSliderFields"
+                [config]="config" [autoline]="true" (dosearch)="isThisSelfQuery = true; update(true);" #searchSlider>
             </app-smart-input-widget>
             <mat-label *ngIf="searchSliderFields.length > 0"
                 style="color: rgba(0, 0, 0, 0.54); font-size: 0.8em;padding-left:20px;">
                 {{'searchGridCall.pressCtrlEnter' | translate}}
             </mat-label>
-            <div *ngIf="searchSliderFields.length === 0"
-                class="no-smart-warn"
+            <div *ngIf="searchSliderFields.length === 0" class="no-smart-warn"
                 [innerHTML]="'searchGridCall.pleaseDoSearch' | translate">
             </div>
         </div>
@@ -98,8 +64,7 @@
 </ng-template>
 <app-loading-circle *ngIf="loader === true">
 </app-loading-circle>
-<div class="lds-container onlyLoader"
-    *ngIf="onlyLoader === true">
+<div class="lds-container onlyLoader" *ngIf="onlyLoader === true">
     <h3 style="margin: 0">
         <div class="lds-ring">
             <div></div>
@@ -112,20 +77,11 @@
 <!-- ========================== -->
 <!-- TRANSACTION DITAILS DIALOG -->
 
-<app-detail-dialog
-    *ngFor="let item of arrWindow; let idx = index; trackBy: identify"
-    [callIDColorList]='callIDColorList'
-    [titleId]="item.id"
-    [titleName]="item.titleName"
-    [rowData]="rowData"
-    [mouseEventData]="item.mouseEventData"
-    [sipDataItem]="item.data"
-    [snapShotTimeRange]="item.snapShotTimeRange"
-    [headerColor]="item.headerColor"
-    [isLoaded]="item.loaded"
-    [request]="item.request"
-    (openMessage)="addWindowMessage($event, null, item)"
-    (close)="closeWindow(idx)">
+<app-detail-dialog *ngFor="let item of arrWindow; let idx = index; trackBy: identify"
+    [callIDColorList]='callIDColorList' [titleId]="item.id" [titleName]="item.titleName" [rowData]="rowData"
+    [mouseEventData]="item.mouseEventData" [sipDataItem]="item.data" [snapShotTimeRange]="item.snapShotTimeRange"
+    [headerColor]="item.headerColor" [isLoaded]="item.loaded" [request]="item.request"
+    (openMessage)="addWindowMessage($event, null, item)" (close)="closeWindow(idx)">
 </app-detail-dialog>
 
 <!-- (END) TRANSACTION DITAILS DIALOG -->
@@ -134,28 +90,15 @@
 <!-- =============== -->
 <!-- MESSAGE DETAILS -->
 
-<app-modal-resizable *ngFor="let item of arrMessageDetail; let idx = index; trackBy: identify"
-    [isOutsideButton]="true"
+<app-modal-resizable *ngFor="let item of arrMessageDetail; let idx = index; trackBy: identify" [isOutsideButton]="true"
     [title]="('searchGridCall.messageID'| translate) + ': '  + (item.id || (item | json))"
-    [headerColor]="item.headerColor"
-    [mouseEventData]="item.mouseEventData"
-    [startZIndex]="2000"
-    [minWidth]="400"
-    [minHeight]="200"
-    [id]='item.uuid'
-    [arrowMetaData]="item.arrowMetaData"
-    [isBrowserWindow]="item.isBrowserWindow"
-    [width]="650"
-    [height]="400"
-
-    (close)="closeWindowMessage(idx)">
+    [headerColor]="item.headerColor" [mouseEventData]="item.mouseEventData" [startZIndex]="2000" [minWidth]="400"
+    [minHeight]="200" [id]='item.uuid' [arrowMetaData]="item.arrowMetaData" [isBrowserWindow]="item.isBrowserWindow"
+    [width]="650" [height]="400" (close)="closeWindowMessage(idx)">
     <app-loading-circle *ngIf="!item.loaded">
 
     </app-loading-circle>
-    <app-message-content *ngIf="item.loaded"
-        [isDecoded]='item.isDecoded'
-        [rowData]="rowData"
-        [data]="item.data">
+    <app-message-content *ngIf="item.loaded" [isDecoded]='item.isDecoded' [rowData]="rowData" [data]="item.data">
     </app-message-content>
 </app-modal-resizable>
 
@@ -166,39 +109,22 @@
 <!-- grid-chart-dialog -->
 
 <div *ngIf="!inChartContainer && !isLokiQuery">
-    <app-modal-resizable [isOutsideButton]="false"
-        [title]="('searchGridCall.report' | translate) + ': ' + item.id"
-        [headerColor]="item.headerColor"
-        (close)="closeChartWindow(idx)"
-        [mouseEventData]="item.mouseEventData"
-        [width]="1400"
-        [height]="400"
-        [minWidth]="600"
-        [minHeight]="400"
+    <app-modal-resizable [isOutsideButton]="false" [title]="('searchGridCall.report' | translate) + ': ' + item.id"
+        [headerColor]="item.headerColor" (close)="closeChartWindow(idx)" [mouseEventData]="item.mouseEventData"
+        [width]="1400" [height]="400" [minWidth]="600" [minHeight]="400"
         *ngFor="let item of arrChartWindow; let idx = index;">
-        <app-grid-chart-dialog [titleId]="item.id"
-            [mouseEventData]="item.mouseEventData"
-            [gridApiData]="item.gridApiData"
-            [headerColor]="item.headerColor"
-            [isLoaded]="item.loaded"
+        <app-grid-chart-dialog [titleId]="item.id" [mouseEventData]="item.mouseEventData"
+            [gridApiData]="item.gridApiData" [headerColor]="item.headerColor" [isLoaded]="item.loaded"
             (openMessage)="generateChart($event)">
         </app-grid-chart-dialog>
 
     </app-modal-resizable>
 </div>
-<div *ngIf="inChartContainer && !isLokiQuery"
-    style="height: calc(100% - 2rem);">
-    <app-grid-chart-dialog *ngFor="let item of arrChartWindow; let idx = index;"
-        [titleId]="item.id"
-        [mouseEventData]="item.mouseEventData"
-        [gridApiData]="item.gridApiData"
-        [headerColor]="item.headerColor"
-        [isLoaded]="item.loaded"
-        [config]="chartConfig"
-        [inChartContainer]="inChartContainer"
-        [id]="id"
-        (openMessage)="generateChart($event)"
-        (changeSettings)="chartChangeSettings($event)"
+<div *ngIf="inChartContainer && !isLokiQuery" style="height: calc(100% - 2rem);">
+    <app-grid-chart-dialog *ngFor="let item of arrChartWindow; let idx = index;" [titleId]="item.id"
+        [mouseEventData]="item.mouseEventData" [gridApiData]="item.gridApiData" [headerColor]="item.headerColor"
+        [isLoaded]="item.loaded" [config]="chartConfig" [inChartContainer]="inChartContainer" [id]="id"
+        (openMessage)="generateChart($event)" (changeSettings)="chartChangeSettings($event)"
         style="height: 100%;"></app-grid-chart-dialog>
 </div>
 
@@ -211,35 +137,22 @@
 
 <div *ngIf="!isLokiQuery && !inChartContainer && !loader"
     style="position:absolute; bottom:0.4rem; left:0.2rem; opacity: 0.7;">
-    <button matTooltip="{{'searchGridCall.gridSettings' | translate}}"
-        mat-icon-button
-        (click)="onSettingButtonClick()"
+    <button matTooltip="{{'searchGridCall.gridSettings' | translate}}" mat-icon-button (click)="onSettingButtonClick()"
         onclick="this.blur()">
         <mat-icon>settings_applications</mat-icon>
     </button>
-    <button *ngIf="source !== 'widget'"
-        mat-icon-button
-        matTooltip="{{'searchGridCall.searchConfig'| translate}}"
-        (click)="isSearchPanel=!isSearchPanel"
-        onclick="this.blur()"
-        class='smart-input'>
-        <mat-icon [matBadge]="getSearchSlider()"
-            [matBadgeHidden]="getSearchSlider() === 0"
-            matBadgeColor="accent">
+    <button *ngIf="source !== 'widget'" mat-icon-button matTooltip="{{'searchGridCall.searchConfig'| translate}}"
+        (click)="isSearchPanel=!isSearchPanel" onclick="this.blur()" class='smart-input'>
+        <mat-icon [matBadge]="getSearchSlider()" [matBadgeHidden]="getSearchSlider() === 0" matBadgeColor="accent">
             search</mat-icon>
     </button>
-    <button mat-icon-button
-        matTooltip="{{'searchGridCall.exportDataFromGrid'| translate}}"
-        (click)='export()'
+    <button mat-icon-button matTooltip="{{'searchGridCall.exportDataFromGrid'| translate}}" (click)='export()'
         onclick="this.blur()">
         <mat-icon>get_app</mat-icon>
     </button>
 
-    <button mat-icon-button
-        matTooltip="{{'searchGridCall.gridDataIntoChart' | translate}}"
-        (click)='generateChart($event)'
-        *ngIf="rowData?.length"
-        onclick="this.blur()">
+    <button mat-icon-button matTooltip="{{'searchGridCall.gridDataIntoChart' | translate}}"
+        (click)='generateChart($event)' *ngIf="rowData?.length" onclick="this.blur()">
         <mat-icon>insert_chart_outlined</mat-icon>
     </button>
 </div>
