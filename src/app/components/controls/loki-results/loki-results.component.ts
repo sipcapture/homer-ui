@@ -12,6 +12,7 @@ import {
 import { Functions, log } from '@app/helpers/functions';
 import { PreferenceAdvancedService, SearchRemoteService, SearchService } from '@app/services';
 import { DateTimeRangeService } from '@app/services/data-time-range.service';
+import { ModulesService } from '@app/services/modules.service';
 
 @Component({
     selector: 'app-loki-results',
@@ -63,6 +64,7 @@ export class LokiResultsComponent implements OnInit, AfterViewInit {
         private _srs: SearchRemoteService,
         private _dtrs: DateTimeRangeService,
         private searchService: SearchService,
+        private modules: ModulesService,
         private cdr: ChangeDetectorRef
 
     ) { }
@@ -73,7 +75,7 @@ export class LokiResultsComponent implements OnInit, AfterViewInit {
     }
     ngAfterViewInit() {
         window.requestAnimationFrame(() => {
-            this.ready.emit({ });
+            this.ready.emit({});
             this.doSerchResult();
         });
     }
@@ -95,20 +97,17 @@ export class LokiResultsComponent implements OnInit, AfterViewInit {
             lineFilterOperator: '|~',
             logStreamSelector: '{job="heplify-server"}'
         };
-        this._pas.getAll().toPromise().then((advanced: any) => {
-            const [advancedTemplate] = advanced.data
-                .filter(i => i.category === 'search' && i.param === 'lokiserver')
-                .map(i => i.data.template);
-            if (typeof advancedTemplate !== 'undefined'
-                && (advancedTemplate.hasOwnProperty('logStreamSelector') || advancedTemplate.hasOwnProperty('lineFilterOperator'))) {
-                this.lokiTemplate = advancedTemplate;
-                this.cdr.detectChanges();
+        this.modules.getModules().then(({ data: { loki } }) => {
+            if (loki.template) {
+                this.lokiTemplate.logStreamSelector = loki.template;
             }
             if (typeof this.lokiTemplate !== 'undefined') {
-                this.queryText = `${this.lokiTemplate.logStreamSelector ? this.lokiTemplate.logStreamSelector : ''} ${this.lokiTemplate.lineFilterOperator} "${labels}"`;
+                this.queryText = `${this.lokiTemplate.logStreamSelector
+                    ? this.lokiTemplate.logStreamSelector
+                    : ''
+                    } ${this.lokiTemplate.lineFilterOperator} "${labels}"`;
                 this.cdr.detectChanges();
             }
-            this.cdr.detectChanges();
         });
         this.cdr.detectChanges();
     }
