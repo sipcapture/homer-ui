@@ -85,6 +85,44 @@ export class LokiResultsComponent implements OnInit, AfterViewInit {
             this.queryText = this.logQlText || '{type="call"}';
             return;
         }
+
+        this.lokiTemplate = {
+            lineFilterOperator: '|~',
+            logStreamSelector: '{job="heplify-server"}',
+            labelField: 'callid'
+        };
+        this.modules.getModules().then(({ data: { loki } }) => {
+            let labels = '';
+            if (loki.template) {
+
+                const matchOperator = loki.template.match(/\|=|\|~|!=|!~/);
+                if (matchOperator && matchOperator[0]) {
+                    this.lokiTemplate.lineFilterOperator = matchOperator[0];
+                    loki.template = loki.template.replace(matchOperator[0], '')
+                }
+                const matchLabel = loki.template.match(/\s*"\%(.*)\%"/)
+                if (matchLabel && matchLabel[1]) {
+                    this.lokiTemplate.labelField = matchLabel[1];
+                    loki.template = loki.template.replace(matchLabel[0], '')
+                }
+                this.lokiTemplate.logStreamSelector = loki.template;
+            }
+            if (this.lokiTemplate.labelField === 'callid') {
+                labels = this.getCallidLabels();
+            } else {
+                labels = this.getGenericLabels();
+                if (labels === '') {
+                    labels = this.getCallidLabels();
+                }
+            }
+            if (typeof this.lokiTemplate !== 'undefined') {
+                this.queryText = `${this.lokiTemplate.logStreamSelector} ${this.lokiTemplate.lineFilterOperator} "${labels}"`;
+                this.cdr.detectChanges();
+            }
+        });
+        this.cdr.detectChanges();
+    }
+    getCallidLabels(): string {
         const labels = this.dataItem.data.callid
             .reduce((a, b) => {
                 if (a.indexOf(b) === -1) {
@@ -93,23 +131,19 @@ export class LokiResultsComponent implements OnInit, AfterViewInit {
                 return a;
             }, [])
             .join('|');
-        this.lokiTemplate = {
-            lineFilterOperator: '|~',
-            logStreamSelector: '{job="heplify-server"}'
-        };
-        this.modules.getModules().then(({ data: { loki } }) => {
-            if (loki.template) {
-                this.lokiTemplate.logStreamSelector = loki.template;
-            }
-            if (typeof this.lokiTemplate !== 'undefined') {
-                this.queryText = `${this.lokiTemplate.logStreamSelector
-                    ? this.lokiTemplate.logStreamSelector
-                    : ''
-                    } ${this.lokiTemplate.lineFilterOperator} "${labels}"`;
-                this.cdr.detectChanges();
+        return labels;
+    }
+    getGenericLabels(): string {
+        let labels = [];
+        this.dataItem.data.messages.forEach(message => {
+            console.log(message, message?.[this.lokiTemplate.labelField], this.lokiTemplate.labelField)
+            const value = message?.[this.lokiTemplate.labelField];
+            if (typeof value !== 'undefined') {
+                labels.push(value);
             }
         });
-        this.cdr.detectChanges();
+        labels = Functions.arrayUniques(labels)
+        return labels.join('|');
     }
     queryBuilder() {
         /** depricated, need use {SearchService} */
