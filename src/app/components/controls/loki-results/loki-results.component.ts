@@ -12,6 +12,7 @@ import {
 import { Functions, log } from '@app/helpers/functions';
 import { PreferenceAdvancedService, SearchRemoteService, SearchService } from '@app/services';
 import { DateTimeRangeService } from '@app/services/data-time-range.service';
+import { ModulesService } from '@app/services/modules.service';
 
 @Component({
     selector: 'app-loki-results',
@@ -63,6 +64,7 @@ export class LokiResultsComponent implements OnInit, AfterViewInit {
         private _srs: SearchRemoteService,
         private _dtrs: DateTimeRangeService,
         private searchService: SearchService,
+        private modules: ModulesService,
         private cdr: ChangeDetectorRef
 
     ) { }
@@ -73,7 +75,7 @@ export class LokiResultsComponent implements OnInit, AfterViewInit {
     }
     ngAfterViewInit() {
         window.requestAnimationFrame(() => {
-            this.ready.emit({ });
+            this.ready.emit({});
             this.doSerchResult();
         });
     }
@@ -83,6 +85,44 @@ export class LokiResultsComponent implements OnInit, AfterViewInit {
             this.queryText = this.logQlText || '{type="call"}';
             return;
         }
+
+        this.lokiTemplate = {
+            lineFilterOperator: '|~',
+            logStreamSelector: '{job="heplify-server"}',
+            labelField: 'callid'
+        };
+        this.modules.getModules().then(({ data: { loki } }) => {
+            let labels = '';
+            if (loki.template) {
+
+                const matchOperator = loki.template.match(/\|=|\|~|!=|!~/);
+                if (matchOperator && matchOperator[0]) {
+                    this.lokiTemplate.lineFilterOperator = matchOperator[0];
+                    loki.template = loki.template.replace(matchOperator[0], '')
+                }
+                const matchLabel = loki.template.match(/\s*"\%(.*)\%"/)
+                if (matchLabel && matchLabel[1]) {
+                    this.lokiTemplate.labelField = matchLabel[1];
+                    loki.template = loki.template.replace(matchLabel[0], '')
+                }
+                this.lokiTemplate.logStreamSelector = loki.template;
+            }
+            if (this.lokiTemplate.labelField === 'callid') {
+                labels = this.getCallidLabels();
+            } else {
+                labels = this.getGenericLabels();
+                if (labels === '') {
+                    labels = this.getCallidLabels();
+                }
+            }
+            if (typeof this.lokiTemplate !== 'undefined') {
+                this.queryText = `${this.lokiTemplate.logStreamSelector} ${this.lokiTemplate.lineFilterOperator} "${labels}"`;
+                this.cdr.detectChanges();
+            }
+        });
+        this.cdr.detectChanges();
+    }
+    getCallidLabels(): string {
         const labels = this.dataItem.data.callid
             .reduce((a, b) => {
                 if (a.indexOf(b) === -1) {
@@ -91,26 +131,19 @@ export class LokiResultsComponent implements OnInit, AfterViewInit {
                 return a;
             }, [])
             .join('|');
-        this.lokiTemplate = {
-            lineFilterOperator: '|~',
-            logStreamSelector: '{job="heplify-server"}'
-        };
-        this._pas.getAll().toPromise().then((advanced: any) => {
-            const [advancedTemplate] = advanced.data
-                .filter(i => i.category === 'search' && i.param === 'lokiserver')
-                .map(i => i.data.template);
-            if (typeof advancedTemplate !== 'undefined'
-                && (advancedTemplate.hasOwnProperty('logStreamSelector') || advancedTemplate.hasOwnProperty('lineFilterOperator'))) {
-                this.lokiTemplate = advancedTemplate;
-                this.cdr.detectChanges();
+        return labels;
+    }
+    getGenericLabels(): string {
+        let labels = [];
+        this.dataItem.data.messages.forEach(message => {
+            console.log(message, message?.[this.lokiTemplate.labelField], this.lokiTemplate.labelField)
+            const value = message?.[this.lokiTemplate.labelField];
+            if (typeof value !== 'undefined') {
+                labels.push(value);
             }
-            if (typeof this.lokiTemplate !== 'undefined') {
-                this.queryText = `${this.lokiTemplate.logStreamSelector ? this.lokiTemplate.logStreamSelector : ''} ${this.lokiTemplate.lineFilterOperator} "${labels}"`;
-                this.cdr.detectChanges();
-            }
-            this.cdr.detectChanges();
         });
-        this.cdr.detectChanges();
+        labels = Functions.arrayUniques(labels)
+        return labels.join('|');
     }
     queryBuilder() {
         /** depricated, need use {SearchService} */

@@ -49,8 +49,7 @@ export class CustomVirtualScrollStrategy extends FixedSizeVirtualScrollStrategy 
   ],
 })
 export class TabFlowComponent
-  implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy
-{
+  implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
   @ViewChild('flowscreen', { static: true }) flowscreen: ElementRef;
   @ViewChild('canvas', { static: true }) canvas: ElementRef;
   @ViewChild('downloadLink', { static: true }) downloadLink: ElementRef;
@@ -59,6 +58,11 @@ export class TabFlowComponent
   @ViewChild('VScrollWrapper') VScrollWrapper: ElementRef;
   @ViewChild('labelContainer') labelContainer: ElementRef;
   @Input() callIDColorList: Array<CallIDColor>;
+  /**
+    *  Detect Safari browser
+    */
+  isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
 
   _interval = null;
   public getVirtualScrollHeight: string = `translateY(1px)`;
@@ -103,7 +107,7 @@ export class TabFlowComponent
     this._isSimplify = v;
     try {
       this.virtualScroll._contentWrapper;
-    } catch (e) {}
+    } catch (e) { }
     requestAnimationFrame(() => this.cdr.detectChanges());
   }
   get isSimplify(): boolean {
@@ -175,7 +179,7 @@ export class TabFlowComponent
     private messageDetailsService: MessageDetailsService,
     private copyService: CopyService,
     private transactionFilterService: TransactionFilterService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.getVirtualScrollHeight = `translateY(1px)`;
@@ -312,9 +316,8 @@ export class TabFlowComponent
       const color = this.callIDColorList?.find(
         (callID) => callID.callID === item.callid
       );
-      const compiledColor = `hsla(${color?.decompiledColor?.hue}, ${
-        color?.decompiledColor?.saturation
-      }%, ${color?.decompiledColor?.lightness - 10}%, 1)`;
+      const compiledColor = `hsla(${color?.decompiledColor?.hue}, ${color?.decompiledColor?.saturation
+        }%, ${color?.decompiledColor?.lightness - 10}%, 1)`;
       item.options = {
         mosColor,
         color:
@@ -364,8 +367,8 @@ export class TabFlowComponent
       return isCombineByAlias
         ? [srcAlias || i.source_ip, dstAlias || i.destination_ip]
         : isSimplifyPort
-        ? [i.source_ip, i.destination_ip]
-        : [`${sIP}:${i.source_port}`, `${dIP}:${i.destination_port}`];
+          ? [i.source_ip, i.destination_ip]
+          : [`${sIP}:${i.source_port}`, `${dIP}:${i.destination_port}`];
     });
 
     // sort hosts by Items timeline
@@ -431,8 +434,8 @@ export class TabFlowComponent
               ? host.alias === alias
               : host.ip === ip
             : this.isSimplifyPort
-            ? host.ip === ip
-            : host.ip === ip && (host.port * 1 === port * 1 || !port);
+              ? host.ip === ip
+              : host.ip === ip && (host.port * 1 === port * 1 || !port);
         } catch (err) {
           throw host;
         }
@@ -608,9 +611,8 @@ export class TabFlowComponent
       const color = this.callIDColorList?.find(
         (callID) => callID.callID === callid
       );
-      const adjustedColor = `hsl(${color?.decompiledColor?.hue}, ${
-        color?.decompiledColor?.saturation
-      }%, ${color?.decompiledColor?.lightness / 1.5}%, 1`;
+      const adjustedColor = `hsl(${color?.decompiledColor?.hue}, ${color?.decompiledColor?.saturation
+        }%, ${color?.decompiledColor?.lightness / 1.5}%, 1`;
       return typeof color !== 'undefined'
         ? adjustedColor
         : Functions.getColorByString(callid, undefined, 50, 1);
@@ -647,7 +649,7 @@ export class TabFlowComponent
     try {
       const { scrollLeft } = event?.target || {};
       this.flowscreen.nativeElement.style.marginLeft = `${-scrollLeft}px`;
-    } catch (e) {}
+    } catch (e) { }
   }
 
   cdkWheelScroll(event?: any) {

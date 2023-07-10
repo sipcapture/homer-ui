@@ -516,18 +516,47 @@ export class SearchGridCallComponent
 
             this.protocol_profile = Object.keys(params.param.search)[0];
             this.config.param = Functions.cloneObject(params.param);
+            const mappedMappings = new Map()
+            if (this.mappings) {
+                this.mappings.forEach(mapping => {
+                    mappedMappings.set(mapping.id, mapping)
+                });
+            }
             if (params.param.search &&
                 params.param.search[this.protocol_profile] &&
-                params.param.search[this.protocol_profile].callid
+                params.param.search[this.protocol_profile]
             ) {
-                const sids: Array<string> = params.param.search[this.protocol_profile].callid;
-                this.config.param.search = {};
-                this.config.param.search[this.protocol_profile] = [{
-                    name: 'sid',
-                    value: sids.join(';'),
-                    type: 'string',
-                    hepid: 1
-                }];
+                const searchparams = params.param.search[this.protocol_profile];
+                const parsedParams = Object.entries(searchparams).map(([key, value]) => {
+                    if (key === 'callid') {
+                        key = 'sid'
+                    }
+                    const mapping = mappedMappings.get(key);
+                    if (typeof mapping === 'undefined') {
+                        return {
+                            name: '',
+                            value: '',
+                            type: '',
+                            hepid: 1,
+                        }
+                    }
+                    let updatedValue: any;
+                    if (Array.isArray(value) && mapping?.type === 'string') {
+                        updatedValue = value.join(';')
+                    } else {
+                        updatedValue = value;
+                    }
+
+                    return {
+                        name: key,
+                        value: updatedValue,
+                        type: mapping?.type,
+                        hepid: 1
+                    }
+                }).filter(param => {
+                    return param.name !== 'id' && param.value
+                })
+                this.config.param.search[this.protocol_profile] = parsedParams;
             } else {
                 this.config.param.search = {};
                 this.config.param.search[this.protocol_profile] = [];
@@ -646,7 +675,7 @@ export class SearchGridCallComponent
                 this.config.param.search?.hasOwnProperty(`${hepid}_${profile}`)
             )
         ) || {};
-        const condition = JSON.stringify(fields_mapping) === JSON.stringify(this.mappings);
+        const condition = JSON.stringify(fields_mapping) === JSON.stringify(this.mappings) && typeof fields_mapping !== 'undefined';
         if (condition) {
             this.onlyLoader = true;
             this.cdr.detectChanges();
@@ -657,7 +686,6 @@ export class SearchGridCallComponent
         }
         this.columnDefs = [];
         this.config.timestamp = this._dtrs.getDatesForQuery(true);
-
         this.getQueryData();
 
         /* this is normaly not needed - just a workaround to copy from search param */
@@ -703,7 +731,6 @@ export class SearchGridCallComponent
                 });
 
             }
-            console.log({ marData })
             marData?.forEach((h: any) => {
                 const idColumn = h?.id?.split('.').pop();
 
@@ -714,6 +741,7 @@ export class SearchGridCallComponent
                 /* default column values */
                 const vaColumn: any = {
                     headerName: h.name,
+                    headerTooltip: h.id,
                     field: idColumn,
                     filter: true,
                     resizable: true,
@@ -853,7 +881,7 @@ export class SearchGridCallComponent
         });
 
     }
-    public update(isImportant = false) {
+    public async update(isImportant = false) {
 
         if (this.isNewData() && !isImportant) {
             return;
@@ -869,8 +897,13 @@ export class SearchGridCallComponent
             /* if ag-grid in result widget */
             this.getHeaders();
         } else {
+            await this.getHeaders();
+            if (!this.mappings) {
+                return
+            }
             this.loader = true;
             this.getQueryData();
+            this.cdr.detectChanges();
         }
         this.rowData = null;
 
@@ -885,7 +918,6 @@ export class SearchGridCallComponent
             }, 200);
 
         };
-
         if (this.isLokiQuery) {
             this._srs
                 .getData(this.queryBuilderForLoki())

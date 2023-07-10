@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import {ICellRendererAngularComp} from 'ag-grid-angular';
+import { ICellRendererAngularComp } from 'ag-grid-angular';
 
 @Component({
     selector: 'app-child-cell',

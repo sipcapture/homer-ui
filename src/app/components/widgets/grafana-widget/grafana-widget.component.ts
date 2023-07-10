@@ -2,9 +2,9 @@ import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, AfterViewIni
 import { SettingIframeWidgetComponent } from './setting-grafana-widget.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DateTimeRangeService, DateTimeTick, Timestamp } from '@app/services/data-time-range.service';
-import { AuthenticationService } from '@app/services';
+import { AuthenticationService, ProxyService } from '@app/services';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { Subscription, lastValueFrom } from 'rxjs';
 import { IWidget } from '../IWidget';
 import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 
@@ -70,10 +70,12 @@ export class IframeWidgetComponent implements IWidget, OnInit, OnDestroy {
     _interval: any;
 
     isSameOrigin: boolean = false;
+    grafanaVariables: string = '';
     constructor(
         public dialog: MatDialog,
         private _dtrs: DateTimeRangeService,
         private cdr: ChangeDetectorRef,
+        private _ps: ProxyService,
         private auths: AuthenticationService,
         public translateService: TranslateService
     ) {
@@ -81,7 +83,8 @@ export class IframeWidgetComponent implements IWidget, OnInit, OnDestroy {
         translateService.setDefaultLang('en')
     }
 
-    ngOnInit() {
+    async ngOnInit() {
+        this.grafanaUrl = await lastValueFrom(this._ps.getProxyGrafanaPath()).then(({ data }) => `${this.envUrl}/${data}`)
         WidgetArrayInstance[this.id] = this as IWidget;
         if (typeof this.config !== 'undefined' && this.config !== null) {
             this.url = this.config.configuredUrl;
@@ -151,12 +154,13 @@ export class IframeWidgetComponent implements IWidget, OnInit, OnDestroy {
         const paramString = Object.keys(params).map(i => `${i}=${params[i]}`).join('&');
         this.url = `${this._config.url}?${paramString}`;
         this.url = this.url.replace('/d-solo/', '');
+        this.isSameOrigin = this.envUrl === `${location.protocol}//${location.host}`;
         const modifier = this.isSameOrigin && this._config.params.hasVariables ? '/d/' : '/d-solo/';
-        this.url = `${this.grafanaUrl}${modifier}${this.url}&JWT=${shortToken}&kiosk=full`;
+        this.url = `${this.grafanaUrl}${modifier}${this.url}&JWT=${shortToken}&kiosk=full` + '&' + this.grafanaVariables;
         this._config.configuredUrl = this.url;
         this.cdr.detectChanges();
     }
-        // To work on Grafana "Variables" feature you have to have setup with same origin for backend and UI 
+    // To work on Grafana "Variables" feature you have to have setup with same origin for backend and UI 
     // or set ---disable-site-isolation-trials flag in chrome, DON'T FORGET TO REMOVE FLAG AFTERWARDS, IT IS UNSAFE
     onLoadIframe() {
         if (typeof this._config !== 'undefined' && this._config.url !== 'none') {
@@ -167,16 +171,31 @@ export class IframeWidgetComponent implements IWidget, OnInit, OnDestroy {
                     isHeader = !!this.frame.nativeElement.contentWindow.document.querySelector('header')
                     if (isHeader) {
                         clearInterval(interval)
-                        this.frame.nativeElement.contentWindow.document.querySelector('header').hidden = true;
-                        this.frame.nativeElement.contentWindow.document.querySelector('.track-vertical').style.setProperty('width', '0', 'important')
-                        this.frame.nativeElement.contentWindow.document.querySelector('.react-grid-layout').style.setProperty('height', '0', 'important')
-                        const submenu = this.frame.nativeElement.contentWindow.document.querySelector('.submenu-controls')
+                        const iframeWindow = this.frame.nativeElement.contentWindow;
+                        const history = iframeWindow?.history;
+                        const pushState = history.pushState;
+                        history.pushState = (state, ...args) => {
+                            if (typeof history.onpushstate == "function") {
+                                history.onpushstate({ state: state });
+                            }
+                            setTimeout(() => {
+                                const queryParams = iframeWindow.location.search.replace('?', '').split('&');
+                                this.grafanaVariables = queryParams.filter(param => {
+                                    return !/to=|from=|JWT=|orgId=|kiosk/.test(param)
+                                }).join('&');
+                            }, 10);
+                            return pushState.call(history, state, ...args);
+                        }
+                        iframeWindow.document.querySelector('header').hidden = true;
+                        iframeWindow.document.querySelector('.track-vertical').style.setProperty('width', '0', 'important')
+                        iframeWindow.document.querySelector('.react-grid-layout').style.setProperty('height', '0', 'important')
+                        const submenu = iframeWindow.document.querySelector('.submenu-controls')
                         if (submenu) {
                             submenu.style.setProperty('padding-top', '5px', 'important')
                             submenu.style.setProperty('margin-left', '16px', 'important')
                         }
-                        this.frame.nativeElement.contentWindow.document.querySelectorAll('.scrollbar-view')[1].children[0].style.setProperty('padding', '0', 'important')
-                        const sidemenu = this.frame.nativeElement.contentWindow.document.querySelector('.sidemenu')
+                        iframeWindow.document.querySelectorAll('.scrollbar-view')[1].children[0].style.setProperty('padding', '0', 'important')
+                        const sidemenu = iframeWindow.document.querySelector('.sidemenu')
                         if (sidemenu) {
                             sidemenu.style.setProperty('display', 'none', 'important')
                         }

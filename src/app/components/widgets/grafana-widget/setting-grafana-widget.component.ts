@@ -69,7 +69,7 @@ export class SettingIframeWidgetComponent implements OnInit {
             this.errorCode = res?.errorcode;
             this.isLoggedIn = false;
             this.errorMessage = res?.data?.message;
-        }  else {
+        } else {
             this.data.params.orgId = res.id;
             this.onSyncDashboard();
         }
@@ -135,7 +135,7 @@ export class SettingIframeWidgetComponent implements OnInit {
 
     onPanelSelect() {
         this.data.panelListValue = this.panelListValue.title;
-        this.data.url = (this.panelListValue.uid || '...') + '/' + (encodeURIComponent(this.panelListValue.title) || '...');        
+        this.data.url = (this.panelListValue.uid || '...') + '/' + (encodeURIComponent(this.panelListValue.title) || '...');
         this.data.params.panelId = this.panelListValue.pid;
         this.data.params.viewPanel = this.panelListValue.pid;
         this.cdr.detectChanges();
