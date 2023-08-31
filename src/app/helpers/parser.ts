@@ -201,8 +201,21 @@ export class TransactionServiceProcessor {
         .filter((i, k, a) => i !== a[k - 1])
         .filter((i) => !!i);
     }
+
+    // @TODO current
+    // const {
+    //   calldata,
+    //   messages,
+    //   hosts,
+    //   hostinfo,
+    //   callid,
+    //   uac,
+    //   sdp,
+    //   transaction,
+    //   ipaliases = [],
+    // } = transactionData.data;
     const {
-      calldata,
+      transaction_elements,
       messages,
       hosts,
       hostinfo,
@@ -231,11 +244,21 @@ export class TransactionServiceProcessor {
       }, {});
 
     alias = Object.assign({}, ipaliasesAggrigated, aliasNonIps);
+
     let fullCallData = messages.map((messageItem: any) => {
-      const callDataItem = calldata.find((j: any) => {
-        return (
-          j.create_date === messageItem.create_date && j.id === messageItem.id
-        );
+      // const callDataItem = calldata.find((j: any) => {
+      //   return (
+      //     j.create_date === messageItem.create_date && j.id === messageItem.id
+      //   );
+      // });
+      let callDataItem = {}
+      transaction_elements.some((j: any) => {
+        let findCallDataItem = j.call_data.find(b => new Date(b.create_date).getTime()  === new Date(messageItem.create_date).getTime() && b.id === messageItem.id )
+        // @TODO current
+        if(findCallDataItem) {
+          callDataItem = findCallDataItem
+        }
+        return findCallDataItem
       });
       const messagesKeys = Object.keys(messageItem);
       const calldataKeys = Object.keys(callDataItem);
@@ -297,11 +320,17 @@ export class TransactionServiceProcessor {
       console.log({ fullCallData });
     }
     const getAliasByIp = (ip) => this.getAliasByIp(ip, alias);
-    let fullHosts = Object.values(hosts).map((m: any) => {
-      if (!m.host) {
+    let fullHosts = Object.values(hosts).map((m: any, index: Number) => {
+      // @TODO current
+      // if (!m.host) {
+      //   throw console.error('HTTP ERROR: hosts is broken');
+      // }
+      // const [_ip] = m.host;
+
+      if (!m) {
         throw console.error('HTTP ERROR: hosts is broken');
       }
-      const [_ip] = m.host;
+      const _ip = m;
 
       const isIPv4 = _ip.match(/^\d+\.\d+\.\d+\.\d+(\:\d+)?$/g) !== null;
       let PORT = isIPv4
@@ -328,7 +357,8 @@ export class TransactionServiceProcessor {
         ip: IP,
         port: PORT || 0,
         isIPv4,
-        position: m.position,
+        position: index
+        // position: m.position,
       };
     });
 
@@ -642,7 +672,7 @@ export class TransactionServiceProcessor {
     messages.forEach((message) => {
       if (!message.micro_ts) {
         message.micro_ts =
-          message.create_date ||
+          message.create_date ? message.create_date[0] :
           message.create_ts ||
           message.timeSeconds * 1000 + message.timeUseconds;
       }

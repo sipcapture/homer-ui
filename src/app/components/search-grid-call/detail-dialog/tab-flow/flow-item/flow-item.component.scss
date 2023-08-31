@@ -19,6 +19,10 @@
     margin: 0px -66px;
   }
 
+  .col-warning {
+    color: hsl(12, 100%, 55%);
+  }
+
   .item-flow-packet {
     position: relative;
     width: 150px;
@@ -83,6 +87,8 @@
       margin: 0;
       border-radius: 1rem;
     }
+
+    .col-warning { color: hsl(12, 100%, 55%);}
 
     .call_text {
       font-size: 14px;

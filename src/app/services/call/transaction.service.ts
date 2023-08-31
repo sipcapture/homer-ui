@@ -16,7 +16,9 @@ export class CallTransactionService {
     constructor(private http: HttpClient, private _ipalias: PreferenceIpAliasService) { }
 
     getTransaction(data: any): Observable<any> {
-        return this.http.post<any>(`${this.url}/transaction`, data).pipe(map(async transactionData => {
+        // @TODO current `${this.url}/transaction`
+        // return this.http.post<any>(`${this.url}/transaction`, data).pipe(map(async transactionData => {
+        return this.http.post<any>(`${this.url}/transaction/v2`, data).pipe(map(async transactionData => {
             let ipAliasesData: any = null;
             // try {
             //     ipAliasesData = await this._ipalias.getAll().toPromise();
