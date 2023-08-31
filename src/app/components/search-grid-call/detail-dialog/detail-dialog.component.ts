@@ -7,7 +7,7 @@ import {
   OnInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  OnDestroy
+  OnDestroy,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -20,7 +20,7 @@ import {
   PreferenceHepsubService,
   SearchCallService,
   MessageDetailsService,
-  TooltipService
+  TooltipService,
 } from '@app/services';
 import { AgentRequestModel } from '@app/models/agent-request-model';
 
@@ -30,7 +30,7 @@ import * as moment from 'moment';
   selector: 'app-detail-dialog',
   templateUrl: './detail-dialog.component.html',
   styleUrls: ['./detail-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetailDialogComponent implements OnInit, OnDestroy {
   _sipDataItem: any;
@@ -63,7 +63,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     node: '',
   };
   agentsData = {
-    data: []
+    data: [],
   };
 
   tabs = {
@@ -74,16 +74,16 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     callinfo: true,
     export: false,
   };
-  
+
   public metricType = 'mos';
   public metricTypes = {
-    'mos': 'Mean MOS (0-4.5)',
-    'jitter': 'Mean Jitter (ms)',
-    'delta': 'Delta (ms)',
-    'skew': 'Skew (ms)',
-    'bytes': 'Bytes (b)',
-    'pl': 'Packet Loss',
-    'packets': 'Total Packets',
+    mos: 'Mean MOS (0-4.5)',
+    jitter: 'Mean Jitter (ms)',
+    delta: 'Delta (ms)',
+    skew: 'Skew (ms)',
+    bytes: 'Bytes (b)',
+    pl: 'Packet Loss',
+    packets: 'Total Packets',
   };
   _flowFilters: any;
 
@@ -141,7 +141,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     const { callid, messages } = data.data || {};
     const [callidFirst] = callid || [];
 
-    this.tabs.qos = !!messages.find(i => i.QOS && i.typeItem === 'RTP');
+    this.tabs.qos = !!messages.find((i) => i.QOS && i.typeItem === 'RTP');
 
     this.IdFromCallID = callidFirst;
 
@@ -160,10 +160,8 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
   protocol_profile: string;
   private dateFormat: string;
 
-
   @Output() openMessage: EventEmitter<any> = new EventEmitter();
   @Output() close: EventEmitter<any> = new EventEmitter();
-
 
   constructor(
     private _pas: PreferenceAdvancedService,
@@ -175,7 +173,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     private _scs: SearchCallService,
     private tooltipService: TooltipService,
     private messageDetailsService: MessageDetailsService
-  ) { }
+  ) {}
   updateGraphSettings(e) {
     this.graphSettings = Functions.cloneObject(e);
     this.cdr.detectChanges();
@@ -193,52 +191,64 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
       headerColor: this.headerColor,
       isLoaded: this.isLoaded,
       request: this.request,
-      callIDColorList: this.callIDColorList
+      callIDColorList: this.callIDColorList,
     };
   }
   async ngOnInit() {
+    this._route_paramsSubscription = this._route.params.subscribe(
+      (params: any) => {
+        this.isWindow = !params?.uuid;
+        console.log(this.isWindow);
+        if (this.isWindow) {
+          this.saveStateOnStorage();
+        } else {
+          const storageData = window['objectData'] || {};
+          console.log(storageData);
+          this.titleId = storageData.titleId;
+          this.rowData = storageData.rowData;
+          this.mouseEventData = storageData.mouseEventData;
+          this.sipDataItem = storageData.sipDataItem;
+          this.snapShotTimeRange = storageData.snapShotTimeRange;
+          this.headerColor = storageData.headerColor;
+          this.isLoaded = storageData.isLoaded;
+          this.request = storageData.request;
+          this.callIDColorList = storageData.callIDColorList;
 
-    this._route_paramsSubscription = this._route.params.subscribe((params: any) => {
-      this.isWindow = !params?.uuid;
-
-      if (this.isWindow) {
-        this.saveStateOnStorage();
-      } else {
-        const storageData = window['objectData'] || {};
-        this.titleId = storageData.titleId;
-        this.rowData = storageData.rowData;
-        this.mouseEventData = storageData.mouseEventData;
-        this.sipDataItem = storageData.sipDataItem;
-        this.snapShotTimeRange = storageData.snapShotTimeRange;
-        this.headerColor = storageData.headerColor;
-        this.isLoaded = storageData.isLoaded;
-        this.request = storageData.request;
-        this.callIDColorList = storageData.callIDColorList;
-
-        localStorage.removeItem(params?.uuid);
-        setTimeout(() => {
-          this.onBrowserWindow(!this.isWindow);
-          this.isLoaded = true;
-          this.showLoader = false;
-        }, 1000);
-
+          localStorage.removeItem(params?.uuid);
+          setTimeout(() => {
+            this.onBrowserWindow(!this.isWindow);
+            this.isLoaded = true;
+            this.showLoader = false;
+            this.cdr.detectChanges();
+          }, 1000);
+        }
+        //this.getAgents();
+        this.setTabByAdvanced();
+        this.cdr.detectChanges();
       }
-      this.getAgents();
-      this.setTabByAdvanced();
-      this.cdr.detectChanges();
-    });
-    this.messageDetailsService.event.subscribe(windowData => {
+    );
+    this.messageDetailsService.event.subscribe((windowData) => {
       if (!this.isWindow) {
-        this.addWindowMessage({ data: windowData.message }, null, windowData.metadata);
+        this.addWindowMessage(
+          { data: windowData.message },
+          null,
+          windowData.metadata
+        );
       }
     });
   }
 
   checkStatusTabs() {
     this.tabs.logs = true;
-    this.tabs.messages = this.tabs.flow = this.sipDataItem?.data?.messages?.length > 0;
+    this.tabs.messages = this.tabs.flow =
+      this.sipDataItem?.data?.messages?.length > 0;
     this.tabs.export = this.sipDataItem?.data?.messages && !!this.IdFromCallID;
-    this.tabs.callinfo = this.sipDataItem?.data?.messages?.filter(f => f?.source_data?.profile === '1_call' || f?.source_data?.profile === '1_registration')?.length > 0;
+    this.tabs.callinfo =
+      this.sipDataItem?.data?.messages?.filter(
+        (f) =>
+          f?.source_data?.profile === '1_call' ||
+          f?.source_data?.profile === '1_registration'
+      )?.length > 0;
   }
   onTabQos(isVisible: boolean) {
     setTimeout(() => {
@@ -249,7 +259,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
           this.checkboxListFilterPayloadType.push({
             payloadType: '5',
             selected: true,
-            title: 'RTP'
+            title: 'RTP',
           });
           this.cdr.detectChanges();
         }
@@ -267,17 +277,17 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     if (!this.isWindow) {
       this.openMessage.emit({
         data: data,
-        isBrowserWindow: this.isBrowserWindow
+        isBrowserWindow: this.isBrowserWindow,
       });
     }
   }
 
   onBrowserWindow(event) {
     this.isBrowserWindow = event;
-    const { callid } = this.sipDataItem.data;
+    const { callid } = this.sipDataItem?.data || { callid: [this.titleId] };
     const indexParentWindow = callid?.join('---');
     this.messageDetailsService.setParentWindowData(indexParentWindow, {
-      isBrowserWindow: event
+      isBrowserWindow: event,
     });
   }
   isFilterIcon() {
@@ -292,16 +302,22 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
       try {
         const params = Functions.getUriJson();
         const category = params && params.param ? 'export' : 'search';
-        const setting = advanced.data.find(i => i.category === category && i.param === 'transaction');
+        const setting = advanced.data.find(
+          (i) => i.category === category && i.param === 'transaction'
+        );
         if (setting && setting.data) {
           const { tabpositon } = setting.data;
-          if (tabpositon && typeof tabpositon === 'string' && tabpositon !== '') {
+          if (
+            tabpositon &&
+            typeof tabpositon === 'string' &&
+            tabpositon !== ''
+          ) {
             this.tabIndexByDefault = Object.keys(this.tabs).indexOf(tabpositon);
             this.activeTab = this.tabIndexByDefault;
             this.cdr.detectChanges();
           }
         }
-      } catch (err) { }
+      } catch (err) {}
     }
   }
   resizeMap() {
@@ -323,16 +339,19 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     }
 
     this.agents = agents.data;
-    const HepList = hData.data?.map(({ mapping: { lookup_profile } }) => lookup_profile) || [];
-    this.agents.forEach(agent => {
+    const HepList =
+      hData.data?.map(({ mapping: { lookup_profile } }) => lookup_profile) ||
+      [];
+
+    this.agents.forEach((agent) => {
       /** if exist an agent on hepsub list */
+
       if (HepList.includes(agent.type)) {
         const agReq = this.formatRequest(agent, this.agentRequest);
       }
     });
-
-
   }
+
   formatRequest(agent: any, agObj: any) {
     Object.entries(agent).forEach(([key, value]) => {
       agObj[key] = value;
@@ -349,8 +368,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
       const iagent = agentActiveData.data;
       this.agentsActive = true;
       this.agentsData.data.push(Functions.JSON_parse(iagent));
-    } catch (error) {
-    }
+    } catch (error) {}
     return;
   }
   onSelectedTabChange({ tab: { textLabel } }) {
@@ -370,25 +388,32 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
   }
 
   get getTabs(): Array<string> {
-    const isWebshark = !!(this.sipDataItem?.data?.messages?.[0]?.source_data?.frame_protocol);
+    const isWebshark =
+      !!this.sipDataItem?.data?.messages?.[0]?.source_data?.frame_protocol;
     return [
       !isWebshark && this.tabs.messages && 'Message',
       'Flow',
       this.tabs.callinfo && 'Session Info',
       this.tabs.qos &&
-      this.objectKeys(this.sipDataItem.data.hostinfo).length !== 0 && 'Events',
+        this.objectKeys(this.sipDataItem.data.hostinfo).length !== 0 &&
+        'Events',
       this.agentsActive && 'Sub',
       this.tabs.logs && 'Logs',
-      this._qosData && (this._qosData.rtcp.total > 0 || this._qosData.rtp.total > 0) && 'QoS',
+      this._qosData &&
+        (this._qosData?.rtcp?.total > 0 || this._qosData?.rtp?.total > 0) &&
+        'QoS',
       'Export',
-    ].filter(i => !!i);
+    ].filter((i) => !!i);
   }
   ngOnDestroy() {
     this._route_paramsSubscription?.unsubscribe();
   }
 
-
-  public addWindowMessage(row: any, mouseEventData = null, arrowMetaData: any = null) {
+  public addWindowMessage(
+    row: any,
+    mouseEventData = null,
+    arrowMetaData: any = null
+  ) {
     if (!row?.data) {
       return;
     }
@@ -396,8 +421,6 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     const isSetWindow = this.arrMessageDetail.find(
       ({ uuid }) => `${uuid}` === `${uniqueId}`
     );
-
-
 
     if (isSetWindow) {
       isSetWindow.mouseEventData?.focus();
@@ -421,12 +444,15 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     this.arrMessageDetail.push(mData);
 
     mData.data = Functions.cloneObject(row.data.item || row.data || {});
-    mData.data.item = Functions.cloneObject({ raw: mData?.data?.raw || mData?.data?.message });
-
+    mData.data.item = Functions.cloneObject({
+      raw: mData?.data?.raw || mData?.data?.message,
+    });
 
     const uuid = row?.data?.item?.uuid;
 
-    mData.data.messageDetailTableData = Object.entries(Functions.cloneObject(mData.data))
+    mData.data.messageDetailTableData = Object.entries(
+      Functions.cloneObject(mData.data)
+    )
       .filter(([name]) => !['mouseEventData', 'raw', 'item'].includes(name))
       .map(([name, value]: any[]) => {
         if (name === 'create_date') {

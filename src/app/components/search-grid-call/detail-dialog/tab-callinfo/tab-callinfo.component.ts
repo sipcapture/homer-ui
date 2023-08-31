@@ -1,7 +1,12 @@
-import { Component, Input, EventEmitter, Output, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  EventEmitter,
+  Output,
+  AfterViewInit,
+} from '@angular/core';
 import { Functions } from '../../../../helpers/functions';
 import * as moment from 'moment';
-
 
 enum COLOR {
   green = '#dcf7dc',
@@ -52,16 +57,16 @@ export class TabCallinfoComponent implements AfterViewInit {
   public pieChartType: any = 'doughnut';
   @Input() set dataItem(_dataItem) {
     const clone = Functions.cloneObject;
-
+    console.log(_dataItem);
+    this.ipAlias = _dataItem.alias;
     const CallReportDataByCallid = clone(
-      _dataItem.data.messages
-        .reduce((acc, k) => (acc[k.sid] = [...(acc[k.sid] || []), k], acc), {})
+      _dataItem.data.messages.reduce(
+        (acc, k) => ((acc[k.sid] = [...(acc[k.sid] || []), k]), acc),
+        {}
+      )
     );
 
-    this.initSession(
-      CallReportDataByCallid
-    );
-
+    this.initSession(CallReportDataByCallid);
   }
 
   @Output() ready: EventEmitter<any> = new EventEmitter();
@@ -74,18 +79,14 @@ export class TabCallinfoComponent implements AfterViewInit {
   private initSession(dataByCallid) {
     this.callDataByCallid = dataByCallid || [];
     this.callTransaction = [];
-
     for (const callid in this.callDataByCallid) {
-
       if (this.callDataByCallid?.hasOwnProperty(callid)) {
-
         let profile = '';
         if (this.callDataByCallid?.[callid][0]) {
           profile = this.callDataByCallid?.[callid][0]?.profile;
         }
 
         if (profile === '1_call') {
-
           this.transactionProfile = 'call';
           const messages = this.callDataByCallid?.[callid];
 
@@ -128,14 +129,19 @@ export class TabCallinfoComponent implements AfterViewInit {
             ruri_user: '',
             server: '',
             callid: callid,
-            task: []
+            task: [],
           };
 
-          const regexpCseq = new RegExp('CSeq:(.*) (INVITE|BYE|CANCEL|UPDATE|PRACK)', 'g');
+          const regexpCseq = new RegExp(
+            'CSeq:(.*) (INVITE|BYE|CANCEL|UPDATE|PRACK)',
+            'g'
+          );
 
           messages.forEach((message) => {
             const reply = parseInt(message.method, 10);
-            const messageTime = Math.round((message.timeSeconds * 1000000 + message.timeUseconds) / 1000);
+            const messageTime = Math.round(
+              (message.timeSeconds * 1000000 + message.timeUseconds) / 1000
+            );
             if (!trans?.methods?.[message?.method]) {
               trans.methods[message.method] = 0;
             }
@@ -151,57 +157,72 @@ export class TabCallinfoComponent implements AfterViewInit {
               trans.LastMessage = messageTime;
             }
 
-            trans.SessionDurationTime = trans?.LastMessage - trans?.FirstMessage;
+            trans.SessionDurationTime =
+              trans?.LastMessage - trans?.FirstMessage;
 
             if (message?.method === 'INVITE' && trans?.timeInvite === 0) {
+              const ipsfiltered = Object.keys(this.ipAlias).map((m) => ({
+                name: this.ipAlias[m],
+                value: this.getzero(m),
+              }));
               trans.timeInvite = messageTime;
               trans.CdrStartTime = trans?.timeInvite;
-              trans.UAC = message?.user_agent !== ''
-              ? message?.user_agent 
-              : message?.server && message?.server !== '' 
-              ? message?.server
-              : 'Unknown'
+              trans.UAC =
+                message?.user_agent !== ''
+                  ? message?.user_agent
+                  : message?.server && message?.server !== ''
+                  ? message?.server
+                  : 'Unknown';
               trans.from_user = message?.from_user;
               trans.ruri_user = message?.ruri_user;
               trans.to_user = message?.to_user;
-              trans.source_ip = message?.srcIp;
+              trans.source_ip = this.ipAlias[`${message?.srcIp}:${message.srcPort}`] || message?.srcIp;
               trans.source_port = message?.srcPort;
               trans.destination_port = message?.dstPort;
-              trans.destination_ip = message?.dstIp;
+              trans.destination_ip = this.ipAlias[`${message?.dstIp}:${message.dstPort}`] || message?.dstIp;
               trans.from_domain = message?.from_domain;
               trans.ruri_domain = message?.ruri_domain;
               trans.server = message?.server;
 
               trans.Status = 1;
             } else if (message.method === 'BYE' && trans.timeBye === 0) {
-    
               trans.timeBye = messageTime;
               trans.CdrStopTime = trans.timeBye;
               trans.Status = 10;
 
-              if (trans.CdrConnectTime !== 0 && trans.CdrConnectTime < trans.CdrStopTime) {
-                trans.SuccessfulSessionDurationSDT = trans.CdrStopTime - trans.CdrStartTime;
-                trans.Duration = Math.round((trans.CdrStopTime - trans.CdrConnectTime) / 1000);
+              if (
+                trans.CdrConnectTime !== 0 &&
+                trans.CdrConnectTime < trans.CdrStopTime
+              ) {
+                trans.SuccessfulSessionDurationSDT =
+                  trans.CdrStopTime - trans.CdrStartTime;
+                trans.Duration = Math.round(
+                  (trans.CdrStopTime - trans.CdrConnectTime) / 1000
+                );
               }
 
               /* woraround if UAC sends BYE and not CANCEL */
-              if (trans.CdrRingingTime !== 0 && trans.RingingTime == 0
-                && trans.CdrRingingTime < trans.CdrStopTime) {
+              if (
+                trans.CdrRingingTime !== 0 &&
+                trans.RingingTime == 0 &&
+                trans.CdrRingingTime < trans.CdrStopTime
+              ) {
                 trans.RingingTime = trans.CdrStopTime - trans.CdrRingingTime;
               }
-
             } else if (message.method === 'CANCEL' && trans.timeCancel === 0) {
               trans.timeCancel = messageTime;
               trans.CdrStopTime = trans.timeCancel;
               /* UAC sends CANCEL - stop it */
-              if (trans.CdrRingingTime !== 0 && trans.RingingTime == 0
-                && trans.CdrRingingTime < trans.CdrStopTime) {
+              if (
+                trans.CdrRingingTime !== 0 &&
+                trans.RingingTime == 0 &&
+                trans.CdrRingingTime < trans.CdrStopTime
+              ) {
                 trans.RingingTime = trans.CdrStopTime - trans.CdrRingingTime;
               }
 
               trans.Status = 11;
             } else if (reply >= 100 && reply < 700) {
-
               let cSeqMethod = 'UNKNOWN';
               const cRes = message?.raw.match(regexpCseq);
               if (cRes && cRes.length > 0) {
@@ -215,42 +236,64 @@ export class TabCallinfoComponent implements AfterViewInit {
                 trans.SessionRequestDelay = messageTime - trans.timeInvite;
               }
 
-              if (reply > 100 && reply < 200 && trans.SuccessfulSessionSetupDelay === 0) {
-                trans.SuccessfulSessionSetupDelay = messageTime - trans.timeInvite;
-                trans.UAS = message?.user_agent !== ''
-                ? message?.user_agent 
-                : message?.server && message?.server !== ''
-                ? message?.server
-                : 'Unknown'
+              if (
+                reply > 100 &&
+                reply < 200 &&
+                trans.SuccessfulSessionSetupDelay === 0
+              ) {
+                trans.SuccessfulSessionSetupDelay =
+                  messageTime - trans.timeInvite;
+                trans.UAS =
+                  message?.user_agent !== ''
+                    ? message?.user_agent
+                    : message?.server && message?.server !== ''
+                    ? message?.server
+                    : 'Unknown';
               }
 
               if (reply === 183 && trans.CdrRingingTime === 0) {
                 trans.Status = 3;
                 trans.CdrRingingTime = messageTime;
-              }
-              else if (reply === 180 && (trans.CdrRingingTime === 0 || trans.Status == 3)) {
+              } else if (
+                reply === 180 &&
+                (trans.CdrRingingTime === 0 || trans.Status == 3)
+              ) {
                 trans.CdrRingingTime = messageTime;
                 trans.Status = 4;
-              }
-              else if (reply === 200 && trans.CdrConnectTime === 0 && cSeqMethod === 'INVITE') {
+              } else if (
+                reply === 200 &&
+                trans.CdrConnectTime === 0 &&
+                cSeqMethod === 'INVITE'
+              ) {
                 trans.CdrConnectTime = messageTime;
                 // reset if we have seen MOVE
                 trans.CdrStopTime = 0;
                 trans.Status = 5;
-                if (trans.CdrRingingTime !== 0 && trans.RingingTime == 0
-                  && trans.CdrRingingTime < trans.CdrConnectTime) {
-                  trans.RingingTime = trans.CdrConnectTime - trans.CdrRingingTime;
+                if (
+                  trans.CdrRingingTime !== 0 &&
+                  trans.RingingTime == 0 &&
+                  trans.CdrRingingTime < trans.CdrConnectTime
+                ) {
+                  trans.RingingTime =
+                    trans.CdrConnectTime - trans.CdrRingingTime;
                 }
 
-                trans.UAS = message?.user_agent !== ''
-                ? message?.user_agent 
-                : message?.server && message?.server !== '' 
-                ? message?.server
-                : 'Unknown'
-              }
-              else if (reply > 400 && reply < 700 && reply !== 401 && reply !== 402 && reply !== 407 && reply !== 487
-                && trans.FailedSessionSetupDelay === 0 && cSeqMethod === 'INVITE') {
-
+                trans.UAS =
+                  message?.user_agent !== ''
+                    ? message?.user_agent
+                    : message?.server && message?.server !== ''
+                    ? message?.server
+                    : 'Unknown';
+              } else if (
+                reply > 400 &&
+                reply < 700 &&
+                reply !== 401 &&
+                reply !== 402 &&
+                reply !== 407 &&
+                reply !== 487 &&
+                trans.FailedSessionSetupDelay === 0 &&
+                cSeqMethod === 'INVITE'
+              ) {
                 if (reply === 486) {
                   trans.Status = 7;
                 } else if (reply === 480) {
@@ -265,17 +308,21 @@ export class TabCallinfoComponent implements AfterViewInit {
 
                 trans.CdrStopTime = messageTime;
                 if (messageTime > trans.CdrStartTime) {
-                  trans.FailedSessionSetupDelay = messageTime - trans.CdrStartTime;
+                  trans.FailedSessionSetupDelay =
+                    messageTime - trans.CdrStartTime;
                 }
 
                 /* UAS sends 4XX - 6XX - stop ringing */
-                if (trans.CdrRingingTime !== 0 && trans.RingingTime == 0
-                  && trans.CdrRingingTime < trans.CdrStopTime) {
+                if (
+                  trans.CdrRingingTime !== 0 &&
+                  trans.RingingTime == 0 &&
+                  trans.CdrRingingTime < trans.CdrStopTime
+                ) {
                   trans.RingingTime = trans.CdrStopTime - trans.CdrRingingTime;
                 }
               }
 
-              if (reply === 401 || reply === 407 && cSeqMethod === 'INVITE') {
+              if (reply === 401 || (reply === 407 && cSeqMethod === 'INVITE')) {
                 trans.Status = 2;
               }
 
@@ -283,8 +330,11 @@ export class TabCallinfoComponent implements AfterViewInit {
                 trans.Status = 6;
                 trans.CdrStopTime = messageTime;
 
-                if (trans.CdrRingingTime !== 0 && trans.RingingTime == 0
-                  && trans.CdrRingingTime < trans.CdrStopTime) {
+                if (
+                  trans.CdrRingingTime !== 0 &&
+                  trans.RingingTime == 0 &&
+                  trans.CdrRingingTime < trans.CdrStopTime
+                ) {
                   trans.RingingTime = trans.CdrStopTime - trans.CdrRingingTime;
                 }
               }
@@ -293,7 +343,11 @@ export class TabCallinfoComponent implements AfterViewInit {
                 trans.LastBadReply = reply;
               }
 
-              if (reply === 200 && trans.SessionDisconnectDelay === 0 && cSeqMethod === 'BYE') {
+              if (
+                reply === 200 &&
+                trans.SessionDisconnectDelay === 0 &&
+                cSeqMethod === 'BYE'
+              ) {
                 if (trans.timeBye !== 0 && trans.timeBye < messageTime) {
                   trans.SessionDisconnectDelay = messageTime - trans.timeBye;
                 }
@@ -306,10 +360,11 @@ export class TabCallinfoComponent implements AfterViewInit {
 
           /* messages array */
           if (Object.keys(trans.methods).length > 0) {
-
             /* chart of messages */
             const mKeys = Object.keys(trans.methods);
-            const mValues = mKeys.map(function (v) { return trans.methods[v]; });
+            const mValues = mKeys.map(function (v) {
+              return trans.methods[v];
+            });
             trans.chart = {
               type: TASK_TYPE.chart,
               title: 'Methods',
@@ -317,13 +372,11 @@ export class TabCallinfoComponent implements AfterViewInit {
               data: trans.methods,
               /** body is chart data */
               label: mKeys,
-              value: mValues
+              value: mValues,
             };
           }
 
-
           if (trans['RingingTime'] && trans['RingingTime'] > 0) {
-
             const val = (trans['RingingTime'] / 1000).toFixed(2);
 
             trans.task.push({
@@ -353,9 +406,7 @@ export class TabCallinfoComponent implements AfterViewInit {
 
           trans.task.push({
             title: 'Status',
-            color:
-              Functions.getColorByStatus(trans['Status']) ||
-              COLOR.grey,
+            color: Functions.getColorByStatus(trans['Status']) || COLOR.grey,
             type: TASK_TYPE.number,
             abs: trans['Status'],
             body: this.getNameByStatus(trans['Status']),
@@ -442,7 +493,6 @@ export class TabCallinfoComponent implements AfterViewInit {
         }
 
         if (profile === '1_registration') {
-
           this.transactionProfile = 'registration';
 
           const messages = this.callDataByCallid[callid];
@@ -473,13 +523,14 @@ export class TabCallinfoComponent implements AfterViewInit {
             ruri_domain: '',
             ruri_user: '',
             callid: callid,
-            task: []
+            task: [],
           };
 
           messages.forEach((message) => {
-
             const reply = parseInt(message.method, 10);
-            const messageTime = Math.round((message.timeSeconds * 1000000 + message.timeUseconds) / 1000);
+            const messageTime = Math.round(
+              (message.timeSeconds * 1000000 + message.timeUseconds) / 1000
+            );
 
             if (!trans.methods[message.method]) {
               trans.methods[message.method] = 0;
@@ -494,11 +545,12 @@ export class TabCallinfoComponent implements AfterViewInit {
             if (message.method === 'REGISTER' && trans.timeRegister === 0) {
               trans.timeRegister = messageTime;
               trans.CdrStartTime = trans.timeRegister;
-              trans.UAC = message?.user_agent !== '' 
-              ? message?.user_agent 
-              : message?.server && message?.server !== '' 
-              ? message?.server
-              : 'Unknown'
+              trans.UAC =
+                message?.user_agent !== ''
+                  ? message?.user_agent
+                  : message?.server && message?.server !== ''
+                  ? message?.server
+                  : 'Unknown';
               trans.from_user = message?.from_user;
               trans.ruri_user = message?.ruri_user;
               trans.to_user = message?.to_user;
@@ -511,34 +563,40 @@ export class TabCallinfoComponent implements AfterViewInit {
 
               trans.Status = 1;
             } else if (reply >= 100 && reply < 700) {
-
               if (reply > 100 && reply < 200) {
-                trans.UAS = message?.user_agent !== '' 
-                ? message?.user_agent 
-                : message?.server && message?.server !== '' 
-                ? message?.server
-                : 'Unknown'
+                trans.UAS =
+                  message?.user_agent !== ''
+                    ? message?.user_agent
+                    : message?.server && message?.server !== ''
+                    ? message?.server
+                    : 'Unknown';
               }
 
               if (reply === 200) {
-
                 if (trans.CdrFinishTime === 0) {
                   trans.CdrFinishTime = messageTime;
-                  trans.RegistrationRequestDelay = messageTime - trans.timeRegister;
+                  trans.RegistrationRequestDelay =
+                    messageTime - trans.timeRegister;
                   trans.Duration = trans.RegistrationRequestDelay;
                 }
                 // reset if we seen MOVE
                 trans.Status = 3;
-                trans.UAS = message?.user_agent !== ''
-                ? message?.user_agent 
-                : message?.server && message?.server !== '' 
-                ? message?.server
-                : 'Unknown'
+                trans.UAS =
+                  message?.user_agent !== ''
+                    ? message?.user_agent
+                    : message?.server && message?.server !== ''
+                    ? message?.server
+                    : 'Unknown';
               }
 
-              if (reply > 400 && reply < 700 && reply !== 401 && reply !== 407 && reply !== 487
-                && trans.FailedRegistrationRequestDelay === 0) {
-
+              if (
+                reply > 400 &&
+                reply < 700 &&
+                reply !== 401 &&
+                reply !== 407 &&
+                reply !== 487 &&
+                trans.FailedRegistrationRequestDelay === 0
+              ) {
                 if (reply === 480) {
                   trans.Status = 6;
                 } else if (reply / 100 === 4) {
@@ -551,7 +609,8 @@ export class TabCallinfoComponent implements AfterViewInit {
 
                 trans.CdrFailedTime = messageTime;
                 if (messageTime > trans.CdrStartTime) {
-                  trans.FailedRegistrationRequestDelay = messageTime - trans.CdrStartTime;
+                  trans.FailedRegistrationRequestDelay =
+                    messageTime - trans.CdrStartTime;
                   trans.Duration = trans.FailedRegistrationRequestDelay;
                 }
               }
@@ -572,7 +631,9 @@ export class TabCallinfoComponent implements AfterViewInit {
           if (Object.keys(trans.methods).length > 0) {
             /* chart of messages */
             const mKeys = Object.keys(trans.methods);
-            const mValues = mKeys.map(function (v) { return trans.methods[v]; });
+            const mValues = mKeys.map(function (v) {
+              return trans.methods[v];
+            });
             trans.chart = {
               type: TASK_TYPE.chart,
               title: 'Methods',
@@ -580,10 +641,9 @@ export class TabCallinfoComponent implements AfterViewInit {
               data: trans.methods,
               /** body is chart data */
               label: mKeys,
-              value: mValues
+              value: mValues,
             };
           }
-
 
           trans.task.push({
             title: 'Duration',
@@ -592,7 +652,6 @@ export class TabCallinfoComponent implements AfterViewInit {
             body: this.secFormatter(trans['Duration']),
             prefix: '',
           });
-
 
           trans.task.push({
             title: 'Last Bad Reply',
@@ -657,6 +716,13 @@ export class TabCallinfoComponent implements AfterViewInit {
         }
       }
     }
+    console.log(this.callTransaction);
+  }
+
+  getzero(ip: string) {
+    return ip?.substring(ip?.length, ip?.length - 2) === ':0'
+      ? ip?.substring(0, ip.length - 2)
+      : ip;
   }
   public toggleCallInfo(id) {
     const div = document.getElementById(id);
@@ -758,7 +824,6 @@ export class TabCallinfoComponent implements AfterViewInit {
       return 'Unknown';
     }
   }
-
 
   private getNameRegistrationByStatus(status: number) {
     if (status === 1) {

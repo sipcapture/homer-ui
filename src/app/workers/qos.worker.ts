@@ -224,6 +224,8 @@ class QosProcessor {
         this.streamsRTP.push({
           dstIp: item.dstIp,
           srcIp: item.srcIp,
+          dstPort: item.dstPort,
+          srcPort: item.srcPort,
           create_date: [],
           _indeterminate: true,
           _checked: true,
@@ -357,7 +359,7 @@ class QosProcessor {
     data.forEach(item => {
       const i = item.raw
 
-      if (![200, 201, 202].includes(1 * i.type)) {
+      if (![200, 201, 202, 207].includes(1 * i.type)) {
         return;
       }
 
@@ -367,6 +369,8 @@ class QosProcessor {
         this.streamsRTCP.push({
           dstIp: item.dstIp,
           srcIp: item.srcIp,
+          dstPort: item.dstPort,
+          srcPort: item.srcPort,
           create_date: [],
           _indeterminate: true,
           _checked: false,

@@ -1,16 +1,45 @@
-.alert {
-	width: 400px;
-	padding-right: 15px;
-	padding-left: 70px;
-	position: absolute;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	top: auto;
-	bottom: 40px;
-	left: 30px;
-	color: white;
-	
+
+.alertWrapper {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    z-index: 10000;
+    pointer-events: none;
+    .alert {
+        width: 400px;
+        padding-right: 15px;
+        padding-left: 70px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: white;
+        pointer-events: all;
+    }
+    .message-object {
+        color: white;
+        border-radius: .25rem;
+        position: relative;
+        width: 400px;
+        max-height: 250px;
+        margin-bottom: 10px;
+        padding: 1.5rem;
+        padding-top: calc(20px + 1rem);
+        word-break: break-all;
+        pointer-events: all;
+        .message-object-text {
+            white-space: pre-wrap;
+            overflow-x: scroll;
+            max-height: 200px;
+        }
+        .copy {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+    }
 }
 .alert-danger {
 	background-color: #F44336;
@@ -68,25 +97,4 @@
 }
 .message-text::first-letter {
 	text-transform: capitalize;
-}
-.message-object {
-    color: white;
-    border-radius: .25rem;
-    position: absolute;
-    width: 400px;
-    height: 250px;
-    top: -260px;
-    left: 0px;
-    padding: 1.5rem;
-    padding-top: calc(20px + 1rem);
-    word-break: break-all;
-    .message-object-text {
-        overflow-x: scroll;
-        height: 200px;
-    }
-    .copy {
-        position: absolute;
-        right: 10px;
-        top: 10px;
-    }
 }

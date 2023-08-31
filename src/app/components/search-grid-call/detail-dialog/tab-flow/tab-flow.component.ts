@@ -9,7 +9,7 @@ import {
   AfterViewInit,
   EventEmitter,
   ViewEncapsulation,
-  Output
+  Output,
 } from '@angular/core';
 // import { VirtualScrollerComponent } from 'ngx-virtual-scroller';
 import * as moment from 'moment';
@@ -21,7 +21,11 @@ import {
   MessageDetailsService,
   ArrowEventState,
 } from '@app/services/message-details.service';
-import { CdkVirtualScrollViewport, FixedSizeVirtualScrollStrategy, VIRTUAL_SCROLL_STRATEGY } from '@angular/cdk/scrolling';
+import {
+  CdkVirtualScrollViewport,
+  FixedSizeVirtualScrollStrategy,
+  VIRTUAL_SCROLL_STRATEGY,
+} from '@angular/cdk/scrolling';
 import { AfterViewChecked, OnDestroy, HostListener } from '@angular/core';
 import { TransactionFilterService } from '@app/components/controls/transaction-filter/transaction-filter.service';
 import { Subscription } from 'rxjs';
@@ -41,9 +45,12 @@ export class CustomVirtualScrollStrategy extends FixedSizeVirtualScrollStrategy 
   styleUrls: ['./tab-flow.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  providers: [{ provide: VIRTUAL_SCROLL_STRATEGY, useClass: CustomVirtualScrollStrategy }]
+  providers: [
+    { provide: VIRTUAL_SCROLL_STRATEGY, useClass: CustomVirtualScrollStrategy },
+  ],
 })
-export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
+export class TabFlowComponent
+  implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
   @ViewChild('flowscreen', { static: true }) flowscreen: ElementRef;
   @ViewChild('canvas', { static: true }) canvas: ElementRef;
   @ViewChild('downloadLink', { static: true }) downloadLink: ElementRef;
@@ -52,6 +59,11 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
   @ViewChild('VScrollWrapper') VScrollWrapper: ElementRef;
   @ViewChild('labelContainer') labelContainer: ElementRef;
   @Input() callIDColorList: Array<CallIDColor>;
+  /**
+    *  Detect Safari browser
+    */
+  isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
 
   _interval = null;
   public getVirtualScrollHeight: string = `translateY(1px)`;
@@ -96,13 +108,12 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
     this._isSimplify = v;
     try {
       this.virtualScroll._contentWrapper;
-    } catch (e) {}
+    } catch (e) { }
     requestAnimationFrame(() => this.cdr.detectChanges());
   }
   get isSimplify(): boolean {
     return this._isSimplify;
   }
-
 
   @Input() set dataItem(dataItem) {
     const _hash = Functions.md5(JSON.stringify(dataItem));
@@ -118,28 +129,29 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
     this.ipaliases = Functions.cloneObject(dataItem.data.data.ipaliases) || [];
     this.channelIdMessageDetails = 'TabFlow-' + dataItem.data.callid.join();
 
-    const aliases = this.ipaliases.filter(alias => alias.status === true);
-    this.hosts.forEach(host => {
-      const aliasCollection = aliases.filter(({ ip, port }) => ip === host.ip && (port === host.port || port === 0));
+    const aliases = this.ipaliases.filter((alias) => alias.status === true);
+    this.hosts.forEach((host) => {
+      const aliasCollection = aliases.filter(
+        ({ ip, port }) => ip === host.ip && (port === host.port || port === 0)
+      );
       const aliasItem =
         aliasCollection.find(({ port }) => port === host.port) ||
         aliasCollection.find(({ port }) => port === 0);
 
       if (aliasItem) {
         /** add here the filtered params for display in flow tooltip*/
-        const filtered = ['status', 'port']
+        const filtered = ['status', 'port'];
 
         const selected = Object.keys(aliasItem)
-          .filter(key => !filtered.includes(key))
+          .filter((key) => !filtered.includes(key))
           .reduce((obj, key) => {
             obj[key] = aliasItem[key];
             return obj;
-          }, {})
+          }, {});
 
         Object.assign(host, selected);
       }
     });
-
 
     this.setFilters(this.filters);
   }
@@ -172,9 +184,11 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
 
   ngOnInit() {
     this.getVirtualScrollHeight = `translateY(1px)`;
-    this.filterSubscription = this.transactionFilterService.listen.subscribe(filters => {
-      this.setFilters(filters)
-    });
+    this.filterSubscription = this.transactionFilterService.listen.subscribe(
+      (filters) => {
+        this.setFilters(filters);
+      }
+    );
     this.messageDetailsService.arrows.subscribe((data) => {
       const { channelId } = data.metadata.data;
       let { itemId } = data.metadata.data;
@@ -218,31 +232,42 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
     this.isSimplify = !isSimplify;
     this.isSimplifyPort = isSimplifyPort;
     if (CallId) {
-      this.labels = CallId.map(
-        ({ title, selected }) => {
-
-          const color = this.callIDColorList.find(callID => callID.callID === title);
-          return ({
-            callid: title,
-            color: typeof color !== 'undefined' ? color.backgroundColor : Functions.getColorByString(title),
-            selected: selected,
-            copySelected: false,
-            currentlySelected: false
-          })
-        }
-      );
-    }
-    this.arrayItems = Functions.cloneObject(this.dataItem.data.messages)
-      .filter((item: any) => {
-        const source_ip = (filterIP?.find(i => i.title === item.source_ip)) || { selected: true };
-        const destination_ip = (filterIP?.find(i => i.title === item.destination_ip)) || { selected: true };
-        const bool = (source_ip.selected || destination_ip.selected);
-        return bool;
+      this.labels = CallId.map(({ title, selected }) => {
+        const color = this.callIDColorList?.find(
+          (callID) => callID.callID === title
+        );
+        return {
+          callid: title,
+          color:
+            typeof color !== 'undefined'
+              ? color.backgroundColor
+              : Functions.getColorByString(title),
+          selected: selected,
+          copySelected: false,
+          currentlySelected: false,
+        };
       });
+    }
+    this.arrayItems = Functions.cloneObject(this.dataItem.data.messages).filter(
+      (item: any) => {
+        const source_ip = filterIP?.find((i) => i.title === item.source_ip) || {
+          selected: true,
+        };
+        const destination_ip = filterIP?.find(
+          (i) => i.title === item.destination_ip
+        ) || { selected: true };
+        const bool = source_ip.selected || destination_ip.selected;
+        return bool;
+      }
+    );
 
     this.arrayItems.forEach((item) => {
-      const itemFilter = (CallId?.find(i => i.title === item.callid)) || { selected: true };
-      const payloadFilter = (PayloadType?.find(i => i.title === item.typeItem)) || { selected: true };
+      const itemFilter = CallId?.find((i) => i.title === item.callid) || {
+        selected: true,
+      };
+      const payloadFilter = PayloadType?.find(
+        (i) => i.title === item.typeItem
+      ) || { selected: true };
       const bool = !(itemFilter.selected && payloadFilter.selected);
       if (bool !== item.invisible) {
         item.invisibleDisplayNone = false;
@@ -251,7 +276,11 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
     });
 
     const _arrayItems: any = this.arrayItems.filter((i) => !i.invisible);
-    this.hostsIPs = this.getHostsByMessage(_arrayItems, isCombineByAlias, isSimplifyPort);
+    this.hostsIPs = this.getHostsByMessage(
+      _arrayItems,
+      isCombineByAlias,
+      isSimplifyPort
+    );
 
     this.updateHosts();
 
@@ -263,10 +292,19 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
 
     _arrayItems.forEach((item) => {
       const { srcAlias, dstAlias } = item || item?.messageData?.item || {};
-      const srcPosition = this.getHostPosition(item.source_ip, item.source_port, srcAlias || item.source_ip);
-      const dstPosition = this.getHostPosition(item.destination_ip, item.destination_port, dstAlias || item.destination_ip);
+      const srcPosition = this.getHostPosition(
+        item.source_ip,
+        item.source_port,
+        srcAlias || item.source_ip
+      );
+      const dstPosition = this.getHostPosition(
+        item.destination_ip,
+        item.destination_port,
+        dstAlias || item.destination_ip
+      );
       const isRadialArrow = srcPosition === dstPosition;
-      const isLastHost = isRadialArrow &&
+      const isLastHost =
+        isRadialArrow &&
         shownHosts.length > 1 &&
         lastHost.ip === item.source_ip;
 
@@ -276,11 +314,17 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
         ? 'blinkLamp ' + this.mosColorBlink(item.QOS.MOS)
         : '';
 
-      const color = this.callIDColorList.find(callID => callID.callID === item.callid);
-      const compiledColor = `hsla(${color?.decompiledColor?.hue}, ${color?.decompiledColor?.saturation}%, ${color?.decompiledColor?.lightness - 10}%, 1)`
+      const color = this.callIDColorList?.find(
+        (callID) => callID.callID === item.callid
+      );
+      const compiledColor = `hsla(${color?.decompiledColor?.hue}, ${color?.decompiledColor?.saturation
+        }%, ${color?.decompiledColor?.lightness - 10}%, 1)`;
       item.options = {
         mosColor,
-        color: typeof color !== 'undefined' ? compiledColor : Functions.getColorByString(item.callid, 60, 60),
+        color:
+          typeof color !== 'undefined'
+            ? compiledColor
+            : Functions.getColorByString(item.callid, 60, 60),
         color_method: Functions.getMethodColor(item.method + ''),
         start: min(a, b),
         middle: abs(a - b) || 1,
@@ -297,10 +341,12 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
     this.arrayItems.forEach((item) => {
       item.invisibleDisplayNone = item.invisible;
     });
+
     this.arrayItemsVisible = this.arrayItems.filter(i => !i.invisibleDisplayNone);
 
     // @TODO current
     this.setArrayItem()
+
     this.setVirtualScrollItemsArray();
     setTimeout(() => this.cdr.detectChanges(), 10);
   }
@@ -378,15 +424,15 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
       const source_ipisIPv6 = i.source_ip.match(/\:/g)?.length > 1;
       const destination_ipisIPv6 = i.destination_ip.match(/\:/g)?.length > 1;
       const sIP = source_ipisIPv6 ? `[${i.source_ip}]` : i.source_ip;
-      const dIP = destination_ipisIPv6 ? `[${i.destination_ip}]` : i.destination_ip;
+      const dIP = destination_ipisIPv6
+        ? `[${i.destination_ip}]`
+        : i.destination_ip;
       const { srcAlias, dstAlias } = i.source_data || {};
-      return isCombineByAlias ?
-        [srcAlias || i.source_ip, dstAlias || i.destination_ip]
-        : (
-          isSimplifyPort
-            ? [i.source_ip, i.destination_ip]
-            : [`${sIP}:${i.source_port}`, `${dIP}:${i.destination_port}`]
-        );
+      return isCombineByAlias
+        ? [srcAlias || i.source_ip, dstAlias || i.destination_ip]
+        : isSimplifyPort
+          ? [i.source_ip, i.destination_ip]
+          : [`${sIP}:${i.source_port}`, `${dIP}:${i.destination_port}`];
     });
 
     // sort hosts by Items timeline
@@ -403,10 +449,10 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
       }
     }
 
-    const selected_hosts = sortHosts.map(
-      i => hosts.find(j => [j.ip, j.host, j.alias].includes(i))
-    )
-    return selected_hosts.filter(host => !!host);
+    const selected_hosts = sortHosts.map((i) =>
+      hosts.find((j) => [j.ip, j.host, j.alias].includes(i))
+    );
+    return selected_hosts.filter((host) => !!host);
   }
   toggleLegend() {
     this.hidden = !this.hidden;
@@ -414,9 +460,9 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
   }
   updateHosts() {
     const aggregatedHosts = Functions.cloneObject(this.hostsIPs);
-    aggregatedHosts.forEach(i => {
+    aggregatedHosts.forEach((i) => {
       this.hosts
-        .filter(h => h?.alias === i?.alias)
+        .filter((h) => h?.alias === i?.alias)
         .forEach((item: any) => {
           i.ip_array = i.ip_array || [];
           if (i.ip_array.find(({ ip }) => ip === item.ip)) {
@@ -424,43 +470,40 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
           }
           i.ip_array.push({
             ip: item.ip,
-            host: item
+            host: item,
           });
         });
     });
-    aggregatedHosts.forEach(i => {
+    aggregatedHosts.forEach((i) => {
       if (i?.ip_array?.length) {
         for (let n = 1; n < i.ip_array.length; n++) {
-          const h = aggregatedHosts.find(j => i.ip_array[n]?.ip === j.ip);
+          const h = aggregatedHosts.find((j) => i.ip_array[n]?.ip === j.ip);
           if (h) {
             h.invisible = true;
           }
         }
       }
-    })
-    this.hostsCA = aggregatedHosts.filter(h => !!h && !h.invisible);
+    });
+    this.hostsCA = aggregatedHosts.filter((h) => !!h && !h.invisible);
   }
   getHostPosition(ip, port, alias) {
     ip = ip.replace(/\[|\]/g, '');
     const hosts = this._isCombineByAlias ? this.hostsCA : this.hostsIPs;
-    return hosts.filter(i => !!i)?.findIndex(host => {
-      try {
-
-        return this._isCombineByAlias ?
-          (
-            host.alias && alias ?
-              host.alias === alias :
-              host.ip === ip
-          ) : (
-            this.isSimplifyPort ?
-              host.ip === ip :
-              host.ip === ip && (host.port * 1 === port * 1 || !port)
-          )
-
-      } catch (err) {
-        throw host;
-      }
-    });
+    return hosts
+      .filter((i) => !!i)
+      ?.findIndex((host) => {
+        try {
+          return this._isCombineByAlias
+            ? host.alias && alias
+              ? host.alias === alias
+              : host.ip === ip
+            : this.isSimplifyPort
+              ? host.ip === ip
+              : host.ip === ip && (host.port * 1 === port * 1 || !port);
+        } catch (err) {
+          throw host;
+        }
+      });
   }
   updateDOMScroller() {
     /**
@@ -541,7 +584,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
       return;
     }
     let row: any, SDPbuffer;
-    console.log(item.typeItem)
+    console.log(item.typeItem);
     switch (item.typeItem) {
       case FlowItemType.SIP:
         row = item.messageData;
@@ -553,7 +596,6 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
         row.raw_source = JSON.stringify(item.QOS.message);
         break;
       case FlowItemType.SDP:
-
         SDPbuffer = JSON.stringify(item.source_data);
         row = item.source_data;
         row.raw = [
@@ -581,21 +623,25 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
           item.info_date,
           item.description,
           Object.assign({}, item.source_data),
-        ];;
-        row.raw_source = item.source_data?.item?.message || `${item.info_date} ${item.description} ${SDPbuffer}`;
+        ];
+        row.raw_source =
+          item.source_data?.item?.message ||
+          `${item.info_date} ${item.description} ${SDPbuffer}`;
         row.id = `(${item.typeItem}) ${item.description}`;
 
         break;
-
     }
-    row.id = row?.id || `(${item.typeItem}) ${item.info_date} ${item.description}`;
+    row.id =
+      row?.id || `(${item.typeItem}) ${item.info_date} ${item.description}`;
     row.mouseEventData = event;
     this.messageDetailsService.open(row, {
       isLeft,
       isRight,
       itemId,
       channelId: this.channelIdMessageDetails,
-      isBrowserWindow: !!this.messageDetailsService.getParentWindowData(this._dataItem.data.callid.join('---')).isBrowserWindow
+      isBrowserWindow: !!this.messageDetailsService.getParentWindowData(
+        this._dataItem.data.callid.join('---')
+      ).isBrowserWindow,
     });
   }
   identifyHosts(index, item) {
@@ -629,11 +675,16 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
   }
   labelColor(callid, selected) {
     if (selected) {
-      const color = this.callIDColorList?.find(callID => callID.callID === callid);
-      const adjustedColor = `hsl(${color?.decompiledColor?.hue}, ${color?.decompiledColor?.saturation}%, ${color?.decompiledColor?.lightness / 1.5}%, 1`
-      return typeof color !== 'undefined' ? adjustedColor : Functions.getColorByString(callid, undefined, 50, 1);
+      const color = this.callIDColorList?.find(
+        (callID) => callID.callID === callid
+      );
+      const adjustedColor = `hsl(${color?.decompiledColor?.hue}, ${color?.decompiledColor?.saturation
+        }%, ${color?.decompiledColor?.lightness / 1.5}%, 1`;
+      return typeof color !== 'undefined'
+        ? adjustedColor
+        : Functions.getColorByString(callid, undefined, 50, 1);
     } else {
-      return 'hsla(0, 0%, 30%, 0.5)'
+      return 'hsla(0, 0%, 30%, 0.5)';
     }
   }
   onClickLabel(_?) {
@@ -649,8 +700,8 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
         message: 'notifications.success.callidCopy',
         isTranslation: true,
         translationParams: {
-          callid: value.callid
-        }
+          callid: value.callid,
+        },
       });
       value.copySelected = true;
       this.timeout = setTimeout(() => {
@@ -665,7 +716,7 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
     try {
       const { scrollLeft } = event?.target || {};
       this.flowscreen.nativeElement.style.marginLeft = `${-scrollLeft}px`;
-    } catch (e) {}
+    } catch (e) { }
   }
 
   cdkWheelScroll(event?: any) {
@@ -817,7 +868,6 @@ export class TabFlowComponent implements OnInit, AfterViewInit, AfterViewChecked
       });
       const vsw = this.VScrollWrapper.nativeElement;
       vsw.scrollTo({ left: vsw.scrollLeft - (currentX - this.__toucheStartX) });
-
     }
     this.__toucheStartY = currentY;
     this.__toucheStartX = currentX;

@@ -81,6 +81,13 @@
     <h4>{{'dashboard.editDialog.grafanaControl.title' | translate}}</h4>
     <mat-checkbox labelPosition="before" [(ngModel)]="data.grafanaTimestamp">{{'dashboard.editDialog.grafanaControl.grafanaTimestamp' | translate}}</mat-checkbox>
     <mat-checkbox labelPosition="before" [(ngModel)]="data.grafanaProxy">{{'dashboard.editDialog.grafanaControl.grafanaProxy' | translate}}</mat-checkbox>
+    <div *ngIf="isSameOrigin">
+        <mat-checkbox color="primary"
+            [(ngModel)]="data.hasVariables"
+        >
+        {{ 'dashboard.editDialog.grafanaControl.hasVariables' | translate }}
+        </mat-checkbox>
+    </div>
   </div>
   <hr style="width: 100%;">
   <div>

@@ -1,5 +1,5 @@
 import { InjectionToken } from '@angular/core';
+import { AlertSubject } from '@app/models/alert.model';
 
-import { Message } from './alert-overlay.service';
 
-export const ALERT_OVERLAY = new InjectionToken<Message>('ALERT_OVERLAY');
+export const ALERT_OVERLAY = new InjectionToken<AlertSubject>('ALERT_OVERLAY');

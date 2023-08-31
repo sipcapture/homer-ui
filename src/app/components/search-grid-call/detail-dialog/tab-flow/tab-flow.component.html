@@ -142,10 +142,35 @@
 </div>
 <div class="VS-Container-horizontal">
   <div
+        *ngIf="isSafari"
+        class="VS-Container"
+        style="overflow: auto !important"
+        (scroll)="onScrollVScrollWrapper($event)"
+    >
+        <div
+            class="VS-Container"
+            style="height: initial; overflow: initial !important;"
+            [style.min-width.px]="pageWidth + 100"
+
+        >
+            <div style="height: 92px"></div>
+            <app-flow-item
+                *ngFor="let item of arrayItems; let idx = index"
+                [item]="item"
+                [idx]="idx"
+                [isGroupByAlias]="_isCombineByAlias"
+                [isSimplify]="isSimplify"
+                [isAbsolute]="false"
+                (itemClick)="onClickMessage($event.idx, $event.event, item)"
+            ></app-flow-item>
+            <div style="height: 60px"></div>
+        </div>
+    </div>
+  <div
     class="VS-Container"
     style="overflow-y: hidden !important"
     (scroll)="onScrollVScrollWrapper($event)"
-    *ngIf="!isExport"
+    *ngIf="!isExport && !isSafari"
     #VScrollWrapper
   >
     <cdk-virtual-scroll-viewport
@@ -252,7 +277,7 @@
 </div> -->
 <div
   class="virtual-scrollbar"
-  *ngIf="!isExport"
+  *ngIf="!isExport && !isSafari"
   (mousedown)="setScrollTarget('virtualScrollbar')"
   (scroll)="setVirtualScrollHeight($event)"
   #virtualScrollbar

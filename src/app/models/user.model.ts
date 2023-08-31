@@ -29,3 +29,16 @@ export interface UserProfile {
     username: string
     guid: string
 }
+export interface UserJWT {
+    avatar: string
+    displayname: string
+    exp: number
+    externalauth: boolean
+    externaltype: string
+    force_password: boolean
+    guid: string
+    partid: number
+    useradmin: boolean
+    usergroup: string
+    username: string
+}

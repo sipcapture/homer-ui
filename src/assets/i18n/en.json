@@ -311,7 +311,8 @@
       "grafanaControl": {
         "title": "@LINK.grafana@ Settings",
         "grafanaTimestamp": "Sync with @LINK.dashboard@",
-        "grafanaProxy": "Use @LINK.homer@ proxy for @LINK.grafana@ iFrame"
+        "grafanaProxy": "Use @LINK.homer@ proxy for @LINK.grafana@ iFrame",
+        "hasVariables": "Show Dashboard Variables"
       },
       "export": "Export @LINK.dashboard@ Settings"
     },
@@ -759,19 +760,21 @@
       }
     },
     "grafana": {
-      "settings": {
-        "theme": "Theme: ",
-        "timeRange": "Time Range: ",
-        "from": "From: ",
-        "to": "To:",
-        "refresh": "Auto-Refresh: ",
-        "refreshDescription": "If Field is empty only Manual Refresh will updated the Data, otherwise Refresh occurs based on input value (2s, 5m, 10h, etc...)",
-        "documentation": "Grafana Timerange Docs",
-        "documentationLink": "https://grafana.com/docs/reference/timerange/",
-        "description": "Description",
-        "panel": "Panel",
-        "loginError": "Invalid Login Or Password, please correct it in Advanced Settings"
-      }
+        "settings": {
+            "theme": "Theme: ",
+            "timeRange": "Time Range: ",
+            "from": "From: ",
+            "to": "To:",
+            "refresh": "Auto-Refresh: ",
+            "refreshDescription": "If Field is empty only Manual Refresh will updated the Data, otherwise Refresh occurs based on input value (2s, 5m, 10h, etc...)",
+            "documentation": "Grafana Timerange Docs",
+            "documentationLink": "https://grafana.com/docs/reference/timerange/",
+            "description": "Description",
+            "panel": "Panel",
+            "error": "{{error}}, please contact your admin to fix it",
+            "grafanaError": "Grafana returned error: {{error}}, please contact your admin to fix it",
+            "hasVariables": "Show Panel Variables"
+        }
     },
     "influxDBChart": {
       "settings": {
