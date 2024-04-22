@@ -28,8 +28,10 @@
   <p>Defines any cross-protocol correlation mechanism</p>
   <hr />
   <full-screen (fullPage)='disableClose($event)' [data]='{json:data.data.data, title: "Agentsub", type: "json"}'>
-    <ace-editor [mode]="'json'" [theme]="'monokai'" [readOnly]="false" [(text)]="data.data.mapping"
-      (textChanged)="validate()" [durationBeforeCallback]="500" #data_view [style.height.%]="100"></ace-editor>
+    <!-- <ace-editor [mode]="'json'" [theme]="'monokai'" [readOnly]="false" [(text)]="data.data.mapping"
+      (textChanged)="validate()" [durationBeforeCallback]="500" #data_view [style.height.%]="100"></ace-editor> -->
+      <app-codejar-wrapper [mode]="'json'" [theme]="'monokai'" [readOnly]="false" [(text)]="data.data.mapping"
+        (textChange)="validate()" [durationBeforeCallback]="500" #data_view [style.height.%]="100"></app-codejar-wrapper>
   </full-screen>
 </div>
 

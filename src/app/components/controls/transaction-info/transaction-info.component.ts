@@ -1,6 +1,6 @@
 import { Component, ChangeDetectorRef, Input, HostListener, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { Functions } from '@app/helpers/functions';
-import * as moment from 'moment';
+import  moment from 'moment';
 import { TranslateService } from '@ngx-translate/core'
 export interface CallIdData {
     callid: string;

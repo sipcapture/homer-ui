@@ -1,9 +1,9 @@
 import { Component, Inject, ChangeDetectionStrategy, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import 'brace';
-import 'brace/mode/text';
-import 'brace/theme/github';
+// import 'brace';
+// import 'brace/mode/text';
+// import 'brace/theme/github';
 import { TranslateService } from '@ngx-translate/core'
 @Component({
     selector: 'app-dialog-scripts',
@@ -88,7 +88,7 @@ export class DialogScriptsComponent implements AfterViewInit {
         })(data.data);
         this.isValidForm = true;
             // const test = this.editor.getEditor().getSession().getAnnotations().filter(annotation => annotation.raw !== `['{a}'] is better written in dot notation.`);
-            
+
     }
     ngAfterViewInit() {
         const options = {

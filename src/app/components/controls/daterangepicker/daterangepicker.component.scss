@@ -79,6 +79,7 @@ $input-height: 3rem !default;
     font-size: 14px;
     background-color: #ffffff;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.16), 0 2px 8px 0 rgba(0, 0, 0, 0.12);
+    min-width: 700px;
 
     &.double {
         width: $md-drppicker-width-double;
@@ -207,6 +208,7 @@ $input-height: 3rem !default;
 
     .calendar {
         /* display: none; */
+        min-width: $md-drppicker-width - ($md-drppicker-calendar-margin * 2);
         max-width: $md-drppicker-width - ($md-drppicker-calendar-margin * 2);
         margin: $md-drppicker-calendar-margin;
 
@@ -451,7 +453,9 @@ $input-height: 3rem !default;
 
         .select {
             display: inline;
-
+            /*
+TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.
+*/
             mat-select {
                 width: 46px;
             }
@@ -510,7 +514,6 @@ $input-height: 3rem !default;
         height: $md-drppicker-control-line-height;
         line-height: $md-drppicker-control-height;
         display: block;
-        vertical-align: middle;
         margin: 0 auto 5px auto;
         padding: 0 0 0 28px;
         width: 100%;
@@ -557,7 +560,7 @@ $input-height: 3rem !default;
         float: none;
         text-align: left;
         margin: 0;
-
+        min-width: 150px;
         ul {
             list-style: none;
             margin: 0 auto;
@@ -579,7 +582,7 @@ $input-height: 3rem !default;
                     cursor: pointer;
 
                     &.active {
-                        background-color: #009cbf;
+                        background-color: #749ad6;
                         color: #fff;
                     }
 
@@ -728,148 +731,148 @@ $input-height: 3rem !default;
     }
 }
 
-@media (min-width: 564px) {
-    .md-drppicker {
-        width: auto;
+// @media (min-width: 564px) {
+//     .md-drppicker {
+//         width: auto;
 
-        &.single {
-            .calendar.left {
-                clear: none;
-            }
-        }
+//         &.single {
+//             .calendar.left {
+//                 clear: none;
+//             }
+//         }
 
-        &.ltr {
-            direction: ltr;
-            text-align: left;
+//         &.ltr {
+//             direction: ltr;
+//             text-align: left;
 
-            .calendar {
-                &.left {
-                    clear: left;
-                    /*margin-right: 1.5em;*/
+//             .calendar {
+//                 &.left {
+//                     clear: left;
+//                     /*margin-right: 1.5em;*/
 
-                    .calendar-table {
-                        border-right: none;
-                        border-top-right-radius: 0;
-                        border-bottom-right-radius: 0;
-                    }
-                }
+//                     .calendar-table {
+//                         border-right: none;
+//                         border-top-right-radius: 0;
+//                         border-bottom-right-radius: 0;
+//                     }
+//                 }
 
-                &.right {
-                    margin-left: 0;
+//                 &.right {
+//                     margin-left: 0;
 
-                    .calendar-table {
-                        border-left: none;
-                        border-top-left-radius: 0;
-                        border-bottom-left-radius: 0;
-                    }
-                }
-            }
+//                     .calendar-table {
+//                         border-left: none;
+//                         border-top-left-radius: 0;
+//                         border-bottom-left-radius: 0;
+//                     }
+//                 }
+//             }
 
-            .left .md-drppicker_input {
-                padding-right: 35px;
-            }
+//             .left .md-drppicker_input {
+//                 padding-right: 35px;
+//             }
 
-            .right .md-drppicker_input {
-                padding-right: 35px;
-            }
+//             .right .md-drppicker_input {
+//                 padding-right: 35px;
+//             }
 
-            .calendar.left .calendar-table {
-                padding-right: 12px;
-            }
+//             .calendar.left .calendar-table {
+//                 padding-right: 12px;
+//             }
 
-            .ranges,
-            .calendar {
-                float: left;
-            }
-        }
+//             .ranges,
+//             .calendar {
+//                 float: left;
+//             }
+//         }
 
-        &.rtl {
-            direction: rtl;
-            text-align: right;
+//         &.rtl {
+//             direction: rtl;
+//             text-align: right;
 
-            .calendar {
-                &.left {
-                    clear: right;
-                    margin-left: 0;
+//             .calendar {
+//                 &.left {
+//                     clear: right;
+//                     margin-left: 0;
 
-                    .calendar-table {
-                        border-left: none;
-                        border-top-left-radius: 0;
-                        border-bottom-left-radius: 0;
-                    }
-                }
+//                     .calendar-table {
+//                         border-left: none;
+//                         border-top-left-radius: 0;
+//                         border-bottom-left-radius: 0;
+//                     }
+//                 }
 
-                &.right {
-                    margin-right: 0;
+//                 &.right {
+//                     margin-right: 0;
 
-                    .calendar-table {
-                        border-right: none;
-                        border-top-right-radius: 0;
-                        border-bottom-right-radius: 0;
-                    }
-                }
-            }
+//                     .calendar-table {
+//                         border-right: none;
+//                         border-top-right-radius: 0;
+//                         border-bottom-right-radius: 0;
+//                     }
+//                 }
+//             }
 
-            .left .md-drppicker_input {
-                padding-left: 12px;
-            }
+//             .left .md-drppicker_input {
+//                 padding-left: 12px;
+//             }
 
-            .calendar.left .calendar-table {
-                padding-left: 12px;
-            }
+//             .calendar.left .calendar-table {
+//                 padding-left: 12px;
+//             }
 
-            .ranges,
-            .calendar {
-                text-align: right;
-                float: right;
-            }
-        }
-    }
+//             .ranges,
+//             .calendar {
+//                 text-align: right;
+//                 float: right;
+//             }
+//         }
+//     }
 
-    .drp-animate {
-        transform: translate(0);
-        transition: transform .2s ease,
-            opacity .2s ease;
+//     .drp-animate {
+//         transform: translate(0);
+//         transition: transform .2s ease,
+//             opacity .2s ease;
 
-        &.drp-picker-site-this {
-            transition-timing-function: linear;
-        }
+//         &.drp-picker-site-this {
+//             transition-timing-function: linear;
+//         }
 
-        &.drp-animate-right {
-            transform: translateX(10%);
-            opacity: 0;
-        }
+//         &.drp-animate-right {
+//             transform: translateX(10%);
+//             opacity: 0;
+//         }
 
-        &.drp-animate-left {
-            transform: translateX(-10%);
-            opacity: 0;
-        }
-    }
-}
+//         &.drp-animate-left {
+//             transform: translateX(-10%);
+//             opacity: 0;
+//         }
+//     }
+// }
 
-@media (min-width: 730px) {
-    .md-drppicker {
-        .ranges {
-            width: auto;
-        }
+// @media (min-width: 730px) {
+//     .md-drppicker {
+//         .ranges {
+//             width: auto;
+//         }
 
-        &.ltr {
-            .ranges {
-                float: left;
-            }
-        }
+//         &.ltr {
+//             .ranges {
+//                 float: left;
+//             }
+//         }
 
-        &.rtl {
-            .ranges {
-                float: right;
-            }
-        }
+//         &.rtl {
+//             .ranges {
+//                 float: right;
+//             }
+//         }
 
-        .calendar.left {
-            clear: none !important;
-        }
-    }
-}
+//         .calendar.left {
+//             clear: none !important;
+//         }
+//     }
+// }
 
 $fontSizeIcon: 24px;
 
@@ -883,11 +886,11 @@ td {
         font-weight: bold;
     }
 
-    .mat-input-element {
+    .mat-mdc-input-element {
         color: black
     }
 
-    .mat-form-field {
+    .mat-mdc-form-field {
         width: 20px;
         max-width: 20px;
         text-align: center;
@@ -910,7 +913,7 @@ td {
 
 //           &.active {
 //             border-radius: 3px;
-//             background-color: #009cbf !important;
+//             background-color: #749ad6 !important;
 //             color: #000 !important;
 //           }
 //         }
@@ -933,7 +936,7 @@ td {
 //   }
 
 //   .btn {
-//     background-color: #009cbf !important;
+//     background-color: #749ad6 !important;
 //     color: #000 !important;
 //   }
 // }

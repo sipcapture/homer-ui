@@ -1,8 +1,9 @@
 <mat-toolbar class="dialog-title" color="primary">
-  <div>{{(isCopy ? ('preference.ipalias.dialog.copy' | translate) : '')}} {{ 'preference.ipalias.dialog.title' |
-    translate }}</div>
-  <button mat-icon-button
-    (click)="onNoClick()">
+  <div>
+    {{ isCopy ? ("preference.ipalias.dialog.copy" | translate) : "" }}
+    {{ "preference.ipalias.dialog.title" | translate }}
+  </div>
+  <button mat-icon-button (click)="onNoClick()">
     <fa-icon icon="times"></fa-icon>
   </button>
 </mat-toolbar>
@@ -10,262 +11,305 @@
 <ng-container *ngIf="actionType !== 'data-preview'; else dataPreview">
   <div class="alias-preview">
     <h1>
-  {{ data.data.alias }}
-  </h1>
-  <span class="preview">
-    Alias Preview
-  </span>
+      {{ data.data.alias }}
+    </h1>
+    <span class="preview"> Alias Preview </span>
   </div>
- 
 
-  <div mat-dialog-content
-    style="min-height: 40vh;">
-    <p>{{ 'preference.ipalias.dialog.description' | translate }}</p>
+  <div mat-dialog-content style="min-height: 40vh">
+    <p>{{ "preference.ipalias.dialog.description" | translate }}</p>
     <hr />
-        <p *ngIf="isCopy && isNotChanged"
-          [ngClass]="isCopy && isNotChanged ? 'copy-warning': ''">
-          <!-- <strong>IP Alias Settings</strong> -->
-          <span>{{ 'preference.ipalias.dialog.updatecopy' | translate }}</span>
-        </p>
-        <div style="margin-top: 2rem;"
-          class="input-group third">
+    <p
+      *ngIf="isCopy && isNotChanged"
+      [ngClass]="isCopy && isNotChanged ? 'copy-warning' : ''"
+    >
+      <!-- <strong>IP Alias Settings</strong> -->
+      <span>{{ "preference.ipalias.dialog.updatecopy" | translate }}</span>
+    </p>
+    <div style="margin-top: 2rem" class="input-group third">
+      <div>
+        <!-- CIDR IP-->
+        <mat-form-field>
+          <mat-label>{{
+            "preference.ipalias.dialog.cidrip" | translate
+          }}</mat-label>
+          <input
+            matInput
+            [(ngModel)]="data.data.ip"
+            [formControl]="ip"
+            autocomplete="off"
+          />
+          <mat-error *ngIf="ip?.errors?.['required']">{{
+            "validators.required" | translate
+          }}</mat-error>
+          <mat-error *ngIf="ip?.errors?.['minlength']">
+            {{ ip?.errors?.['minlength']?.requiredLength }}
+            {{ "validators.minChars" | translate }}
+          </mat-error>
+          <mat-error *ngIf="ip?.errors?.['maxlength']">
+            {{ ip?.errors?.['maxlength']?.requiredLength }}
+            {{ "validators.maxChars" | translate }}
+          </mat-error>
+          <mat-error
+            *ngIf="ip?.errors?.['pattern'] && !ip?.errors?.['minlength']"
+          >
+            {{ "validators.patternIP" | translate }}
+          </mat-error>
+          <mat-error
+            *ngIf="ip?.errors?.['cannotContainSpace'] && !ip?.errors?.['minlength']"
+          >
+            {{ "validators.noWhiteSpace" | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <!-- CIDR MASK-->
+        <mat-form-field type="number">
+          <mat-label>{{
+            "preference.ipalias.dialog.cidrmask" | translate
+          }}</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="data.data.mask"
+            autocomplete="off"
+            [formControl]="mask"
+          />
+          <span matPrefix>/&nbsp;</span>
+          <mat-error *ngIf="mask?.errors?.['required']">{{
+            "validators.required" | translate
+          }}</mat-error>
+          <mat-error *ngIf="mask?.errors?.['min']"
+            >{{ "validators.minNumber" | translate }} 1</mat-error
+          >
+          <mat-error *ngIf="mask?.errors?.['max']"
+            >{{ "validators.maxNumber" | translate }} 32</mat-error
+          >
+          <mat-error *ngIf="mask?.errors?.['pattern']">{{
+            "validators.patternNumber" | translate
+          }}</mat-error>
+        </mat-form-field>
+      </div>
+      <div>
+        <!-- PORT -->
+        <mat-form-field type="number">
+          <mat-label>{{
+            "preference.ipalias.dialog.port" | translate
+          }}</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="data.data.port"
+            autocomplete="off"
+            [formControl]="port"
+          />
+          <mat-error *ngIf="port?.errors?.['required']">{{
+            "validators.required" | translate
+          }}</mat-error>
+          <mat-error *ngIf="port?.errors?.['min']"
+            >{{ "validators.minNumber" | translate }} 1</mat-error
+          >
+          <mat-error *ngIf="port?.errors?.['max']"
+            >{{ "validators.maxNumber" | translate }} 65353</mat-error
+          >
+          <mat-error *ngIf="port?.errors?.['pattern']">{{
+            "validators.patternNumber" | translate
+          }}</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
 
+    <div class="input-group third">
+      <div>
+        <!-- Alias name-->
+        <mat-form-field>
+          <mat-label>{{
+            "preference.ipalias.dialog.aliasName" | translate
+          }}</mat-label>
+          <input
+            matInput
+            autocomplete="off"
+            [ngClass]="isCopy && isNotChanged ? 'input-copy-warning' : ''"
+            (change)="isNotChanged = false"
+            [(ngModel)]="
+              isCopy && isNotChanged
+                ? data.data.alias + '-COPY'
+                : data.data.alias
+            "
+            [formControl]="alias"
+          />
+          <mat-error *ngIf="alias?.errors?.['required']">{{
+            "validators.required" | translate
+          }}</mat-error>
+          <mat-error *ngIf="alias?.errors?.['minlength']">
+            {{ alias?.errors?.['minlength']?.requiredLength }}
+            {{ "validators.minChars" | translate }}
+          </mat-error>
+          <mat-error *ngIf="alias?.errors?.['maxlength']">
+            {{ alias?.errors?.['maxlength']?.requiredLength }}
+            {{ "validators.maxChars" | translate }}
+          </mat-error>
+          <mat-error
+            *ngIf="alias?.errors?.['pattern'] && !alias?.errors?.['minlength']"
+          >
+            {{ "validators.pattern" | translate }} [aA-Zz], [0-9], "-" or "_"]
+          </mat-error>
+        </mat-form-field>
+      </div>
 
-          <div>
-            <!-- CIDR IP-->
-            <mat-form-field>
-              <mat-label>{{ 'preference.ipalias.dialog.cidrip' | translate }}</mat-label>
-              <input matInput
-                [(ngModel)]="data.data.ip"
-                [formControl]="ip"
-                autocomplete="off"
-                 />
-              <mat-error *ngIf="ip?.errors?.required">{{'validators.required' | translate }}</mat-error>
-              <mat-error *ngIf="ip?.errors?.minlength">
-                {{ ip?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
-              </mat-error>
-              <mat-error *ngIf="ip?.errors?.maxlength">
-                {{ ip?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
-              </mat-error>
-              <mat-error *ngIf="ip?.errors?.pattern && !ip?.errors?.minlength">
-                {{'validators.patternIP' | translate }}
-              </mat-error>
-              <mat-error *ngIf="ip?.errors?.cannotContainSpace&& !ip?.errors?.minlength">
-                {{'validators.noWhiteSpace' | translate }}
-              </mat-error>
-
-            </mat-form-field>
-          </div>
-          <div>
-            <!-- CIDR MASK-->
-            <mat-form-field type="number">
-
-              <mat-label>{{ 'preference.ipalias.dialog.cidrmask' | translate }}</mat-label>
-              <input matInput
-                type="number"
-                [(ngModel)]="data.data.mask"
-                autocomplete="off"
-                [formControl]="mask"
-                 />
-              <span matPrefix>/&nbsp;</span>
-              <mat-error *ngIf="mask?.errors?.required">{{'validators.required' | translate }}</mat-error>
-              <mat-error *ngIf="mask?.errors?.min">{{'validators.minNumber' | translate }} 1</mat-error>
-              <mat-error *ngIf="mask?.errors?.max">{{'validators.maxNumber' | translate }} 32</mat-error>
-              <mat-error *ngIf="mask?.errors?.pattern">{{'validators.patternNumber' | translate }}</mat-error>
-            </mat-form-field>
-          </div>
-          <div>
-            <!-- PORT -->
-            <mat-form-field type="number">
-              <mat-label>{{ 'preference.ipalias.dialog.port' | translate }}</mat-label>
-              <input matInput
-                type="number"
-                [(ngModel)]="data.data.port"
-                autocomplete="off"
-                [formControl]="port"
-                 />
-              <mat-error *ngIf="port?.errors?.required">{{'validators.required' | translate }}</mat-error>
-              <mat-error *ngIf="port?.errors?.min">{{'validators.minNumber' | translate }} 1</mat-error>
-              <mat-error *ngIf="port?.errors?.max">{{'validators.maxNumber' | translate }} 65353</mat-error>
-              <mat-error *ngIf="port?.errors?.pattern">{{'validators.patternNumber' | translate }}</mat-error>
-            </mat-form-field>
-          </div>
+      <div>
+        <!-- CAPTURE ID -->
+        <mat-form-field>
+          <mat-label>{{
+            "preference.ipalias.dialog.captureID" | translate
+          }}</mat-label>
+          <input
+            matInput
+            [(ngModel)]="data.data.captureID"
+            autocomplete="off"
+            [formControl]="captureID"
+          />
+          <mat-error *ngIf="captureID?.errors?.['required']">{{
+            "validators.required" | translate
+          }}</mat-error>
+          <mat-error *ngIf="captureID?.errors?.['minlength']">
+            {{ captureID?.errors?.['minlength']?.requiredLength }}
+            {{ "validators.minChars" | translate }}
+          </mat-error>
+          <mat-error *ngIf="captureID?.errors?.['maxlength']">
+            {{ captureID?.errors?.['maxlength']?.requiredLength }}
+            {{ "validators.maxChars" | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="input-group" style="padding-left: 10px">
+        <div>
+          <mat-checkbox [(ngModel)]="data.data.status" labelPosition="before">{{
+            "preference.ipalias.dialog.active" | translate
+          }}</mat-checkbox>
         </div>
-
-        <div class="input-group third">
-
-          <div>
-            <!-- Alias name-->
-            <mat-form-field>
-              <mat-label>{{ 'preference.ipalias.dialog.aliasName' | translate }}</mat-label>
-              <input matInput
-                autocomplete="off"
-                [ngClass]="isCopy && isNotChanged ? 'input-copy-warning':''"
-                (change)="isNotChanged=false;"
-                [(ngModel)]="isCopy && isNotChanged ? data.data.alias + '-COPY' : data.data.alias"
-                [formControl]="alias"
-                 />
-              <mat-error *ngIf="alias?.errors?.required">{{'validators.required' | translate }}</mat-error>
-              <mat-error *ngIf="alias?.errors?.minlength">
-                {{ alias?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
-              </mat-error>
-              <mat-error *ngIf="alias?.errors?.maxlength">
-                {{ alias?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
-              </mat-error>
-              <mat-error *ngIf="alias?.errors?.pattern && !alias?.errors?.minlength">
-                {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-" or "_"]
-              </mat-error>
-
-            </mat-form-field>
-          </div>
-
-
-
-          <div>
-            <!-- CAPTURE ID -->
-            <mat-form-field>
-              <mat-label>{{ 'preference.ipalias.dialog.captureID' | translate }}</mat-label>
-              <input matInput
-                [(ngModel)]="data.data.captureID"
-                autocomplete="off"
-                [formControl]="captureID"
-                 />
-              <mat-error *ngIf="captureID?.errors?.required">{{'validators.required' | translate }}</mat-error>
-              <mat-error *ngIf="captureID?.errors?.minlength">
-                {{ captureID?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
-              </mat-error>
-              <mat-error *ngIf="captureID?.errors?.maxlength">
-                {{ captureID?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
-              </mat-error>
-              
-            </mat-form-field>
-
-          </div>
-          <div class="input-group" style="padding-left:10px">
-
-            <div>
-              <mat-checkbox [(ngModel)]="data.data.status" labelPosition='before'
-                >{{ 
-                ('preference.ipalias.dialog.active' | translate)
-                }}</mat-checkbox>
-            </div>
-          </div>
-
-        </div>
-
-
+      </div>
+    </div>
   </div>
 
-  <div mat-dialog-actions
-    style="float: right; margin-bottom: 0rem">
-    <button mat-raised-button
-      (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
-    <button mat-raised-button
+  <div mat-dialog-actions style="float: right; margin-bottom: 0rem">
+    <button mat-raised-button (click)="onNoClick()">
+      {{ "LINK.buttons.cancel" | translate }}
+    </button>
+    <button
+      mat-raised-button
       class="setting-btn-ok"
-      
       (click)="onSubmit()"
-      cdkFocusInitial>
-      {{isCopy ? 'Save Copy' : 'Save'}}
+      cdkFocusInitial
+    >
+      {{ isCopy ? "Save Copy" : "Save" }}
     </button>
   </div>
 </ng-container>
 <ng-template #dataPreview>
-  <h1 mat-dialog-title class="dialog-title">{{ data.data.alias }}
-  </h1>
+  <h1 mat-dialog-title class="dialog-title">{{ data.data.alias }}</h1>
 
-  <div mat-dialog-content
-    style="min-height: 40vh;">
+  <div mat-dialog-content style="min-height: 40vh">
     <mat-tab-group mat-align-tabs="start">
       <mat-tab label="IP Alias Settings">
-        <p *ngIf="isCopy && isNotChanged"
-          [ngClass]="isCopy && isNotChanged ? 'copy-warning': ''">
+        <p
+          *ngIf="isCopy && isNotChanged"
+          [ngClass]="isCopy && isNotChanged ? 'copy-warning' : ''"
+        >
           <!-- <strong>IP Alias Settings</strong> -->
-          <span>{{ 'preference.ipalias.dialog.updatecopy' | translate }}</span>
+          <span>{{ "preference.ipalias.dialog.updatecopy" | translate }}</span>
         </p>
-        <div style="margin-top: 2rem;"
-          class="input-group third">
-
-
+        <div style="margin-top: 2rem" class="input-group third">
           <div>
             <!-- CIDR IP-->
             <mat-form-field>
-              <mat-label>{{ 'preference.ipalias.dialog.cidrip' | translate }}</mat-label>
-              <input matInput
+              <mat-label>{{
+                "preference.ipalias.dialog.cidrip" | translate
+              }}</mat-label>
+              <input
+                matInput
                 [(ngModel)]="data.data.ip"
                 autocomplete="off"
-                [disabled]="true" />
+                [disabled]="true"
+              />
             </mat-form-field>
           </div>
           <div>
             <!-- CIDR MASK-->
             <mat-form-field type="number">
-
-              <mat-label>{{ 'preference.ipalias.dialog.cidrmask' | translate }}</mat-label>
-              <input matInput
+              <mat-label>{{
+                "preference.ipalias.dialog.cidrmask" | translate
+              }}</mat-label>
+              <input
+                matInput
                 type="number"
                 [(ngModel)]="data.data.mask"
                 autocomplete="off"
-                [disabled]="true" />
+                [disabled]="true"
+              />
               <span matPrefix>/&nbsp;</span>
             </mat-form-field>
           </div>
           <div>
             <!-- PORT -->
             <mat-form-field type="number">
-              <mat-label>{{ 'preference.ipalias.dialog.port' | translate }}</mat-label>
-              <input matInput
+              <mat-label>{{
+                "preference.ipalias.dialog.port" | translate
+              }}</mat-label>
+              <input
+                matInput
                 type="number"
                 [(ngModel)]="data.data.port"
                 autocomplete="off"
-                [disabled]="true" />
+                [disabled]="true"
+              />
             </mat-form-field>
           </div>
-
         </div>
 
         <div class="input-group third">
-
           <div>
             <!-- Alias name-->
             <mat-form-field>
-              <mat-label>{{ 'preference.ipalias.dialog.aliasName' | translate }}</mat-label>
-              <input matInput
+              <mat-label>{{
+                "preference.ipalias.dialog.aliasName" | translate
+              }}</mat-label>
+              <input
+                matInput
                 autocomplete="off"
-                [ngClass]="isCopy && isNotChanged ? 'input-copy-warning':''"
-                (change)="isNotChanged=false;"
-                [(ngModel)]="isCopy && isNotChanged ? data.data.alias + '-COPY' : data.data.alias"
-                [disabled]="true" />
+                [ngClass]="isCopy && isNotChanged ? 'input-copy-warning' : ''"
+                (change)="isNotChanged = false"
+                [(ngModel)]="
+                  isCopy && isNotChanged
+                    ? data.data.alias + '-COPY'
+                    : data.data.alias
+                "
+                [disabled]="true"
+              />
             </mat-form-field>
           </div>
           <div>
-            <mat-checkbox [(ngModel)]="data.data.status"
-            [disabled]="true">{{ data.data.status ?
-            ('preference.ipalias.dialog.active' | translate)
-            : 'preference.ipalias.dialog.inactive' | translate
+            <mat-checkbox [(ngModel)]="data.data.status" [disabled]="true">{{
+              data.data.status
+                ? ("preference.ipalias.dialog.active" | translate)
+                : ("preference.ipalias.dialog.inactive" | translate)
             }}</mat-checkbox>
           </div>
 
-            <div>
-    
-             
-            </div>
-         
-
+          <div></div>
         </div>
-    
- 
       </mat-tab>
-    
     </mat-tab-group>
   </div>
 
-  <div mat-dialog-actions
-    style="float: right; margin-bottom: 0rem">
-    <button mat-raised-button
+  <div mat-dialog-actions style="float: right; margin-bottom: 0rem">
+    <button
+      mat-raised-button
       class="setting-btn-ok"
       (click)="onNoClick()"
-      cdkFocusInitial>
-      {{'LINK.buttons.close' | translate}}
+      cdkFocusInitial
+    >
+      {{ "LINK.buttons.close" | translate }}
     </button>
   </div>
 </ng-template>

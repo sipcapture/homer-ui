@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { SessionStorageService, UserSettings } from './session-storage.service';
-import * as _moment from 'moment-timezone';
-const moment: any = _moment;
+import moment from 'moment-timezone';
+// const moment: any = _moment;
 
 
 export interface DateTimeTick {

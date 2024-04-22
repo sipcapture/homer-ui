@@ -18,7 +18,7 @@ import {
 } from '@angular/forms';
 import { NgSelectComponent } from '@ng-select/ng-select';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
-import { untilDestroyed } from 'ngx-take-until-destroy';
+import { untilDestroyed } from '@ngneat/until-destroy';
 import { ErrorStateMatcher } from '@angular/material/core';
 
 export class NgSelectErrorStateMatcher {
@@ -56,8 +56,8 @@ export class NgSelectFormFieldControlDirective
         return (
             this._value === undefined ||
             this._value === null ||
-            this._value === [] ||
-            this._value === {} ||
+            this._value instanceof Array ||
+            typeof this._value === 'object' ||
             (this.host.multiple && this._value.length === 0)
         );
     }

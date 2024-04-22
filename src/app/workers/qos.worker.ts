@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 
-import * as moment from 'moment';
+import  moment from 'moment';
 
 
 class QosProcessor {

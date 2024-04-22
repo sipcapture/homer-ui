@@ -1,7 +1,7 @@
 import { Functions } from '@app/helpers/functions';
 import { Component, OnInit, Input, ViewChild, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit, AfterContentInit } from '@angular/core';
 import { MatTabGroup } from '@angular/material/tabs';
-import * as _moment from 'moment';
+import moment from 'moment';
 import * as _parsip from 'parsip';
 
 import jwt_decode from 'jwt-decode';
@@ -10,7 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { DateFormat, TimeFormattingService } from '@app/services/time-formatting.service';
 
 const parsip = _parsip;
-const moment = _moment;
+// const moment = _moment;
 @Component({
     selector: 'app-message-content',
     templateUrl: './message-content.component.html',

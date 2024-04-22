@@ -38,12 +38,13 @@
             }
         }
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
+    /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
     .mat-tab-body-content {
         overflow-x: hidden !important;
     }
 
-    td.mat-cell {
+    td.mat-mdc-cell {
         border-bottom-style: unset !important;
         border-right-style: solid !important;
         border-right-width: 1px !important;
@@ -53,7 +54,7 @@
         max-width:125px;
         overflow:hidden;
         text-overflow: ellipsis !important; 
-        &:last-child.mat-cell {
+        &:last-child.mat-mdc-cell {
             border-right-style: unset !important;
         }
         & .ellipsis-text {
@@ -67,7 +68,7 @@
         padding-left: 5px !important;
     }
 
-    .mat-row {
+    .mat-mdc-row {
         &:nth-child(2n+1) {
             background-color: #DFF1FF;
         }

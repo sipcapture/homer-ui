@@ -17,8 +17,8 @@ import {
 } from '@angular/core';
 import { PreferenceAdvancedService } from '@app/services';
 import { Chart, ChartType, ChartDataSets, ChartColor } from 'chart.js';
-import { Label, Color, BaseChartDirective } from 'ng2-charts';
-import * as moment from 'moment';
+import { Label, Color, BaseChartDirective } from '@xirenec/ng2-charts';
+import  moment from 'moment';
 
 import { Functions } from '@app/helpers/functions';
 import { WorkerService } from '@services/worker.service';

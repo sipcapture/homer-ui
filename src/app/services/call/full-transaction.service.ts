@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { CallReportService } from '@app/services';
 import { CallTransactionService } from '@app/services';
 import { Observable } from 'rxjs';
-import { HepLogService } from '@app/services';
+// import { HepLogService } from '@app/services';
 import { WorkerService } from '../worker.service';
 import { WorkerCommands } from '@app/models/worker-commands.module';
 import { Functions, log } from '@app/helpers/functions';
@@ -19,7 +19,7 @@ export class FullTransactionService {
   constructor(
     private callReportService: CallReportService,
     private callTransactionService: CallTransactionService,
-    private hepLogService: HepLogService,
+    // private hepLogService: HepLogService,
     private agentsubService: AgentsubService,
     private preferenceHepsubService: PreferenceHepsubService,
     private _pass: PreferenceAgentsubService,
@@ -115,11 +115,11 @@ export class FullTransactionService {
           }
         } catch (err) { onError('agentCdr'); }
 
-        try {
-          const hepLogRes: any = await this.hepLogService.getLog(rt).toPromise();
-          tData = await _worker({ tData, logsData: hepLogRes.data, type: 'logs' });
-          tData.heplogs = hepLogRes.data;
-        } catch (err) { onError('heplogs'); }
+        // try {
+        //   const hepLogRes: any = await this.hepLogService.getLog(rt).toPromise();
+        //   tData = await _worker({ tData, logsData: hepLogRes.data, type: 'logs' });
+        //   tData.heplogs = hepLogRes.data;
+        // } catch (err) { onError('heplogs'); }
 
         try {
           const callIdArr = tData?.data?.calldata.map(i => i.sid).sort().filter((i, k, a) => i !== a[k - 1]) || [];

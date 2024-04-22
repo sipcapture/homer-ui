@@ -14,6 +14,7 @@
     <div style="float: right;">
         <button
             mat-icon-button
+            class="fa-icon-custom"
             *ngIf="!isHome"
             (click)="onShareQrLink()">
             <fa-icon icon="qrcode" [matTooltip]="('dashboard.shareQR' | translate)"
@@ -21,6 +22,7 @@
         </button>
         <button mat-icon-button
             *ngIf="!isIframe"
+            class="fa-icon-custom"
             [disabled]='isShared'
             (click)="lockDashboard()"
             onclick="this.blur()">
@@ -34,6 +36,7 @@
         </button>
         <button mat-icon-button
             *ngIf="!isIframe"
+            class="fa-icon-custom"
             [disabled]='isShared'
             (click)="onDashboardAdd()"
             onclick="this.blur()">
@@ -47,6 +50,7 @@
         </button>
         <button mat-icon-button
             [disabled]='isShared'
+            class="fa-icon-custom"
             (click)="onDashboardSettings()"
             onclick="this.blur()">
             <fa-icon icon="cog"
@@ -59,6 +63,7 @@
         </button>
         <button mat-icon-button
             *ngIf="!isHome"
+            class="fa-icon-custom"
             [disabled]='isHome || isShared'
             (click)="onDashboardDelete()"
             onclick="this.blur()">

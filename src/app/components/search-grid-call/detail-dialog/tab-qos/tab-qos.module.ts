@@ -1,4 +1,4 @@
-import { ChartsModule } from 'ng2-charts';
+import { ChartsModule } from '@xirenec/ng2-charts';
 import { FormsModule } from '@angular/forms';
 import { HomerMaterialModule } from '@app/app.material-module';
 import { NgModule } from '@angular/core';

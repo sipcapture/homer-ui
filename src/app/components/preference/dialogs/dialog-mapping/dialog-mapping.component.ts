@@ -7,9 +7,9 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
-import 'brace';
-import 'brace/mode/text';
-import 'brace/theme/github';
+// import 'brace';
+// import 'brace/mode/text';
+// import 'brace/theme/github';
 @Component({
   selector: 'app-dialog-mapping',
   templateUrl: './dialog-mapping.component.html',
@@ -195,7 +195,7 @@ export class DialogMappingComponent {
       !this.hep_alias?.invalid &&
       !this.hepid?.invalid &&
       !this.profile?.invalid &&
-      !this.partid?.invalid 
+      !this.partid?.invalid
 
     ) {
       (d => {

@@ -16,7 +16,7 @@
     [class]="'drops-' + drops + '-' + opens">
 
 
-    <div style="display: flex;">
+    <div style="display: flex;" [hidden]="!isShown">
 
         <div class="calendar"
             [ngClass]="{right: singleDatePicker, left: !singleDatePicker}"
@@ -187,7 +187,7 @@
                         [(ngModel)]="timepickerTimezone"
                         (ngModelChange)="timeZoneChanged($event)">
                         <mat-optgroup *ngFor="let region of parsedTimeZones | keyvalue"
-                            [label]="region.key">
+                            [label]='region.key'>
                             <mat-option *ngFor='let timeZone of region.value'
                                 [value]="timeZone">
                                 {{timeZone | timeZone:'location'}} {{timeZone | timeZone:'offset'}}
@@ -361,7 +361,7 @@
             height: 60px;"
                 *ngIf="!autoApply && ( !rangesArray.length || (showCalInRanges && !singleDatePicker))">
                 <button mat-raised-button
-                    color="primary"
+                    class="setting-btn-ok"
                     [disabled]="applyBtn.disabled"
                     style="margin-left: 10px;"
                     type="button"
@@ -378,14 +378,16 @@
         </div>
     </div>
     <div class="ranges"
-        style="float: right;">
+        style="float: right;" [hidden]="!isShown">
         <ul>
             <li *ngFor="let range of rangesArray">
                 <button type="button"
                     (click)="dbClickRange($event, range)"
                     [disabled]="disableRange(range)"
+                    [id]='range'
                     [ngClass]="{'active': range === chosenRange}">{{range}}</button>
             </li>
         </ul>
     </div>
+    <div style="height: 430px;" [hidden]="isShown"></div>
 </div>

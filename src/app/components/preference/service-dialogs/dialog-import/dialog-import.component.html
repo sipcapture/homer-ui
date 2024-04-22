@@ -14,7 +14,7 @@
     </div>
     </form>
   <div style="text-align: center; margin-top: 100px" [hidden]="!isUploading">
-    <mat-card style="margin-top: 10px; width: 600px">
+    <mat-card appearance="outlined" style="margin-top: 10px; width: 600px">
         <mat-card-content>
             <ul>
                 <li *ngFor="let file of files" [@fadeInOut]="file.state" >

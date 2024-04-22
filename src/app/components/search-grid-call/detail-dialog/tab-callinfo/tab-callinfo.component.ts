@@ -6,7 +6,7 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { Functions } from '../../../../helpers/functions';
-import * as moment from 'moment';
+import  moment from 'moment';
 
 enum COLOR {
   green = '#dcf7dc',

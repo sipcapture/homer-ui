@@ -1,9 +1,10 @@
-import { Functions } from '@app/helpers/functions';
-import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, HostListener, Input,
-    ChangeDetectionStrategy, 
-    ChangeDetectorRef} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnInit, Output, ViewChild
+} from '@angular/core';
+import { emitWindowResize, saveToFile } from '@app/helpers/windowFunctions';
+import moment from 'moment';
 
-import * as moment from 'moment';
 @Component({
     selector: 'full-screen',
     templateUrl: './full-screen.component.html',
@@ -14,6 +15,9 @@ export class FullScreenComponent implements OnInit {
     @ViewChild('fileSelect', { static: true }) fileSelect;
     isFullPage = false;
     isDragOver = false;
+    @Input() isReadOnly: boolean = false;
+    @Output() isReadOnlyChange: EventEmitter<boolean> = new EventEmitter();
+    @Input() allowReadOnly: boolean = false;
     @ViewChild('innerContainer') innerContainer: ElementRef<HTMLElement>;
     @ViewChild('content') content: ElementRef<HTMLElement>;
     @Output() fullPage: EventEmitter<any> = new EventEmitter();
@@ -49,7 +53,7 @@ export class FullScreenComponent implements OnInit {
         event.stopPropagation();
         this.isFullPage = false;
         this.innerContainer.nativeElement.appendChild(this.content.nativeElement);
-        Functions.emitWindowResize();
+        emitWindowResize();
         this.fullPage.emit(this.isFullPage);
     }
     onFullPage() {
@@ -62,11 +66,11 @@ export class FullScreenComponent implements OnInit {
         } else {
             this.innerContainer.nativeElement.appendChild(ne);
         }
-        Functions.emitWindowResize();
+        emitWindowResize();
         this.fullPage.emit(this.isFullPage);
     }
     download() {
-        Functions.saveToFile(this.data.json, `${this.data.title} ${moment().format('YYYY-MM-DD HH:mm:ss')}.${this.data.type}`);
+        saveToFile(this.data.json, `${this.data.title} ${moment().format('YYYY-MM-DD HH:mm:ss')}.${this.data.type}`);
     }
     async upload(file) {
         if (!this.data) {

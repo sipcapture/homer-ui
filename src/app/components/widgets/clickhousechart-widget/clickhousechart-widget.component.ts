@@ -11,7 +11,7 @@ import { DateTimeRangeService, DateTimeTick, Timestamp } from '@app/services';
 import { ClickhouseSerivce } from '@app/services/clickhouse.service';
 import { WorkerService } from '@app/services/worker.service';
 import { ChartDataSets, ChartType } from 'chart.js';
-import { BaseChartDirective, Label } from 'ng2-charts';
+import { BaseChartDirective, Label } from '@xirenec/ng2-charts';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { IWidget } from '../IWidget';

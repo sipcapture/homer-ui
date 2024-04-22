@@ -6,7 +6,7 @@ import { Validators, FormControl, AbstractControl } from '@angular/forms';
 import { emailValidator } from '@app/helpers/email-validator.directive';
 
 import { TranslateService } from '@ngx-translate/core'
-import * as moment from 'moment';
+import  moment from 'moment';
 import { lastValueFrom } from 'rxjs';
 @Component({
     selector: 'app-dialog-users',
@@ -57,7 +57,7 @@ export class DialogUsersComponent implements OnInit {
         Validators.required,
         Validators.minLength(6),
         Validators.maxLength(100)
-        
+
     ]);
     password2 = new FormControl('', [
         Validators.required,
@@ -113,7 +113,7 @@ export class DialogUsersComponent implements OnInit {
                 lastname: '',
                 department: '',
 		guid: Functions.newGuid(),
-           
+
             };
 
         }

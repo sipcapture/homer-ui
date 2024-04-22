@@ -18,33 +18,36 @@
     <mat-form-field style="padding-right: 1rem;">
       <mat-label>{{ 'preference.advanced.dialog.category' | translate }}</mat-label>
       <input matInput [(ngModel)]="data.data.category" autocomplete="off" [formControl]="category" [disabled]="!isAdmin">
-      <mat-error *ngIf="category?.errors?.required">{{'validators.required' | translate }}</mat-error>
-      <mat-error *ngIf="category?.errors?.minlength">
-        {{ category?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+      <mat-error *ngIf="category?.errors?.['required']">{{'validators.required' | translate }}</mat-error>
+      <mat-error *ngIf="category?.errors?.['minlength']">
+        {{ category?.errors?.['minlength']?.requiredLength }} {{'validators.minChars' | translate }}
       </mat-error>
-      <mat-error *ngIf="category?.errors?.maxlength">
-        {{ category?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+      <mat-error *ngIf="category?.errors?.['maxlength']">
+        {{ category?.errors?.['maxlength']?.requiredLength }} {{'validators.maxChars' | translate }}
       </mat-error>
-      <mat-error *ngIf="category?.errors?.pattern && !category?.errors?.minlength">
+      <mat-error *ngIf="category?.errors?.['pattern'] && !category?.errors?.['minlength']">
         {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-" or "_"]
       </mat-error>
     </mat-form-field>
     <mat-form-field style="padding-right: 1rem;">
       <mat-label>{{ 'preference.advanced.dialog.param' | translate }}</mat-label>
       <input matInput [(ngModel)]="data.data.param" autocomplete="off" [formControl]="param" [disabled]="!isAdmin">
-      <mat-error *ngIf="param?.errors?.required">{{'validators.required' | translate }}</mat-error>
-      <mat-error *ngIf="param?.errors?.minlength">
-        {{ param?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+      <mat-error *ngIf="param?.errors?.['required']">{{'validators.required' | translate }}</mat-error>
+      <mat-error *ngIf="param?.errors?.['minlength']">
+        {{ param?.errors?.['minlength']?.requiredLength }} {{'validators.minChars' | translate }}
       </mat-error>
     </mat-form-field>
   </div>
   <strong>{{ 'preference.advanced.dialog.data' | translate }}</strong>
   <hr />
-  <full-screen (fullPage)='disableClose($event)' 
-                (import)='import($event)' 
+  <full-screen (fullPage)='disableClose($event)'
+                (import)='import($event)'
                 [data]='{json:data.data.data, title: data.data.category + " " + data.data.param, type: "json"}' (import)='import($event)'>
-    <ace-editor [mode]="'json'" [theme]="'monokai'" [readOnly]="false" [(text)]="data.data.data"
-      (textChanged)="validate()" [durationBeforeCallback]="500" #data_view [style.height.%]="100"></ace-editor>
+    <!-- <ace-editor [mode]="'json'" [theme]="'monokai'" [readOnly]="false" [(text)]="data.data.data"
+      (textChanged)="validate()" [durationBeforeCallback]="500" #data_view [style.height.%]="100"></ace-editor> -->
+      <app-codejar-wrapper [mode]="'json'" [theme]="'monokai'" [readOnly]="false" [(text)]="data.data.data" [jsonValidator]="true"
+        (textChange)="validate()" [durationBeforeCallback]="500" #data_view [style.height.%]="100" id="ace-editor"></app-codejar-wrapper>
+
   </full-screen>
 </div>
 

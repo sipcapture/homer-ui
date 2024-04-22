@@ -24,7 +24,7 @@ import {
 } from '@app/services';
 import { AgentRequestModel } from '@app/models/agent-request-model';
 
-import * as moment from 'moment';
+import  moment from 'moment';
 
 @Component({
   selector: 'app-detail-dialog',

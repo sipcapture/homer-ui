@@ -140,8 +140,8 @@
                 </mat-form-field>
                 <mat-form-field appearance="fill" style="width: 100%;"><!-- Tag -->
                 <mat-label>{{'widgets.clickhouseChart.settings.tag' | translate}}</mat-label>
-                <mat-chip-list class="chips-container tags" (click)="selectTags.open()">
-                    <mat-chip class="custom-mat-chip"
+                <mat-chip-listbox class="chips-container tags" (click)="selectTags.open()">
+                    <mat-chip-option class="custom-mat-chip"
                     *ngFor="let item of tags.value"
                     [selectable]="false"
                     [removable]="true"
@@ -149,8 +149,8 @@
                     (removed)="remove(item, 'tags')">
                     {{item}}
                     <mat-icon matChipRemove >cancel</mat-icon>
-                    </mat-chip>
-                </mat-chip-list>
+                    </mat-chip-option>
+                </mat-chip-listbox>
                 <mat-select
                     multiple
                     class="chips-container-selector tags"

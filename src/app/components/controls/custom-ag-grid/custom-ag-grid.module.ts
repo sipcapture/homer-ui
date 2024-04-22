@@ -1,10 +1,6 @@
 import { DragDropListComponent } from './drag-drop-list/drag-drop-list.component';
-import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatMenuModule } from '@angular/material/menu';
 import { SettingButtonComponent } from './setting-button';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { AgGridModule } from 'ag-grid-angular';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -14,13 +10,17 @@ import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontaweso
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatMenuModule } from '@angular/material/menu';
 @NgModule({
     imports: [
         CommonModule,
         FontAwesomeModule,
         MatButtonModule,
         FormsModule,
-        AgGridModule.withComponents([]),
+        AgGridModule,
         MatMenuModule,
         MatCheckboxModule,
         MatCardModule,

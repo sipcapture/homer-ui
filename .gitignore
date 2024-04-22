@@ -45,6 +45,8 @@ testem.log
 Thumbs.db
 
 package-lock.json
+# Angular cache
+.angular
 
 #Env
 src/environments/environment.dev.ts

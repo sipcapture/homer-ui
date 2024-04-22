@@ -6,7 +6,7 @@ import { FlowItemType } from '@app/models/flow-item-type.model';
 import { ColDef, GridOptions } from 'ag-grid-community';
 import { Subscription } from 'rxjs';
 import { Functions, getStorage, log, setStorage } from '@app/helpers/functions';
-import * as moment from 'moment';
+import  moment from 'moment';
 import { ConstValue, UserConstValue } from '@app/models';
 import {
     Component,
@@ -63,19 +63,19 @@ import { DateFormat, TimeFormattingService } from '@app/services/time-formatting
 export class SearchGridCallComponent
     extends GridController
     implements OnInit, OnDestroy, AfterViewInit {
-    gridApi;
-    gridColumnApi;
+    override gridApi;
+    override gridColumnApi;
     columnApi;
-    _id: string = null;
+    override _id: string = null;
     public context;
     public frameworkComponents;
     isSearchPanel = false;
     @Input() source = 'resultPage';
-    @Input() inChartContainer = false;
-    @Input() set id(val: string) {
+    @Input() override inChartContainer = false;
+    @Input() override set id(val: string) {
         this._id = val;
     }
-    get id(): string {
+    override get id(): string {
         return this._id;
     }
     @Input() chartConfig: any;
@@ -85,11 +85,11 @@ export class SearchGridCallComponent
     @ViewChild('searchSlider', { static: false }) searchSlider: any;
     filterGridValue: string = '';
     defaultColDef: ColDef;
-    _columnDefs: Array<ColDef>;
-    set columnDefs(value: Array<ColDef>) {
+    override _columnDefs: Array<ColDef>;
+    override set columnDefs(value: Array<ColDef>) {
         this._columnDefs = value;
     }
-    get columnDefs(): Array<ColDef> {
+    override get columnDefs(): Array<ColDef> {
         return this._columnDefs;
     }
     myPredefColumns: Array<ColDef>;
@@ -112,12 +112,12 @@ export class SearchGridCallComponent
     searchSliderFields = [];
     isLokiQuery = false;
     lastTimestamp: number;
-    localData: any;
+    override localData: any;
     queryTextLoki: string;
     showRegex;
     buttonName;
     isFirstInit = true;
-    agGridSizeControl = {
+    override agGridSizeControl = {
         selectedType: 'sizeToFit',
         pageSize: 100
     };
@@ -148,7 +148,7 @@ export class SearchGridCallComponent
 
     filterRegex: RegExp;
     filterCleaned: string;
-    gridOptions: GridOptions = <GridOptions>{
+    override gridOptions: GridOptions = <GridOptions>{
         defaultColDef: {
             sortable: true,
             resizable: true,
@@ -189,7 +189,7 @@ export class SearchGridCallComponent
     searchAllNode = false;
 
     public isThisSelfQuery = false;
-    _interval: any;
+    override _interval: any;
     private subscriptionRangeUpdateTimeout: Subscription;
     public subscriptionDashboardEvent: Subscription;
     private _latestQuery: string;
@@ -845,8 +845,13 @@ export class SearchGridCallComponent
         return bool;
     }
     isExternalFilterPresent() {
-        const filterValue = this.context.componentParent.filterGridValue.toLowerCase().trim();
-        return filterValue !== '';
+        try {
+            const filterValue = this.context?.componentParent?.filterGridValue?.toLowerCase()?.trim();
+            return filterValue !== '';
+
+        } catch (error) {
+            return false;
+        }
     }
     doesExternalFilterPass(node) {
         const statusFormDefaults = this.context.componentParent.statusFormDefaults;
@@ -1629,7 +1634,7 @@ export class SearchGridCallComponent
         this.dateFormat = await this._tfs.getFormat();
     }
 
-    onCellDoubleClicked({ data, event }) {
+    onCellDoubleClicked({ data, event }: any) {
         if (!this.isLokiQuery) {
             this.openTransactionDialog({ data }, event);
         }

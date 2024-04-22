@@ -1,7 +1,7 @@
 /// <reference lib="webworker" />
-import { Md5 } from 'ts-md5/dist/md5';
+import { Md5 } from 'ts-md5';
 
-import * as moment from 'moment';
+import  moment from 'moment';
 import { WorkerCommands } from '@app/models/worker-commands.module';
 class Functions {
   static getColorByString(str: string, saturation?: number, lightness?: number, alpha?: number, offset?: number) {

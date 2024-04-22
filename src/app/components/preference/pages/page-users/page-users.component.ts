@@ -29,7 +29,7 @@ import { AlertService, AuthenticationService, UserSecurityService } from '@app/s
 import { DialogImportComponent } from '@app/components/preference/service-dialogs';
 import { PreferencesComponentMapping } from '@app/models/preferences-component-mapping';
 
-import * as moment from 'moment';
+import  moment from 'moment';
 import { Functions } from '@app/helpers/functions';
 @Component({
     selector: 'app-page-users',
@@ -195,8 +195,8 @@ export class PageUsersComponent implements OnInit, OnDestroy, AfterViewInit {
             const newBlob = new Blob([csv], {
                 type: 'text/csv;charset=utf-8;',
             });
-            if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-                window.navigator.msSaveOrOpenBlob(newBlob);
+            if (window.navigator && window.navigator['msSaveOrOpenBlob']) {
+                window.navigator['msSaveOrOpenBlob'](newBlob);
                 return;
             }
             const data = window.URL.createObjectURL(newBlob);

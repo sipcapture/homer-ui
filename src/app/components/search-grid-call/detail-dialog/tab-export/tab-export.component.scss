@@ -1,5 +1,5 @@
 @import '../../../../../theme.scss';
-@import '~@angular/material/theming';
+@import '@angular/material/theming';
 $primary: mat-palette($homerprimary);
 $accent:  mat-palette($homeraccent);
 ::ng-deep .ipSelect{
@@ -36,14 +36,20 @@ $accent:  mat-palette($homeraccent);
     width: 100% !important;
     padding: 0;
 }
+/* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
 ::ng-deep .mat-select-placeholder{
     color:white !important;
     font-weight: 500;
 }
+/* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
 ::ng-deep mat-select-trigger{
     color:white !important;
     font-weight: 500;
 }
+/* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
 ::ng-deep .mat-select-arrow{
     color:white !important;
     font-weight: 500;

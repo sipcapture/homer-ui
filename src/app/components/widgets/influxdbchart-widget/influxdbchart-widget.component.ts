@@ -4,11 +4,11 @@ import { IWidget } from '../IWidget';
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ChartType, ChartDataSets } from 'chart.js';
-import { Label } from 'ng2-charts';
+import { Label } from '@xirenec/ng2-charts';
 import { StatisticService } from '../../../services/statistic.service';
 import { DateTimeRangeService, DateTimeTick, Timestamp } from '../../../services/data-time-range.service';
 import { Subscription } from 'rxjs';
-import * as moment from 'moment';
+import  moment from 'moment';
 import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 import { Functions } from '@app/helpers/functions';
 

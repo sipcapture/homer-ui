@@ -1,34 +1,44 @@
 {
-  "extends": "../tsconfig.json",
-  "compilerOptions": {
-      "outDir": "../out-tsc/app",
-      "experimentalDecorators": true,
-      "allowJs": true,
-      "types": [],
-      "paths": {
-          "@app/*": [
-              "src/app/*"
-          ],
-          "@it-app/*": [
-              "src/app/*"
-          ],
-          "@environments/*": [
-              "src/environments/*"
-          ],
-          "@services": [
-              "src/app/services/index.ts"
-          ],
-          "@services/*": [
-              "src/app/services/*"
-          ],
-          "@widgets/*": [
-              "src/app/components/widgets/*"
-          ]
-      }
-  },
-  "exclude": [
-      "test.ts",
-      "**/*.spec.ts",
-      "**/*.worker.ts"
-  ]
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "../out-tsc/app",
+        "experimentalDecorators": true,
+        "allowJs": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "types": [],
+        "paths": {
+            "@app/*": [
+                "src/app/*"
+            ],
+            "@it-app/*": [
+                "src/app/*"
+            ],
+            "@environments/*": [
+                "src/environments/*"
+            ],
+            "@services": [
+                "src/app/services/index.ts"
+            ],
+            "@services/*": [
+                "src/app/services/*"
+            ],
+            "@widgets/*": [
+                "src/app/components/widgets/*"
+            ],
+            "@models": ["src/app/models/index.ts"],
+            "@models/*": ["src/app/models/*"],
+            "@defaults": ["src/app/models/defaults/index.ts"],
+            "@defaults/*": ["src/app/models/defaults/*"],
+        }
+    },
+    "exclude": [
+        "test.ts",
+        "**/*.spec.ts",
+        "**/*.worker.ts",
+        "app/helpers/ErrorCodes.ts",
+        "environments/environment.prod.ts",
+        "environments/environment.dev.ts",
+        "environments/environment.webapp.ts",
+    ]
 }
