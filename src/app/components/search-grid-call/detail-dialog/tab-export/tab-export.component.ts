@@ -335,7 +335,11 @@ export class TabExportComponent implements OnInit, AfterViewInit {
   //   window.open(this.url, '_blank');
   // }
   getOrigin() {
-    return (window.location.origin + window["base-href"]).replace(/\/$/, '')
+    console.log([window.location.origin, window["base-href"]]);
+    if (typeof window["base-href"] === 'string') {
+      return (window.location.origin + window["base-href"]).replace(/\/$/, '')
+    }
+    return (window.location.origin).replace(/\/$/, '')
   }
   onShareLink() {
     // const param = Functions.getUriJson();
@@ -348,15 +352,15 @@ export class TabExportComponent implements OnInit, AfterViewInit {
   async onCopyLink() {
     if (this.url === '') {
       const data = await this._ecs.postShareLink(this.getQuery()).toPromise();
-        if (data.data.url === '/share/#') {
-          this.url = this.getOrigin() + data.data.url + data.data.uuid;
-        } else {
-          this.url = data.data.url + data.data.uuid;
-        }
+      if (data.data.url === '/share/#') {
+        this.url = this.getOrigin() + data.data.url + data.data.uuid;
+      } else {
+        this.url = data.data.url + data.data.uuid;
+      }
     }
     this.copyService.copy(this.url, {
-        message: 'notifications.success.shareLinkCopy',
-        isTranslation: true,
+      message: 'notifications.success.shareLinkCopy',
+      isTranslation: true,
     });
   }
   onExportFlowAsPNG() {
