@@ -1,3 +1,4 @@
+import { HepLogService } from './hep-log.service';
 import { AgentsubService } from '@app/services/agentsub.service';
 import { Injectable } from '@angular/core';
 import { CallReportService } from '@app/services';
@@ -19,7 +20,7 @@ export class FullTransactionService {
   constructor(
     private callReportService: CallReportService,
     private callTransactionService: CallTransactionService,
-    // private hepLogService: HepLogService,
+    private hepLogService: HepLogService,
     private agentsubService: AgentsubService,
     private preferenceHepsubService: PreferenceHepsubService,
     private _pass: PreferenceAgentsubService,
@@ -115,11 +116,11 @@ export class FullTransactionService {
           }
         } catch (err) { onError('agentCdr'); }
 
-        // try {
-        //   const hepLogRes: any = await this.hepLogService.getLog(rt).toPromise();
-        //   tData = await _worker({ tData, logsData: hepLogRes.data, type: 'logs' });
-        //   tData.heplogs = hepLogRes.data;
-        // } catch (err) { onError('heplogs'); }
+        try {
+          const hepLogRes: any = await this.hepLogService.getLog(rt).toPromise();
+          tData = await _worker({ tData, logsData: hepLogRes.data, type: 'logs' });
+          tData.heplogs = hepLogRes.data;
+        } catch (err) { onError('heplogs'); }
 
         try {
           const callIdArr = tData?.data?.calldata.map(i => i.sid).sort().filter((i, k, a) => i !== a[k - 1]) || [];

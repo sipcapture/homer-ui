@@ -99,6 +99,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
   _showLoader = false;
   set showLoader(val: boolean) {
     this._showLoader = val;
+    console.log({ val });
     setInterval(() => {
       this.cdr.detectChanges();
     }, 5);
