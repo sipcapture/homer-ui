@@ -77,6 +77,7 @@
             [placeholder]="'preference.users.dialog.password' | translate"
             [type]="hidePass1 ? 'password' : 'text'"
             [formControl]="password"
+            (change)="validate()" (blur)="validate()" (keyup)="validate()"
             required />
           <mat-error *ngIf="data.isNew && password?.errors?.['required']">The password {{'validators.required' | translate }}</mat-error>
           <mat-error *ngIf="password?.errors?.['minlength']">
@@ -85,7 +86,9 @@
           <mat-error *ngIf="password?.errors?.['maxlength']">
             {{ password?.errors?.['maxlength']?.requiredLength }} {{'validators.maxChars' | translate }}
           </mat-error>
-
+          <mat-error *ngIf="password?.errors?.['missingCharacters'] && !password?.errors?.['maxlength'] && !password?.errors?.['minlength'] && !password?.errors?.['required']">
+            {{'validators.pattern' | translate }} [aA-Zz], [0-9] and "~!@#$%^&*()_"]
+          </mat-error>
           <mat-icon matSuffix
             style="cursor: pointer"
             (click)="hidePass1 = !hidePass1"
@@ -112,6 +115,9 @@
           </mat-error>
           <mat-error *ngIf="password2?.errors?.['maxlength']">
             {{ password2?.errors?.['maxlength']?.requiredLength }} {{'validators.maxChars' | translate }}
+          </mat-error>
+          <mat-error *ngIf="password2?.errors?.['missingCharacters'] && !password2?.errors?.['maxlength'] && !password2?.errors?.['minlength'] && !password?.errors?.['required']">
+            {{'validators.pattern' | translate }} [aA-Zz], [0-9] and "~!@#$%^&*()_"]
           </mat-error>
         </mat-form-field>
 </div>
@@ -237,7 +243,7 @@
     class="setting-btn-ok"
     (click)="onSubmit()"
     cdkFocusInitial
-    [disabled]="isCopy && isNotChanged">
+    [disabled]="(isCopy && isNotChanged) || isDisabled">
     {{'LINK.buttons.save' | translate}}
   </button>
 </div>
