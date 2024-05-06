@@ -20,32 +20,32 @@
             <mat-option *ngFor="let user of userList | async" [value]="user">
               {{user}}
             </mat-option>
-          </mat-autocomplete> 
-          <mat-error *ngIf="username?.errors?.required">{{'validators.required' | translate }}</mat-error>
-          <mat-error *ngIf="username?.errors?.minlength">
-            {{ username?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+          </mat-autocomplete>
+          <mat-error *ngIf="username?.errors?.['required']">{{'validators.required' | translate }}</mat-error>
+          <mat-error *ngIf="username?.errors?.['minlength']">
+            {{ username?.errors?.['minlength']?.requiredLength }} {{'validators.minChars' | translate }}
           </mat-error>
-          <mat-error *ngIf="username?.errors?.maxlength">
-            {{ username?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+          <mat-error *ngIf="username?.errors?.['maxlength']">
+            {{ username?.errors?.['maxlength']?.requiredLength }} {{'validators.maxChars' | translate }}
           </mat-error>
-          <mat-error *ngIf="username?.errors?.pattern && !username?.errors?.minlength">
+          <mat-error *ngIf="username?.errors?.['pattern'] && !username?.errors?.['minlength']">
             {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-" or "_"]
           </mat-error>
-          <mat-error *ngIf="username?.errors?.userNameNotAvailable">
+          <mat-error *ngIf="username?.errors?.['userNameNotAvailable']">
             Username not available, please select one of list
           </mat-error>
         </mat-form-field>
         <mat-form-field style="padding-right: 1rem;">
           <mat-label>{{ 'preference.userSettings.dialog.category' | translate }}</mat-label>
           <input matInput [(ngModel)]="data.data.category" [formControl]="category" autocomplete="off" [disabled]="!isAdmin">
-          <mat-error *ngIf="category?.errors?.required">{{'validators.required' | translate }}</mat-error>
-          <mat-error *ngIf="category?.errors?.minlength">
-            {{ category?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+          <mat-error *ngIf="category?.errors?.['required']">{{'validators.required' | translate }}</mat-error>
+          <mat-error *ngIf="category?.errors?.['minlength']">
+            {{ category?.errors?.['minlength']?.requiredLength }} {{'validators.minChars' | translate }}
           </mat-error>
-          <mat-error *ngIf="category?.errors?.maxlength">
-            {{ category?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+          <mat-error *ngIf="category?.errors?.['maxlength']">
+            {{ category?.errors?.['maxlength']?.requiredLength }} {{'validators.maxChars' | translate }}
           </mat-error>
-          <mat-error *ngIf="category?.errors?.pattern && !category?.errors?.minlength">
+          <mat-error *ngIf="category?.errors?.['pattern'] && !category?.errors?.['minlength']">
             {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or "."
           </mat-error>
         </mat-form-field>
@@ -54,9 +54,9 @@
         <mat-form-field style="padding-right: 1rem;">
           <mat-label>{{ 'preference.userSettings.dialog.param' | translate }}</mat-label>
           <input matInput [(ngModel)]="data.data.param" [formControl]="param" autocomplete="off" [disabled]="!isAdmin">
-          <mat-error *ngIf="param?.errors?.required">{{'validators.required' | translate }}</mat-error>
-          <mat-error *ngIf="param?.errors?.minlength">
-            {{ param?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+          <mat-error *ngIf="param?.errors?.['required']">{{'validators.required' | translate }}</mat-error>
+          <mat-error *ngIf="param?.errors?.['minlength']">
+            {{ param?.errors?.['minlength']?.requiredLength }} {{'validators.minChars' | translate }}
           </mat-error>
         </mat-form-field>
         <!-- <mat-form-field style="padding-right: 1rem;">
@@ -73,32 +73,36 @@
       <hr />
       <strong>{{ 'preference.userSettings.dialog.data' | translate }}</strong>
       <hr />
-      <full-screen (fullPage)='disableClose($event)'  
-                    (import)='import($event, "data")' 
+      <full-screen (fullPage)='disableClose($event)'
+                    (import)='import($event, "data")'
                     [data]='{json:data.data.data, title: data.data.category + " " + data.data.param, type: "json"}'>
-        <ace-editor [mode]="'json'" [theme]="'monokai'" [readOnly]="false" [(text)]="data.data.data" #data_view
-          [style.min-height.%]="100" [disabled]="!isAdmin"></ace-editor>
+        <!-- <ace-editor [mode]="'json'" [theme]="'monokai'" [readOnly]="false" [(text)]="data.data.data" #data_view
+          [style.min-height.%]="100" [disabled]="!isAdmin"></ace-editor> -->
+          <app-codejar-wrapper [mode]="'json'" [theme]="'monokai'" [readOnly]="false" [(text)]="data.data.data" #data_view
+            [style.min-height.%]="100" [disabled]="!isAdmin"></app-codejar-wrapper>
       </full-screen>
-      
-      
+
+
     </mat-tab>
     <mat-tab label="Setting">
       <hr />
       <strong>Setting</strong>
       <hr />
-      <full-screen (fullPage)='disableClose($event)'  
-                    (import)='import($event,"setting")' 
+      <full-screen (fullPage)='disableClose($event)'
+                    (import)='import($event,"setting")'
                     [data]='{json:data.data.setting, title: data.data.category + " " + data.data.param, type: "json"}'>
 
-        <ace-editor [mode]="'json'" [theme]="'monokai'" [readOnly]="false" [(text)]="data.data.setting" #data_view
-          [style.min-height.%]="100" [disabled]="!isAdmin"></ace-editor>
+        <!-- <ace-editor [mode]="'json'" [theme]="'monokai'" [readOnly]="false" [(text)]="data.data.setting" #data_view
+          [style.min-height.%]="100" [disabled]="!isAdmin"></ace-editor> -->
+          <app-codejar-wrapper [mode]="'json'" [theme]="'monokai'" [readOnly]="false" [(text)]="data.data.setting" #data_view
+                [style.min-height.%]="100" [disabled]="!isAdmin"></app-codejar-wrapper>
       </full-screen>
-      
+
     </mat-tab>
   </mat-tab-group>
-  
-  
-  
+
+
+
 </div>
 
 
@@ -147,7 +151,7 @@
             <hr />
             <ngx-json-viewer [json]="json" [expanded]="true"></ngx-json-viewer>
 
-            
+
           </mat-tab>
           <mat-tab label="Setting" *ngIf='hasSettings'>
             <hr />
@@ -156,12 +160,12 @@
             <ngx-json-viewer [json]="settingJSON" [expanded]="false"></ngx-json-viewer>
           </mat-tab>
         </mat-tab-group>
-        
-        
-        
+
+
+
       </div>
-      
-      
+
+
       <div mat-dialog-actions style="float: right; margin-bottom: 0rem;">
         <button mat-raised-button class="setting-btn-ok" (click)="onNoClick()"
           cdkFocusInitial>{{'LINK.buttons.close' | translate}}</button>

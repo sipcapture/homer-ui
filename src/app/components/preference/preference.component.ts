@@ -112,7 +112,7 @@ export class PreferenceComponent implements OnInit, OnDestroy, AfterViewInit {
         router.events
             .pipe(filter((e) => e instanceof ActivationEnd))
             .subscribe((evt: ActivationEnd) => {
-                this.pageId = decodeURI(evt.snapshot.params?.id);
+                this.pageId = decodeURI(evt.snapshot.params?.['id']);
                 this.cdr.detectChanges();
             });
     }

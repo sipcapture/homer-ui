@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+import  moment from 'moment';
 import { Md5 } from 'ts-md5/dist/md5';
 import { KeyValue } from '@angular/common';
 export class Functions {
@@ -245,8 +245,8 @@ export class Functions {
   }
   static saveToFile(data, filename, type = 'application/octet-stream') {
     const file = new Blob([data], { type: type });
-    if (window.navigator.msSaveOrOpenBlob) {// IE10+
-      window.navigator.msSaveOrOpenBlob(file, filename);
+    if (window.navigator["msSaveOrOpenBlob"]) {// IE10+
+      window.navigator['msSaveOrOpenBlob'](file, filename);
     } else { // Others
       const a = document.createElement('a'),
         url = URL.createObjectURL(file);
@@ -444,4 +444,14 @@ export function setStorage(key: string, value: any): void { // saving JSON from 
 export function getStorage(key: string): any {
   // log('getStorage <<<', key, Functions.JSON_parse(localStorage.getItem(key)));
   return Functions.JSON_parse(localStorage.getItem(key));
+}
+
+export function isSameHost(host1: string, host2: string): boolean {
+    try {
+        const host1Obj = new URL(host1);
+        const host2Obj = new URL(host2);
+        return host1Obj.origin === host2Obj.origin;
+    } catch (e) {
+        return false;
+    }
 }

@@ -21,9 +21,9 @@ export class AppComponent {
             this.authenticationService.logout();
         }
         this.authenticationService.currentUser.subscribe(x => {
-          
+
                 this.currentUser = x;
-        
+
         });
         window['console2file'] = Functions.console2file;
         // this language will be used as a fallback when a translation isn't found in the current language

@@ -26,6 +26,8 @@
   }
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
 .message-container ::ng-deep .mat-tab-label {
   min-width: inherit;
   padding: 0 1rem;
@@ -36,7 +38,7 @@ table {
     height: 38px;
   }
 
-  .mat-cell {
+  .mat-mdc-cell {
     font-size: 13px !important;
   }
 }

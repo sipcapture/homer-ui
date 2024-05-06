@@ -11,17 +11,17 @@
   <mat-form-field>
     <mat-label>{{'dashboard.editDialog.dashboardSettingsSection.dashboardName' | translate}}</mat-label>
     <input matInput [(ngModel)]="data.name" (ngModelChange)='validate($event)' [formControl]="name">
-    <mat-error *ngIf="name?.errors?.required">{{'validators.required' | translate }}</mat-error>
-    <mat-error *ngIf="name?.errors?.minlength">
-      {{ name?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+    <mat-error *ngIf="name?.errors?.['required']">{{'validators.required' | translate }}</mat-error>
+    <mat-error *ngIf="name?.errors?.['minlength']">
+      {{ name?.errors?.['minlength']?.requiredLength }} {{'validators.minChars' | translate }}
     </mat-error>
-    <mat-error *ngIf="name?.errors?.maxlength">
-      {{ name?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+    <mat-error *ngIf="name?.errors?.['maxlength']">
+      {{ name?.errors?.['maxlength']?.requiredLength }} {{'validators.maxChars' | translate }}
     </mat-error>
-    <mat-error *ngIf="name?.errors?.pattern && !name?.errors?.minlength">
+    <mat-error *ngIf="name?.errors?.['pattern ']&& !name?.errors?.['minlength']">
       {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-" or "_"
     </mat-error>
-    <mat-error *ngIf="name?.errors?.dashboardNameNotAvailable">
+    <mat-error *ngIf="name?.errors?.['dashboardNameNotAvailable']">
       Dashboard name not available
     </mat-error>
   </mat-form-field>

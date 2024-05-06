@@ -3,8 +3,8 @@ import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 import { SettingClockWidgetComponent } from './setting-clock-widget.component';
 import { MatDialog } from '@angular/material/dialog';
 import { IWidget } from '../IWidget';
-import * as _moment from 'moment';
 
+import * as _moment from 'moment';
 const moment: any = _moment;
 
 enum ConstTime {

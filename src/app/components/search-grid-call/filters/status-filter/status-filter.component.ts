@@ -3,21 +3,24 @@ import {
     IAfterGuiAttachedParams,
     IDoesFilterPassParams,
     IFilterParams,
-    RowNode,
-} from '@ag-grid-community/all-modules';
-import { IFilterAngularComp } from '@ag-grid-community/angular';
+    IRowNode,
+    ValueGetterParams
+} from 'ag-grid-community';
+import { IFilterAngularComp } from 'ag-grid-angular';
 import { PreferenceMappingProtocolService } from '@app/services';
 import { Functions } from '@app/helpers/functions';
 import { ConstValue, UserConstValue } from '@app/models';
 
+type valueGetter = (rowNode: IRowNode | ValueGetterParams) => any
+type FilterParams = Omit<IFilterParams, 'valueGetter'> & { valueGetter: valueGetter };
 @Component({
     selector: 'app-status-filter',
     templateUrl: 'status-filter.component.html',
     styleUrls: ['status-filter.component.scss']
 })
 export class StatusFilterComponent implements IFilterAngularComp {
-    private params: IFilterParams;
-    private valueGetter: (rowNode: RowNode) => any;
+    private params: FilterParams;
+    private valueGetter: valueGetter;
     public text = '';
     private statusMapping;
 

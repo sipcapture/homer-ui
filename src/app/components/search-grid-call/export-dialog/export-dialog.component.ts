@@ -2,7 +2,7 @@ import { Component, Inject, OnInit, ChangeDetectionStrategy, ChangeDetectorRef }
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Functions } from '@app/helpers/functions';
 import * as XLSX from 'xlsx';
-import * as moment from 'moment';
+import  moment from 'moment';
 import { TranslateService } from '@ngx-translate/core'
 export interface ExportData {
     apicol: any;
@@ -55,7 +55,7 @@ export class ExportDialogComponent implements OnInit {
         this.mappings = data.mappings;
         this.id = data.idParent;
         this.protocol = data.protocol;
-        if (typeof this.apiColumn.getAllColumns() !== 'undefined' && this.apiColumn.getAllColumns() !== null) {
+        if (typeof this.apiColumn?.getAllColumns() !== 'undefined' && this.apiColumn.getAllColumns() !== null) {
             Object.values(this.apiColumn.getAllColumns() as Object)
                 .filter(column => !['', 'id'].includes(column.colDef.field))
                 .forEach(column => this.allColumnIds.push({
@@ -73,7 +73,7 @@ export class ExportDialogComponent implements OnInit {
         }
     }
     ngOnInit() {
-        if (typeof this.apiColumn.getAllColumns() !== 'undefined' && this.apiColumn.getAllColumns() !== null) {
+        if (typeof this.apiColumn?.getAllColumns() !== 'undefined' && this.apiColumn.getAllColumns() !== null) {
             for (let i = 0; i < this._bufferData.length; i++) {
                 if (this._bufferData[i].selected) {
                     this.exportColumns.push(this._bufferData[i].field);
@@ -86,7 +86,7 @@ export class ExportDialogComponent implements OnInit {
         this.cdr.detectChanges();
     }
     onUpdateProto(event) {
-        if (typeof this.apiColumn.getAllColumns() !== 'undefined' && this.apiColumn.getAllColumns() !== null) {
+        if (typeof this.apiColumn?.getAllColumns() !== 'undefined' && this.apiColumn.getAllColumns() !== null) {
             const objField = event.find(i => {
                 const k = this._bufferData.find(j => i.name === j.name);
                 return i.selected !== k.selected;

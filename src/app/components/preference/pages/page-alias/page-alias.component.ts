@@ -19,7 +19,7 @@ import {
 import {
     DialogAliasComponent,
     DialogDeleteAlertComponent,
-   
+
 } from '@app/components/preference/dialogs';
 import {
     PreferenceAlias,
@@ -29,7 +29,7 @@ import { AlertService, AuthenticationService } from '@app/services';
 import { DialogImportComponent } from '@app/components/preference/service-dialogs';
 import { PreferencesComponentMapping } from '@app/models/preferences-component-mapping';
 
-import * as moment from 'moment';
+import  moment from 'moment';
 import { Functions } from '@app/helpers/functions';
 @Component({
     selector: 'app-page-alias',

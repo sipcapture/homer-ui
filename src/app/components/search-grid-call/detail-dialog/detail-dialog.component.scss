@@ -1,8 +1,13 @@
-.transaction-mat-tab-wrapper ::ng-deep .mat-tab-body.mat-tab-body-active {
+
+/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+.transaction-mat-tab-wrapper ::ng-deep .mat-mdc-tab-body.mat-tab-body-active {
     height: 0;
     display: none;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
 .transaction-mat-tab-wrapper ::ng-deep .mat-tab-label {
     min-width: inherit;
     padding: 0 1rem;
@@ -71,6 +76,6 @@
         overflow: hidden;
     }
 }
-::ng-deep .mat-tab-header {
+::ng-deep .mat-mdc-tab-header {
     z-index: 1;
 }

@@ -31,7 +31,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { AddDashboardDialogComponent } from '../dashboard/';
 import { Router, ActivationEnd } from '@angular/router';
-import * as moment from 'moment';
+import  moment from 'moment';
 import { lastValueFrom, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { environment } from '@environments/environment';
@@ -380,9 +380,9 @@ export class MenuComponent implements OnInit, OnDestroy {
         if (this.favoriteDashboardsList.length > 0) {
             this.dashboards.sort((a,b) => {
                 if( this.favoriteDashboardsList.find(dashboard => a.name === dashboard.name)) {
-                    
+
                     if(this.favoriteDashboardsList.length > 1 && this.favoriteDashboardsList.find(dashboard => b.name === dashboard.name)) {
-                    
+
                         return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
                     }
                     return -1

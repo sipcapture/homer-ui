@@ -20,11 +20,11 @@ table.this-table td {
     text-overflow: ellipsis;
 }
 
-.mat-row:nth-child(2n+1){
+.mat-mdc-row:nth-child(2n+1){
   background-color: #e4f0ec;
 }
 
-.mat-row:not(:nth-child(2n+1)){
+.mat-mdc-row:not(:nth-child(2n+1)){
   background-color:#ffffff;
 }
 

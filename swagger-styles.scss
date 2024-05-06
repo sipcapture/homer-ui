@@ -589,11 +589,10 @@
   -webkit-transition: all .3s;
   transition: all .3s;
   border-radius: 4px;
-  background:white;
-  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  background: white;
+  box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
   font-family: Roboto, sans-serif;
-  color: #3b4151;
-  border:none !important;
+  color: #3b4151
 }
 
 .swagger-ui .btn[disabled] {
@@ -614,6 +613,7 @@
 .swagger-ui .btn.authorize {
   line-height: 1;
   display: inline;
+
 }
 
 .swagger-ui .btn.authorize span {
@@ -937,7 +937,7 @@
   max-width: 650px;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
-  border:none;
+  border: none;
   border-radius: 4px;
   background: #fff;
   box-shadow: 0 10px 30px 0 rgba(0, 0, 0, .2)
@@ -972,7 +972,7 @@
   display: flex;
   padding: 12px 0;
   color:white;
-  background:black;
+  background:#24465f;
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center
@@ -997,7 +997,7 @@
   -ms-flex: 1;
   flex: 1;
   font-family: Roboto, sans-serif;
-  color: white;
+  color:white;
 }
 
 .swagger-ui .model {
@@ -1567,8 +1567,6 @@ width: 100%;
   display: none
 }
 
-/*# sourceMappingURL=swagger-ui.css.map*/
-
 /**
  * Swagger UI Theme Overrides
  *
@@ -1736,15 +1734,16 @@ width: 100%;
  }
 
  .swagger-ui .btn.authorize {
-  background: #009cbf;
-  padding: 3px 6px;
-  height:35px;
-  border-radius: 3px;
-  border:none !important;
-  margin-right:10px;
-  color: white;
-  cursor: pointer;
-  line-height: 14px;
+  
+    background: #749ad6;
+    padding: 3px 6px;
+    height:35px;
+    border-radius: 3px;
+    margin-right:10px;
+    color: white;
+    cursor: pointer;
+    line-height: 14px;
+
  }
 
  .swagger-ui .btn.authorize svg {

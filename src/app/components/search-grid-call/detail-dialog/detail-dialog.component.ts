@@ -24,7 +24,7 @@ import {
 } from '@app/services';
 import { AgentRequestModel } from '@app/models/agent-request-model';
 
-import * as moment from 'moment';
+import  moment from 'moment';
 
 @Component({
   selector: 'app-detail-dialog',
@@ -99,6 +99,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
   _showLoader = false;
   set showLoader(val: boolean) {
     this._showLoader = val;
+    console.log({ val });
     setInterval(() => {
       this.cdr.detectChanges();
     }, 5);

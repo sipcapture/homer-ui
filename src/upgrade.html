@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Upgrade...</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <!-- <META http-equiv="REFRESH" content="0;URL=/"> -->
+
+    <script>
+        function init() {
+            var redirectUrl = decodeURIComponent(decodeURIComponent(location.search.slice(1).split('URL=')[1]));
+            redirectUrl = redirectUrl || '/';
+            document.location.href = redirectUrl;
+        }
+        init();
+    </script>
+</head>
+
+<body onload="init()"></body>
+
+</html>

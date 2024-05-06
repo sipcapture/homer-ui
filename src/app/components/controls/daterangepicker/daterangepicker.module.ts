@@ -1,48 +1,44 @@
 import { CommonModule } from '@angular/common';
-import {  ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
+import {  ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { fas } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { DaterangepickerComponent } from './daterangepicker.component';
 import { DaterangepickerDirective } from './daterangepicker.directive';
 import { LocaleConfig, LOCALE_CONFIG } from './daterangepicker.config';
 import { LocaleService } from './locale.service';
 import { TimeZonePipe } from './timezone.pipe';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { HomerMaterialModule } from '@app/app.material-module';
 import { TranslateModule } from '@ngx-translate/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
-  declarations: [
-    DaterangepickerComponent,
-    DaterangepickerDirective,
-    TimeZonePipe
-  ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    FontAwesomeModule,
-    ReactiveFormsModule,
-    BrowserAnimationsModule,
-    MatTooltipModule,
-    HomerMaterialModule,
-    TranslateModule
-  ],
-  providers: [],
-  exports: [
-    DaterangepickerComponent,
-    DaterangepickerDirective
-  ],
-  entryComponents: [
-    DaterangepickerComponent
-  ]
+    declarations: [
+        DaterangepickerComponent,
+        DaterangepickerDirective,
+        TimeZonePipe
+    ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        FontAwesomeModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule,
+        MatTooltipModule,
+        HomerMaterialModule,
+        TranslateModule
+    ],
+    providers: [],
+    exports: [
+        DaterangepickerComponent,
+        DaterangepickerDirective
+    ]
 })
 export class NgxDaterangepickerMd {
   constructor() {}

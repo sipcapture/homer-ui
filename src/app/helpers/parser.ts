@@ -2,7 +2,7 @@ import { environment } from '@environments/environment';
 import { Md5 } from 'ts-md5/dist/md5';
 
 import 'moment-timezone';
-import * as moment from 'moment';
+import  moment from 'moment';
 import { FlowItemType } from '@app/models/flow-item-type.model';
 import { WorkerCommands } from '@app/models/worker-commands.module';
 

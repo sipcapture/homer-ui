@@ -92,7 +92,7 @@ section {
 	background: transparent;
 }
 
-.chart-button-row .mat-button-base {
+.chart-button-row .mat-mdc-button-base {
 	margin: 8px 8px 8px 0;
 }
 
@@ -124,7 +124,7 @@ section {
 		background: rgb(228, 228, 228);
 	}
 
-	.mat-button {
+	.mat-mdc-button {
 		padding: 2px 8px !important;
 		width: 100px;
 	}
@@ -175,11 +175,13 @@ section {
 	transform: rotate(90deg);
 }
 
-.mat-form-field {
+.mat-mdc-form-field {
 	min-width: 46%;
 	margin: 3px;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
 ::ng-deep .mat-form-field-infix {
     width: 100% !important;
 }

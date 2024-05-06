@@ -59,7 +59,7 @@
                         <div class="text-badge">{{ item.value }}</div>
                     </div>
                 </div>
-                <mat-card *ngFor="let item of streamsRTP"
+                <mat-card appearance="outlined" *ngFor="let item of streamsRTP"
                     class="cardStream">
                     <mat-checkbox [(ngModel)]="item._checked"
                         [(indeterminate)]="item._indeterminate"
@@ -161,7 +161,7 @@
                     </div>
                 </div>
         
-                <mat-card *ngFor="let item of streamsRTCP"
+                <mat-card appearance="outlined" *ngFor="let item of streamsRTCP"
                     class="cardStream">
                     <mat-checkbox [(ngModel)]="item._checked"
                         [(indeterminate)]="item._indeterminate"

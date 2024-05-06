@@ -7,8 +7,8 @@ import { ChartType, ChartDataSets } from 'chart.js';
 import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 import { IWidget } from '../IWidget';
 import { Subscription } from 'rxjs';
-import { Label } from 'ng2-charts';
-import * as moment from 'moment';
+import { Label } from '@xirenec/ng2-charts';
+import  moment from 'moment';
 import { TranslateService } from '@ngx-translate/core';
 @Component({
     selector: 'app-prometheus-widget',

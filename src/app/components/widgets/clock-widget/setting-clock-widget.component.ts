@@ -1,7 +1,9 @@
 import { Component, Inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import * as _moment from 'moment';
+
 import { TranslateService } from '@ngx-translate/core'
+
+import * as _moment from 'moment';
 const moment: any = _moment;
 @Component({
     selector: 'app-setting-clock-widget-component',

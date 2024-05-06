@@ -11,16 +11,17 @@ export class HepsubService {
 
   private url = `${environment.apiUrl}/hepsub`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    console.log("HepsubService:super()");
+  }
 
   // Hepsub protokols
   getProtokols(): Observable<PreferenceHepsub> {
-      return this.http.get<PreferenceHepsub>(`${this.url}/protocols`);
+    return this.http.get<PreferenceHepsub>(`${this.url}/protocols`);
   }
 
   // Hepsub fields
   getFields(): Observable<PreferenceHepsub> {
-      return this.http.get<PreferenceHepsub>(`${this.url}/fields`);
+    return this.http.get<PreferenceHepsub>(`${this.url}/fields`);
   }
-
 }

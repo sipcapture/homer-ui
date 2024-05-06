@@ -10,35 +10,35 @@ import {ICellRendererAngularComp} from 'ag-grid-angular';
     `,
     styles: ['a { user-select: text; color: inherit; text-decoration: unset; overflow: hidden; }',
     `
-    ::-moz-selection { 
-        background:#20c997;
-        color:white; 
-    }
-    ::selection { 
-        background:#20c997;
-        color:white;
-    }
-    .cell-wrapper {
-        user-select:contain;
-        display: flex; 
-        position: absolute; 
-        top: 0; 
-        left: 0; 
-        right: 0; 
-        bottom: 0;
-        align-items: center;
-        padding-left: 5px;
-        padding-right: 5px;
-        line-height:2;
-    }
-    .selected {
-        transition:.3s all;
-        background:#20c997;
-        color:white;
-        border:1px solid white;
-        border-radius:3px;
-
-    }`],
+              ::-moz-selection { 
+                  background:#20c997;
+                  color:white; 
+              }
+              ::selection { 
+                  background:#20c997;
+                  color:white;
+              }
+              .cell-wrapper {
+                  user-select:contain;
+                  display: flex; 
+                  position: absolute; 
+                  top: 0; 
+                  left: 0; 
+                  right: 0; 
+                  bottom: 0;
+                  align-items: center;
+                  padding-left: 5px;
+                  padding-right: 5px;
+                  line-height:2;
+              }
+              .selected {
+                  transition:.3s all;
+                  background:#20c997;
+                  color:white;
+                  border:1px solid white;
+                  border-radius:3px;
+          
+              }`],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ColumnUuidRenderer implements ICellRendererAngularComp {

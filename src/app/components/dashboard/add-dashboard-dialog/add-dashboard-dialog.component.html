@@ -9,17 +9,17 @@
       <mat-label>{{ 'dashboard.addDashboardDialog.dashboardName' |translate }}</mat-label>
       <input matInput (ngModelChange)="validate($event)" [formControl]="nameNewPanel" >
 
-        <mat-error *ngIf="nameNewPanel?.errors?.required">{{'validators.required' | translate }}</mat-error>
-        <mat-error *ngIf="nameNewPanel?.errors?.minlength">
-          {{ nameNewPanel?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+        <mat-error *ngIf="nameNewPanel?.errors?.['required']">{{'validators.required' | translate }}</mat-error>
+        <mat-error *ngIf="nameNewPanel?.errors?.['minlength']">
+          {{ nameNewPanel?.errors?.['minlength']?.requiredLength }} {{'validators.minChars' | translate }}
         </mat-error>
-        <mat-error *ngIf="nameNewPanel?.errors?.maxlength">
-          {{ nameNewPanel?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+        <mat-error *ngIf="nameNewPanel?.errors?.['maxlength']">
+          {{ nameNewPanel?.errors?.['maxlength']?.requiredLength }} {{'validators.maxChars' | translate }}
         </mat-error>
-        <mat-error *ngIf="nameNewPanel?.errors?.pattern && !nameNewPanel?.errors?.minlength">
+        <mat-error *ngIf="nameNewPanel?.errors?.['pattern'] && !nameNewPanel?.errors?.['minlength']">
           {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or space
         </mat-error>
-        <mat-error *ngIf="nameNewPanel?.errors?.dashboardNotAvailable">
+        <mat-error *ngIf="nameNewPanel?.errors?.['dashboardNotAvailable']">
             {{'validators.dashboardName' | translate }}
         </mat-error>
     </mat-form-field>
@@ -41,7 +41,7 @@
         <mat-checkbox color="primary" [(ngModel)]="data.grafanaTimestamp">{{'dashboard.editDialog.grafanaControl.grafanaTimestamp' | translate}}</mat-checkbox>
         <mat-checkbox color="primary" [(ngModel)]="data.grafanaProxy">{{'dashboard.editDialog.grafanaControl.grafanaProxy' | translate}}</mat-checkbox>
         <div *ngIf="isSameOrigin">
-            <mat-checkbox color="primary" 
+            <mat-checkbox color="primary"
                 [(ngModel)]="data.hasVariables"
             >
             {{ 'dashboard.editDialog.grafanaControl.hasVariables' | translate }}
@@ -51,16 +51,16 @@
     <hr class="hr-or">
     <form>
       <div class="file-upload-container">
-      <label for="fileSelect" [className]="'fileselect' + (idDrugOver ? ' drugOver' : '')"></label>      
+      <label for="fileSelect" [className]="'fileselect' + (idDrugOver ? ' drugOver' : '')"></label>
       <div *ngIf="fileNames" class="file-list">
         <div *ngFor="let fn of fileNames" class="file-item">
           {{fn}}
         </div>
       </div>
-        <input placeholder="" 
+        <input placeholder=""
         (change)="onJsonChange($event)"
         value="" type="file" id="fileSelect" #fileSelect>
-    
+
       </div>
     </form>
   </div>

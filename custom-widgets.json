@@ -1,0 +1,248 @@
+{
+    "call_h20": {
+        "active": true,
+        "category": "Search Types",
+        "data": {
+            "config": {
+                "profile": "call_h20",
+                "protocol_id": {
+                    "name": "TDR",
+                    "value": 60
+                },
+                "protocol_profile": {
+                    "name": "call_h20",
+                    "value": "call_h20"
+                },
+                "searchbutton": true,
+                "title": "TDR Call Search",
+                "type": "TDR"
+            },
+            "fields": [
+                {
+                    "field_name": "callid",
+                    "form_default": null,
+                    "form_type": "input",
+                    "hepid": 60,
+                    "name": "60:call_h20:callid",
+                    "selection": "Call-ID",
+                    "type": "string",
+                    "value": ""
+                },
+                {
+                    "field_name": "targetResultsContainer",
+                    "form_default": null,
+                    "hepid": 60,
+                    "name": "60:call_h20:targetResultsContainer",
+                    "selection": "Results Container",
+                    "type": "string"
+                }
+            ],
+            "title": "TDR Call Search"
+        },
+        "description": "Custom TDR Call Search",
+        "indexName": "display-results",
+        "minHeight": 300,
+        "minWidth": 300,
+        "profile": "call_h20",
+        "strongIndex": "ProtosearchWidgetComponent",
+        "title": "TDR Call Search"
+    },
+    "call_sip": {
+        "active": true,
+        "category": "Search Types",
+        "data": {
+            "config": {
+                "profile": "call_h20",
+                "protocol_id": {
+                    "name": "SIP",
+                    "value": 1
+                },
+                "protocol_profile": {
+                    "name": "call_h20",
+                    "value": "call_h20"
+                },
+                "searchbutton": true,
+                "title": "SIP Call Search",
+                "type": "SIP"
+            },
+            "fields": [
+                {
+                    "field_name": "callid",
+                    "form_default": null,
+                    "form_type": "input",
+                    "hepid": 1,
+                    "name": "1:call:callid",
+                    "selection": "Call-ID",
+                    "type": "string",
+                    "value": ""
+                },
+                {
+                    "field_name": "targetResultsContainer",
+                    "form_default": null,
+                    "hepid": 1,
+                    "name": "1:call:targetResultsContainer",
+                    "selection": "Results Container",
+                    "type": "string"
+                }
+            ],
+            "title": "SIP Call Search"
+        },
+        "description": "Custom SIP Call Search",
+        "indexName": "display-results",
+        "minHeight": 300,
+        "minWidth": 300,
+        "profile": "call",
+        "strongIndex": "ProtosearchWidgetComponent",
+        "title": "SIP Call Search"
+    },
+    "registration_h20": {
+        "active": true,
+        "category": "Search Types",
+        "data": {
+            "config": {
+                "profile": "registration_h20",
+                "protocol_id": {
+                    "name": "TDR",
+                    "value": 60
+                },
+                "protocol_profile": {
+                    "name": "registration_h20",
+                    "value": "registration_h20"
+                },
+                "searchbutton": true,
+                "title": "TDR Registration Search",
+                "type": "TDR"
+            },
+            "fields": [
+                {
+                    "field_name": "callid",
+                    "form_default": null,
+                    "form_type": "input",
+                    "hepid": 60,
+                    "name": "60:registration_h20:callid",
+                    "selection": "Call-ID",
+                    "type": "string",
+                    "value": ""
+                },
+                {
+                    "field_name": "targetResultsContainer",
+                    "form_default": null,
+                    "hepid": 60,
+                    "name": "60:registration_h20:targetResultsContainer",
+                    "selection": "Results Container",
+                    "type": "string"
+                }
+            ],
+            "title": "TDR Registration Search"
+        },
+        "description": "Custom TDR Registration Search",
+        "indexName": "display-results",
+        "minHeight": 300,
+        "minWidth": 300,
+        "profile": "registration_h20",
+        "strongIndex": "ProtosearchWidgetComponent",
+        "title": "TDR Registration Search"
+    },
+    "registration_sip": {
+        "active": true,
+        "category": "Search Types",
+        "data": {
+            "config": {
+                "profile": "registration_h20",
+                "protocol_id": {
+                    "name": "SIP",
+                    "value": 1
+                },
+                "protocol_profile": {
+                    "name": "registration_h20",
+                    "value": "registration_h20"
+                },
+                "searchbutton": true,
+                "title": "Registration SIP Search",
+                "type": "SIP"
+            },
+            "fields": [
+                {
+                    "field_name": "callid",
+                    "form_default": null,
+                    "form_type": "input",
+                    "hepid": 1,
+                    "name": "1:registration:callid",
+                    "selection": "Call-ID",
+                    "type": "string",
+                    "value": ""
+                },
+                {
+                    "field_name": "targetResultsContainer",
+                    "form_default": null,
+                    "hepid": 1,
+                    "name": "1:registration:targetResultsContainer",
+                    "selection": "Results Container",
+                    "type": "string"
+                }
+            ],
+            "title": "Registration SIP Search"
+        },
+        "description": "Custom SIP Registration Search",
+        "indexName": "display-results",
+        "minHeight": 300,
+        "minWidth": 300,
+        "profile": "registration",
+        "strongIndex": "ProtosearchWidgetComponent",
+        "title": "SIP Registration Search"
+    },
+    "loki_search": {
+        "active": true,
+        "category": "Search Types",
+        "data": {
+            "config": {
+                "profile": "registration_h20",
+                "protocol_id": {
+                    "name": "LOKI",
+                    "value": 2000
+                },
+                "protocol_profile": {
+                    "name": "default",
+                    "value": "default"
+                },
+                "searchbutton": true,
+                "title": "Loki Search",
+                "type": "Loki"
+            },
+            "fields": [
+                {
+                    "field_name": "loki",
+                    "hepid": 1,
+                    "name": "2000:default:loki",
+                    "selection": "LogQL",
+                    "type": "string",
+                    "selector": []
+                },
+                {
+                    "field_name": "targetResultsContainer",
+                    "form_default": null,
+                    "hepid": 2000,
+                    "name": "2000:default:targetResultsContainer",
+                    "selection": "Results Container",
+                    "type": "string"
+                },
+                {
+                    "field_name": "limit",
+                    "hepid": 2000,
+                    "name": "2000:default:limit",
+                    "selection": "Query Limit",
+                    "selector": [],
+                    "type": "integer"
+                }
+            ],
+            "title": "Loki Search"
+        },
+        "description": "Custom Loki Search",
+        "indexName": "display-results",
+        "minHeight": 300,
+        "minWidth": 300,
+        "profile": "default",
+        "strongIndex": "ProtosearchWidgetComponent",
+        "title": "Loki Search"
+    }
+}

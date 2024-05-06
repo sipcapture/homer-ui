@@ -1,28 +1,22 @@
 import { ChangeDetectorRef, Component, ElementRef, EventEmitter, forwardRef, Input, OnInit, Output, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators, NG_VALUE_ACCESSOR } from '@angular/forms';
-import * as _moment from 'moment';
+import { FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 // import { NgxMatDateAdapter } from './date-adapter';
 import { DateAdapter } from '@angular/material/core';
-import { LocaleConfig } from './daterangepicker.config';
-import { LocaleService } from './locale.service';
+import { Functions } from '@app/helpers/functions';
+import { DashboardService } from '@app/services';
 // import { DateTimeRangeService } from './data-time-range.service';
 import { DateTimeRangeService } from '@app/services/data-time-range.service';
-import { Functions } from '@app/helpers/functions';
-import { TranslateService } from '@ngx-translate/core'
-import { DashboardService } from '@app/services';
+import { TranslateService } from '@ngx-translate/core';
+import _moment from 'moment';
+import { LocaleConfig } from './daterangepicker.config';
+import { LocaleService } from './locale.service';
 const moment = _moment;
 
 export enum SideEnum {
     left = 'left',
     right = 'right'
 }
-export interface TimeZones {
-    Africa: Array<string>
-    Europe: Array<string>
-    ETC: Array<string>
-    America: Array<string>
-    Australia: Array<string>
-}
+
 @Component({
     selector: 'ngx-daterangepicker-material',
     styleUrls: ['./daterangepicker.component.scss'],
@@ -46,7 +40,7 @@ export class DaterangepickerComponent implements OnInit {
     timepickerTimezone = moment.tz.guess(true);
     timepickerListZones = moment.tz.names();
     daterangepicker: { start: FormControl, end: FormControl } = { start: new FormControl(), end: new FormControl() };
-    parsedTimeZones: TimeZones;
+    parsedTimeZones: any;
 
     public form: FormGroup;
 
@@ -158,7 +152,7 @@ export class DaterangepickerComponent implements OnInit {
 
     // some state information
     isShown: Boolean = false;
-    inline = true;
+    inline = false;
     leftCalendar: any = {};
     rightCalendar: any = {};
     showCalInRanges: Boolean = false;
@@ -229,10 +223,9 @@ export class DaterangepickerComponent implements OnInit {
     }
 
     ngOnInit() {
-
-
         var timestamp = this.dateTimeRangeService.getDatesForQuery(true);
         this.timepickerTimezone = this.dateTimeRangeService.getTimezoneForQuery();
+
         moment.tz.setDefault(this.timepickerTimezone);
         this.groupTimeZones();
 
@@ -350,7 +343,6 @@ export class DaterangepickerComponent implements OnInit {
                 listTimeZones['ETC'].push(timeZone);
             }
         });
-        console.log(listTimeZones)
         this.parsedTimeZones = listTimeZones;
 
     }
@@ -403,7 +395,7 @@ export class DaterangepickerComponent implements OnInit {
 
     /**
     * Format input
-    * @param input 
+    * @param input
     */
     public formatInput(input: HTMLInputElement) {
         input.value = input.value.replace(this.NUMERIC_REGEX, '');
@@ -447,7 +439,7 @@ export class DaterangepickerComponent implements OnInit {
 
     /**
     * Get next value by property
-    * @param prop 
+    * @param prop
     * @param up
    */
     private _getNextValueByProp(prop: string, elem: string, up?: boolean): number {
@@ -863,9 +855,9 @@ export class DaterangepickerComponent implements OnInit {
                         this.chosenRange = this.rangesArray[i];
                         break;
 
-                    } else if (this.startDate?.format("HH:mm:ss") != "00:00:00" &&
-                        (this.endDate?.valueOf() - this.startDate?.valueOf()) ==
-                        (this.ranges?.[range][1]?.valueOf() - this.ranges?.[range][0])?.valueOf()) {
+                    } else if (this.startDate.format("HH:mm:ss") != "00:00:00" &&
+                        (this.endDate.valueOf() - this.startDate.valueOf()) ==
+                        (this.ranges[range][1].valueOf() - this.ranges[range][0]).valueOf()) {
                         customRange = false;
                         this.chosenRange = this.rangesArray[i];
                         break;
@@ -1013,6 +1005,7 @@ export class DaterangepickerComponent implements OnInit {
         /* changed moment to new timezone */
         moment.tz.setDefault(this.timepickerTimezone);
         DateTimeRangeService.dateTimeRangr.timezone = this.timepickerTimezone;
+
 
         this.startDate.tz(this.timepickerTimezone);
         this.endDate.tz(this.timepickerTimezone);
@@ -1206,6 +1199,7 @@ export class DaterangepickerComponent implements OnInit {
     dbClickRange(e, label) {
         this.chosenRange = label;
         if (label === this.locale.customRangeLabel) {
+
             this.isShown = true; // show calendars
             this.showCalInRanges = true;
         } else {
@@ -1266,6 +1260,7 @@ export class DaterangepickerComponent implements OnInit {
     clickRange(e, label) {
         this.chosenRange = label;
         if (label === this.locale.customRangeLabel) {
+
             this.isShown = true; // show calendars
             this.showCalInRanges = true;
         } else {
@@ -1325,7 +1320,9 @@ export class DaterangepickerComponent implements OnInit {
 
 
     show(e?) {
-        if (this.isShown) { return; }
+        if (this.isShown) {
+            return;
+        }
         this._old.start = this.startDate.clone();
         this._old.end = this.endDate.clone();
         this.isShown = true;

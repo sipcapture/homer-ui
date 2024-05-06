@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as moment from 'moment';
+import  moment from 'moment';
 import { PreferenceAdvancedService } from './preferences/advanced.service';
 
 export interface DateFormat {
@@ -25,7 +25,7 @@ export class TimeFormattingService {
             this.getFormat();
         }
 
-    
+
     async getFormat() {
         let advancedFormat;
         try {
@@ -45,7 +45,7 @@ export class TimeFormattingService {
                 dateTimeMs: `${dateFormat} ${timeFormat}.SSS`,
                 dateTimeMsZ: `${dateFormat} ${timeFormat}.SSS Z`,
             }
-            
+
         } else {
             // this.dateFormat = advancedFormat;
             const timeRegex = /[H|h]{2}.mm.ss/;
@@ -66,5 +66,5 @@ export class TimeFormattingService {
         }
         return this.dateFormat;
     }
-    
+
 }

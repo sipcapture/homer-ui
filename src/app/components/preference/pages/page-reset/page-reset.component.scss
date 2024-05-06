@@ -68,13 +68,19 @@
         border-left: 2px #6687bd solid;
         box-shadow: none !important;
         background-color: #009cbf;
-
+        /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
+        /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
         ::ng-deep.mat-select-value {
             position: absolute;
         }
-
+        /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
+        /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
+        /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
+        /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
         ::ng-deep.mat-select-arrow-wrapper {
             display: block;
+            /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
+            /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
             .mat-select-arrow {
                 color:white;
                 margin: 0px !important;

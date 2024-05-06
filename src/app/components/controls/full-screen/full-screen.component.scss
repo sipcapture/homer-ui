@@ -7,14 +7,17 @@
     z-index: 1000000;
     background: white;
 
-    .button-inside {
-        float: right;
+    .button-wrapper {
         position: absolute;
-        background: hsla(0, 0%, 100%, 0.3);
         right: 10px;
-        top: 10px;
+        display: flex;
+        flex-direction: column;
+
+    }
+    .button-inside {
+        background: hsla(0, 0%, 100%, 0.3);
         z-index: 1;
-        
+        margin: 5px 0;
     }
     .download {
         top: 45px;
@@ -23,19 +26,21 @@
         background: hsla(0, 0%, 100%, 0.3);
         z-index: 1;
         margin: 5px 0;
-        height: 40px;
-        width: 40px;
+        height: 48px;
+        width: 48px;
         border-radius: 100%;
     }
     .menu-button {
-        position: absolute;
-        right: 10px;
-        top: 55px;
-        width: 40px;
+        width: 48px;
+        margin-right: 12px;
         display: flex;
         flex-direction: column;
         background-color: transparent;
         overflow: visible;
+        box-shadow: none;
+        &:hover{
+            background: none !important;
+        }
     }
     ::ng-deep .mat-expansion-panel-header {
         padding: 0;

@@ -20,17 +20,17 @@
                     </mat-panel-title>
                 </mat-expansion-panel-header>
                 <mat-label>Repulsion</mat-label>
+                <!-- TODO: The 'invert' property no longer exists -->
                 <mat-slider 
                 color='primary'
                 thumbLabel
                 [displayWith]="formatLabel"
                 [max]='0.05'
                 [min]='maxValue'
-                [invert]='true'
                 [(ngModel)]="options?.physics?.barnesHut.gravitationalConstant"
                 (ngModelChange)="changeOptions()"
                 [disabled]='isRepulsion'
-                >
+                ><input matSliderThumb /><input matSliderThumb />
 
                 </mat-slider>
                 <br>
@@ -50,7 +50,7 @@
                 [min]='0'
                 [(ngModel)]="options?.physics.maxVelocity"
                 (ngModelChange)="changeOptions()"
-                >
+                ><input matSliderThumb /><input matSliderThumb />
 
                 </mat-slider>
                 <br>
@@ -63,7 +63,7 @@
                 [min]='0'
                 [(ngModel)]="options?.physics.minVelocity"
                 (ngModelChange)="changeOptions()"
-                >
+                ><input matSliderThumb /><input matSliderThumb />
 
                 </mat-slider>
                 <br>

@@ -124,8 +124,8 @@
             </mat-form-field>
             <mat-form-field appearance="fill" style="width: 100%;"><!-- Counter -->
               <mat-label>{{ 'widgets.influxDBChart.settings.counter' | translate }}</mat-label>
-              <mat-chip-list class="chips-container counter" (click)="selectCounter.open()">
-                <mat-chip class="custom-mat-chip"
+              <mat-chip-listbox class="chips-container counter" (click)="selectCounter.open()">
+                <mat-chip-option class="custom-mat-chip"
                   *ngFor="let item of counter.value"
                   [selectable]="false"
                   [removable]="true"
@@ -133,8 +133,8 @@
                   (removed)="remove(item, 'counter')">
                   {{item}}
                   <mat-icon matChipRemove >cancel</mat-icon>
-                </mat-chip>
-              </mat-chip-list>
+                </mat-chip-option>
+              </mat-chip-listbox>
               <mat-select multiple
                 class="chips-container-selector counter"
                 [formControl]="counter"
@@ -148,8 +148,8 @@
             </mat-form-field>
             <mat-form-field appearance="fill" style="width: 100%;"><!-- Tag -->
               <mat-label>{{ 'widgets.influxDBChart.settings.tag' | translate }}</mat-label>
-              <mat-chip-list class="chips-container tags" (click)="selectTags.open()">
-                <mat-chip class="custom-mat-chip"
+              <mat-chip-listbox class="chips-container tags" (click)="selectTags.open()">
+                <mat-chip-option class="custom-mat-chip"
                   *ngFor="let item of tags.value"
                   [selectable]="false"
                   [removable]="true"
@@ -157,8 +157,8 @@
                   (removed)="remove(item, 'tags')">
                   {{item}}
                   <mat-icon matChipRemove >cancel</mat-icon>
-                </mat-chip>
-              </mat-chip-list>
+                </mat-chip-option>
+              </mat-chip-listbox>
               <mat-select
                 multiple
                 class="chips-container-selector tags"
@@ -172,8 +172,8 @@
             </mat-form-field>
             <mat-form-field appearance="fill" style="width: 100%;"><!-- Values -->
               <mat-label>{{ 'widgets.influxDBChart.settings.values' | translate }}</mat-label>
-              <mat-chip-list class="chips-container values" (click)="selectValues.open()">
-                <mat-chip class="custom-mat-chip"
+              <mat-chip-listbox class="chips-container values" (click)="selectValues.open()">
+                <mat-chip-option class="custom-mat-chip"
                   *ngFor="let item of values.value"
                   (click)="selectValues.open()"
                   [selectable]="true"
@@ -181,8 +181,8 @@
                   (removed)="remove(item, 'values')">
                   {{item}}
                   <mat-icon matChipRemove >cancel</mat-icon>
-                </mat-chip>
-              </mat-chip-list>
+                </mat-chip-option>
+              </mat-chip-listbox>
               <mat-select
                 #selectValues
                 class="chips-container-selector values"

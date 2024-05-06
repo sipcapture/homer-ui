@@ -22,9 +22,11 @@
 	display: none !important;
 }
 
-::ng-deep .mat-input-element:disabled {
+::ng-deep .mat-mdc-input-element:disabled {
     color: black;
 }
+/*TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+/*TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
 ::ng-deep .mat-form-field-appearance-legacy.mat-form-field-disabled .mat-form-field-underline {
     background-image: unset;    
     background-color: rgba(0,0,0,.42);
