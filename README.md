@@ -13,5 +13,5 @@ For commercial licensing and support, please contact the [QXIP Team](http://qxip
 
 
 ### License & Copyright
-*(C) 2008-2020 [QXIP BV](http://qxip.net)*
+*(C) 2008-2024 [QXIP BV](http://qxip.net)*
 
