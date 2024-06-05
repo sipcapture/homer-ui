@@ -18,24 +18,28 @@
                     {{'LINK.localStorage' | translate}}</mat-card-title>
                 <mat-card-subtitle>{{'preference.pageReset.localStorageSetting' | translate }}</mat-card-subtitle>
             </mat-card-header>
-            <mat-card-body>
-                <div class="setting-button-container">
-                    <span style='display: flex;' class='in-widget'>
-                        <button mat-raised-button class="setting-btn"
-                            (click)="onClearLocalData(false)">{{'preference.pageReset.clearUserLocalData' | translate }}
-                        </button>
-                        <button mat-raised-button class="setting-select" (click)='select.open()'>
-                            <mat-select style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"
-                                #select>
-                                <mat-option style="padding: 2px 0">
-                                    <button mat-raised-button class="setting-btn in-select"
-                                        (click)="onClearLocalData(true)">{{'preference.pageReset.clearAllLocalData' | translate }}</button>
-                                </mat-option>
-                            </mat-select>
-                        </button>
-                    </span>
-                </div>
-            </mat-card-body>
+            <div class="setting-button-container">
+                <span style='display: flex;' class='in-widget'>
+                    <button mat-raised-button class="setting-btn"
+                        (click)="onClearLocalData(false)">{{'preference.pageReset.clearUserLocalData' | translate }}
+                    </button>
+            <button mat-raised-button class="setting-select" color="primary">
+                <button class="function-menu-trigger" mat-button [matMenuTriggerFor]="reset">
+                    <svg viewBox="0 0 24 24" width="24px" height="24px" focusable="false">
+                        <path d="M7 10l5 5 5-5z"></path>
+                    </svg>
+                </button>
+                <mat-menu #reset="matMenu">
+                    <div class="function-menu-wrapper" style="padding: 0;">
+                        <button mat-raised-button class="setting-btn in-select"
+                                    (click)="onClearLocalData(true)">{{'preference.pageReset.clearAllLocalData' | translate
+                                    }}</button>
+                            </div>
+                        </mat-menu>
+            
+                    </button>
+                </span>
+            </div>
         </mat-card>
         <mat-card appearance="outlined" class="reset-card" *ngIf="isResetDashboard">
             <mat-card-header class="flex-between">

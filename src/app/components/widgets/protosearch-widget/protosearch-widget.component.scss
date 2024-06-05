@@ -15,13 +15,20 @@
         z-index: 2;
     }
 }
+.search-menu-trigger {
+    min-width: 0 !important;
+    width: 0;
+    padding-right: 17px !important;
 
+    svg {
+        fill: rgba(0, 0, 0, 0.54);
+    }
+}
 .chack-list {
     margin-right: 1.3rem;
 }
 
 .title {
-    margin: -1.5rem -1.5rem 2rem -1.5rem;
     width: initial !important;
     display: flex;
     justify-content: space-between;

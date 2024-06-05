@@ -12,7 +12,7 @@
       <p [ngClass]="isCopy && isNotChanged ? 'copy-warning': ''">
         <span *ngIf="isCopy && isNotChanged">{{ 'preference.users.dialog.userCopy' | translate }}</span>
       </p>
-      <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 10px); grid-gap: 10px; ">
+    <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 17px); grid-gap: 10px; ">
         <mat-form-field *ngIf="username">
           <mat-label>{{ 'preference.users.dialog.username' | translate }}</mat-label>
           <input matInput
@@ -70,7 +70,7 @@
         </mat-form-field> -->
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 10px); grid-gap: 10px;">
+    <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 17px); grid-gap: 10px;">
         <mat-form-field>
           <input matInput
             autocomplete="new-password"
@@ -123,7 +123,7 @@
 </div>
       <strong>{{ 'preference.users.dialog.personalInfo' | translate }}</strong>
       <hr />
-      <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 10px); grid-gap: 10px;">
+    <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 17px); grid-gap: 10px;">
         <mat-form-field>
           <mat-label>{{ 'preference.users.dialog.firstName' | translate }}</mat-label>
           <input matInput
@@ -157,7 +157,7 @@
           </mat-error>
         </mat-form-field>
       </div>
-      <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 10px); grid-gap: 10px;">
+    <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 17px); grid-gap: 10px;">
         <mat-form-field>
           <mat-label>{{ 'preference.users.dialog.email' | translate }}</mat-label>
           <input matInput
