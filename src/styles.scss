@@ -52,10 +52,7 @@
     }
     letter-spacing: normal !important;
 }
-* {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(199, 199, 199, 0.748) transparent;
-}
+
 // using Roboto bold. light, normal
 
 /// fonts settings :
@@ -1347,4 +1344,13 @@ app-root {
     color: #fff !important;
     cursor: pointer;
     line-height: 14px;
+}
+.fa-icon-custom {
+    width: 40px !important;
+    height: 40px !important;
+    padding: 6px 12px 18px 12px !important;
+
+    svg {
+        width: 14px !important;
+    }
 }

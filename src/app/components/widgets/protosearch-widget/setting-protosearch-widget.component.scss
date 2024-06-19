@@ -3,7 +3,6 @@
 }
 
 .title {
-	margin: -1.5rem -1.5rem 2rem -1.5rem;
 	width: initial !important;
 	display: flex;
 	justify-content: space-between;
@@ -28,7 +27,7 @@
 	padding: 5px;
 	position: relative;
 	padding-top: 8px;
-	bottom: 0px;
+    bottom: 1px;
 	right: 0px;
 	display: flex;
 	justify-content: flex-end;

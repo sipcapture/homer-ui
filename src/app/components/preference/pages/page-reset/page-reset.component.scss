@@ -35,7 +35,6 @@
     margin-bottom: 21px;
 
     & .setting-btn {
-        height: 35px;
         background: #009cbf !important;
         color: white;
         margin-right: 7px;
@@ -54,11 +53,12 @@
         border-top-right-radius: 0px !important;
         border-bottom-right-radius: 0px !important;
         box-shadow: none !important;
-        width: 80%;
+        width: 85%;
         margin-right: 0px;
     }
 
     .setting-select {
+        overflow: hidden;
         position: relative;
         width: 10px;
         min-width: unset;
@@ -68,21 +68,13 @@
         border-left: 2px #6687bd solid;
         box-shadow: none !important;
         background-color: #009cbf;
-        /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
-        /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
         ::ng-deep.mat-select-value {
             position: absolute;
         }
-        /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
-        /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
-        /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
-        /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
-        ::ng-deep.mat-select-arrow-wrapper {
+::ng-deep.mat-mdc-select-arrow-wrapper {
             display: block;
-            /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
-            /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
-            .mat-select-arrow {
-                color:white;
+.mat-mdc-select-arrow {
+        color: white;
                 margin: 0px !important;
                 margin-left: -5px !important;
             }
@@ -92,9 +84,12 @@
 
 .in-select {
     width: 100%;
-    margin: unset;
+    margin-bottom: 5px;
     background-color: #009cbf22;
     color: #009cbf;
+    &:last-of-type {
+            margin-bottom: unset;
+        }
 }
 
 .page-reset {

@@ -731,7 +731,14 @@ export class TransactionServiceProcessor {
         const codecString = `${name || '--'}/${!isNaN(rate) ? rate : '--'}/PT:${
           !isNaN(pt) ? pt : '--'
         }`;
-        const outDataItem = {
+          const fallbackDescription = `${sIP}:${sPORT} -> ${dIP}:${dPORT}`;
+          const isRuriFromMessage = i.raw_source.includes(i.ruri_user);
+          const ruriDescription = isRuriFromMessage ? i.raw_source : i.ruri_user;
+          const isCodecValid = pt || name || rate;
+          const RTPDescription = isRTP && isCodecValid ? codecString : fallbackDescription
+          const description = ruriDescription || RTPDescription;
+
+          const outDataItem = {
           id: i.id,
           codecData,
           callid: i.callid,
@@ -740,10 +747,7 @@ export class TransactionServiceProcessor {
             : eventName),
           method: eventName,
           description:
-            i.ruri_user ||
-            (isRTP && (pt || name || rate)
-              ? codecString
-              : `${sIP}:${sPORT} -> ${dIP}:${dPORT}`),
+                  description,
           info_date: `[${i.id || '#' + (pid + 1)}] [${protoName}] ${moment(
             i.micro_ts
           ).format(dateFormat)}`,
