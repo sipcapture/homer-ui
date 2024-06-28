@@ -121,7 +121,12 @@ export class PageMappingComponent implements OnInit, AfterViewInit, OnDestroy {
             result.isCopy = isCopy;
             this.service[result.isnew ? 'add' : (isCopy ? 'copy' : 'update')](result.data)
                 .toPromise()
-                .then(() => this.updateData());
+                .then(() => {
+                    this.updateData();
+                    this.alertService.success(`${this.page} Successfully ${(result.isnew ? 'Added' : (isCopy ? 'Copied' : 'Updated'))}`);
+                }, () => {
+                    this.alertService.error(`Failed to ${(result.isnew ? 'Add' : (isCopy ? 'Copy' : 'Update'))} ${this.page}`)
+                });
             this.alertService.success(`${this.page} Successfully ${(result.isnew ? 'Added' : (isCopy ? 'Copied' : 'Updated'))}`);
         };
 
