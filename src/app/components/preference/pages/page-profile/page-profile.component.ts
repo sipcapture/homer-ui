@@ -206,7 +206,9 @@ export class PageProfileComponent implements OnInit {
             }
             this.alertService.success(`${this.page} Successfully  Updated`);
 
-         });
+        }, () => {
+            this.alertService.error(`Failed to Update ${this.page}`)
+        });
     } else {
         this.username.markAsTouched();
         this.usergroup.markAsTouched();

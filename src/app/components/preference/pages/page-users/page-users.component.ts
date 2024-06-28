@@ -135,8 +135,11 @@ export class PageUsersComponent implements OnInit, OnDestroy, AfterViewInit {
                         this.authenticationService.logout();
                         this.router.navigate([{ outlets: { primary: null, system: 'login' } }]);
                     }
-                 });
-            this.alertService.success(`${this.page} Successfully ${(result.isnew ? 'Added' : (isCopy ? 'Copied' : 'Updated'))}`);
+                    this.alertService.success(`${this.page} Successfully ${(result.isnew ? 'Added' : (isCopy ? 'Copied' : 'Updated'))}`);
+
+                }, () => {
+                    this.alertService.error(`Failed to ${(result.isnew ? 'Add' : (isCopy ? 'Copy' : 'Update'))} ${this.page}`)
+                });
         };
 
         this.openDialog(DialogUsersComponent, Functions.cloneObject(item), onOpenDialog, isCopy);
