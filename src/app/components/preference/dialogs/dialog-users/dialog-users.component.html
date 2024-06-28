@@ -87,7 +87,7 @@
             {{ password?.errors?.['maxlength']?.requiredLength }} {{'validators.maxChars' | translate }}
           </mat-error>
           <mat-error *ngIf="password?.errors?.['missingCharacters'] && !password?.errors?.['maxlength'] && !password?.errors?.['minlength'] && !password?.errors?.['required']">
-            {{'validators.pattern' | translate }} [aA-Zz], [0-9] and "~!@#$%^&*()_"]
+            {{'validators.pattern' | translate }} [aA-zZ] and [0-9]
           </mat-error>
           <mat-icon matSuffix
             style="cursor: pointer"
@@ -117,7 +117,7 @@
             {{ password2?.errors?.['maxlength']?.requiredLength }} {{'validators.maxChars' | translate }}
           </mat-error>
           <mat-error *ngIf="password2?.errors?.['missingCharacters'] && !password2?.errors?.['maxlength'] && !password2?.errors?.['minlength'] && !password?.errors?.['required']">
-            {{'validators.pattern' | translate }} [aA-Zz], [0-9] and "~!@#$%^&*()_"]
+            {{'validators.pattern' | translate }} [aA-zZ] and [0-9]
           </mat-error>
         </mat-form-field>
 </div>
