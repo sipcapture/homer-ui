@@ -6,6 +6,7 @@ import { DialogDeleteAlertComponent } from '../../dialogs';
 import { AlertService, AuthenticationService, DashboardService, PreferenceMappingProtocolService, SessionStorageService } from '@app/services';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { HttpGetBuffer } from '@app/helpers/http-get-buffer';
 
 @Component({
     selector: 'app-page-reset',
@@ -27,7 +28,8 @@ export class PageResetComponent implements OnInit {
         private dialog: MatDialog,
         private cdr: ChangeDetectorRef,
         private _pmps: PreferenceMappingProtocolService,
-        private translateService: TranslateService
+        private translateService: TranslateService,
+        private _httpBuffer: HttpGetBuffer
         ) { 
             
         this.translateService.get('notifications').subscribe(res => { 
@@ -93,8 +95,13 @@ export class PageResetComponent implements OnInit {
         const data = { page: 'Dashboard', message: 'reset' };
         this.openDialog(DialogDeleteAlertComponent, data, (result) => {
             if (result && result === true) {
-                const resData: any = this.dashboardService.resetDashboard().toPromise();
-                this.alertService.success(this.localDictionary.success.dashboardReset);
+                this.dashboardService.resetDashboard().then(() => {
+                    this.alertService.success(this.localDictionary.success.dashboardReset);
+                    this._httpBuffer.removeAllSubPathsFromBuffer('dashboard');
+                }, () => {
+
+                    this.alertService.error(this.localDictionary.error.dashboardReset);
+                })
             } else {
                 this.alertService.error(this.localDictionary.error.dashboardReset);
                 return;
