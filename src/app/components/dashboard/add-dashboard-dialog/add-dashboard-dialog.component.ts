@@ -149,11 +149,14 @@ export class AddDashboardDialogComponent
       this.data = {};
     }
     const text = (await file?.text()) || '{}';
-    const dashboard = Functions.JSON_parse(text);
-    this.nameNewPanel.setValue(dashboard?.data?.name);
-    this.data.type = dashboard?.data?.type || 1;
-    this.data.param = dashboard?.data?.param || '';
-    this.data.dashboard = dashboard?.data;
+      let dashboard = Functions.JSON_parse(text);
+      if (dashboard.data) {
+          dashboard = dashboard.data;
+      }
+      this.nameNewPanel.setValue(dashboard?.name);
+      this.data.type = dashboard?.type || 1;
+      this.data.param = dashboard?.param || '';
+      this.data.dashboard = dashboard;
     delete this.data.dashboard.alias;
     delete this.data.dashboard.id;
     delete this.data.dashboard.dashboardId;
@@ -169,13 +172,13 @@ export class AddDashboardDialogComponent
         (a, b) => [...a, $e.target.files[b].name],
         []
     );
-    if ($e.dataTransfer) {
-    const dataTransferFiles = Object?.keys($e?.dataTransfer?.files)?.reduce(
-        (a, b) => [...a, $e?.dataTransfer?.files[b].name],
-        []
-    );
-    files = files.concat(dataTransferFiles)
-    }
+      if ($e.dataTransfer) {
+          const dataTransferFiles = Object?.keys($e?.dataTransfer?.files)?.reduce(
+              (a, b) => [...a, $e?.dataTransfer?.files[b].name],
+              []
+          );
+          files = files.concat(dataTransferFiles)
+      }
     this.fileNames = [...files];
     this.cdr.detectChanges();
  }
