@@ -3,7 +3,7 @@ import { HttpGetBuffer } from '@app/helpers/http-get-buffer';
 import { ConstValue, UserConstValue } from '@app/models';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, lastValueFrom } from 'rxjs';
 import { environment } from '@environments/environment';
 
 export interface DashboardEventData {
@@ -180,6 +180,6 @@ export class DashboardService {
     return this._httpBuffer.get(`${this.url}/info`, delayBuffer);
   }
   resetDashboard() {
-    return this._http.get(`${this.url}/reset`);
+      return lastValueFrom(this._http.get(`${this.url}/reset`));
   }
 }

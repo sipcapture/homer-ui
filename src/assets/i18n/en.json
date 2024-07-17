@@ -390,7 +390,8 @@
       "setting": "@LINK.widget@ Settings",
       "delete": "Delete @LINK.widget@"
     },
-    "isEmpty": "@LINK.dashboard@ is empty"
+    "isEmpty": "@LINK.dashboard@ is empty",
+    "isInvalid": "@LINK.dashboard@ is invalid, please try resetting it if it's Home or deleting it otherwise"
   },
   "cellTypes": {
     "lastError": "Last Error",

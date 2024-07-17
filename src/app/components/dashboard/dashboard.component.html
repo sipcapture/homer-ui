@@ -193,4 +193,12 @@
             </button>
         </span>
     </div>
+    <div *ngIf="isInvalid" class="no-content">
+        <span style="text-align: center;">
+            <h1> {{'dashboard.isInvalid' | translate}} </h1>
+            <button mat-raised-button class="setting-btn-ok" (click)="onPreference()" [disabled]='isShared'>Open settings
+                <mat-icon>tune</mat-icon>
+            </button>
+        </span>
+    </div>
 </div>
