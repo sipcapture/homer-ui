@@ -1,162 +1,227 @@
 {
-  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-  "version": 1,
-  "newProjectRoot": "projects",
-  "projects": {
-    "homer-ui": {
-      "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        },
-        "@schematics/angular:application": {
-          "strict": true
-        }
-      },
-      "root": "",
-      "sourceRoot": "src",
-      "prefix": "app",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:browser",
-          "options": {
-            "outputPath": "dist/homer-ui",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.app.json",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets",
-              {
-                "glob": "theme-monokai.js",
-                "input": "./node_modules/ace-builds/src-min/",
-                "output": "/"
-              },
-              {
-                "glob": "mode-javascript.js",
-                "input": "./d /ace-builds/src-min/",
-                "output": "/"
-              },
-              {
-                "glob": "mode-json.js",
-                "input": "./node_modules/ace-builds/src-min/",
-                "output": "/"
-              },
-              {
-                "glob": "worker-javascript.js",
-                "input": "./node_modules/ace-builds/src-min/",
-                "output": "/"
-              },
-              {
-                "glob": "worker-json.js",
-                "input": "./node_modules/ace-builds/src-min/",
-                "output": "/"
-              },
-              {
-                "glob": "ext-searchbox.js",
-                "input": "./node_modules/ace-builds/src-min/",
-                "output": "/"
-              }
-            ],
-            "styles": [
-              "node_modules/swagger-ui-dist/swagger-ui.css",
-              "src/styles.scss"
-              
-            ],
-            "scripts": [
-              "node_modules/ace-builds/src-min/ace.js",
-              "node_modules/ace-builds/src-min/theme-monokai.js",
-              "node_modules/ace-builds/src-min/mode-javascript.js",
-              "node_modules/ace-builds/src-min/mode-json.js",
-              "node_modules/ace-builds/src-min/worker-javascript.js",
-              "node_modules/ace-builds/src-min/worker-json.js"
-            ],
-            "webWorkerTsConfig": "tsconfig.worker.json"
-          },
-          "configurations": {
-            "development": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.dev.ts"
+    "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+    "version": 1,
+    "newProjectRoot": "projects",
+    "projects": {
+        "homer-ui": {
+            "projectType": "application",
+            "schematics": {},
+            "root": "",
+            "sourceRoot": "src",
+            "prefix": "app",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:browser",
+                    "options": {
+                        "outputPath": "dist/homer-ui",
+                        "index": "src/index.html",
+                        "main": "src/main.ts",
+                        "polyfills": "src/polyfills.ts",
+                        "tsConfig": "src/tsconfig.app.json",
+                        "allowedCommonJsDependencies": [
+                            "lodash",
+                            "xlsx",
+                            "parsip",
+                            "xml2js",
+                            "qrcode",
+                            "html2canvas",
+                            "wavesurfer.js",
+                            "vis",
+                            "chart.js",
+                            "fp-ts/lib/Either",
+                            "bogon",
+                            "moment-timezone",
+                            "moment",
+                            "diff-match-patch",
+                            "maplibre-gl",
+                            "is-in-subnet",
+                            "ts-md5/dist/md5"
+                        ],
+
+                        "assets": ["src/favicon.ico", "src/assets"],
+                        "styles": [
+                            "src/styles.scss",
+                            "node_modules/highlight.js/styles/atom-one-dark.css"
+                        ],
+                        "scripts": [],
+                        "webWorkerTsConfig": "tsconfig.worker.json"
+                    },
+                    "configurations": {
+                        "development": {
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.dev.ts"
+                                }
+                            ],
+                            "optimization": false,
+                            "outputHashing": "all",
+                            "sourceMap": true,
+                            "namedChunks": false,
+                            "aot": false,
+                            "extractLicenses": false,
+                            "vendorChunk": false,
+                            "buildOptimizer": false,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "2mb",
+                                    "maximumError": "35mb"
+                                }
+                            ]
+                        },
+                        "preprod": {
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.prod.ts"
+                                }
+                            ],
+                            "optimization": false,
+                            "outputHashing": "all",
+                            "sourceMap": true,
+                            "namedChunks": false,
+                            "aot": false,
+                            "extractLicenses": false,
+                            "vendorChunk": false,
+                            "buildOptimizer": false,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "2mb",
+                                    "maximumError": "35mb"
+                                }
+                            ]
+                        },
+                        "production": {
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.prod.ts"
+                                }
+                            ],
+                            "optimization": true,
+                            "outputHashing": "all",
+                            "sourceMap": false,
+                            "namedChunks": true,
+                            "aot": true,
+                            "extractLicenses": true,
+                            "vendorChunk": false,
+                            "buildOptimizer": true,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "25mb",
+                                    "maximumError": "30mb"
+                                }
+                            ]
+                        },
+                        "webapp": {
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.webapp.ts"
+                                }
+                            ],
+                            "optimization": false,
+                            "outputHashing": "all",
+                            "sourceMap": false,
+                            "namedChunks": false,
+                            "aot": false,
+                            "extractLicenses": false,
+                            "vendorChunk": false,
+                            "buildOptimizer": false,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "2mb",
+                                    "maximumError": "15mb"
+                                }
+                            ]
+                        },
+                        "server": {
+                            "fileReplacements": [
+                                {
+                                    "replace": "src/environments/environment.ts",
+                                    "with": "src/environments/environment.server.ts"
+                                }
+                            ],
+                            "optimization": false,
+                            "outputHashing": "all",
+                            "sourceMap": false,
+                            "namedChunks": false,
+                            "aot": false,
+                            "extractLicenses": false,
+                            "vendorChunk": false,
+                            "buildOptimizer": false,
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "2mb",
+                                    "maximumError": "35mb"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "options": {
+                        "browserTarget": "homer-ui:build"
+                    },
+                    "configurations": {
+                        "production": {
+                            "browserTarget": "homer-ui:build:production"
+                        },
+                        "development": {
+                            "browserTarget": "homer-ui:build:development"
+                        },
+                        "webapp": {
+                            "browserTarget": "homer-ui:build:webapp"
+                        },
+                        "server": {
+                            "browserTarget": "homer-ui:build:server"
+                        }
+                    },
+                    "defaultConfiguration": "development"
+                },
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "options": {
+                        "browserTarget": "homer-ui:build"
+                    }
+                },
+                "test": {
+                    "builder": "ngx-build-plus:karma",
+                    "options": {
+                        "main": "src/test.ts",
+                        "polyfills": "src/polyfills.ts",
+                        "tsConfig": "src/tsconfig.spec.json",
+                        "karmaConfig": "src/karma.conf.js",
+                        "styles": [
+                            "node_modules/swagger-ui-dist/swagger-ui.css",
+                            "src/styles.scss"
+                        ],
+                        "scripts": [],
+                        "assets": ["src/favicon.ico", "src/assets"],
+                        "webWorkerTsConfig": "tsconfig.worker.json"
+                    }
+                },
+                "lint": {
+                    "builder": "@angular-devkit/build-angular:tslint",
+                    "options": {
+                        "tsConfig": [
+                            "src/tsconfig.app.json",
+                            "src/tsconfig.spec.json",
+                            "tsconfig.worker.json"
+                        ],
+                        "exclude": ["**/node_modules/**"]
+                    }
                 }
-              ],
-              "optimization": false,
-              "sourceMap": true,
-              "namedChunks": true,
-              "aot": true,
-              "extractLicenses": false,
-              "vendorChunk": false,
-              "buildOptimizer": false,
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "12mb",
-                  "maximumError": "15mb"
-                }
-              ]
-            },
-            "production": {
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "12mb",
-                  "maximumError": "15mb"
-                }
-              ],
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
-              "outputHashing": "all"
             }
-          },
-          "defaultConfiguration": "production"
-        },
-        "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "configurations": {
-            "production": {
-              "browserTarget": "homer-ui:build:production"
-            },
-            "development": {
-              "browserTarget": "homer-ui:build:development"
-            }
-          },
-          "defaultConfiguration": "development"
-        },
-        "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
-          "options": {
-            "browserTarget": "homer-ui:build"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js",
-            "inlineStyleLanguage": "scss",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "node_modules/swagger-ui-dist/swagger-ui.css",
-              "src/styles.scss"
-            ],
-            "scripts": [],
-            "webWorkerTsConfig": "tsconfig.worker.json"
-          }
         }
-      }
+    },
+    "cli": {
+        "analytics": false
     }
-  },
-  "defaultProject": "homer-ui"
 }

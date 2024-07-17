@@ -19,7 +19,7 @@ import {
   } from '@angular/core';
   import { DaterangepickerComponent } from './daterangepicker.component';
   import { NG_VALUE_ACCESSOR } from '@angular/forms';
-  import * as _moment from 'moment-timezone';
+  import _moment from 'moment-timezone';
   import { LocaleConfig } from './daterangepicker.config';
   import { LocaleService } from './locale.service';
   const moment = _moment;
@@ -43,7 +43,6 @@ import {
     public picker: DaterangepickerComponent;
     private _onChange = Function.prototype;
     private _onTouched = Function.prototype;
-    private _validatorChange = Function.prototype;
     private _value: any;
     private localeDiffer: KeyValueDiffer<string, any>;
     @Input()

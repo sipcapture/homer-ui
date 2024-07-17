@@ -1,7 +1,8 @@
-@import '~src/theme.scss';
-@import '~@angular/material/theming';
-$primary: mat-palette($homerprimary);
-$accent:  mat-palette($homeraccent);
+@use '@angular/material' as mat;
+@include mat.core();
+@import '../../../../theme.scss';
+$primary: mat.define-palette($homerprimary);
+$accent:  mat.define-palette($homeraccent);
 .chart-container {
     height: 100%;
     .fold {

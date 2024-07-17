@@ -12,7 +12,7 @@
       <p [ngClass]="isCopy && isNotChanged ? 'copy-warning': ''">
         <span *ngIf="isCopy && isNotChanged">{{ 'preference.users.dialog.userCopy' | translate }}</span>
       </p>
-      <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 10px); grid-gap: 10px; ">
+    <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 17px); grid-gap: 10px; ">
         <mat-form-field *ngIf="username">
           <mat-label>{{ 'preference.users.dialog.username' | translate }}</mat-label>
           <input matInput
@@ -22,17 +22,17 @@
             (change)="isNotChanged=false"
             required />
 
-          <mat-error *ngIf="username?.errors?.required">{{'validators.required' | translate }}</mat-error>
-          <mat-error *ngIf="username?.errors?.minlength">
-            {{ username?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+          <mat-error *ngIf="username?.errors?.['required']">{{'validators.required' | translate }}</mat-error>
+          <mat-error *ngIf="username?.errors?.['minlength']">
+            {{ username?.errors?.['minlength']?.requiredLength }} {{'validators.minChars' | translate }}
           </mat-error>
-          <mat-error *ngIf="username?.errors?.maxlength">
-            {{ username?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+          <mat-error *ngIf="username?.errors?.['maxlength']">
+            {{ username?.errors?.['maxlength']?.requiredLength }} {{'validators.maxChars' | translate }}
           </mat-error>
-          <mat-error *ngIf="username?.errors?.pattern && !username?.errors?.minlength">
+          <mat-error *ngIf="username?.errors?.['pattern'] && !username?.errors?.['minlength']">
             {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or "."
           </mat-error>
-          <mat-error *ngIf="username?.errors?.userNameNotAvailable">
+          <mat-error *ngIf="username?.errors?.['userNameNotAvailable']">
             Username not available
           </mat-error>
         </mat-form-field>
@@ -45,14 +45,14 @@
                     {{item}}
               </mat-option>
           </mat-select>
-          <mat-error *ngIf="usergroup?.errors?.required">{{'validators.required' | translate }}</mat-error>
-          <mat-error *ngIf="usergroup?.errors?.minlength">
-            {{ usergroup?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+          <mat-error *ngIf="usergroup?.errors?.['required']">{{'validators.required' | translate }}</mat-error>
+          <mat-error *ngIf="usergroup?.errors?.['minlength']">
+            {{ usergroup?.errors?.['minlength']?.requiredLength }} {{'validators.minChars' | translate }}
           </mat-error>
-          <mat-error *ngIf="usergroup?.errors?.maxlength">
-            {{ usergroup?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+          <mat-error *ngIf="usergroup?.errors?.['maxlength']">
+            {{ usergroup?.errors?.['maxlength']?.requiredLength }} {{'validators.maxChars' | translate }}
           </mat-error>
-          <mat-error *ngIf="usergroup?.errors?.pattern && !usergroup?.errors?.minlength">
+          <mat-error *ngIf="usergroup?.errors?.['pattern'] && !usergroup?.errors?.['minlength']">
             {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or "."]
           </mat-error>
         </mat-form-field>
@@ -70,22 +70,25 @@
         </mat-form-field> -->
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 10px); grid-gap: 10px;">
+    <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 17px); grid-gap: 10px;">
         <mat-form-field>
           <input matInput
             autocomplete="new-password"
             [placeholder]="'preference.users.dialog.password' | translate"
             [type]="hidePass1 ? 'password' : 'text'"
             [formControl]="password"
+            (change)="validate()" (blur)="validate()" (keyup)="validate()"
             required />
-          <mat-error *ngIf="data.isNew && password?.errors?.required">The password {{'validators.required' | translate }}</mat-error>
-          <mat-error *ngIf="password?.errors?.minlength">
-            {{ password?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+          <mat-error *ngIf="data.isNew && password?.errors?.['required']">The password {{'validators.required' | translate }}</mat-error>
+          <mat-error *ngIf="password?.errors?.['minlength']">
+            {{ password?.errors?.['minlength']?.requiredLength }} {{'validators.minChars' | translate }}
           </mat-error>
-          <mat-error *ngIf="password?.errors?.maxlength">
-            {{ password?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+          <mat-error *ngIf="password?.errors?.['maxlength']">
+            {{ password?.errors?.['maxlength']?.requiredLength }} {{'validators.maxChars' | translate }}
           </mat-error>
-         
+          <mat-error *ngIf="password?.errors?.['missingCharacters'] && !password?.errors?.['maxlength'] && !password?.errors?.['minlength'] && !password?.errors?.['required']">
+            {{'validators.pattern' | translate }} [aA-zZ] and [0-9]
+          </mat-error>
           <mat-icon matSuffix
             style="cursor: pointer"
             (click)="hidePass1 = !hidePass1"
@@ -106,34 +109,37 @@
           <mat-error *ngIf="password?.value !== password2?.value">
             The password and its confirmation do not coincide
           </mat-error>
-          <mat-error *ngIf="password2?.errors?.minlength">
-            {{ password2?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
+          <mat-error *ngIf="password2?.errors?.['minlength']">
+            {{ password2?.errors?.['minlength']?.requiredLength }} {{'validators.minChars' | translate }}
             min
           </mat-error>
-          <mat-error *ngIf="password2?.errors?.maxlength">
-            {{ password2?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+          <mat-error *ngIf="password2?.errors?.['maxlength']">
+            {{ password2?.errors?.['maxlength']?.requiredLength }} {{'validators.maxChars' | translate }}
+          </mat-error>
+          <mat-error *ngIf="password2?.errors?.['missingCharacters'] && !password2?.errors?.['maxlength'] && !password2?.errors?.['minlength'] && !password?.errors?.['required']">
+            {{'validators.pattern' | translate }} [aA-zZ] and [0-9]
           </mat-error>
         </mat-form-field>
 </div>
       <strong>{{ 'preference.users.dialog.personalInfo' | translate }}</strong>
       <hr />
-      <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 10px); grid-gap: 10px;">
+    <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 17px); grid-gap: 10px;">
         <mat-form-field>
           <mat-label>{{ 'preference.users.dialog.firstName' | translate }}</mat-label>
           <input matInput
             autocomplete="off"
             [formControl]="firstname"
             required />
-          <mat-error *ngIf="firstname?.errors?.required">{{'validators.required' | translate }}</mat-error>
-          <mat-error *ngIf="firstname?.errors?.minlength">
-            {{ firstname?.errors?.minlength?.requiredLength }} Characters
+          <mat-error *ngIf="firstname?.errors?.['required']">{{'validators.required' | translate }}</mat-error>
+          <mat-error *ngIf="firstname?.errors?.['minlength']">
+            {{ firstname?.errors?.['minlength']?.requiredLength }} Characters
             min
           </mat-error>
-          <mat-error *ngIf="firstname?.errors?.maxlength">
-            {{ firstname?.errors?.maxlength?.requiredLength }} Characters
+          <mat-error *ngIf="firstname?.errors?.['maxlength']">
+            {{ firstname?.errors?.['maxlength']?.requiredLength }} Characters
             max
           </mat-error>
-          <mat-error *ngIf="firstname?.errors?.pattern && !firstname?.errors?.minlength">
+          <mat-error *ngIf="firstname?.errors?.['pattern'] && !firstname?.errors?.['minlength']">
             {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or "."]
           </mat-error>
         </mat-form-field>
@@ -143,15 +149,15 @@
             autocomplete="off"
             [formControl]="lastname"
             />
-          <mat-error *ngIf="lastname?.errors?.maxlength">
-            {{ lastname?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
+          <mat-error *ngIf="lastname?.errors?.['maxlength']">
+            {{ lastname?.errors?.['maxlength']?.requiredLength }} {{'validators.maxChars' | translate }}
           </mat-error>
-          <mat-error *ngIf="lastname?.errors?.pattern && !lastname?.errors?.maxlength">
+          <mat-error *ngIf="lastname?.errors?.['pattern'] && !lastname?.errors?.['maxlength']">
             {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" or "."]
           </mat-error>
         </mat-form-field>
       </div>
-      <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 10px); grid-gap: 10px;">
+    <div style="display: grid; grid-template-columns: repeat(2, 50%); width: calc(100% - 17px); grid-gap: 10px;">
         <mat-form-field>
           <mat-label>{{ 'preference.users.dialog.email' | translate }}</mat-label>
           <input matInput
@@ -169,36 +175,43 @@
             autocomplete="off"
             [formControl]="department"
             required />
-          <mat-error *ngIf="department?.errors?.required">{{'validators.required' | translate }}</mat-error>
-          <mat-error *ngIf="department?.errors?.minlength">
-            {{ department?.errors?.minlength?.requiredLength }} Characters
+          <mat-error *ngIf="department?.errors?.['required']">{{'validators.required' | translate }}</mat-error>
+          <mat-error *ngIf="department?.errors?.['minlength']">
+            {{ department?.errors?.['minlength']?.requiredLength }} Characters
             min
           </mat-error>
-          <mat-error *ngIf="department?.errors?.maxlength">
-            {{ department?.errors?.maxlength?.requiredLength }} Characters
+          <mat-error *ngIf="department?.errors?.['maxlength']">
+            {{ department?.errors?.['maxlength']?.requiredLength }} Characters
             max
           </mat-error>
-          <mat-error *ngIf="department?.errors?.pattern && !department?.errors?.minlength">
+          <mat-error *ngIf="department?.errors?.['pattern'] && !department?.errors?.['minlength']">
             {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-", "_" , "." or empty space]
           </mat-error>
         </mat-form-field>
       </div>
     </mat-tab>
-    
+
     <mat-tab label="Setting">
       <div style="height: 1rem"></div>
       <strong>{{ 'preference.users.dialog.setting' | translate }}</strong>
       <div style="height: 1rem"></div>
-      <full-screen (fullPage)='disableClose($event)'  
-                    (import)='import($event)' 
+      <full-screen (fullPage)='disableClose($event)'
+                    (import)='import($event)'
                     [data]='{json:data.data.setting, title: data.data.username, type: "json"}'>
-        <ace-editor [mode]="'json'"
+        <!-- <ace-editor [mode]="'json'"
           [theme]="'monokai'"
           [readOnly]="false"
           [(text)]="data.data.setting"
           [style.min-height.%]="100"
           #data_view
-        ></ace-editor>
+        ></ace-editor> -->
+        <app-codejar-wrapper [mode]="'json'"
+          [theme]="'monokai'"
+          [readOnly]="false"
+          [(text)]="data.data.setting"
+          [style.min-height.%]="100"
+          #data_view
+        ></app-codejar-wrapper>
       </full-screen>
     </mat-tab>
     <mat-tab [label]="'preference.users.dialog.statistics' | translate" *ngIf="hasStatistics">
@@ -230,7 +243,7 @@
     class="setting-btn-ok"
     (click)="onSubmit()"
     cdkFocusInitial
-    [disabled]="isCopy && isNotChanged">
+    [disabled]="(isCopy && isNotChanged) || isDisabled">
     {{'LINK.buttons.save' | translate}}
   </button>
 </div>

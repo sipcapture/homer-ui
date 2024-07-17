@@ -19,7 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LoginComponent implements OnInit {    
+export class LoginComponent implements OnInit {
     @ViewChild('oAuthButton', { static: false }) oAuthButton;
     loginForm: FormGroup;
     authTypes: any;
@@ -73,7 +73,7 @@ export class LoginComponent implements OnInit {
                 if (data) {
                     this.router.navigateByUrl(this.returnUrl);
                     this.userSecurityService.getAdmin();
-                } 
+                }
             },
             (error) => {
                 this.alertService.error(error);
@@ -139,7 +139,7 @@ export class LoginComponent implements OnInit {
     }
 
     // convenience getter for easy access to form fields
-    get f() {
+    get f(): any {
         return this.loginForm.controls;
     }
 
@@ -160,7 +160,7 @@ export class LoginComponent implements OnInit {
                     if (data) {
                         this.router.navigateByUrl(this.returnUrl);
                         this.userSecurityService.getAdmin();
-                    } 
+                    }
                 },
                 (error) => {
                     this.alertService.error(error);

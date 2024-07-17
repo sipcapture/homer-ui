@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AuthenticationService } from './authentication.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import * as moment from 'moment';
+import  moment from 'moment';
 import { ConstValue, UserConstValue } from '@app/models';
 import { Functions, log, setStorage } from '@app/helpers/functions';
 

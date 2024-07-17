@@ -6,14 +6,14 @@ import { map } from 'rxjs/operators';
 import { environment } from '@environments/environment';
 import { User, UserJWT } from '@app/models';
 import { PreferenceUserSettingsService } from './preferences/user-settings.service';
-import * as _moment from 'moment';
+import moment from 'moment';
 import { ConstValue } from '../models/const-value.model';
 import { AlertService } from './alert.service';
 import { Functions, setStorage } from '@app/helpers/functions';
 import { TranslateService } from '@ngx-translate/core';
 import jwt_decode from 'jwt-decode';
 
-const moment: any = _moment;
+// // const moment: any = _moment;
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
@@ -38,7 +38,7 @@ export class AuthenticationService {
         } catch (err) {
             console.error(err);
             setTimeout(() => {
-                this.translateService.get('notifications.error.invalidJWT').subscribe(res => { 
+                this.translateService.get('notifications.error.invalidJWT').subscribe(res => {
                     this.alertService.error(res);
                 })
             }, 100);

@@ -1,5 +1,5 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef, Input } from '@angular/core';
-import { Functions } from '@app/helpers/functions';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
+import { emitWindowResize } from '@app/helpers/windowFunctions';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 
 @Component({
@@ -57,7 +57,7 @@ export class SettingButtonComponent implements ICellRendererAngularComp {
         setVisible(field, selected);
         this.apiColumn.moveColumn(field, key + 1);
       });
-      setTimeout(() => Functions.emitWindowResize(), 100);
+      setTimeout(() => emitWindowResize(), 100);
     }
   }
   doOpenFilter() {

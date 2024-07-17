@@ -19,7 +19,7 @@ import {
 import {
     DialogAliasComponent,
     DialogDeleteAlertComponent,
-   
+
 } from '@app/components/preference/dialogs';
 import {
     PreferenceAlias,
@@ -29,7 +29,7 @@ import { AlertService, AuthenticationService } from '@app/services';
 import { DialogImportComponent } from '@app/components/preference/service-dialogs';
 import { PreferencesComponentMapping } from '@app/models/preferences-component-mapping';
 
-import * as moment from 'moment';
+import  moment from 'moment';
 import { Functions } from '@app/helpers/functions';
 @Component({
     selector: 'app-page-alias',
@@ -133,8 +133,12 @@ export class PageAliasComponent implements OnInit, OnDestroy, AfterViewInit {
             result.isCopy = isCopy;
             this.service[result.isnew ? 'add' : (isCopy ? 'copy' : 'update')](result.data)
                 .toPromise()
-                .then(() => this.updateData());
-            this.alertService.success(`${this.page} Successfully ${(result.isnew ? 'Added' : (isCopy ? 'Copied' : 'Updated'))}`);
+                .then(() => {
+                    this.updateData();
+                    this.alertService.success(`${this.page} Successfully ${(result.isnew ? 'Added' : (isCopy ? 'Copied' : 'Updated'))}`);
+                }, () => {
+                    this.alertService.error(`Failed to ${(result.isnew ? 'Add' : (isCopy ? 'Copy' : 'Update'))} ${this.page}`)
+                });
         };
         if (item) {
             item.actionType = type;

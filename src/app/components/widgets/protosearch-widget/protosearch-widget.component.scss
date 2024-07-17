@@ -15,13 +15,20 @@
         z-index: 2;
     }
 }
+.search-menu-trigger {
+    min-width: 0 !important;
+    width: 0;
+    padding-right: 17px !important;
 
+    svg {
+        fill: rgba(0, 0, 0, 0.54);
+    }
+}
 .chack-list {
     margin-right: 1.3rem;
 }
 
 .title {
-    margin: -1.5rem -1.5rem 2rem -1.5rem;
     width: initial !important;
     display: flex;
     justify-content: space-between;
@@ -115,7 +122,8 @@
 
 .ng-select.ng-select-single .ng-select-container .ng-value-container {
     height: 1em;
-
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+    /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
     .mat-form-field-infix {
         position: inherit !important;
     }
@@ -146,7 +154,7 @@
     background: #fafafa;
     color: grey !important;
 
-    .mat-option.ng-option-selected:not(.ng-option-marked):not(:hover) {
+    .mat-mdc-option.ng-option-selected:not(.ng-option-marked):not(:hover) {
         background: #fbfbfb;
 
         &:not(.ng-option-disabled) {
@@ -258,6 +266,8 @@
 }
 
 .result-container-field {
+    /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+    /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
     .mat-select-arrow-wrapper {
         padding-right: 5px !important;
     }
@@ -268,6 +278,8 @@
     font-size: 11px;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version.*/
+/* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version.*/
 .mat-chip-item {
     padding: 0;
     margin: 0;
@@ -283,7 +295,7 @@
     }
 }
 
-.mat-standard-chip {
+.mat-mdc-standard-chip {
     padding: 0;
     margin: 2px !important;
     color: grey !important;
@@ -295,15 +307,52 @@
 
 .in-widget {
     margin-left: 0;
-  
+
+    // .search-btn {
+    //     border-top-right-radius: 0px !important;
+    //     border-bottom-right-radius: 0px !important;
+    //     box-shadow: none !important;
+    //     width: 80%;
+    //     margin-right: 0px;
+    // }
+
+    // .search-select {
+    //     position: relative;
+    //     width: 10px;
+    //     min-width: unset;
+    //     margin-left: 0px !important;
+    //     border-top-left-radius: 0px !important;
+    //     border-bottom-left-radius: 0px !important;
+    //     border-left: 1px black solid;
+    //     box-shadow: -1px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px -3px rgb(0 0 0 / 14%), 0px 1px 5px -6px rgb(0 0 0 / 12%) !important;
+    //     /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+    //     /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+    //     .mat-select-value {
+    //         position: absolute;
+    //     }
+    //     /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+    //     /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+    //     /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+    //     /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+    //     .mat-select-arrow-wrapper {
+    //         display: block;
+    //         /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+    //         /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+    //         .mat-select-arrow {
+    //             margin: 0px !important;
+    //             margin-left: -5px !important;
+    //         }
+    //     }
+    // }
     .search-btn {
         border-top-right-radius: 0px !important;
         border-bottom-right-radius: 0px !important;
-        box-shadow: none !important;
         width: 80%;
+        box-shadow: none;
+        margin-left: 0px;
         margin-right: 0px;
     }
-  
+
     .search-select {
         position: relative;
         width: 10px;
@@ -311,16 +360,19 @@
         margin-left: 0px !important;
         border-top-left-radius: 0px !important;
         border-bottom-left-radius: 0px !important;
+        border-top-right-radius: 4px !important;
+        border-bottom-right-radius: 4px !important;
         border-left: 1px black solid;
-        box-shadow: -1px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px -3px rgb(0 0 0 / 14%), 0px 1px 5px -6px rgb(0 0 0 / 12%) !important;
-    
+        box-shadow: none;
+
         .mat-select-value {
             position: absolute;
         }
-  
-        .mat-select-arrow-wrapper {
+
+        .mat-mdc-select-arrow-wrapper {
             display: block;
-            .mat-select-arrow {
+
+            .mat-mdc-select-arrow {
                 margin: 0px !important;
                 margin-left: -5px !important;
             }

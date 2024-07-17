@@ -1,9 +1,10 @@
+import { HepLogService } from './hep-log.service';
 import { AgentsubService } from '@app/services/agentsub.service';
 import { Injectable } from '@angular/core';
 import { CallReportService } from '@app/services';
 import { CallTransactionService } from '@app/services';
 import { Observable } from 'rxjs';
-import { HepLogService } from '@app/services';
+// import { HepLogService } from '@app/services';
 import { WorkerService } from '../worker.service';
 import { WorkerCommands } from '@app/models/worker-commands.module';
 import { Functions, log } from '@app/helpers/functions';

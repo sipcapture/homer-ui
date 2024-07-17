@@ -1,4 +1,4 @@
-import { ChartsModule } from 'ng2-charts';
+import { ChartsModule } from '@xirenec/ng2-charts';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { NgModule } from '@angular/core';

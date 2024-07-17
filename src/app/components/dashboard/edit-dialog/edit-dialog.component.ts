@@ -91,7 +91,7 @@ export class EditDialogComponent implements OnInit {
         translateService.setDefaultLang('en')
         this.isSEARCH = this.dashboardService.getCurrentDashBoardId() === 'search';
         this.isHomeOrSearch = this.isSEARCH || this.dashboardService.getCurrentDashBoardId() === 'home';
-        ((d) => {
+        ((d: any) => {
             this.name.setValue(d.name);
             this.currentName = d.name;
         })(this.data);
@@ -200,7 +200,7 @@ export class EditDialogComponent implements OnInit {
         if (
             !this.name?.invalid
         ) {
-            (d => {
+            ((d: any) => {
                 d.name = this.name?.value;
             })(this.data);
             this.dialogRef.close(this.data);

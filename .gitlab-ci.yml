@@ -1,0 +1,71 @@
+image: node:lts-alpine
+cache:
+  paths:
+  - node_modules/
+stages:
+  - test
+  # - selenium
+test_build:
+  cache: {}
+  stage: test
+  rules:
+  - if: '$CI_COMMIT_MESSAGE == "Update .gitlab-ci.yml file" && $CI_PIPELINE_SOURCE != "web"'
+    when: never
+  - if: '$CI_PIPELINE_SOURCE == "push" || $CI_PIPELINE_SOURCE == "web"'
+    when: always
+  - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+    when: always
+  - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME != "master"'
+    when: never
+  script:
+  - npm --version
+  - npm install --legacy-peer-deps
+  - npm install -g @angular/cli
+  - npm run build:all-prod
+  - cat ./dist/homer-ui/version.txt
+# selenium-test-job:
+#   stage: selenium
+#   services:
+#     - name: selenium/standalone-chrome
+#       alias: selstand
+#   variables:
+#     GITLAB_INSTANCE: "gitlab.com"
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME != "master"'
+#       when: never
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+#       when: on_success
+#     - if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "web"'
+#       when: always
+#   allow_failure: true
+#   script:
+#     - apk update && apk upgrade && apk add --no-cache bash git openssh
+#     - 'git clone http://gitlab-ci-token:$CI_JOB_TOKEN@$GITLAB_INSTANCE/qxip/hepic-tests.git'
+#     - npm install -g selenium-side-runner
+#     - npm install -g chromedriver
+#     - selenium-side-runner ./hepic-tests/Hepic-preference.side --server http://selstand:4444/wd/hub --filter Fulltest --base-url http://de9.sipcapture.io:8002/ "goog:chromeOptions.args=[no-sandbox]"
+#     # - selenium-side-runner ./hepic-tests/Hepic-preference-user.side --server http://selstand:4444/wd/hub --filter Default --base-url http://de9.sipcapture.io:8002/
+
+# selenium-transaction-test-job:
+#   stage: selenium
+#   services:
+#     - name: selenium/standalone-chrome
+#       alias: selstand
+#   variables:
+#     GITLAB_INSTANCE: "gitlab.com"
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME != "master"'
+#       when: never
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"'
+#       when: on_success
+#     - if: '$CI_PIPELINE_SOURCE == "schedule" || $CI_PIPELINE_SOURCE == "web"'
+#       when: always
+#   allow_failure: true
+#   script:
+#     - apk update && apk upgrade && apk add --no-cache bash git openssh
+#     - 'git clone http://gitlab-ci-token:$CI_JOB_TOKEN@$GITLAB_INSTANCE/qxip/hepic-tests.git'
+#     - npm install -g hepgen.js
+#     - npm install -g selenium-side-runner
+#     - npm install -g chromedriver
+#     - hepgen.js -p 9063 -s de3.null.qxip.net -c "/builds/qxip/hepic-interface/hepic-tests/Hepgen/RTP-test.js"
+#     - selenium-side-runner ./hepic-tests/Hepic-main.side --server http://selstand:4444/wd/hub --filter Default --base-url http://de9.sipcapture.io:8002/

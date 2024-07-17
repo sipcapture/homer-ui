@@ -2,7 +2,7 @@ import { environment } from '@environments/environment';
 import { Md5 } from 'ts-md5/dist/md5';
 
 import 'moment-timezone';
-import * as moment from 'moment';
+import  moment from 'moment';
 import { FlowItemType } from '@app/models/flow-item-type.model';
 import { WorkerCommands } from '@app/models/worker-commands.module';
 
@@ -731,7 +731,14 @@ export class TransactionServiceProcessor {
         const codecString = `${name || '--'}/${!isNaN(rate) ? rate : '--'}/PT:${
           !isNaN(pt) ? pt : '--'
         }`;
-        const outDataItem = {
+          const fallbackDescription = `${sIP}:${sPORT} -> ${dIP}:${dPORT}`;
+          const isRuriFromMessage = i.raw_source.includes(i.ruri_user);
+          const ruriDescription = isRuriFromMessage ? i.raw_source : i.ruri_user;
+          const isCodecValid = pt || name || rate;
+          const RTPDescription = isRTP && isCodecValid ? codecString : fallbackDescription
+          const description = ruriDescription || RTPDescription;
+
+          const outDataItem = {
           id: i.id,
           codecData,
           callid: i.callid,
@@ -740,10 +747,7 @@ export class TransactionServiceProcessor {
             : eventName),
           method: eventName,
           description:
-            i.ruri_user ||
-            (isRTP && (pt || name || rate)
-              ? codecString
-              : `${sIP}:${sPORT} -> ${dIP}:${dPORT}`),
+                  description,
           info_date: `[${i.id || '#' + (pid + 1)}] [${protoName}] ${moment(
             i.micro_ts
           ).format(dateFormat)}`,

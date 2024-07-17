@@ -82,8 +82,8 @@
           <div style="padding: 1rem">
             <mat-form-field appearance="fill" style="width: 100%;">
               <mat-label >{{ 'widgets.prometheusChart.settings.counter' | translate }}</mat-label>
-              <mat-chip-list #chipList class="chips-container prometheus" (click)="selectPrometheus.open()">
-                <mat-chip class="custom-mat-chip"
+              <mat-chip-listbox #chipList class="chips-container prometheus" (click)="selectPrometheus.open()">
+                <mat-chip-option class="custom-mat-chip"
                   *ngFor="let item of prometheus.value"
                   [selectable]="false"
                   (click)="selectPrometheus.open()"
@@ -91,8 +91,8 @@
                   (removed)="remove(item, 'prometheus')">
                   {{item}}
                   <mat-icon matChipRemove >cancel</mat-icon>
-                </mat-chip>
-              </mat-chip-list>
+                </mat-chip-option>
+              </mat-chip-listbox>
               <mat-select multiple
               class="chips-container-selector prometheus"
               #selectPrometheus

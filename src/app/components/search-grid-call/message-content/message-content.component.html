@@ -2,13 +2,13 @@
 </app-webshark>
 <ng-template #baseContainer>
   <mat-tab-group class="message-container" #matTabGroup (selectedTabChange)="onSelectedTab()">
-    <mat-tab label="Message" *ngIf="raw" style="padding: 1rem;">
+    <mat-tab label="Message" *ngIf="raw || raw_hep_log" style="padding: 1rem;">
 
       <div class="time-label">{{ timeLabel }}</div>
       <ngx-json-viewer *ngIf="raw_isJSON" [json]="raw" [expanded]="true"></ngx-json-viewer>
 
       <div [innerHTML]="raw | safeHtml" class="raw-json" *ngIf="!raw_isJSON && type !== 'LOG'"></div>
-      <pre *ngIf="!raw_isJSON && type === 'LOG'" class="raw-json">{{raw}}</pre>
+      <pre *ngIf="!raw_isJSON && type === 'LOG'" class="raw-json">{{raw_hep_log}}</pre>
     </mat-tab>
 
     <mat-tab label="SIP" *ngIf="pt?.sip" class="parsed-data">

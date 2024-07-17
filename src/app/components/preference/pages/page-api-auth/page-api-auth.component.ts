@@ -135,6 +135,7 @@ export class PageApiAuthComponent implements OnInit, AfterViewInit, OnDestroy {
                 );
             }
             this.updateData();
+            this.alertService.success(`${this.page} Successfully ${(_result.isnew ? 'Added' : (isCopy ? 'Copied' : 'Updated'))}`);
         };
 
         const onOpenDialog = (result) => {
@@ -145,8 +146,9 @@ export class PageApiAuthComponent implements OnInit, AfterViewInit, OnDestroy {
             result.isCopy = isCopy;
             this.service[result.isnew ? 'add' : (isCopy ? 'copy' : 'update')](result.data)
                 .toPromise()
-                .then(onServiceRes);
-            this.alertService.success(`${this.page} Successfully ${(result.isnew ? 'Added' : (isCopy ? 'Copied' : 'Updated'))}`);
+                .then(onServiceRes, () => {
+                    this.alertService.error(`Failed to ${(result.isnew ? 'Add' : (isCopy ? 'Copy' : 'Update'))} ${this.page}`)
+                });
         };
 
         this.openDialog(DialogAuthKeyComponent, item, onOpenDialog, isCopy);

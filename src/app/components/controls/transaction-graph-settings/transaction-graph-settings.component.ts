@@ -15,7 +15,7 @@ export class TransactionGraphSettingsComponent implements OnInit {
     isLSSet = false;
     @Input() set options(value) {
         this._options = value;
-        
+
         const ls = Functions.JSON_parse(localStorage.getItem(UserConstValue.GRAPH_SETTINGS));
         if (ls !== null && typeof value !== 'undefined' && !this.isLSSet) {
             setTimeout(() => {
@@ -35,7 +35,7 @@ export class TransactionGraphSettingsComponent implements OnInit {
     get options() {
         return this._options;
     }
-    
+
     @Output() optionsChanged = new EventEmitter();
     isInfoOpened = false;
     constructor(
@@ -47,7 +47,7 @@ export class TransactionGraphSettingsComponent implements OnInit {
          }
 
     ngOnInit(): void {
-        
+
     }
 
     openInfo() {
@@ -64,7 +64,7 @@ export class TransactionGraphSettingsComponent implements OnInit {
         this.isInfoOpened = false;
         this.cdr.detectChanges();
     }
-    formatLabel(value: number) {  
+    formatLabel(value: number): any {
         const percent = Math.round(Math.abs(value) / Math.abs(-50000) * 100);
         return percent;
     }

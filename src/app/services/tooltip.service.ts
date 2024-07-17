@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import * as moment from 'moment';
+import  moment from 'moment';
 import { Functions } from '@app/helpers/functions';
 
 export const MetricsMap = {

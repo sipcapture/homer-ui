@@ -1,17 +1,26 @@
 {
-    "extends": "../tslint.json",
     "rules": {
+        "no-bitwise": false,
         "directive-selector": [
             true,
             "attribute",
             "app",
             "camelCase"
         ],
+        "quotemark": [
+            true,
+            "single"
+        ],
         "component-selector": [
             true,
             "element",
             "app",
             "kebab-case"
-        ]
+        ],"deprecation": {
+            "severity": "error"
+        },
+        "no-unused-variable": {
+            "severity": "error"
+        }
     }
 }

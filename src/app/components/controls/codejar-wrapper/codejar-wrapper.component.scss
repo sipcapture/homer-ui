@@ -1,0 +1,23 @@
+:host {
+    display: block;
+    height: 100%;
+}
+.btn-send {
+    float: right;
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 3;
+}
+.error {
+    margin: 10px;
+    position: absolute;
+    bottom: 0rem;
+    display: block;
+    border-radius: 4px;
+    width: calc(100% - 20px);
+    padding: 0.5rem;
+    color: #FF0;
+    background-color: #900;
+    box-sizing: border-box;
+}

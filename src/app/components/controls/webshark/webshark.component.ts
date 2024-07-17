@@ -6,7 +6,7 @@ import { Input, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit, Outpu
 import { Component, OnInit } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import * as moment from 'moment';
+import  moment from 'moment';
 
 interface TreeNode {
     name: string;

@@ -36,6 +36,13 @@ export class HttpGetBuffer {
     public removeFromBuffer(url: string) {
         HttpGetBuffer._buffer = HttpGetBuffer._buffer.filter(request => request.url !== url)
     }
+    // Expects subpath as parameter, i.e. if you want to remove all Dashboard store requests
+    // http://localhost:9080/api/v3/dashboard/store/home, http://localhost:9080/api/v3/dashboard/store/smartsearch
+    // You pass 'dashboard' and it removes them
+    public removeAllSubPathsFromBuffer(subpath: string) {
+        HttpGetBuffer._buffer = HttpGetBuffer._buffer.filter(request => !request.url.includes(`/${subpath}/`));
+        console.log(HttpGetBuffer._buffer);
+    }
     public get<T>(url: string, delay = HttpGetBuffer.delay): Observable<T> {
         console.log(HttpGetBuffer._buffer);
         if (delay === 0) {

@@ -23,7 +23,7 @@
 .regex-container {
 	font-size: 13px;
 	position: fixed;
-	top: 2px;
+    top: 8px;
 	right: 46px;
 	max-width: 275px;
 	display: flex;
@@ -38,7 +38,7 @@
 		border: 0;
 		padding: 3px 6px;
 		border-radius: 3px 0px 0px 3px;
-		
+
 		outline: none;
 		height: 20px;
 		background: #eeeeee;
@@ -63,7 +63,7 @@
 		top:9px;
 		left: 200px;
 		.regex-filter {
-			
+
 			height: 30px !important;
 		}
 		.regex-button {
@@ -73,7 +73,7 @@
 			font-size: 18px;
 			color: #afafaf;
 		}
-		
+
 	}
 }
 
@@ -113,7 +113,7 @@
 ::ng-deep .mat-icon-button {
     overflow: hidden;
 }
- 
+
 ::ng-deep .mat-icon-button.smart-input {
     overflow: visible !important;
     border-radius: 0;

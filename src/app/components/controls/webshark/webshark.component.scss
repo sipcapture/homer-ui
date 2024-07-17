@@ -24,8 +24,8 @@
     height: 30px !important;
 }
 
-:host ::ng-deep table.this-table th.mat-header-cell,
-:host ::ng-deep table.this-table td.mat-cell {
+:host ::ng-deep table.this-table th.mat-mdc-header-cell,
+:host ::ng-deep table.this-table td.mat-mdc-cell {
     padding: 0 5px !important;
 }
 

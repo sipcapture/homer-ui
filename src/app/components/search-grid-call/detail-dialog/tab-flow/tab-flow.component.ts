@@ -557,9 +557,11 @@ export class TabFlowComponent
           item.description,
           Object.assign({}, item.source_data),
         ];
-        row.raw_source =
-          item.source_data?.item?.message ||
-          `${item.info_date} ${item.description} ${SDPbuffer}`;
+        if (!row.raw_source) {
+          row.raw_source =
+            item.source_data?.item?.message ||
+            `${item.info_date} ${item.description} ${SDPbuffer}`;
+        }
         row.id = `(${item.typeItem}) ${item.description}`;
 
         break;

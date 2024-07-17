@@ -6,7 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { MatColumnDef, MatCellDef, MatTable } from '@angular/material/table';
-import * as moment from 'moment';
+import  moment from 'moment';
 @Component({
   selector: 'app-expire-cell',
   templateUrl: './expire-cell.component.html',
@@ -35,7 +35,7 @@ export class ExpireCellComponent implements OnInit {
       const now = moment().unix();
       const record =  moment(t).unix();
      if(now && record){
-     return now > record 
+     return now > record
     } else { return false }
   }
 

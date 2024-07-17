@@ -1,0 +1,12 @@
+<div style="height: 100%; position:relative;" #codejar>
+    <div *ngIf="errorMessage" class="alert-error alert-danger error" >
+        {{ errorMessage }}
+    </div>
+    <ngx-codejar
+        [highlightMethod]="mode ? highlightMethod : highlightMethodJSON"
+        [code]="code"
+        (codeChange)="onChangeCode($event)"
+        [showLineNumbers]="false"
+        style="height: 100%"
+    ></ngx-codejar>
+</div>

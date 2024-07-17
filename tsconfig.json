@@ -1,58 +1,40 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
-  "compileOnSave": false,
-  "compilerOptions": {
-    "baseUrl": "./",
-    "outDir": "./dist/out-tsc",
-    "sourceMap": true,
-    "declaration": false,
-    "moduleResolution": "node",
-    "downlevelIteration": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "importHelpers": true,
-    "typeRoots": [
-      "node_modules/@types",
-      "../src/typings.d.ts"
-    ],
-    "forceConsistentCasingInFileNames": true,
-    "strict": false,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "target": "es2017",
-    "module": "es2020",
-    "lib": [
-      "es2018",
-      "dom"
-    ],
-    "paths": {
-      "path":[
-        "./node_modules/path-browserify"
-      ],
-      "@app/*": [
-        "src/app/*"
-      ],
-      "@it-app/*": [
-        "src/app/*"
-      ],
-      "@environments/*": [
-        "src/environments/*"
-      ],
-      "@services": [
-        "src/app/services/index.ts"
-      ],
-      "@services/*": [
-        "src/app/services/*"
-      ],
-      "@widgets/*": [
-        "src/app/components/widgets/*"
-      ]
+    "compileOnSave": false,
+    "compilerOptions": {
+        "baseUrl": "./",
+        "outDir": "./dist/out-tsc",
+        "sourceMap": true,
+        "declaration": false,
+        "moduleResolution": "node",
+        "downlevelIteration": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "importHelpers": true,
+        "typeRoots": ["node_modules/@types", "../src/typings.d.ts"],
+        "forceConsistentCasingInFileNames": true,
+        "strict": false,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "target": "ES2022",
+        "module": "es2020",
+        "lib": ["es2018", "dom"],
+        "paths": {
+            "path": ["./node_modules/path-browserify"],
+            "@app/*": ["src/app/*"],
+            "@it-app/*": ["src/app/*"],
+            "@environments/*": ["src/environments/*"],
+            "@services": ["src/app/services/index.ts"],
+            "@services/*": ["src/app/services/*"],
+            "@models": ["src/app/models/index.ts"],
+            "@models/*": ["src/app/models/*"],
+            "@defaults": ["src/app/models/defaults/index.ts"],
+            "@defaults/*": ["src/app/models/defaults/*"],
+            "@widgets/*": ["src/app/components/widgets/*"],
+            "timers": ["node_modules/timers-browserify"],
+            "stream": ["node_modules/stream-browserify"]
+        },
+        "useDefineForClassFields": false
     }
-  },
-  "angularCompilerOptions": {
-    "enableI18nLegacyMessageIdFormat": false,
-    "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true,
-    "strictTemplates": true
-  }
 }

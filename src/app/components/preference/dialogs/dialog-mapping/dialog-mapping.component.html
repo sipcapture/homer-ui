@@ -1,104 +1,182 @@
-<mat-toolbar class="dialog-title"
-  color="primary">
-  <div>{{ 'preference.mapping.dialog.mappingSettings' | translate }}</div>
-  <button mat-icon-button
-    (click)="onNoClick()">
-    <fa-icon icon="times"></fa-icon>
-  </button>
+<mat-toolbar class="dialog-title" color="primary">
+    <div>{{ "preference.mapping.dialog.mappingSettings" | translate }}</div>
+    <button mat-icon-button (click)="onNoClick()">
+        <fa-icon icon="times"></fa-icon>
+    </button>
 </mat-toolbar>
 <div mat-dialog-content>
-  <mat-tab-group>
-    <mat-tab [label]="'preference.mapping.dialog.settings' | translate">
-      <hr />
-      <p>{{ 'preference.mapping.dialog.defines' | translate }}</p>
-      <hr />
-      <div>
-        <mat-form-field style="padding-right: 1rem;">
-          <mat-label>{{ 'preference.mapping.dialog.hepAlias' | translate }}</mat-label>
-          <input matInput
-            [(ngModel)]="data.data.hep_alias"
-            [formControl]="hep_alias"
-            autocomplete="off"
-            [disabled]="!isAdmin">
-          <mat-error *ngIf="hep_alias?.errors?.required">{{'validators.required' | translate }}</mat-error>
-          <mat-error *ngIf="hep_alias?.errors?.minlength">
-            {{ hep_alias?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
-          </mat-error>
-          <mat-error *ngIf="hep_alias?.errors?.maxlength">
-            {{ hep_alias?.errors?.maxlength?.requiredLength }} {{'validators.maxChars' | translate }}
-          </mat-error>
-          <mat-error *ngIf="hep_alias?.errors?.pattern && !hep_alias?.errors?.minlength">
-            {{'validators.pattern' | translate }} [aA-Zz], [0-9], "-" or "_"]
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field style="padding-right: 1rem;">
-          <mat-label>{{ 'preference.mapping.dialog.hepId' | translate }}</mat-label>
-          <input matInput
-            [(ngModel)]="data.data.hepid"
-            [formControl]="hepid"
-            autocomplete="off"
-            [disabled]="!isAdmin">
-          <mat-error *ngIf="hepid?.errors?.required">{{'validators.required' | translate }}</mat-error>
-          <mat-error *ngIf="hepid?.errors?.min">{{'validators.minNumber' | translate }} 1</mat-error>
-          <mat-error *ngIf="hepid?.errors?.max">{{'validators.maxNumber' | translate }} 10000</mat-error>
-          <mat-error *ngIf="hepid?.errors?.pattern">{{'validators.patternNumber' | translate }}</mat-error>
-        </mat-form-field>
-        <mat-form-field style="padding-right: 1rem;">
-          <mat-label>{{ 'preference.mapping.dialog.profile' | translate }}</mat-label>
-          <input matInput
-            [(ngModel)]="data.data.profile"
-            [formControl]="profile"
-            autocomplete="off"
-            [disabled]="!isAdmin">
-          <mat-error *ngIf="profile?.errors?.required">{{'validators.required' | translate }}</mat-error>
-          <mat-error *ngIf="profile?.errors?.minlength">
-            {{ hep_alias?.errors?.minlength?.requiredLength }} {{'validators.minChars' | translate }}
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field style="padding-right: 1rem;" hidden>
-          <mat-label>{{ 'preference.mapping.dialog.retention' | translate }}</mat-label>
-          <input matInput
-            [(ngModel)]="data.data.retention"
-            [formControl]="retention"
-            autocomplete="off"
-            [disabled]="!isAdmin">
-          <mat-error *ngIf="retention?.errors?.required">{{'validators.required' | translate }}</mat-error>
-          <mat-error *ngIf="retention?.errors?.min">{{'validators.minNumber' | translate }} 1</mat-error>
-          <mat-error *ngIf="retention?.errors?.max">{{'validators.maxNumber' | translate }} 365</mat-error>
-          <mat-error *ngIf="retention?.errors?.pattern">{{'validators.patternNumber' | translate }}</mat-error>
-        </mat-form-field>
-      </div>
-    </mat-tab>
-    <mat-tab [label]="'preference.mapping.dialog.correlationMapping' | translate">
-      <hr />
-      <p>{{ 'preference.mapping.dialog.definesCross' | translate }}</p>
-      <hr />
-      <full-screen
-      (fullPage)='disableClose($event)'
-      (import)='import($event, "correlation_mapping")'
-      [data]='{json:data.data.correlation_mapping, title: "Correlation mapping " +  data.data.hep_alias + " " + data.data.profile, type: "json"}'>
-        <ace-editor [mode]="'json'"
-          [theme]="'monokai'"
-          [readOnly]="false"
-          [(text)]="data.data.correlation_mapping"
-          (textChanged)="validate('correlation')"
-          [durationBeforeCallback]="500"
-          #correlation_mapping_view
-          [style.min-height.%]="100"
-          [disabled]="!isAdmin"></ace-editor>
-      </full-screen>
-
-    </mat-tab>
-    <mat-tab [label]="'preference.mapping.dialog.fieldsMapping' | translate">
-      <ng-template matTabContent>
+    <mat-tab-group>
+        <mat-tab [label]="'preference.mapping.dialog.settings' | translate">
             <hr />
-            <p>{{ 'preference.mapping.dialog.definesSchema' | translate }}</p>
+            <p>{{ "preference.mapping.dialog.defines" | translate }}</p>
+            <hr />
+            <div>
+                <mat-form-field style="padding-right: 1rem">
+                    <mat-label>{{
+                        "preference.mapping.dialog.hepAlias" | translate
+                    }}</mat-label>
+                    <input
+                        matInput
+                        [(ngModel)]="data.data.hep_alias"
+                        [formControl]="hep_alias"
+                        autocomplete="off"
+                        [disabled]="!isAdmin"
+                    />
+                    <mat-error *ngIf="hep_alias?.errors?.['required']">{{
+                        "validators.required" | translate
+                    }}</mat-error>
+                    <mat-error *ngIf="hep_alias?.errors?.['minlength']">
+                        {{ hep_alias?.errors?.['minlength']?.requiredLength }}
+                        {{ "validators.minChars" | translate }}
+                    </mat-error>
+                    <mat-error *ngIf="hep_alias?.['errors']?.['maxlength']">
+                        {{ hep_alias?.errors?.['maxlength']?.requiredLength }}
+                        {{ "validators.maxChars" | translate }}
+                    </mat-error>
+                    <mat-error
+                        *ngIf="hep_alias?.errors?.['pattern'] && !hep_alias?.errors?.['minlength']"
+                    >
+                        {{ "validators.pattern" | translate }} [aA-Zz], [0-9],
+                        "-" or "_"]
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field style="padding-right: 1rem">
+                    <mat-label>{{
+                        "preference.mapping.dialog.hepId" | translate
+                    }}</mat-label>
+                    <input
+                        matInput
+                        [(ngModel)]="data.data.hepid"
+                        [formControl]="hepid"
+                        autocomplete="off"
+                        [disabled]="!isAdmin"
+                    />
+                    <mat-error *ngIf="hepid?.errors?.['required']">{{
+                        "validators.required" | translate
+                    }}</mat-error>
+                    <mat-error *ngIf="hepid?.errors?.['min']"
+                        >{{ "validators.minNumber" | translate }} 1</mat-error
+                    >
+                    <mat-error *ngIf="hepid?.errors?.['max']"
+                        >{{
+                            "validators.maxNumber" | translate
+                        }}
+                        10000</mat-error
+                    >
+                    <mat-error *ngIf="hepid?.errors?.['pattern']">{{
+                        "validators.patternNumber" | translate
+                    }}</mat-error>
+                </mat-form-field>
+                <mat-form-field style="padding-right: 1rem">
+                    <mat-label>{{
+                        "preference.mapping.dialog.profile" | translate
+                    }}</mat-label>
+                    <input
+                        matInput
+                        [(ngModel)]="data.data.profile"
+                        [formControl]="profile"
+                        autocomplete="off"
+                        [disabled]="!isAdmin"
+                    />
+                    <mat-error *ngIf="profile?.errors?.['required']">{{
+                        "validators.required" | translate
+                    }}</mat-error>
+                    <mat-error *ngIf="profile?.errors?.['minlength']">
+                        {{ hep_alias?.errors?.['minlength']?.requiredLength }}
+                        {{ "validators.minChars" | translate }}
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field style="padding-right: 1rem" hidden>
+                    <mat-label>{{
+                        "preference.mapping.dialog.retention" | translate
+                    }}</mat-label>
+                    <input
+                        matInput
+                        [(ngModel)]="data.data.retention"
+                        [formControl]="retention"
+                        autocomplete="off"
+                        [disabled]="!isAdmin"
+                    />
+                    <mat-error *ngIf="retention?.errors?.['required']">{{
+                        "validators.required" | translate
+                    }}</mat-error>
+                    <mat-error *ngIf="retention?.errors?.['min']"
+                        >{{ "validators.minNumber" | translate }} 1</mat-error
+                    >
+                    <mat-error *ngIf="retention?.errors?.['max']"
+                        >{{ "validators.maxNumber" | translate }} 365</mat-error
+                    >
+                    <mat-error *ngIf="retention?.errors?.['pattern']">{{
+                        "validators.patternNumber" | translate
+                    }}</mat-error>
+                </mat-form-field>
+            </div>
+        </mat-tab>
+        <mat-tab
+            [label]="'preference.mapping.dialog.correlationMapping' | translate"
+        >
+            <hr />
+            <p>{{ "preference.mapping.dialog.definesCross" | translate }}</p>
             <hr />
             <full-screen
-            (fullPage)='disableClose($event)'
-            (import)='import($event, "fields_mapping")'
-            [data]='{json:data.data.fields_mapping, title: "Fields mapping " +  data.data.hep_alias + " " + data.data.profile, type: "json"}'>
-              <ace-editor [mode]="'json'"
+                (fullPage)="disableClose($event)"
+                (import)="import($event, 'correlation_mapping')"
+                [data]="{
+                    json: data.data.correlation_mapping,
+                    title:
+                        'Correlation mapping ' +
+                        data.data.hep_alias +
+                        ' ' +
+                        data.data.profile,
+                    type: 'json'
+                }"
+            >
+                <!-- <ace-editor [mode]="'json'"
+                [theme]="'monokai'"
+                [readOnly]="false"
+                [(text)]="data.data.correlation_mapping"
+                (textChanged)="validate('correlation')"
+                [durationBeforeCallback]="500"
+                #correlation_mapping_view
+                [style.min-height.%]="100"
+                [disabled]="!isAdmin"></ace-editor> -->
+                <app-codejar-wrapper
+                    [mode]="'json'"
+                    [theme]="'monokai'"
+                    [readOnly]="false"
+                    [(text)]="data.data.correlation_mapping"
+                    (textChange)="validate('correlation')"
+                    [durationBeforeCallback]="500"
+                    #correlation_mapping_view
+                    [style.min-height.%]="100"
+                    [disabled]="!isAdmin"
+                >
+                </app-codejar-wrapper>
+            </full-screen>
+        </mat-tab>
+        <mat-tab
+            [label]="'preference.mapping.dialog.fieldsMapping' | translate"
+        >
+            <ng-template matTabContent>
+                <hr />
+                <p>
+                    {{ "preference.mapping.dialog.definesSchema" | translate }}
+                </p>
+                <hr />
+                <full-screen
+                    (fullPage)="disableClose($event)"
+                    (import)="import($event, 'fields_mapping')"
+                    [data]="{
+                        json: data.data.fields_mapping,
+                        title:
+                            'Fields mapping ' +
+                            data.data.hep_alias +
+                            ' ' +
+                            data.data.profile,
+                        type: 'json'
+                    }"
+                >
+                    <!-- <ace-editor [mode]="'json'"
                 [theme]="'monokai'"
                 [readOnly]="false"
                 [(text)]="data.data.fields_mapping"
@@ -107,49 +185,83 @@
                 #fields_mapping_view
                 [style.min-height.%]="100"
                 [disabled]="!isAdmin">
-              </ace-editor>
+              </ace-editor> -->
+                    <app-codejar-wrapper
+                        [mode]="'json'"
+                        [theme]="'monokai'"
+                        [readOnly]="false"
+                        [(text)]="data.data.fields_mapping"
+                        (textChange)="validate('mapping')"
+                        [durationBeforeCallback]="500"
+                        #fields_mapping_view
+                        [style.min-height.%]="100"
+                        [disabled]="!isAdmin"
+                    ></app-codejar-wrapper>
+                </full-screen>
+            </ng-template>
+        </mat-tab>
+
+        <mat-tab
+            *ngIf="mappingScript && isScript"
+            [label]="'preference.mapping.dialog.script' | translate"
+        >
+            <hr />
+            <p>{{ "preference.mapping.dialog.definesScript" | translate }}</p>
+            <hr />
+            <full-screen
+                (fullPage)="disableClose($event)"
+                (import)="import($event, 'script')"
+                (fullPage)="disableClose($event)"
+                [data]="{
+                    json: mappingScript.data,
+                    title:
+                        'Correlation script ' +
+                        data.data.hep_alias +
+                        ' ' +
+                        data.data.profile,
+                    type: 'js'
+                }"
+            >
+                <!-- <ace-editor
+                    [mode]="'javascript'"
+                    [theme]="'monokai'"
+                    [readOnly]="false"
+                    [(text)]="mappingScript.data"
+                    (textChanged)="scriptValidate()"
+                    [durationBeforeCallback]="200"
+                    #fields_script_view
+                    [style.min-height.%]="100"
+                    [disabled]="!isAdmin"
+                ></ace-editor>
+                -->
+                <app-codejar-wrapper [mode]="'javascript'"
+                    [theme]="'monokai'"
+                    [readOnly]="false"
+                    [(text)]="mappingScript.data"
+                    (textChange)="scriptValidate()"
+                    [durationBeforeCallback]="200"
+                    #fields_script_view
+                    [style.min-height.%]="100"
+                >
+                </app-codejar-wrapper>
             </full-screen>
-      </ng-template>
+        </mat-tab>
+    </mat-tab-group>
 
-
-
-
-
-    </mat-tab>
-
-    <mat-tab *ngIf="mappingScript && isScript"
-    [label]="'preference.mapping.dialog.script' | translate">
-      <hr />
-      <p>{{ 'preference.mapping.dialog.definesScript' | translate }}</p>
-      <hr />
-      <full-screen
-      (fullPage)='disableClose($event)'
-      (import)='import($event, "script")'
-      (fullPage)='disableClose($event)' [data]='{json:mappingScript.data, title: "Correlation script " +  data.data.hep_alias + " " + data.data.profile, type: "js"}'>
-        <ace-editor [mode]="'javascript'"
-          [theme]="'monokai'"
-          [readOnly]="false"
-          [(text)]="mappingScript.data"
-          (textChanged)="scriptValidate()"
-          [durationBeforeCallback]="200"
-          #fields_script_view
-          [style.min-height.%]="100"
-          [disabled]="!isAdmin">
-        </ace-editor>
-      </full-screen>
-    </mat-tab>
-  </mat-tab-group>
-
-  <hr />
+    <hr />
 </div>
 
-<div mat-dialog-actions
-  style="float: right; margin-bottom: 0rem;">
-  <button mat-raised-button
-    (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button>
-  <button mat-raised-button
-    class="setting-btn-ok"
-    (click)="onSubmit()"
-    cdkFocusInitial
-    [disabled]='isDisabled'>{{'LINK.buttons.save' | translate}}</button>
+<div mat-dialog-actions style="float: right; margin-bottom: 0rem">
+    <button mat-raised-button (click)="onNoClick()">
+        {{ "LINK.buttons.cancel" | translate }}
+    </button>
+    <button
+        mat-raised-button
+        class="setting-btn-ok"
+        (click)="onSubmit()"
+        cdkFocusInitial
+        [disabled]="isDisabled"
+    >
+        {{ "LINK.buttons.save" | translate }}
+    </button>
 </div>

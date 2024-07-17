@@ -57,7 +57,7 @@ export class DialogSettingsGridDialog {
         this.protocol_id = data.protocol_id;
         this.id = data.idParent;
         if (
-            typeof this.apiColumn.getAllColumns() !== 'undefined' &&
+            typeof this.apiColumn?.getAllColumns() !== 'undefined' &&
             this.apiColumn.getAllColumns() !== null
         ) {
             Object.values(this.apiColumn.getAllGridColumns() as Object)
