@@ -113,6 +113,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   resizeTimeout: any;
   searchTabConfig = {};
   brandSrc;
+    isInvalid = false;
   @ViewChildren('widgets') widgets: QueryList<IWidget>;
   @ViewChild('customWidget', { static: false }) customWidget: any;
   @ViewChild('gridster', { static: false }) gridster: any;
@@ -428,12 +429,17 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.isHome = params?.id === 'home';
     const dashboard = await this.dashboardService.getDashboardStore(this.dashboardService.getCurrentDashBoardId()).toPromise();
+      console.log(dashboard);
     if (dashboard == null) {
       return;
     }
     this.dashboardCollection = dashboard;
     this.dashboardService.dbs.currentDashboardType = dashboard.data?.type;
-    this.dashboardService.setWidgetListCurrentDashboard(this.dashboardCollection.data.widgets);
+      if (typeof this.dashboardCollection.data?.widgets === 'undefined') {
+          this.isInvalid = true;
+      } else {
+          this.dashboardService.setWidgetListCurrentDashboard(this.dashboardCollection.data.widgets);
+      }
     if (dashboard.data.shared === 0 && dashboard.owner === username) {
       dashboard.data.shared = false;
     }
@@ -919,7 +925,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     // this.dashboardArray[this.dashboardArray.map(i => i.id).indexOf(id)].config = config;
     this.save();
   }
-
+    onPreference() {
+        this.router.navigate([`preference/reset`]);
+    }
   async onDashboardAdd(tabGroup: string = null) {
 
     const data = await this.dialog.open(AddDialogComponent, { width: '600px', data: {} }).afterClosed().toPromise();
@@ -1012,7 +1020,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onDownloadDashboardSettings() {
-    Functions.saveToFile(JSON.stringify(this.dashboardCollection, null, 2), `${this.dashboardTitle}.json`);
+      Functions.saveToFile(JSON.stringify(this.dashboardCollection.data, null, 2), `${this.dashboardTitle}.json`);
   }
 
   async onShareQrLink() {
