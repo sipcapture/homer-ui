@@ -12,7 +12,8 @@ import { FlowItemType } from '@app/models/flow-item-type.model';
 import { Functions, setStorage } from '@app/helpers/functions';
 import { TransactionFilterService } from './transaction-filter.service';
 import { CallIDColor } from '@app/models/CallIDColor.model';
-import { AlertMessage, AlertService } from '@app/services';
+import { AlertMessage, AlertService, PreferenceAdvancedService } from '@app/services';
+import { lastValueFrom } from 'rxjs';
 
 interface FilterItem {
     title: string;
@@ -33,8 +34,10 @@ export interface FlowFilter {
     templateUrl: './transaction-filter.component.html',
     styleUrls: ['./transaction-filter.component.scss'],
 })
-export class TransactionFilterComponent {
+export class TransactionFilterComponent implements OnInit {
     flowFilters;
+    isAdvancedDefaultFilter = false;
+    filterSettings: any = {};
 
     isSimplify = true;
     isSimplifyPort = true;
@@ -119,6 +122,7 @@ export class TransactionFilterComponent {
         /**
          * PayloadType
          */
+
         this.checkboxListFilterPayloadType = Object.entries(filters.payload)
             .filter((i) => i[1])
             .map((record) => {
@@ -126,11 +130,15 @@ export class TransactionFilterComponent {
                 return {
                     title: typeName,
                     selected:
-                        this.getPayloadFromLocalStorage(typeName) ||
-                        (typeName !== FlowItemType.RTCP && typeName !== FlowItemType.RTP),
+                        this.isAdvancedDefaultFilter ?
+                            this.getPayloadFromAdvancedSettings(typeName) :
+                            (this.getPayloadFromLocalStorage(typeName) || (
+                                typeName !== FlowItemType.RTCP &&
+                                typeName !== FlowItemType.RTP
+                            )),
                 };
             });
-
+        console.log('checkboxListFilterPayloadType', this.checkboxListFilterPayloadType);
         /**
          * Call-ID
          */
@@ -169,10 +177,24 @@ export class TransactionFilterComponent {
     @ViewChild('filterContainer', { static: false }) filterContainer: ElementRef;
     constructor(
         private cdr: ChangeDetectorRef,
+        private _pas: PreferenceAdvancedService,
         private transactionFilterService: TransactionFilterService,
         private alertService: AlertService
     ) { }
+    async ngOnInit() {
+        const advanced = await lastValueFrom(this._pas.getAll());
+        const filterSettings = advanced?.data?.find(i =>
+            i.category == 'transaction' &&
+            i.param == "filter"
+        )?.data;
 
+        this.isAdvancedDefaultFilter = !!filterSettings;
+        this.filterSettings = filterSettings;
+        console.log({
+            filterSettings
+
+        });
+    }
     doFilterMessages(type: string = null) {
         setTimeout(() => {
             if (this.combineType === '1none') {
@@ -199,7 +221,7 @@ export class TransactionFilterComponent {
                 });
                 this.cdr.detectChanges();
             }
-            console.log(this.checkboxListFilterPayloadType)
+            console.log('this.checkboxListFilterPayloadType', this.checkboxListFilterPayloadType);
             if (
                 this.checkboxListFilterPayloadType.every(
                     (type) => type.selected === false
@@ -266,6 +288,11 @@ export class TransactionFilterComponent {
             },
         });
         localStorage.removeItem(ConstValue.LOCAL_FILTER_STATE);
+    }
+    getPayloadFromAdvancedSettings(type: string = 'RTP'): boolean {
+
+        return !!this.filterSettings[type];
+
     }
     getPayloadFromLocalStorage(type: string = 'RTP') {
         const defaultReturn =
