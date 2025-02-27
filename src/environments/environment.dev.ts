@@ -6,8 +6,7 @@ let _environment: any = {
   production: false,
   environment: VERSION,
   isHomerAPI: true,
-  // apiUrl: location.protocol + '//' + (location.host) + '/api/v3'
-  apiUrl: 'http://localhost:9080/api/v3'
+  apiUrl: location.protocol + '//' + (location.host) + '/api/v3'
 };
 
 if (typeof window.GLOBAL_CONFIG == "object") {
