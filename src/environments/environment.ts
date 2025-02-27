@@ -8,7 +8,7 @@
 // };
 import { VERSION } from '../VERSION';
 
-declare const window: any;
+declare const self: any;
 
 let _environment: any = {
   production: false,
@@ -17,8 +17,13 @@ let _environment: any = {
   apiUrl: location.protocol + '//' + (location.host) + '/api/v3'
 };
 
-if (typeof window.GLOBAL_CONFIG == "object") {
-  _environment.apiUrl = window.GLOBAL_CONFIG.API_PATH;
+if (typeof self?.GLOBAL_CONFIG == "object") {
+  const { PREFIX, API_PATH } = self?.GLOBAL_CONFIG || {};
+  if (API_PATH) {
+      _environment.apiUrl = API_PATH;
+  } else if (PREFIX) {
+      _environment.apiUrl = location.protocol + '//' + (location.host) + PREFIX + 'api/v3';
+  }
 }
 
 export const environment = _environment;

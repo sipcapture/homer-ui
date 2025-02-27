@@ -3,14 +3,19 @@
 <head>
   <script src="./env.js"></script>
   <script>
-    let base_href = './';
-    if (typeof window.GLOBAL_CONFIG == "object") {
-      let config = window.GLOBAL_CONFIG;
-      base_href = config.HOST + config.PREFIX;
-    }
-    var newBase = document.createElement("base");
-    newBase.setAttribute("href", base_href);
-    document.getElementsByTagName("head")[0].appendChild(newBase);
+      let base_href = document.location.pathname;
+      if (typeof window.GLOBAL_CONFIG == "object") {
+          let config = window.GLOBAL_CONFIG;
+          if(config.HOST && config.PREFIX) {
+              base_href = config.HOST + config.PREFIX;
+          } else if(config.PREFIX) {
+              base_href = config.PREFIX;
+          }
+
+      }
+      var newBase = document.createElement("base");
+      newBase.setAttribute("href", base_href);
+      document.getElementsByTagName("head")[0].appendChild(newBase);
   </script>
   <meta charset="utf-8">
   <title>HomerUi</title>
