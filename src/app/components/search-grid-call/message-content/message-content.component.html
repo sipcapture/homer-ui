@@ -65,7 +65,7 @@
             <td mat-cell *matCellDef="let element"
               style="font-size:12px;font-family: 'Roboto Mono', monospace !important;">
               <div *ngIf="isObject(element.value); else simpleType">
-                <ngx-json-viewer [json]="{details: element.value}" [expanded]="true"></ngx-json-viewer>
+                <ngx-json-viewer [json]="{details: element.value}" [expanded]="true"></ngx-json-viewer>                
               </div>
               <ng-template #simpleType>
                 <span style="font-size:12px;font-family: 'Roboto Mono', monospace !important;">{{element.value}}</span>
