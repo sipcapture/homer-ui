@@ -4,7 +4,7 @@ declare const window: any;
 
 let _environment: any = {
   production: false,
-  environment: VERSION,
+  environment: VERSION + '(dev)',
   isHomerAPI: true,
   apiUrl: location.protocol + '//' + (location.host) + '/api/v3'
 };
