@@ -1,0 +1,15 @@
+# OPTIONAL; use this Dockerfile for local development:
+#   1. docker build -t homer-ui -f ./Dockerfile.local .
+#   2. cd /path/to/homer-app
+#   3. make localfe
+
+FROM node:18-alpine
+
+RUN apk add git
+
+COPY . /app/
+WORKDIR /app
+
+RUN npm install && npm install -g @angular/cli
+RUN npm run build
+#RUN ng build
