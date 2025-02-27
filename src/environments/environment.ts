@@ -8,14 +8,20 @@
 // };
 import { VERSION } from '../VERSION';
 
-export const environment = {
+declare const window: any;
+
+let _environment: any = {
   production: false,
   environment: VERSION,
   isHomerAPI: true,
   apiUrl: location.protocol + '//' + (location.host) + '/api/v3'
-
 };
 
+if (typeof window.GLOBAL_CONFIG == "object") {
+  _environment.apiUrl = window.GLOBAL_CONFIG.API_PATH;
+}
+
+export const environment = _environment;
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
