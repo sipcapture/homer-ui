@@ -45,13 +45,7 @@
                             "src/styles.scss",
                             "node_modules/highlight.js/styles/atom-one-dark.css"
                         ],
-                        "scripts": [
-                            {
-                                "input": "src/env.js",
-                                "inject": false,
-                                "bundleName": "env"
-                            }
-                        ],
+                        "scripts": [],
                         "webWorkerTsConfig": "tsconfig.worker.json"
                     },
                     "configurations": {
