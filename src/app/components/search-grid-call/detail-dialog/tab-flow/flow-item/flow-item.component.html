@@ -1,4 +1,4 @@
-<div class="item-flow-packet-container">
+<ng-template #itemFlowPacket let-item="item" let-idx="idx" >
   <div class="bg-color-polygon"
     [style.background-color]="item.options.color"></div>
   <!-- background-color -->
@@ -6,20 +6,22 @@
   <div [style.flex]="item.options.start || 0.0000001"></div>
   <!-- left space -->
   <div class="item-flow-packet"
-    (click)="onClickItem(idx, $event)"
+    (click)="onClickItem(item, idx, $event)"
     [style.flex]="item.options.middle || 0.0000001"
     [style.text-align]="item.options.direction ? 'right' : 'left'">
 
     <!-- content -->
     <div class="call_text"
       [style.color]="item.options.color_method || 'initial'">
+      <span *ngIf="item.subItems && item.subItems.length > 0" [style.opacity]="0.6" (click)="toggleSubItems($event)">
+        {{ showSubItems ? '▽' : '▷' }}
+      </span>
       {{ item.method_text }}
       <span *ngIf="item.QOS && item.QOS.MOS"
         class="blinkLamp"
         [style.backgroundColor]="MOSColorGradient(item.QOS.MOS)"></span>
       {{ item.QOS ? (item.QOS.MOS ? (item.QOS.MOS + " [" + item.QOS.qosTYPEless + "]") : 'UA Report') : "" }}
     </div>
-
 
     <div class="call_text-mini"
       [style.height.px]=" !isSimplify ? 15 : 0 ">
@@ -65,4 +67,12 @@
   <div
     [style.flex]="(item.options.rightEnd - (item.options.isRadialArrow && !item.options.isLastHost ? 1 : 0 )) || 0.0000001">
   </div>
+</ng-template>
+<div class="item-flow-packet-container">
+  <ng-container *ngTemplateOutlet="itemFlowPacket; context: { item: item, idx: idx }"></ng-container>
+</div>
+<div class="item-flow-packet-container" *ngIf="showSubItems && item.subItems && item.subItems.length > 0">
+  <ng-container *ngFor="let subItem of item.subItems; let subIdx = index">
+    <ng-container *ngTemplateOutlet="itemFlowPacket; context: { item: subItem, idx: idx }"></ng-container>
+  </ng-container>
 </div>
