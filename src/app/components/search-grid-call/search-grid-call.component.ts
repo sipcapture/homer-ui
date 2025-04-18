@@ -1454,83 +1454,84 @@ export class SearchGridCallComponent
         this.cdr.detectChanges();
     }
     stylingRowText(raw: string) {
-        if (!raw) {
-            return null;
-        }
-        raw += '';
-        const regexMethod = new RegExp('INVITE|CANCEL|PRACK|ACK|BYE|OPTIONS', 'g');
-        const regexReply = new RegExp('(SIP/2.0) (100|180|200|404|407|500|503) ', 'g');
-        const regexpCallid = new RegExp('(Call-ID):(.*)', 'g');
-        const regexpSDP = new RegExp('(m=(audio|video)) (.*)', 'g');
-        const regexpTag = new RegExp('tag=.*', 'g');
-        const regexHeaders = new RegExp('(.*): ', 'g');
-        let color: string;
-        raw = raw
-            .replace(/\</g, '&lt;')
-            .replace(/\>/g, '&gt;')
-            .replace(regexpCallid, (g, a, c) => {
+      if (!raw) {
+        return null;
+      }
+      raw += '';
+      const regexMethod = new RegExp('INVITE|CANCEL|PRACK|ACK|BYE|OPTIONS', 'g');
+      const regexReply = new RegExp(
+        '(SIP/2.0) (100|180|200|404|407|500|503) ',
+        'g'
+      );
+      const regexpCallid = new RegExp('(Call-ID):(.*)', 'g');
+      const regexpSDP = new RegExp('(m=(audio|video)) (.*)', 'g');
+      const regexpTag = new RegExp('tag=.*', 'g');
+      const regexHeaders = new RegExp('(.*): ', 'g');
+      let color: string;
+      raw = raw
+        .replace(/\</g, '&lt;')
+        .replace(/\>/g, '&gt;')
+        .replace(regexpCallid, (g, a, c) => {
+          color = 'blue';
+          return `<span style="font-weight:bold">${a}:</span><span style="color:${color}">${c}</span>`;
+        })
+        .replace(regexpTag, (g, a) => {
+          color = 'dimGray';
+          return `<span style="font-weight:bold;color:${color}">${g}</span>`;
+        })
+        .replace(regexpSDP, (g, a) => {
+          color = 'dimGray';
+          return `<span style="font-weight:bold;color:${color}">${g}</span>`;
+        })
+        .replace(regexMethod, (g) => {
+          color = 'blue';
+          switch (g) {
+            case 'INVITE':
+              color = 'hsl(227.5,82.4%,51%)';
+              break;
+            case 'CANCEL':
+              color = 'green';
+              break;
+            case 'BYE':
+              color = 'hsl(120,100%,25%)';
+              break;
+            case 'ACK':
+              color = 'orange';
+              break;
+          }
+
+          return `<span style="font-weight:bold;color:${color}">${g}</span>`;
+        })
+        .replace(regexReply, (g, a, c: any) => {
+          color = 'red';
+          const b = parseInt(c, 10);
+          switch (b) {
+            case 100:
+              color = 'orange';
+              break;
+            case 180:
+              color = 'blue';
+              break;
+            case 183:
+              color = 'blue';
+              break;
+            case 200:
+              color = 'green';
+              break;
+            default:
+              if (b >= 300 && b < 400) {
                 color = 'blue';
-                return `<span style="font-weight:bold">${a}:</span><span style="color:${color}">${c}</span>`;
-            })
-            .replace(regexpTag, (g, a) => {
-                color = 'dimGray';
-                return `<span style="font-weight:bold;color:${color}">${g}</span>`;
-            })
-            .replace(regexpSDP, (g, a) => {
-                color = 'dimGray';
-                return `<span style="font-weight:bold;color:${color}">${g}</span>`;
-            })
-            .replace(regexMethod, g => {
-                color = 'blue';
-                switch (g) {
-                    case 'INVITE':
-                        color = 'hsl(227.5,82.4%,51%)';
-                        break;
-                    case 'CANCEL':
-                        color = 'green';
-                        break;
-                    case 'BYE':
-                        color = 'hsl(120,100%,25%)';
-                        break;
-                    case 'ACK':
-                        color = 'orange';
-                        break;
-                }
+              }
+              break;
+          }
 
-                return `<span style="font-weight:bold;color:${color}">${g}</span>`;
-            })
-            .replace(regexReply, (g, a, c: any) => {
+          return `<span style="font-weight:bold">${a}</span> <span style="font-weight:bold;color:${color}">${c}</span> `;
+        })
+        .replace(regexHeaders, (g, a) => {
+          return `<span style="font-weight:bold">${g.replace(/\s/g, '')}</span> `;
+        });
 
-                color = 'red';
-                const b = parseInt(c, 10);
-                switch (b) {
-                    case 100:
-                        color = 'orange';
-                        break;
-                    case 180:
-                        color = 'blue';
-                        break;
-                    case 183:
-                        color = 'blue';
-                        break;
-                    case 200:
-                        color = 'green';
-                        break;
-                    default:
-                        if (b >= 300 && b < 400) {
-                            color = 'blue';
-                        }
-                        break;
-                }
-
-                return `<span style="font-weight:bold">${a}</span> <span style="font-weight:bold;color:${color}">${c}</span> `;
-            })
-            .replace(regexHeaders, (g, a) => {
-                return `<span style="font-weight:bold">${g}</span> `;
-            });
-
-        return raw;
-
+      return raw;
     }
     public closeWindowMessage(id: number) {
         this.arrMessageDetail.splice(id, 1);
