@@ -154,7 +154,7 @@
                 [isGroupByAlias]="_isCombineByAlias"
                 [isSimplify]="isSimplify"
                 [isAbsolute]="false"
-                (itemClick)="onClickMessage($event.idx, $event.event, item)"
+                (itemClick)="onClickMessage($event.idx, $event.event, $event.item)"
             ></app-flow-item>
             <div style="height: 60px"></div>
         </div>
@@ -189,7 +189,7 @@
             [isGroupByAlias]="_isCombineByAlias"
             [isSimplify]="isSimplify"
             [isAbsolute]="false"
-            (itemClick)="onClickMessage($event.idx, $event.event, item)"
+            (itemClick)="onClickMessage($event.idx, $event.event, $event.item)"
           >
           </app-flow-item>
         </ng-template>
