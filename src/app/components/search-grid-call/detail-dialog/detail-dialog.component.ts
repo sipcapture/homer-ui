@@ -135,8 +135,9 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     this.saveStateOnStorage(data);
     this._sipDataItem = data;
     if (this._sipDataItem?.data?.qosData) {
-      this._qosData = this._sipDataItem?.data?.qosData;
+      this._qosData = this._sipDataItem.data.qosData;
     }
+
     this._sipDataItem.metadata = { dataType: data.type };
     this._isLoaded = !!this._sipDataItem;
     const { callid, messages } = data.data || {};
@@ -255,7 +256,7 @@ export class DetailDialogComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.tabs.qos = isVisible;
       if (isVisible) {
-        const isRTP = this._qosData?.rtp?.data?.length > 0;
+        const isRTP = !!(this._qosData?.rtp?.data?.length > 0);
         if (isRTP) {
           this.checkboxListFilterPayloadType.push({
             payloadType: '5',

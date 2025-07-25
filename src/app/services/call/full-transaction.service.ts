@@ -3,7 +3,7 @@ import { AgentsubService } from '@app/services/agentsub.service';
 import { Injectable } from '@angular/core';
 import { CallReportService } from '@app/services';
 import { CallTransactionService } from '@app/services';
-import { Observable } from 'rxjs';
+import { Observable, lastValueFrom } from 'rxjs';
 // import { HepLogService } from '@app/services';
 import { WorkerService } from '../worker.service';
 import { WorkerCommands } from '@app/models/worker-commands.module';
@@ -125,7 +125,7 @@ export class FullTransactionService {
         try {
           const callIdArr = tData?.data?.calldata.map(i => i.sid).sort().filter((i, k, a) => i !== a[k - 1]) || [];
           Object.values(rt.param.search).forEach((i: any) => i.callid = callIdArr);
-          const qosData: any = await this.callReportService.postQOS(rt).toPromise();
+          const qosData: any = await lastValueFrom(this.callReportService.postQOS(rt));
           tData = await _worker({ tData, qosData, type: 'qos' });
           tData.qosData = qosData;
         } catch (err) { onError('qos'); }
