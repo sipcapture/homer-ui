@@ -877,10 +877,10 @@ export class TransactionServiceProcessor {
             break;
         }
 
-        return `<span style="font-weight:bold">${a}</span> <span style="font-weight:bold;color:${color}">${c}</span> `;
+        return `<span style="font-weight:bold">${a}</span> <span style="font-weight:bold;color:${color}">${c}</span>`;
       })
       .replace(regexHeaders, (g, a) => {
-        return `<span style="font-weight:bold">${g}</span> `;
+        return `<span style="font-weight:bold">${g}</span>`;
       });
 
     return raw;
