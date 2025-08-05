@@ -13,7 +13,8 @@ import { Functions, setStorage } from '@app/helpers/functions';
 import { TransactionFilterService } from './transaction-filter.service';
 import { CallIDColor } from '@app/models/CallIDColor.model';
 import { AlertMessage, AlertService, PreferenceAdvancedService } from '@app/services';
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom, BehaviorSubject, Subscription } from 'rxjs';
+import { CallCaptureIdConsolidationService } from '@app/services/call/consolidation.service';
 
 interface FilterItem {
     title: string;
@@ -22,6 +23,8 @@ interface FilterItem {
 }
 export interface FlowFilter {
     isSimplify: boolean;
+    isConsolidateCaptureIds: boolean;
+    consolidationTimeThreshold: number;
     isSimplifyPort: boolean;
     isCombineByAlias: boolean;
     PayloadType: Array<FilterItem>;
@@ -40,10 +43,16 @@ export class TransactionFilterComponent implements OnInit {
     filterSettings: any = {};
 
     isSimplify = true;
+    hasFingerprints = false;
+    isConsolidateCaptureIds = false;
+    consolidationTimeThreshold = 500;
     isSimplifyPort = true;
     isCombineByAlias = false;
     IdFromCallID;
     isFilterOpened = false;
+
+    hasFingerprints$ = new BehaviorSubject<boolean>(false);
+    consolidationFilterSubscription: Subscription;
 
     checkboxListFilterPayloadType = [];
     checkboxListFilterPort = [];
@@ -139,6 +148,7 @@ export class TransactionFilterComponent implements OnInit {
                 };
             });
         console.log('checkboxListFilterPayloadType', this.checkboxListFilterPayloadType);
+
         /**
          * Call-ID
          */
@@ -157,6 +167,8 @@ export class TransactionFilterComponent implements OnInit {
         this.flowFilters = {
             channel: this.channel,
             isSimplify: this.isSimplify,
+            isConsolidateCaptureIds: this.isConsolidateCaptureIds,
+            consolidationTimeThreshold: this.consolidationTimeThreshold,
             isSimplifyPort: !this._isSingleIP ? this.isSimplifyPort : false,
             isCombineByAlias: !this._isSingleIP ? this.isCombineByAlias : false,
             PayloadType: this.checkboxListFilterPayloadType,
@@ -179,14 +191,25 @@ export class TransactionFilterComponent implements OnInit {
         private cdr: ChangeDetectorRef,
         private _pas: PreferenceAdvancedService,
         private transactionFilterService: TransactionFilterService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private consolidationService: CallCaptureIdConsolidationService
     ) { }
+
     async ngOnInit() {
         const advanced = await lastValueFrom(this._pas.getAll());
         const filterSettings = advanced?.data?.find(i =>
             i.category == 'transaction' &&
             i.param == "filter"
         )?.data;
+
+        this.checkFingerprints();
+
+        // Initialize the consolidation state from the service
+        this.consolidationFilterSubscription = this.consolidationService.consolidationFilter$.subscribe(value => {
+            this.isConsolidateCaptureIds = value.isConsolidateCaptureIds;
+            this.consolidationTimeThreshold = value.consolidationTimeThreshold;
+            this.cdr.detectChanges();
+        });
 
         this.isAdvancedDefaultFilter = !!filterSettings;
         this.filterSettings = filterSettings;
@@ -195,6 +218,23 @@ export class TransactionFilterComponent implements OnInit {
 
         });
     }
+
+    ngOnDestory() {
+        if (this.consolidationFilterSubscription) {
+            this.consolidationFilterSubscription.unsubscribe();
+        }
+    }
+
+    private checkFingerprints(): void {
+        setTimeout(() => {
+            const hasFingerprint = this.dataItem.data.messages.some(
+                (i) => i.messageData.item?.fingerprint !== undefined
+            );
+            console.log("fingerprints:", hasFingerprint);
+            this.hasFingerprints$.next(hasFingerprint);
+        }, 0);
+    }
+
     doFilterMessages(type: string = null) {
         setTimeout(() => {
             if (this.combineType === '1none') {
@@ -258,6 +298,8 @@ export class TransactionFilterComponent implements OnInit {
             this.flowFilters = {
                 channel: this.channel,
                 isSimplify: this.isSimplify,
+                isConsolidateCaptureIds: this.isConsolidateCaptureIds,
+                consolidationTimeThreshold: this.consolidationTimeThreshold,
                 isSimplifyPort: this.isSimplifyPort,
                 isCombineByAlias: this.isCombineByAlias,
                 PayloadType: this.checkboxListFilterPayloadType,
@@ -269,18 +311,27 @@ export class TransactionFilterComponent implements OnInit {
                 this.saveFiltersToLocalStorage();
             }
             this.transactionFilterService.setFilter(this.flowFilters);
+            this.consolidationService.setConsolidationFilter({
+                isConsolidateCaptureIds: this.isConsolidateCaptureIds,
+                consolidationTimeThreshold: this.consolidationTimeThreshold
+            });
+
             this.cdr.detectChanges();
         });
     }
     saveFiltersToLocalStorage() {
         setStorage(UserConstValue.LOCAL_FILTER_STATE, {
             isSimplify: this.isSimplify,
+            isConsolidateCaptureIds: this.isConsolidateCaptureIds,
+            consolidationTimeThreshold: this.consolidationTimeThreshold,
             isSimplifyPort: this.isSimplifyPort,
             isCombineByAlias: this.isCombineByAlias,
             combineType: this.combineType,
 
             flowFilters: {
                 isSimplify: this.isSimplify,
+                isConsolidateCaptureIds: this.isConsolidateCaptureIds,
+                consolidationTimeThreshold: this.consolidationTimeThreshold,
                 isSimplifyPort: this.isSimplifyPort,
                 isCombineByAlias: this.isCombineByAlias,
                 // filterIP: this.checkboxListFilterIP,
@@ -332,6 +383,14 @@ export class TransactionFilterComponent implements OnInit {
                     ? localFilterState.combineType
                     : '1none';
                 this.isSimplify = localFilterState.isSimplify;
+
+                this.isConsolidateCaptureIds = localFilterState.isConsolidateCaptureIds;
+                this.consolidationTimeThreshold = localFilterState.consolidationTimeThreshold;
+                this.consolidationService.setConsolidationFilter({
+                    isConsolidateCaptureIds: localFilterState.isConsolidateCaptureIds,
+                    consolidationTimeThreshold: localFilterState.consolidationTimeThreshold
+                });
+
                 this.isSimplifyPort = !this._isSingleIP
                     ? localFilterState.isSimplifyPort
                     : false;
@@ -341,6 +400,10 @@ export class TransactionFilterComponent implements OnInit {
 
                 this.flowFilters = this.flowFilters || {};
                 this.flowFilters.isSimplify = localFilterState.flowFilters.isSimplify;
+                this.flowFilters.isConsolidateCaptureIds =
+                    localFilterState.flowFilters.isConsolidateCaptureIds;
+                this.flowFilters.consolidationTimeThreshold =
+                    localFilterState.flowFilters.consolidationTimeThreshold;
                 this.flowFilters.isSimplifyPort = !this._isSingleIP
                     ? localFilterState.flowFilters.isSimplifyPort
                     : false;

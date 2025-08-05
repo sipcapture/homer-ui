@@ -31,6 +31,7 @@ import { Subscription } from 'rxjs';
 import { CallIDColor } from '@app/models/CallIDColor.model';
 import { CopyService } from '@app/services';
 import { FlowFilter } from '@app/components/controls/transaction-filter/transaction-filter.component';
+import { CallCaptureIdConsolidationService } from '@app/services/call/consolidation.service';
 
 export class CustomVirtualScrollStrategy extends FixedSizeVirtualScrollStrategy {
   constructor() {
@@ -89,6 +90,8 @@ export class TabFlowComponent
   filterSubscription: Subscription;
   virtualScrollerItemsArray: Array<any> = [];
   _isSimplify: boolean;
+  _consolidationFilter: any = {isConsolidateCaptureIds: false, consolidationTimeThreshold: 500};
+  consolidationFilterSubscription: Subscription;
   hidden: boolean = true;
   callidPullerPosition: number = 0;
 
@@ -112,6 +115,18 @@ export class TabFlowComponent
   }
   get isSimplify(): boolean {
     return this._isSimplify;
+  }
+
+  @Input() set consolidationFilter(v: any) {
+    this._consolidationFilter = v;
+    try {
+      this.virtualScroll._contentWrapper;
+    } catch (e) { }
+    requestAnimationFrame(() => this.cdr.detectChanges());
+  }
+
+  get consolidationFilter(): any {
+    return this._consolidationFilter;
   }
 
   @Input() set dataItem(dataItem) {
@@ -178,7 +193,8 @@ export class TabFlowComponent
     private tooltipService: TooltipService,
     private messageDetailsService: MessageDetailsService,
     private copyService: CopyService,
-    private transactionFilterService: TransactionFilterService
+    private transactionFilterService: TransactionFilterService,
+    private consolidationService: CallCaptureIdConsolidationService
   ) { }
 
   ngOnInit() {
@@ -188,6 +204,15 @@ export class TabFlowComponent
         this.setFilters(filters);
       }
     );
+
+    this.consolidationFilterSubscription = this.consolidationService.consolidationFilter$.subscribe(
+      (filters) => {
+        this.consolidationFilter = filters;
+
+        this.setFilters(this.filters);
+      }
+    );
+
     this.messageDetailsService.arrows.subscribe((data) => {
       const { channelId } = data.metadata.data;
       let { itemId } = data.metadata.data;
@@ -259,14 +284,20 @@ export class TabFlowComponent
         return bool;
       }
     );
+    
+    // remove consolidated messages from the array
+    this.arrayItems = this.consolidationService.consolidateMessages(this.arrayItems).
+      filter((item) => !item.isConsolidated);
 
     this.arrayItems.forEach((item) => {
       const itemFilter = CallId?.find((i) => i.title === item.callid) || {
         selected: true,
       };
+
       const payloadFilter = PayloadType?.find(
         (i) => i.title === item.typeItem
       ) || { selected: true };
+      
       const bool = !(itemFilter.selected && payloadFilter.selected);
       if (bool !== item.invisible) {
         item.invisibleDisplayNone = false;
@@ -494,7 +525,8 @@ export class TabFlowComponent
     const index = arrData.findIndex(
       ({ __item__index__ }) => __item__index__ === sitem.__item__index__
     );
-    const data: any = arrData[index];
+    const data: any = (sitem.__item__subindex__ !== undefined && index === -1) ? sitem: arrData[index];
+
     this.onClickMessageRow(
       data,
       {
@@ -777,6 +809,9 @@ export class TabFlowComponent
     this.hideTooltip();
     if (this.filterSubscription) {
       this.filterSubscription.unsubscribe();
+    }
+    if (this.consolidationFilterSubscription) {
+      this.consolidationFilterSubscription.unsubscribe();
     }
   }
   __toucheStartY = 0;
