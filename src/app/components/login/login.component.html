@@ -61,20 +61,24 @@
 
         <button mat-flat-button
           class="login-submit">{{ 'login.signInButton' | translate }}</button>
-        <span class="oauth-wrapper" *ngIf="oAuthTypes?.length > 0"
-        [style.min-height.px]="oAuthTypes?.length > 5 ? 100 : 50"
-        [style.max-height.px]="oAuthTypes?.length > 5 ? 100 : 50"
-        >
+        
+    <div *ngIf="oAuthTypes?.length > 0">
+      <div class="oauth-divider">or continue with</div>
+            <div class="oauth-wrapper">
             <span class="oauth-button-wrapper" *ngFor="let type of oAuthTypes">
                 <button mat-flat-button class="oauth-submit"
                 [style.background-color]="type.color || 'hsl(0, 0%, 50%)'"
                 (click)='goOauth(type)'
                 >
-                    <fa-icon *ngIf="type.provider_name && !type.provider_image" [icon]="['fab', type.provider_name]"></fa-icon>
-                    <img *ngIf="type.provider_image" [src]="type.provider_image" width="20" height="20">
+                    <span class="oauth-icon">
+                      <fa-icon *ngIf="type.provider_name && !type.provider_image" [icon]="['fab', type.provider_name]"></fa-icon>
+                      <img *ngIf="type.provider_image" [src]="type.provider_image" width="20" height="20">
+                    </span>
+                    <span class="oauth-label">{{ type.name }}</span>
                 </button>
             </span>
-        </span>
+      </div>
+    </div>
       </form>
       <!-- <ng-template #noApiResponse> -->
       <div *ngIf="typesError && !translateError"
