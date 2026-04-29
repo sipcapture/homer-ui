@@ -47,6 +47,8 @@ interface SearchFieldItem {
   selector?: Array<any>;
   type: string;
   value?: string;
+  /** Copied from mapping fields_mapping when present (multiselect + free-text). */
+  custom_values?: boolean;
 }
 
 @Component({
@@ -675,6 +677,14 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
 
       return 'input-multi-select-with-chips';
     }
+    // multiselect in mapping + custom_values → same chip UI as input_multi_select (mat-select multiple has no custom tag).
+    if (
+      item.form_type === 'multiselect' &&
+      item.form_default &&
+      (item.custom_values || item.__mapping?.custom_values)
+    ) {
+      return 'input-multi-select-with-chips';
+    }
     if (item.type === 'array_string' && !this.isMulti(item.field_name) && !this.isAliasField(item.field_name)) {
       return 'chip-list-array-string';
     }
@@ -750,6 +760,12 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
         const f = m.fields_mapping.find((j) => j.id === i.field_name);
 
         i.__mapping = f;
+
+        if (f && 'custom_values' in f) {
+          i.custom_values = !!(f as { custom_values?: boolean }).custom_values;
+        } else {
+          delete i.custom_values;
+        }
 
         if (f?.type) {
           i.type = f.type;

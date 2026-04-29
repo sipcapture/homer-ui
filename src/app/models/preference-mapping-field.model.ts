@@ -31,4 +31,6 @@ export interface PreferenceMappingFieldModel {
     vdata?:string;
     grid?:string;
     transform?:string;
+    /** When form_type is multiselect, use chip widget with free-text entries (Homer UI). */
+    custom_values?: boolean;
 }
