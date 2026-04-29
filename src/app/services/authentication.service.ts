@@ -81,10 +81,14 @@ export class AuthenticationService {
     }
     login(username: string, password: string, type: string) {
         return this.http.post<any>(`${environment.apiUrl}/auth`, { username, password, type })
-            .pipe(map(user => {
+            .pipe(map(response => {
+                // homer-core v11+ wraps response in {data: {...}, success: true}
+                const user = response?.data || response;
                 // login successful if there's a jwt token in the response
-                if (user?.token ) {
-                    user.user.username = username;
+                if (user?.token) {
+                    if (user.user) {
+                        user.user.username = username;
+                    }
                     // store user details and jwt token in local storage to keep user logged in between page refreshes
                     setStorage(ConstValue.CURRENT_USER, user);
                     this.currentUserSubject.next(user);
@@ -92,7 +96,9 @@ export class AuthenticationService {
                         this.getUserSettingTimeZone(user, username);
                     });
                 } else {
-                    user.user.username = username;
+                    if (user?.user) {
+                        user.user.username = username;
+                    }
                     this.currentUserSubject.next(user);
                     setTimeout(() => {
                         this.getUserSettingTimeZone(user, username);
