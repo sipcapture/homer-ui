@@ -106,25 +106,48 @@ export class DateTimeRangeService {
         return (DateTimeRangeService.dateTimeRangr.timezone || moment.tz.guess());
     }
 
+    /**
+     * "Now" in the picker timezone (for rolling quick ranges and calendar presets).
+     */
+    private nowTz(): moment.Moment {
+        const tz = DateTimeRangeService.dateTimeRangr.timezone || moment.tz.guess();
+        return moment.tz(tz);
+    }
+
+    private rollingMinutes(mins: number): [moment.Moment, moment.Moment] {
+        const n = this.nowTz();
+        return [n.clone().subtract(mins, 'minutes'), n.clone()];
+    }
+
+    /**
+     * Rolling window of N full days ending at "now" in the picker timezone.
+     */
+    private rollingDaysRange(days: number): [moment.Moment, moment.Moment] {
+        const n = this.nowTz();
+        return [n.clone().subtract(days, 'days'), n.clone()];
+    }
+
     getRangeByLabel(label: string, isAll = false) {
         if (!label || label === '') {
             label = 'Today';
         }
+        const n = this.nowTz();
         const arr = {
-            'Last 5 minutes': [moment().subtract(5, 'minutes'), moment()],
-            'Last 15 minutes': [moment().subtract(15, 'minutes'), moment()],
-            'Last 30 minutes': [moment().subtract(30, 'minutes'), moment()],
-            'Last 1 hour': [moment().subtract(1, 'hour'), moment()],
-            'Last 3 hours': [moment().subtract(3, 'hours'), moment()],
-            'Last 6 hours': [moment().subtract(6, 'hours'), moment()],
-            'Last 12 hours': [moment().subtract(12, 'hours'), moment()],
-            'Last 24 hours': [moment().subtract(24, 'hours'), moment()],
-            'Today': [moment().startOf('day'), moment().endOf('day')],
-            'Yesterday': [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days').endOf('day')],
-            'Last 7 days': [moment().subtract(6, 'days').startOf('day'), moment().endOf('day')],
-            'Last 14 days': [moment().subtract(14, 'days').startOf('day'), moment().endOf('day')],
-            'This month': [moment().startOf('month'), moment().endOf('month')],
-            'Last month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+            'Last 5 minutes': this.rollingMinutes(5),
+            'Last 10 minutes': this.rollingMinutes(10),
+            'Last 15 minutes': this.rollingMinutes(15),
+            'Last 30 minutes': this.rollingMinutes(30),
+            'Last 1 hour': this.rollingMinutes(60),
+            'Last 3 hours': [n.clone().subtract(3, 'hours'), n.clone()],
+            'Last 6 hours': [n.clone().subtract(6, 'hours'), n.clone()],
+            'Last 12 hours': [n.clone().subtract(12, 'hours'), n.clone()],
+            'Last 24 hours': [n.clone().subtract(24, 'hours'), n.clone()],
+            'Today': [n.clone().startOf('day'), n.clone()],
+            'Yesterday': [n.clone().subtract(1, 'day').startOf('day'), n.clone().subtract(1, 'day').endOf('day')],
+            'Last 7 days': this.rollingDaysRange(7),
+            'Last 14 days': this.rollingDaysRange(14),
+            'This month': [n.clone().startOf('month'), n.clone().endOf('month')],
+            'Last month': [n.clone().subtract(1, 'month').startOf('month'), n.clone().subtract(1, 'month').endOf('month')],
         }
         if (isAll) {
             return arr;

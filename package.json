@@ -1,6 +1,6 @@
 {
   "name": "homer-ui",
-  "version": "7.8.1",
+  "version": "7.8.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 80",
