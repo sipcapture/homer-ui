@@ -31,8 +31,9 @@
             {{type.value}}
         </mat-radio-button>
     </mat-radio-group>
+
     <div style="margin: 0 -10px 5px -10px;">
-        <mat-accordion>
+        <mat-accordion>            
             <mat-expansion-panel [expanded]="true">
                 <mat-expansion-panel-header>
                     <mat-panel-title>PayloadType</mat-panel-title>
@@ -47,6 +48,29 @@
                     </ng-container>
                 </div>
             </mat-expansion-panel>
+            <mat-expansion-panel *ngIf="(isFlowTab && (hasFingerprints$ | async)) as hasFingerprints">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Capture ID Consolidation
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <mat-slide-toggle class="slide-toggle"
+                    *ngIf="hasFingerprints"
+                    color="primary"
+                    [(ngModel)]="isConsolidateCaptureIds"
+                    (click)="doFilterMessages()">
+                    Enable
+                </mat-slide-toggle>
+                <br *ngIf="hasFingerprints">
+                <mat-form-field *ngIf="hasFingerprints" class="example-full-width">
+                    <mat-label>Threshold (ms)</mat-label>
+                    <input matInput type="number" min="100" max="10000" step="100"
+                        [(ngModel)]="consolidationTimeThreshold"
+                        [disabled]="!isConsolidateCaptureIds"
+                        placeholder="Enter time threshold"
+                        (change)="doFilterMessages()">
+                </mat-form-field>
+            </mat-expansion-panel>            
             <mat-expansion-panel *ngIf="checkboxListFilterAliases.length">
                 <mat-expansion-panel-header>
                     <mat-panel-title>Alias filter</mat-panel-title>

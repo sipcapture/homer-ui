@@ -8,6 +8,7 @@ import jwt_decode from 'jwt-decode';
 import { AlertService } from '@app/services/alert.service';
 import { TranslateService } from '@ngx-translate/core';
 import { DateFormat, TimeFormattingService } from '@app/services/time-formatting.service';
+import { Subscription } from 'rxjs';
 
 const parsip = _parsip;
 // const moment = _moment;
@@ -39,12 +40,12 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
     this._pt = v;
   }
 
-
   @ViewChild('matTabGroup', { static: false }) matTabGroup: MatTabGroup;
   @Input() rowData: any;
   @Input() set isDecoded(val: boolean) {
     this.cdr.detectChanges()
-  }
+  }  
+
   @Input('data') set data(val) {
     this._data = Functions.cloneObject(val);
     // console.log('this._data', this._data);
@@ -158,7 +159,6 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
     private _tfs: TimeFormattingService,
     public alertService: AlertService,
     public translateService: TranslateService
-
   ) { }
 
   identify(index, item) {
@@ -174,7 +174,6 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
     this._interval = setInterval(() => {
       this.matTabGroup?.realignInkBar();
     }, 2000);
-
   }
   ngAfterViewInit() {
     this.matTabGroup?.realignInkBar();
@@ -213,6 +212,5 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
   }
   objString(s) {
     return JSON.stringify(s, null, 4);
-  }
-
+  }  
 }
