@@ -31,32 +31,99 @@
   cursor: pointer;
   float: right;
 }
-.oauth-submit {
-    display: inline-block !important;
-    border: none;
-    border-radius: 3px;
-    padding: 0 !important;
-    min-width: unset !important;
-    width: 40px !important;
-    height: 40px;
-    color: white;
-    font-size: 20px;
-    cursor: pointer;
-}
-.oauth-wrapper {
-    margin-top: 10px;
+
+  .oauth-divider {
     display: flex;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
+    align-items: center;
+    text-align: center;
+    margin: 25px 0 20px 0;
+    color: #666;
+    font-size: 13px;
+    
+    &::before,
+    &::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    &::before {
+      margin-right: 15px;
+    }
+    
+    &::after {
+      margin-left: 15px;
+    }
+  }
+
+  .oauth-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     width: 100%;
-    row-gap: 10px;
-    overflow: scroll;
-}
-.oauth-button-wrapper {
-    flex: 0 0 20%;
+    padding: 0;
+  }
+
+  .oauth-button-wrapper {
+    width: 100%;
     display: flex;
     justify-content: center;
-}
+  }
+
+  .oauth-submit {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    border: 1px solid #ddd !important;
+    border-radius: 5px;
+    padding: 10px 20px !important;
+    min-width: unset !important;
+    width: 100% !important;
+    height: 45px;
+    color: white !important;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    // Ensure Angular Material's inner wrapper lays out icon + text with spacing
+    .mat-button-wrapper {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      justify-content: center;
+    }
+    
+  // Fixed-width icon box to ensure breathing room before label
+  .oauth-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; // keeps label from crowding icon
+    height: 20px;
+    margin-right: 10px; // explicit extra space
+    flex-shrink: 0;
+  }
+  .oauth-label {
+    line-height: 20px;
+  }
+    
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+    
+    fa-icon {
+      font-size: 20px;
+    }
+  }
+
 .login-logo {
   margin-bottom: 36px;
   img {
