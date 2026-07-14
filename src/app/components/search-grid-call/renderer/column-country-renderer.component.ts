@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ICellRendererAngularComp} from 'ag-grid-angular';
 
 @Component({
+    standalone: false,
     selector: 'app-child-cell',
     template: `
     <span class='cell-wrapper' [ngClass]="{'selected': selected}" (mousedown)='startCopy()' (mouseup)='copy(country)'>

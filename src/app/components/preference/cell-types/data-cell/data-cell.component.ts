@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output, View
 import { MatColumnDef, MatTable } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core'
 @Component({
+    standalone: false,
   selector: 'app-data-cell',
   templateUrl: './data-cell.component.html',
   styleUrls: ['./data-cell.component.scss']

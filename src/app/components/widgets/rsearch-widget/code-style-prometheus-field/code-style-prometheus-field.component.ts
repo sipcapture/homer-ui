@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, AfterViewInit, Output, EventEmitter, Inpu
 import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
+    standalone: false,
   selector: 'app-code-style-prometheus-field',
   templateUrl: './code-style-prometheus-field.component.html',
   styleUrls: ['./code-style-prometheus-field.component.scss']

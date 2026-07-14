@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
 @Component({
+    standalone: false,
     selector: 'app-dialog-hepsub',
     templateUrl: './dialog-hepsub.component.html',
     styleUrls: ['./dialog-hepsub.component.scss'],

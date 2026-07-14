@@ -7,6 +7,7 @@ import { Functions } from '@app/helpers/functions';
 import { AlertService } from '@app/services';
 import { TranslateService } from '@ngx-translate/core'
 @Component({
+    standalone: false,
     selector: 'app-setting-protosearch-widget-component',
     templateUrl: 'setting-protosearch-widget.component.html',
     styleUrls: ['./setting-protosearch-widget.component.scss'],

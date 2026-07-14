@@ -35,6 +35,7 @@ export interface AlertConfig {
 
 
 @Component({
+    standalone: false,
     selector: 'app-alert-widget',
     templateUrl: './alert-widget.component.html',
     styleUrls: ['./alert-widget.component.scss'],

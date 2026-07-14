@@ -2,6 +2,7 @@ import { Component, Inject, ChangeDetectionStrategy, ViewChild } from '@angular/
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core'
 @Component({
+    standalone: false,
     selector: 'app-dialog-agentsub',
     templateUrl: './dialog-agentsub.component.html',
     styleUrls: ['./dialog-agentsub.component.scss'],

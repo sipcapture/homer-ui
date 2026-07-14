@@ -23,7 +23,7 @@ import { TabCallinfoModule } from './components/search-grid-call/detail-dialog/t
 import { TabEventsModule } from './components/search-grid-call/detail-dialog/tab-events/tab-events.module';
 // import { VirtualScrollerModule } from 'ngx-virtual-scroller';
 /* @angular */
-import { HttpClientModule, HTTP_INTERCEPTORS, HttpClientJsonpModule, HttpClient } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient, withInterceptorsFromDi, withJsonpSupport } from '@angular/common/http';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
@@ -42,12 +42,11 @@ import { ColorOffsetModule } from '@app/pipes/colorOffset.module';
 import { HtmlPipe } from '@app/pipes/html.pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HomerMaterialModule } from '@app/app.material-module';
-import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { fab } from '@fortawesome/free-brands-svg-icons';
 import { far } from '@fortawesome/free-regular-svg-icons';
-import { AgChartsAngularModule } from 'ag-charts-angular';
+import { AgChartsModule } from 'ag-charts-angular';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgSelectFormFieldControlDirective } from './helpers/ng-multiselect.directive';
 import { CodeJarWrapperComponent } from './components/controls/codejar-wrapper/codejar-wrapper.component';
@@ -156,21 +155,14 @@ import { MenuComponent } from '@app/components/menu/menu.component';
 import { AgGridModule } from 'ag-grid-angular';
 import { NgxJsonViewerModule } from 'ngx-json-viewer';
 // import { AceModule, ACE_CONFIG, AceConfigInterface } from 'ngx-ace-wrapper';
-import { MatColorFormats, MAT_COLOR_FORMATS, NgxMatColorPickerModule } from '@angular-material-components/color-picker';
-// import { AceEditorModule } from 'ng2-ace-editor';
 import { GridsterModule } from 'angular-gridster2';
-import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
+import { QRCodeComponent } from 'angularx-qrcode';
 import { DynamicModule } from 'ng-dynamic-component';
-import { ChartsModule } from '@xirenec/ng2-charts';
+import { NgChartsModule } from 'ng2-charts';
 import { MarkdownModule } from 'ngx-markdown';
 import { NgxDaterangepickerMd } from './components/controls/daterangepicker';
 import { UpdateAlertComponent } from './components/controls/update-alert/update-alert.component';
 import { APP_BASE_HREF } from '@angular/common';
-import {
-    NgxMatDatetimePickerModule,
-    NgxMatNativeDateModule,
-    NgxMatTimepickerModule,
-} from '@angular-material-components/datetime-picker';
 import {
     DialogExportComponent,
     DialogImportComponent
@@ -195,7 +187,7 @@ import {
 import { SettingButtonComponent } from './components/preference/setting-button/setting-button.component';
 import { LoadingCircleComponent } from './components/controls/loading-circle/loading-circle.component';
 import { TranslateModule, TranslateLoader, TranslateCompiler } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateLinkCompiler } from './helpers/translate-link-complier';
 import { TransactionGraphSettingsComponent } from './components/controls/transaction-graph-settings/transaction-graph-settings.component';
 import { CopyComponent } from './components/controls/copy/copy.component';
@@ -204,14 +196,6 @@ import { CodeProtoSelectorComponent } from './components/widgets/smart-input-wid
 import { PageProfileComponent } from './components/preference/pages/page-profile/page-profile.component';
 import { ExpireCellComponent } from './components/preference/cell-types/expire-cell/expire-cell.component';
 import { NgxCodejarModule } from 'ngx-codejar';
-export function HttpLoaderFactory(http: HttpClient) {
-    return new TranslateHttpLoader(http, 'assets/i18n/', '.json');
-}
-export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
-    display: {
-        colorInput: 'hex'
-    }
-};
 @NgModule({
     declarations: [
         AppComponent,
@@ -227,7 +211,6 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
         LoginComponent,
         PreferenceComponent,
         SearchGridCallComponent,
-
         /** dashboard */
         AddDashboardDialogComponent,
         AddDialogComponent,
@@ -235,7 +218,6 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
         EditDialogComponent,
         ShareQrDialogComponent,
         UrlWarningDialog,
-
         /** searchGridCall */
         DialogSettingsGridDialog,
         ExportDialogComponent,
@@ -253,7 +235,6 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
         GenericCellRenderer,
         TabExportComponent,
         StatusFilterComponent,
-
         /** widgets */
         AceEditorWidgetComponent,
         ClockWidgetComponent,
@@ -285,7 +266,6 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
         SettingResultWidgetComponent,
         SettingsAceEditorWidgetComponent,
         SettingSmartInputWidgetComponent,
-
         /** dialogs */
         DialogAdvancedComponent,
         DialogAgentsubComponent,
@@ -304,8 +284,6 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
         DialogImportComponent,
         FullScreenComponent,
         SettingAlertWidgetComponent,
-
-
         /**Cell types */
         GenericCellComponent,
         ToolCellComponent,
@@ -334,39 +312,31 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
         AlertWidgetComponent,
         PageProfileComponent
     ],
-
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    bootstrap: [AppComponent],
     imports: [
-        CommonModule,
         BrowserModule,
         BrowserAnimationsModule,
         FormsModule,
-        HttpClientModule,
         ReactiveFormsModule,
-        HttpClientJsonpModule,
         GridsterModule,
-        ChartsModule,
+        NgChartsModule,
         DynamicModule,
         routing,
         AppRoutingModule,
         HomerMaterialModule,
-        Ng2SearchPipeModule,
         NgSelectModule,
         OverlayModule,
         NoopAnimationsModule,
         AgGridModule,
         NgxJsonViewerModule,
-        NgxQRCodeModule,
+        QRCodeComponent,
         // AceModule,
         // AceEditorModule,
         FontAwesomeModule,
         MarkdownModule.forRoot(),
         NgxDaterangepickerMd.forRoot(),
-        NgxMatColorPickerModule,
-        AgChartsAngularModule,
-        //  VirtualScrollerModule,
-        NgxMatDatetimePickerModule,
-        NgxMatTimepickerModule,
-        NgxMatNativeDateModule,
+        AgChartsModule,
         HepTooltipModule,
         TabFlowModule,
         TabEventsModule,
@@ -389,11 +359,6 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
         ColorOffsetModule,
         TabQosModule,
         TranslateModule.forRoot({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [HttpClient]
-            },
             compiler: {
                 useClass: TranslateLinkCompiler,
                 provide: TranslateCompiler
@@ -402,72 +367,16 @@ export const CUSTOM_MAT_COLOR_FORMATS: MatColorFormats = {
         // ColorChromeModule
         NgxCodejarModule
     ],
-    entryComponents: [
-        MenuComponent,
-
-        /** dialogs */
-        DialogAdvancedComponent,
-        DialogAgentsubComponent,
-        DialogAliasComponent,
-        DialogAuthKeyComponent,
-        DialogAuthTokenDisplayComponent,
-        DialogDeleteAlertComponent,
-        DialogHepsubComponent,
-        DialogMappingComponent,
-        DialogUserSettingsComponent,
-        DialogUsersComponent,
-        DialogScriptsComponent,
-        DialogDBSelectorComponent,
-
-        /** widgets */
-        AceEditorWidgetComponent,
-        ClockWidgetComponent,
-        CodeStylePrometheusFieldComponent,
-        CodeStyleSmartInputFieldComponent,
-        CodeProtoSelectorComponent,
-        DialogAlarmComponent,
-        DragDropListComponent,
-        GeneralIframeWidgetComponent,
-        IframeWidgetComponent,
-        InfluxdbchartWidgetComponent,
-        ClickhouseChartWidgetComponent,
-        PrometheusWidgetComponent,
-        ProtosearchWidgetComponent,
-        ResultChartWidgetComponent,
-        ResultWidgetComponent,
-        RsearchWidgetComponent,
-        SmartInputWidgetComponent,
-        PcapUploaderWidgetComponent,
-        SettingClockWidgetComponent,
-        SettingGeneralIframeWidgetComponent,
-        SettingIframeWidgetComponent,
-        SettingInfluxdbchartWidgetComponent,
-        SettingClickhouseChartWidgetComponent,
-        SettingPrometheusWidgetComponent,
-        SettingProtosearchWidgetComponent,
-        SettingResultChartWidgetComponent,
-        SettingResultWidgetComponent,
-        SettingsAceEditorWidgetComponent,
-        SettingSmartInputWidgetComponent,
-        AlertWidgetComponent,
-        /** dashboard */
-        AddDashboardDialogComponent,
-        AddDialogComponent,
-        DeleteDialogComponent,
-        EditDialogComponent
-        // SettingAlertWidgetComponent
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
         // { provide: ACE_CONFIG, useValue: DEFAULT_ACE_CONFIG },
-        { provide: MAT_COLOR_FORMATS, useValue: CUSTOM_MAT_COLOR_FORMATS },
         { provide: PreferencesContentMapping, useClass: PreferencesContentMapping },
         { provide: APP_BASE_HREF, useValue: window['base-href'] },
-        TransactionFilterService
-    ],
-    bootstrap: [AppComponent]
+        TransactionFilterService,
+        provideHttpClient(withInterceptorsFromDi(), withJsonpSupport()),
+        ...provideTranslateHttpLoader({ prefix: 'assets/i18n/', suffix: '.json' })
+    ]
 })
 
 export class AppModule {

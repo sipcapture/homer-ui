@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthenticationService } from '@app/services';
 import { TranslateService } from '@ngx-translate/core'
 @Component({
+    standalone: false,
     selector: 'app-dialog-authkey',
     templateUrl: './dialog-authkey.component.html',
     styleUrls: ['./dialog-authkey.component.scss'],

@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectionStrategy
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
 @Component({
+    standalone: false,
     selector: 'app-drag-drop-list',
     templateUrl: './drag-drop-list.component.html',
     styleUrls: ['./drag-drop-list.component.scss'],

@@ -11,6 +11,7 @@ import { ModalCoordinates, defaultX, defaultY, TouchPosition, WinPositon, WinSiz
 import { IS_DIFF, ModalService } from './modal.service';
 
 @Component({
+    standalone: false,
     selector: 'app-modal-resizable',
     templateUrl: './modal-resizable.component.html',
     styleUrls: ['./modal-resizable.component.scss'],

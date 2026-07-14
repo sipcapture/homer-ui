@@ -13,6 +13,7 @@ import { Functions, setStorage } from '@app/helpers/functions';
 
 import { TranslateService } from '@ngx-translate/core';
 @Component({
+    standalone: false,
     selector: 'login-layout',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],

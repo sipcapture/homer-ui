@@ -32,6 +32,7 @@ import { CodeStyleSmartInputFieldComponent } from './code-style-smart-input-fiel
 import { SettingSmartInputWidgetComponent } from './setting-smart-input-widget.component';
 import { TranslateService } from '@ngx-translate/core'
 @Component({
+    standalone: false,
   selector: 'app-smart-input-widget',
   templateUrl: './smart-input-widget.component.html',
   styleUrls: ['./smart-input-widget.component.scss'],

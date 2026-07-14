@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ICellRendererAngularComp} from 'ag-grid-angular';
 
 @Component({
+    standalone: false,
     selector: 'app-uuid-cell',
     template: `
     <span class='cell-wrapper' (mousedown)='startCopy()' (mouseup)='copy(uuid)'>

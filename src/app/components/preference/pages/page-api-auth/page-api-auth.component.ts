@@ -28,6 +28,7 @@ import { AlertService, AuthenticationService, TimeFormattingService } from '@app
 import { PreferencesComponentMapping } from '@app/models/preferences-component-mapping';
 
 @Component({
+    standalone: false,
   selector: 'app-page-api-auth',
   templateUrl: './page-api-auth.component.html',
   styleUrls: ['./page-api-auth.component.scss']

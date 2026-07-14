@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import * as _moment from 'moment-timezone';
 const moment: any = _moment;
 
-@Pipe({name: 'timeZone'})
+@Pipe({
+    standalone: false,name: 'timeZone'})
 export class TimeZonePipe implements PipeTransform {
   transform(value, type) {
     if (type === 'region') {

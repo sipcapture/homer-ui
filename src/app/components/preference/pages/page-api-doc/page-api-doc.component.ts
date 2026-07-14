@@ -4,6 +4,7 @@ import { SwaggerUIBundle } from 'swagger-ui-dist';
 
 // declare const SwaggerUIBundle: any;
 @Component({
+    standalone: false,
     selector: 'app-page-api-doc',
     templateUrl: './page-api-doc.component.html',
     styleUrls: ['./page-api-doc.component.scss']

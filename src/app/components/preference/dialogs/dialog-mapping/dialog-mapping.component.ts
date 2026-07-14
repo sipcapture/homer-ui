@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 // import 'brace/mode/text';
 // import 'brace/theme/github';
 @Component({
+    standalone: false,
   selector: 'app-dialog-mapping',
   templateUrl: './dialog-mapping.component.html',
   styleUrls: ['./dialog-mapping.component.scss'],

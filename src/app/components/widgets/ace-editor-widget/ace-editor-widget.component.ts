@@ -16,6 +16,7 @@ export interface AceEditorConfig {
 }
 
 @Component({
+    standalone: false,
     selector: 'app-ace-editor-widget-component',
     templateUrl: 'ace-editor-widget.component.html',
     styleUrls: ['./ace-editor-widget.component.scss'],

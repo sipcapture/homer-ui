@@ -32,6 +32,7 @@ import { PreferencesComponentMapping } from '@app/models/preferences-component-m
 import  moment from 'moment';
 import { Functions } from '@app/helpers/functions';
 @Component({
+    standalone: false,
     selector: 'app-page-users',
     templateUrl: './page-users.component.html',
     styleUrls: ['./page-users.component.scss'],

@@ -4,6 +4,7 @@ import { UserConstValue } from '@app/models';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
+    standalone: false,
   selector: 'app-transaction-graph-settings',
   templateUrl: './transaction-graph-settings.component.html',
   styleUrls: ['./transaction-graph-settings.component.scss']

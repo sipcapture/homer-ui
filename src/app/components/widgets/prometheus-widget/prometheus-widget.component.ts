@@ -3,14 +3,14 @@ import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, AfterViewIni
 import { SettingPrometheusWidgetComponent } from './setting-prometheus-widget.component';
 import { PrometheusService } from '@app/services/prometheus.service';
 import { MatDialog } from '@angular/material/dialog';
-import { ChartType, ChartDataSets } from 'chart.js';
+import { ChartDataset, ChartType } from 'chart.js';
 import { Widget, WidgetArrayInstance } from '@app/helpers/widget';
 import { IWidget } from '../IWidget';
 import { Subscription } from 'rxjs';
-import { Label } from '@xirenec/ng2-charts';
 import  moment from 'moment';
 import { TranslateService } from '@ngx-translate/core';
 @Component({
+    standalone: false,
     selector: 'app-prometheus-widget',
     templateUrl: './prometheus-widget.component.html',
     styleUrls: ['./prometheus-widget.component.scss'],
@@ -40,23 +40,25 @@ export class PrometheusWidgetComponent implements IWidget {
             duration: 0
         },
         scales: {
-            yAxes: [{
+            y: {
                 stacked: true,
                 ticks: {
                     callback: this.yAxisFormatter.bind(this),
-                    beginAtZero: true
-                }
-            }]
+                },
+                min: 0,
+            }
         },
-        legend: { position: 'bottom' }
+        plugins: {
+            legend: { position: 'bottom' }
+        }
     };
     timeRange: Timestamp;
-    public chartLabels: Label[] = [];
+    public chartLabels: string[] = [];
     public chartType: ChartType = 'line';
     public chartLegend = true;
     public chartPlugins = [];
 
-    public chartData: ChartDataSets[] = [{
+    public chartData: ChartDataset[] = [{
         fill: false,
         data: [],
         label: ''
@@ -131,12 +133,12 @@ export class PrometheusWidgetComponent implements IWidget {
                 this.chartLabels = [];
 
                 if (chartType === 'area') {
-                    this.chartOptions.scales.yAxes[0].stacked = true;
+                    this.chartOptions.scales.y.stacked = true;
                     isFill = true;
                     chartType = 'line';
                 } else {
                     isFill = false;
-                    this.chartOptions.scales.yAxes[0].stacked = false;
+                    this.chartOptions.scales.y.stacked = false;
                 }
 
                 data.forEach((dataItem: any) => {

@@ -9,6 +9,7 @@ import { AlertOverlayRef } from './alert-ref';
 
 
 @Component({
+    standalone: false,
     selector: 'alert',
     template: ``,
     styleUrls: ['./alert.component.scss'],

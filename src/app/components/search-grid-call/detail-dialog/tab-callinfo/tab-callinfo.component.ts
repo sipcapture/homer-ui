@@ -35,6 +35,7 @@ enum TASK_TYPE {
   hidden = 404,
 }
 @Component({
+    standalone: false,
   selector: 'app-tab-callinfo',
   templateUrl: './tab-callinfo.component.html',
   styleUrls: ['./tab-callinfo.component.scss'],
