@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import  moment from 'moment';
 
 @Pipe({
+    standalone: false,
     name: 'moment',
     pure: false
 })

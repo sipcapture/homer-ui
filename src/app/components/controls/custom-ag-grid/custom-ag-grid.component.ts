@@ -5,6 +5,7 @@ import { GridOptions } from 'ag-grid-community';
 import { SettingButtonComponent } from './setting-button';
 
 @Component({
+    standalone: false,
     selector: 'custom-ag-grid',
     templateUrl: './custom-ag-grid.component.html',
     styleUrls: ['./custom-ag-grid.component.scss']
@@ -137,7 +138,7 @@ export class CustomAgGridComponent implements OnInit {
     }
     private sizeToFit() {
         setTimeout(() => {
-            this.gridOptions.api?.sizeColumnsToFit();
+            this.gridApi?.sizeColumnsToFit();
             this.cdr.detectChanges();
         }, 100);
     }

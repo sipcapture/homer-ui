@@ -32,6 +32,7 @@ export interface ClockConfig {
 }
 
 @Component({
+    standalone: false,
     selector: 'app-clock-widget',
     templateUrl: './clock-widget.component.html',
     styleUrls: ['./clock-widget.component.scss'],

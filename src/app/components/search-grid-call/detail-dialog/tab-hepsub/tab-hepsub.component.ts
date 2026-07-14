@@ -15,6 +15,7 @@ import { Functions } from '@app/helpers/functions';
 import { MatTabGroup } from '@angular/material/tabs';
 
 @Component({
+    standalone: false,
   selector: 'app-tab-hepsub',
   templateUrl: './tab-hepsub.component.html',
   styleUrls: ['./tab-hepsub.component.scss'],

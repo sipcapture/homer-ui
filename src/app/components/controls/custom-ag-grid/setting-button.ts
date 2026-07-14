@@ -3,6 +3,7 @@ import { emitWindowResize } from '@app/helpers/windowFunctions';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 
 @Component({
+    standalone: false,
   selector: 'app-setting-button',
   templateUrl: 'setting-button.html',
   styleUrls: ['setting-button.scss'],

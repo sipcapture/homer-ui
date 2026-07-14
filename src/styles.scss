@@ -4,11 +4,10 @@
 
 @import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
 @import "~bootstrap/dist/css/bootstrap.min.css";
-@import "@angular/material/theming";
 @import "theme.scss";
 @include mat.all-component-densities(-1);
 
-@include mat-core();
+@include mat.core();
 @import "swagger-styles.scss";
 // @import "https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css";
 @import "./assets/css/vis.min.scss";
@@ -131,12 +130,12 @@ button:focus {
 }
 
 // using deeppurple-amber color combo: https://github.com/angular/material2/blob/master/src/lib/core/theming/prebuilt/deeppurple-amber.scss
-$primary: mat.define-palette($homerprimary);
-$accent: mat.define-palette($homeraccent);
-$checkboxprimary: mat.define-palette($checkbox-color);
+$primary: mat.m2-define-palette($homerprimary);
+$accent: mat.m2-define-palette($homeraccent);
+$checkboxprimary: mat.m2-define-palette($checkbox-color);
 
 // $theme: mat.define-light-theme($primary, $accent, $checkboxprimary);
-$theme: mat.define-light-theme(
+$theme: mat.m2-define-light-theme(
     (
         color: (
             primary: $primary,
@@ -147,7 +146,7 @@ $theme: mat.define-light-theme(
 );
 
 // Include all theme styles for the components.
-@include angular-material-theme($theme);
+@include mat.all-component-themes($theme);
 
 // adjust the icons path
 $ag-mat-icons-path: "ag-grid-community/src/styles/ag-theme-material/icons/";
@@ -220,13 +219,13 @@ span.mat-option-text {
 
 @import "~ag-grid-community/styles/ag-grid.css";
 
-$ag-mat-primary: mat-color($homerprimary);
-$ag-mat-accent: mat-color($homeraccent);
+$ag-mat-primary: mat.m2-get-color-from-palette($primary, 500);
+$ag-mat-accent: mat.m2-get-color-from-palette($accent, 500);
 
 // @import "~ag-grid-community/dist/styles/ag-theme-balham.css";
 @import "~ag-grid-community/styles/ag-theme-material.css";
 
-$flow-checkbox-color: mat-color($checkbox-color);
+$flow-checkbox-color: mat.m2-get-color-from-palette($checkboxprimary, 500);
 
 .material-icons.md-18 {
     font-size: 18px;

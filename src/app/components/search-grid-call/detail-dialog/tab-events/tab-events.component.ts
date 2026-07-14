@@ -1,6 +1,7 @@
 import { Component, Input, AfterViewChecked, Output, EventEmitter, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
+    standalone: false,
     selector: 'app-tab-events',
     templateUrl: './tab-events.component.html',
     styleUrls: ['./tab-events.component.css'],

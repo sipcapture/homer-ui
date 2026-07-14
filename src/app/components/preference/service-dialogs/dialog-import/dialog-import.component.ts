@@ -10,6 +10,7 @@ import { map, tap, last, catchError } from 'rxjs/operators';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { TranslateService } from '@ngx-translate/core'
 @Component({
+    standalone: false,
     selector: 'app-dialog-import',
     templateUrl: './dialog-import.component.html',
     styleUrls: ['./dialog-import.component.scss'],

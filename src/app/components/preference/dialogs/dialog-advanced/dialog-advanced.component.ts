@@ -5,6 +5,7 @@ import { Functions } from '@app/helpers/functions';
 import { AuthenticationService } from '@app/services';
 import { TranslateService } from '@ngx-translate/core'
 @Component({
+    standalone: false,
     selector: 'app-dialog-advanced',
     templateUrl: './dialog-advanced.component.html',
     styleUrls: ['./dialog-advanced.component.scss'],

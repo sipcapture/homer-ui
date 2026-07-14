@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular
 import { MatColumnDef, MatTable } from '@angular/material/table';
 
 @Component({
+    standalone: false,
   selector: 'app-db-stats-cell',
   templateUrl: './db-stats-cell.component.html',
   styleUrls: ['./db-stats-cell.component.scss']

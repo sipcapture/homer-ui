@@ -6,6 +6,7 @@ import { IWidget } from '../IWidget';
 import { TranslateService } from '@ngx-translate/core'
 
 @Component({
+    standalone: false,
     selector: 'app-pcap-uploader-widget',
     templateUrl: './pcap-uploader-widget.component.html',
     styleUrls: ['./pcap-uploader-widget.component.scss']

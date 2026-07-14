@@ -4,6 +4,7 @@ import { AuthenticationService } from '@app/services';
 import { TranslateService } from '@ngx-translate/core'
 
 @Component({
+    standalone: false,
     selector: 'app-dialog-authtoken-display',
     templateUrl: './dialog-authtoken-display.component.html',
     styleUrls: ['./dialog-authtoken-display.component.scss'],

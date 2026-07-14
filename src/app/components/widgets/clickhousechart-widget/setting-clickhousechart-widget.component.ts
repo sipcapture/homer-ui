@@ -29,6 +29,7 @@ export interface ClickhousePeriodicElement {
 }
 
 @Component({
+    standalone: false,
     selector: 'app-setting-clickhousechart-widget-component',
     templateUrl: 'setting-clickhousechart-widget.component.html',
     styleUrls: ['./setting-clickhousechart-widget.component.scss'],

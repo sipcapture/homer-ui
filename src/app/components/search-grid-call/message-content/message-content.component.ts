@@ -12,6 +12,7 @@ import { DateFormat, TimeFormattingService } from '@app/services/time-formatting
 const parsip = _parsip;
 // const moment = _moment;
 @Component({
+    standalone: false,
   selector: 'app-message-content',
   templateUrl: './message-content.component.html',
   styleUrls: ['./message-content.component.scss'],
@@ -81,7 +82,10 @@ export class MessageContentComponent implements OnInit, OnDestroy, AfterViewInit
         } if (sipData?.headers?.['X-Rtp-Stat']?.[0]?.raw ||
           sipData?.headers?.[('X-Rtp-Stat').toLocaleLowerCase()]?.[0]?.raw) {
           /** parse x-rtp */
-          this.pt.xrtp = parsip.getVQ(sipData?.headers['X-Rtp-Stat' || 'x-rtp-stat'][0].raw);
+          const rtpStatHeader =
+            sipData?.headers?.['X-Rtp-Stat']?.[0]?.raw ??
+            sipData?.headers?.['x-rtp-stat']?.[0]?.raw;
+          this.pt.xrtp = parsip.getVQ(rtpStatHeader);
 
         } if (sipData?.headers?.Identity?.[0]?.raw) {
           /** parse jwt */

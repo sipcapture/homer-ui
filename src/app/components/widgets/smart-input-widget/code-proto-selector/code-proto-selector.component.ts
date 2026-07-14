@@ -1,6 +1,7 @@
 import { Component, Output, EventEmitter, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 
 @Component({
+    standalone: false,
     selector: 'app-code-proto-selector',
     templateUrl: './code-proto-selector.component.html',
     styleUrls: ['./code-proto-selector.component.scss'],

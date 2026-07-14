@@ -6,6 +6,7 @@ import { ProxyService } from '@app/services/proxy.service';
 import { lastValueFrom } from 'rxjs';
 
 @Component({
+    standalone: false,
     selector: 'app-add-dialog',
     templateUrl: './add-dialog.component.html',
     styleUrls: ['./add-dialog.component.scss'],

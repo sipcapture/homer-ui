@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { PreferencesContentMapping } from '@app/models/preferences-kw-mapping';
 
 @Pipe({
+    standalone: false,
     name: 'preferences',
     pure: false
 })

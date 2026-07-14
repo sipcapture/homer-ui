@@ -39,6 +39,7 @@ export class CustomVirtualScrollStrategy extends FixedSizeVirtualScrollStrategy 
 }
 
 @Component({
+    standalone: false,
   selector: 'app-tab-flow',
   templateUrl: './tab-flow.component.html',
   styleUrls: ['./tab-flow.component.scss'],

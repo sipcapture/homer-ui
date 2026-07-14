@@ -8,6 +8,7 @@ import { Functions } from '@app/helpers/functions';
 import { TranslateService } from '@ngx-translate/core'
 
 @Component({
+    standalone: false,
   selector: 'app-setting-smart-input-widget-component',
   templateUrl: 'setting-smart-input-widget.component.html',
   styleUrls: ['./setting-smart-input-widget.component.scss'],

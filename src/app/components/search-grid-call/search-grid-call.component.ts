@@ -54,6 +54,7 @@ import { StatusFilterComponent } from './filters/index';
 import { TranslateService } from '@ngx-translate/core';
 import { DateFormat, TimeFormattingService } from '@app/services/time-formatting.service';
 @Component({
+    standalone: false,
     selector: 'app-search-grid-call',
     templateUrl: './search-grid-call.component.html',
     styleUrls: ['./search-grid-call.component.scss'],

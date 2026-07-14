@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { HttpGetBuffer } from '@app/helpers/http-get-buffer';
 
 @Component({
+    standalone: false,
     selector: 'app-page-reset',
     templateUrl: './page-reset.component.html',
     styleUrls: ['./page-reset.component.scss']

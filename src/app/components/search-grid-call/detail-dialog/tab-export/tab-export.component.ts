@@ -18,6 +18,7 @@ import { AfterViewInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
+    standalone: false,
   selector: 'app-tab-export',
   templateUrl: './tab-export.component.html',
   styleUrls: ['./tab-export.component.scss'],

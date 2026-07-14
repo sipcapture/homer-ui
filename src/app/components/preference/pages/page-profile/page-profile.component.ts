@@ -8,6 +8,7 @@ import { AlertService, AuthenticationService, PreferenceUserService, UserSecurit
 import { lastValueFrom } from 'rxjs';
 
 @Component({
+    standalone: false,
   selector: 'app-page-profile',
   templateUrl: './page-profile.component.html',
   styleUrls: ['./page-profile.component.scss'],

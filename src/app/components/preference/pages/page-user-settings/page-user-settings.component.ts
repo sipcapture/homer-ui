@@ -27,6 +27,7 @@ import { PreferencesComponentMapping } from '@app/models/preferences-component-m
 import { Functions } from '@app/helpers/functions';
 
 @Component({
+    standalone: false,
     selector: 'app-page-user-settings',
     templateUrl: './page-user-settings.component.html',
     styleUrls: ['./page-user-settings.component.scss'],

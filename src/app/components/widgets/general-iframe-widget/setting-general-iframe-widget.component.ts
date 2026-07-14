@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SelectList } from '../influxdbchart-widget/setting-influxdbchart-widget.component';
 import { TranslateService } from '@ngx-translate/core'
 @Component({
+    standalone: false,
     selector: 'app-iframe-rsearch-widget-component',
     templateUrl: 'setting-general-iframe-widget.component.html',
     styleUrls: ['./setting-general-iframe-widget.component.scss'],

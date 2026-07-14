@@ -4,6 +4,7 @@ import { PreferenceVersionService } from '@app/services/preferences/version.serv
 import { VERSION } from 'src/VERSION';
 
 @Component({
+    standalone: false,
     selector: 'app-page-about',
     templateUrl: './page-about.component.html',
     styleUrls: ['./page-about.component.scss'],

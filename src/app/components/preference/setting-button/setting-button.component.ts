@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
+    standalone: false,
     selector: 'app-setting-button',
     templateUrl: './setting-button.component.html',
     styleUrls: ['./setting-button.component.scss']

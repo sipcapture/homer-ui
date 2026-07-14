@@ -16,6 +16,7 @@ interface OptionType {
 }
 
 @Component({
+    standalone: false,
   selector: 'app-multi-select-field',
   templateUrl: './multi-select-field.component.html',
   styleUrls: ['./multi-select-field.component.scss'],

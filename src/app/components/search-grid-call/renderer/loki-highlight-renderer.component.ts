@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ICellRendererAngularComp} from 'ag-grid-angular';
 
 @Component({
+    standalone: false,
     template: `
         <span class='cell-wrapper' (click)='copy(data)'>
             <div class="loki-highlight" [innerHTML]="data"></div>

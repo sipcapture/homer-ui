@@ -131,11 +131,8 @@
             autocomplete="off"
             [ngClass]="isCopy && isNotChanged ? 'input-copy-warning' : ''"
             (change)="isNotChanged = false"
-            [(ngModel)]="
-              isCopy && isNotChanged
-                ? data.data.alias + '-COPY'
-                : data.data.alias
-            "
+            [ngModel]="isCopy && isNotChanged ? data.data.alias + '-COPY' : data.data.alias"
+            (ngModelChange)="data.data.alias = $event"
             [formControl]="alias"
           />
           <mat-error *ngIf="alias?.errors?.['required']">{{
@@ -279,11 +276,7 @@
                 autocomplete="off"
                 [ngClass]="isCopy && isNotChanged ? 'input-copy-warning' : ''"
                 (change)="isNotChanged = false"
-                [(ngModel)]="
-                  isCopy && isNotChanged
-                    ? data.data.alias + '-COPY'
-                    : data.data.alias
-                "
+                [ngModel]="isCopy && isNotChanged ? data.data.alias + '-COPY' : data.data.alias"
                 [disabled]="true"
               />
             </mat-form-field>

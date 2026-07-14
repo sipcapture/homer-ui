@@ -6,6 +6,7 @@ interface IP {
     isShorten: boolean;
 }
 @Component({
+    standalone: false,
     selector: 'app-child-cell',
     templateUrl: './column-alias-renderer.component.html',
     styles: [`

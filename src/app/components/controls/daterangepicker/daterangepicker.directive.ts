@@ -25,6 +25,7 @@ import {
   const moment = _moment;
   
   @Directive({
+    standalone: false,
     selector: 'input[ngxDaterangepickerMd]',
     host: {
       '(keyup.esc)': 'hide()',

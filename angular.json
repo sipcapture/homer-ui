@@ -11,8 +11,9 @@
             "prefix": "app",
             "architect": {
                 "build": {
-                    "builder": "@angular-devkit/build-angular:browser",
+                    "builder": "ngx-build-plus:browser",
                     "options": {
+                        "extraWebpackConfig": "webpack.partial.js",
                         "outputPath": "dist/homer-ui",
                         "index": "src/index.html",
                         "main": "src/main.ts",
@@ -169,20 +170,20 @@
                 "serve": {
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "options": {
-                        "browserTarget": "homer-ui:build"
+                      "buildTarget": "homer-ui:build"
                     },
                     "configurations": {
                         "production": {
-                            "browserTarget": "homer-ui:build:production"
+                          "buildTarget": "homer-ui:build:production"
                         },
                         "development": {
-                            "browserTarget": "homer-ui:build:development"
+                          "buildTarget": "homer-ui:build:development"
                         },
                         "webapp": {
-                            "browserTarget": "homer-ui:build:webapp"
+                          "buildTarget": "homer-ui:build:webapp"
                         },
                         "server": {
-                            "browserTarget": "homer-ui:build:server"
+                          "buildTarget": "homer-ui:build:server"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -190,7 +191,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "homer-ui:build"
+                      "buildTarget": "homer-ui:build"
                     }
                 },
                 "test": {

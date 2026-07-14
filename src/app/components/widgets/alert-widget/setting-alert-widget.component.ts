@@ -2,6 +2,7 @@ import { Component, Inject, OnInit, ChangeDetectionStrategy, ChangeDetectorRef }
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core'
 @Component({
+    standalone: false,
     selector: 'app-setting-alert-widget-component',
     templateUrl: 'setting-alert-widget.component.html',
     styleUrls: ['./setting-alert-widget.component.scss'],

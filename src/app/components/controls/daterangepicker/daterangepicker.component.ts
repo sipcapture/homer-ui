@@ -18,6 +18,7 @@ export enum SideEnum {
 }
 
 @Component({
+    standalone: false,
     selector: 'ngx-daterangepicker-material',
     styleUrls: ['./daterangepicker.component.scss'],
     templateUrl: './daterangepicker.component.html',

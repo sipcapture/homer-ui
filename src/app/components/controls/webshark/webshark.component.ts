@@ -21,6 +21,7 @@ interface FlatNode {
 }
 
 @Component({
+    standalone: false,
     selector: 'app-webshark',
     templateUrl: './webshark.component.html',
     styleUrls: ['./webshark.component.scss'],
