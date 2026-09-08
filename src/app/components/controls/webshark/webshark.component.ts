@@ -335,8 +335,7 @@ export class WebsharkComponent implements OnInit, AfterViewInit {
         if (!escapedFilter) {
             return escaped;
         }
-        return escaped.replaceAll(
-            escapedFilter,
+        return escaped.split(escapedFilter).join(
             `<span style="background-color: yellow;">${escapedFilter}</span>`
         );
     }
