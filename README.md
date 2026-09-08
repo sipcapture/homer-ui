@@ -1,4 +1,4 @@
-### The project is obsolete. Please use Homer 11 http://github.com/sipcapture/homer
+
 
 # HOMER User-Interface
 
