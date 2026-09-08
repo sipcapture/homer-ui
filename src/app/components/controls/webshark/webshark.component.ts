@@ -2,6 +2,7 @@ import { TooltipService } from '@app/services/tooltip.service';
 import { WebsharkDictionaryApiService, IdType } from './webshark-dictionary-api.service';
 import { WebsharkDictionary } from './webshark-dictionary';
 import { Functions, log } from '@app/helpers/functions';
+import { escapeHtml } from '@app/helpers/sanitize-html';
 import { Input, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit, Output, EventEmitter } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
@@ -326,11 +327,17 @@ export class WebsharkComponent implements OnInit, AfterViewInit {
         return c.includes(description) || description.includes(this.textFilterTree) || name.includes(this.textFilterTree);
     }
     highlight(text) {
-        return this.textFilterTree !== '' ?
-            text.replaceAll(
-                this.textFilterTree,
-                `<span style="background-color: yellow;">${this.textFilterTree}</span>`) :
-            text;
+        const escaped = escapeHtml(text);
+        if (this.textFilterTree === '') {
+            return escaped;
+        }
+        const escapedFilter = escapeHtml(this.textFilterTree);
+        if (!escapedFilter) {
+            return escaped;
+        }
+        return escaped.split(escapedFilter).join(
+            `<span style="background-color: yellow;">${escapedFilter}</span>`
+        );
     }
     onKeyUpFilterTree() {
         this.cdr.detectChanges();
