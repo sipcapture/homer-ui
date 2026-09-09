@@ -5,6 +5,7 @@ import { TooltipService } from '@app/services/tooltip.service';
 import { style } from '@angular/animations';
 
 @Component({
+    standalone: false,
     selector: 'tooltip',
     templateUrl: './flow-tooltip.component.html',
     styleUrls: ['./flow-tooltip.component.scss'],

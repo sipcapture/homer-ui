@@ -20,6 +20,7 @@ import { TransactionFilterService } from '@app/components/controls/transaction-f
 import { Subscription } from 'rxjs';
 
 @Component({
+    standalone: false,
   selector: 'app-tab-messages',
   templateUrl: './tab-messages.component.html',
   styleUrls: ['./tab-messages.component.scss'],

@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular
 import { MatColumnDef, MatTable } from '@angular/material/table';
 
 @Component({
+    standalone: false,
     selector: 'app-generic-cell',
     templateUrl: './generic-cell.component.html',
     styleUrls: ['./generic-cell.component.scss']

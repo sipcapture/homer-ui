@@ -27,6 +27,7 @@ import { AlertService, AuthenticationService, TimeFormattingService } from '@app
 import { PreferencesComponentMapping } from '@app/models/preferences-component-mapping';
 
 @Component({
+    standalone: false,
   selector: 'app-page-agent-subscriptions',
   templateUrl: './page-agent-subscriptions.component.html',
   styleUrls: ['./page-agent-subscriptions.component.scss']

@@ -1,4 +1,4 @@
-import { ChartsModule } from '@xirenec/ng2-charts';
+import { NgChartsModule } from 'ng2-charts';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { NgModule } from '@angular/core';
@@ -21,7 +21,7 @@ import { HtmlPipe } from './html.pipe';
     MatTabsModule,
     MatButtonModule,
     MatIconModule,
-    ChartsModule,
+    NgChartsModule,
     MatTooltipModule,
     NgxJsonViewerModule,
     FontAwesomeModule,

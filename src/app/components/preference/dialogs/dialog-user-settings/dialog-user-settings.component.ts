@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AuthenticationService, PreferenceUserService } from '@app/services';
 import { TranslateService } from '@ngx-translate/core'
 @Component({
+    standalone: false,
     selector: 'app-dialog-user-settings',
     templateUrl: './dialog-user-settings.component.html',
     styleUrls: ['./dialog-user-settings.component.scss'],

@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core'
 import { environment } from '@environments/environment';
 import { lastValueFrom } from 'rxjs';
 @Component({
+    standalone: false,
     selector: 'app-grafana-rsearch-widget-component',
     templateUrl: 'setting-grafana-widget.component.html',
     styleUrls: ['./setting-grafana-widget.component.scss'],

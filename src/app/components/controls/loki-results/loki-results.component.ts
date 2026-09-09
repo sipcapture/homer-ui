@@ -15,6 +15,7 @@ import { DateTimeRangeService } from '@app/services/data-time-range.service';
 import { ModulesService } from '@app/services/modules.service';
 
 @Component({
+    standalone: false,
     selector: 'app-loki-results',
     templateUrl: './loki-results.component.html',
     styleUrls: ['./loki-results.component.scss'],

@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core'
 
 @Component({
+    standalone: false,
     selector: 'app-dialog-alias',
     templateUrl: './dialog-alias.component.html',
     styleUrls: ['./dialog-alias.component.scss'],

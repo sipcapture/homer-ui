@@ -30,6 +30,7 @@ export interface FlowFilter {
     CallId: Array<FilterItem>;
 }
 @Component({
+    standalone: false,
     selector: 'app-filter',
     templateUrl: './transaction-filter.component.html',
     styleUrls: ['./transaction-filter.component.scss'],

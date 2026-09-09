@@ -24,6 +24,7 @@ import { PreferencesComponentMapping } from '@app/models/preferences-component-m
 import { TranslateService } from '@ngx-translate/core';
 import { AdminService } from '@app/services/preferences/admin.service';
 @Component({
+    standalone: false,
     selector: 'app-preference',
     templateUrl: './preference.component.html',
     styleUrls: ['./preference.component.scss'],

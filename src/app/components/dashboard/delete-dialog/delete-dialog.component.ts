@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core'
 
 @Component({
+    standalone: false,
   selector: 'app-delete-dialog',
   templateUrl: './delete-dialog.component.html',
     styleUrls: ['./delete-dialog.component.scss'],

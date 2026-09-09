@@ -22,6 +22,7 @@ import {
 } from '@angular/cdk/overlay';
 
 @Directive({
+    standalone: false,
     selector: '[hepTooltip]',
 })
 export class HepTooltipDirective implements OnInit {

@@ -5,6 +5,7 @@ import { CopyService } from '@app/services/copy.service';
 import { Subscription } from 'rxjs';
 
 @Component({
+    standalone: false,
   selector: 'app-copy',
   templateUrl: './copy.component.html',
   styleUrls: ['./copy.component.scss'],

@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core'
 import * as _moment from 'moment';
 const moment: any = _moment;
 @Component({
+    standalone: false,
     selector: 'app-setting-clock-widget-component',
     templateUrl: 'setting-clock-widget.component.html',
     styleUrls: ['./setting-clock-widget.component.scss'],

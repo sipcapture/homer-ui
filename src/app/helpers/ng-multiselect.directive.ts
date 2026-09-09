@@ -9,6 +9,7 @@ import {
     DoCheck,
     ChangeDetectorRef,
 } from '@angular/core';
+import { outputToObservable } from '@angular/core/rxjs-interop';
 import { Subject } from 'rxjs';
 import {
     NgControl,
@@ -40,6 +41,7 @@ export class NgSelectErrorStateMatcher {
 }
 
 @Directive({
+    standalone: false,
     // tslint:disable-next-line:directive-selector
     selector: '[ngSelectMulti]',
     providers: [
@@ -121,13 +123,12 @@ export class NgSelectFormFieldControlDirective
         @Optional() private _parentFormGroup: FormGroupDirective
     ) {
 
-        host.focusEvent.asObservable().pipe(untilDestroyed(this))
+        outputToObservable(host.focusEvent).pipe(untilDestroyed(this))
             .subscribe((v) => {
                 this._shouldFloat = true;
                 this.stateChanges.next();
             });
-        host.blurEvent
-            .asObservable()
+        outputToObservable(host.blurEvent)
             .pipe(untilDestroyed(this))
             .subscribe((v) => {
                 this._shouldFloat = false;
@@ -156,8 +157,7 @@ export class NgSelectFormFieldControlDirective
                     this.stateChanges.next();
                 });
         } else {
-            host.changeEvent
-                .asObservable()
+            outputToObservable(host.changeEvent)
                 .pipe(untilDestroyed(this))
                 .subscribe((v) => {
                     this._value = v;

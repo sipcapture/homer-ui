@@ -32,6 +32,7 @@ export interface IframeConfig {
 }
 
 @Component({
+    standalone: false,
     selector: 'app-iframe-widget',
     templateUrl: './grafana-widget.component.html',
     styleUrls: ['./grafana-widget.component.scss'],

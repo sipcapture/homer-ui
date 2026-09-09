@@ -7,6 +7,7 @@ import { UrlWarningDialog } from './url-warning-dialog/url-warning-dialog.compon
 import { TranslateService } from '@ngx-translate/core'
 import { environment } from '@environments/environment';
 @Component({
+    standalone: false,
   selector: 'app-add-dashboard-dialog',
   templateUrl: './add-dashboard-dialog.component.html',
   styleUrls: ['./add-dashboard-dialog.component.scss'],

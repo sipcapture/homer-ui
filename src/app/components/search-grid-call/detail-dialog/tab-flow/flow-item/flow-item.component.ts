@@ -11,6 +11,7 @@ import {
 import { Functions } from '@app/helpers/functions';
 
 @Component({
+    standalone: false,
   selector: 'app-flow-item',
   templateUrl: './flow-item.component.html',
   styleUrls: ['./flow-item.component.scss'],

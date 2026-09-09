@@ -3,6 +3,7 @@ import { UpdateAlertService } from './update-alert.service';
 import { TranslateService } from '@ngx-translate/core'
 
 @Component({
+    standalone: false,
     selector: 'app-update-alert',
     templateUrl: './update-alert.component.html',
     styleUrls: ['./update-alert.component.scss'],

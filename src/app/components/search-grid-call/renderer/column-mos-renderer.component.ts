@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {ICellRendererAngularComp} from 'ag-grid-angular';
 import { Functions } from '@app/helpers/functions';
 @Component({
+    standalone: false,
     selector: 'app-child-cell',
     template: `
     <span class='cell-wrapper' (mousedown)='startCopy()' (mouseup)='copy(params.value)'>

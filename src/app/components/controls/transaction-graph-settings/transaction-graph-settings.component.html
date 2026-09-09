@@ -9,7 +9,8 @@
     (click)="hideInfo()" *ngIf='options !== undefined'></div>
     <div class="button-icon-right-top info-container"
     [hidden]="!isInfoOpened"
-    #filterContainer>
+    #filterContainer
+    *ngIf="options">
 
     <div style="margin: 0 -10px 5px -10px;">
         <mat-accordion>
@@ -27,7 +28,7 @@
                 [displayWith]="formatLabel"
                 [max]='0.05'
                 [min]='maxValue'
-                [(ngModel)]="options?.physics?.barnesHut.gravitationalConstant"
+                [(ngModel)]="options.physics.barnesHut.gravitationalConstant"
                 (ngModelChange)="changeOptions()"
                 [disabled]='isRepulsion'
                 ><input matSliderThumb /><input matSliderThumb />
@@ -48,7 +49,7 @@
                 thumbLabel
                 [max]='500'
                 [min]='0'
-                [(ngModel)]="options?.physics.maxVelocity"
+                [(ngModel)]="options.physics.maxVelocity"
                 (ngModelChange)="changeOptions()"
                 ><input matSliderThumb /><input matSliderThumb />
 
@@ -61,7 +62,7 @@
                 thumbLabel
                 [max]='500'
                 [min]='0'
-                [(ngModel)]="options?.physics.minVelocity"
+                [(ngModel)]="options.physics.minVelocity"
                 (ngModelChange)="changeOptions()"
                 ><input matSliderThumb /><input matSliderThumb />
 

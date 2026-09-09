@@ -8,6 +8,7 @@ import { AlertProper, AlertSubject, MessageTimer } from '@app/models/alert.model
 
 
 @Component({
+    standalone: false,
     selector: 'alert-overlay',
     templateUrl: 'alert.component.html',
     styleUrls: ['./alert.component.scss'],

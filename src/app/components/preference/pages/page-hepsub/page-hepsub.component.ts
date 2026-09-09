@@ -28,6 +28,7 @@ import { PreferencesComponentMapping } from '@app/models/preferences-component-m
 import { Functions } from '@app/helpers/functions';
 
 @Component({
+    standalone: false,
   selector: 'app-page-hepsub',
   templateUrl: './page-hepsub.component.html',
   styleUrls: ['./page-hepsub.component.scss']

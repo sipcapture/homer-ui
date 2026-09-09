@@ -9,6 +9,7 @@ import { SearchService } from '@app/services';
 import { Functions, setStorage } from '@app/helpers/functions';
 import { TranslateService } from '@ngx-translate/core'
 @Component({
+    standalone: false,
   selector: 'app-rsearch-widget',
   templateUrl: './rsearch-widget.component.html',
   styleUrls: ['./rsearch-widget.component.scss'],

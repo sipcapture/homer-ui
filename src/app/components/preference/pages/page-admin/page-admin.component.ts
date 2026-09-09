@@ -5,6 +5,7 @@ import { HttpResponse } from '@angular/common/http';
 import { AlertService } from '@app/services';
 
 @Component({
+    standalone: false,
   selector: 'app-page-admin',
   templateUrl: './page-admin.component.html',
   styleUrls: ['./page-admin.component.scss']

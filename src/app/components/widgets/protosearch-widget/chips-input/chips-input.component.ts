@@ -10,6 +10,7 @@ interface ArrayItem {
  * @title Chips with input
  */
 @Component({
+    standalone: false,
     selector: 'app-chips-input',
     templateUrl: './chips-input.component.html',
     styleUrls: ['./chips-input.component.scss'],

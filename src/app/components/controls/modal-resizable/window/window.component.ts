@@ -14,6 +14,7 @@ import {
 } from '@angular/core';
 
 @Component({
+    standalone: false,
   selector: 'app-window',
   templateUrl: './window.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush

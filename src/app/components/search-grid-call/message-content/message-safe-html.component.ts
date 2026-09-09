@@ -8,6 +8,7 @@ import { sanitizeUntrustedHtml } from '@app/helpers/sanitize-html';
  * See https://angular.io/api/core/Pipe for more info on Angular Pipes.
  */
 @Pipe({
+    standalone: false,
   name: 'safeHtml',
 })
 export class MessageSafeHtmlPipe implements PipeTransform {

@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular
 import { MatColumnDef, MatTable } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core'
 @Component({
+    standalone: false,
   selector: 'app-last-error-cell',
   templateUrl: './last-error-cell.component.html',
   styleUrls: ['./last-error-cell.component.scss']

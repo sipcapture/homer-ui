@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
+    standalone: false,
   selector: 'app-loading-circle',
   templateUrl: './loading-circle.component.html',
   styleUrls: ['./loading-circle.component.scss']

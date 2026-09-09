@@ -6,7 +6,8 @@ import { Functions } from './helpers/functions';
 import {TranslateService} from '@ngx-translate/core';
 
 
-@Component({ selector: 'app-root', templateUrl: 'app.component.html' })
+@Component({
+    standalone: false, selector: 'app-root', templateUrl: 'app.component.html' })
 export class AppComponent {
     currentUser: User;
     title = 'HOMER';
