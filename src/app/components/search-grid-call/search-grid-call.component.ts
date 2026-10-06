@@ -6,6 +6,7 @@ import { FlowItemType } from '@app/models/flow-item-type.model';
 import { ColDef, GridOptions } from 'ag-grid-community';
 import { Subscription } from 'rxjs';
 import { Functions, getStorage, log, setStorage } from '@app/helpers/functions';
+import { unixMillis } from '@app/helpers/unix-millis';
 import  moment from 'moment';
 import { ConstValue, UserConstValue } from '@app/models';
 import {
@@ -1312,9 +1313,11 @@ export class SearchGridCallComponent
         const uuid = row?.data?.item?.uuid || row?.data?.id;
         if (!isLOG && uuid) {
             const _protocol_profile = row?.data?.profile || this.protocol_profile;
+            const rawTs = unixMillis(row.data.micro_ts);
+            const messageTs = typeof rawTs === 'number' ? Math.trunc(rawTs) : NaN;
             let timestamp = {
-                from: row.data.micro_ts + this.limitRange.message_from, // - 1sec
-                to: row.data.micro_ts + this.limitRange.message_to, // + 1sec
+                from: messageTs + this.limitRange.message_from, // - 1sec
+                to: messageTs + this.limitRange.message_to, // + 1sec
             };
             if (!timestamp.from || !timestamp.to) {
                 timestamp = this.config.timestamp;

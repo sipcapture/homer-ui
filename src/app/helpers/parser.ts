@@ -5,6 +5,7 @@ import 'moment-timezone';
 import  moment from 'moment';
 import { FlowItemType } from '@app/models/flow-item-type.model';
 import { WorkerCommands } from '@app/models/worker-commands.module';
+import { unixMillis } from './unix-millis';
 
 class Functions {
   static protoCheck(protocol: number) {
@@ -646,6 +647,9 @@ export class TransactionServiceProcessor {
           message.create_ts ||
           message.timeSeconds * 1000 + message.timeUseconds;
       }
+      if (typeof message.micro_ts === 'number') {
+        message.micro_ts = unixMillis(message.micro_ts);
+      }
     });
     return messages
       .sort((itemA, itemB) => {
@@ -659,7 +663,11 @@ export class TransactionServiceProcessor {
         const [codecDataJSON] = transactionByCallId?.Codecs || [];
         const codecData = codecDataJSON ? JSON.parse(codecDataJSON) : null;
         const i = item.__is_flow_item__ ? item.source_data : item;
-        const ts = parseInt(moment(i.micro_ts).format('x'), 10);
+        const ts =
+          typeof i.micro_ts === 'number'
+            ? i.micro_ts
+            : parseInt(moment(i.micro_ts).format('x'), 10);
+        const microTs = Number.isFinite(ts) ? Math.trunc(ts) : i.micro_ts;
         if (prevTs === 0) {
           prevTs = ts;
         }
@@ -749,14 +757,14 @@ export class TransactionServiceProcessor {
           description:
                   description,
           info_date: `[${i.id || '#' + (pid + 1)}] [${protoName}] ${moment(
-            i.micro_ts
+            microTs
           ).format(dateFormat)}`,
           diff: `+${diffTs.toFixed(3)}ms`,
           source_ip: sIP,
           source_port: sPORT,
           destination_ip: dIP,
           destination_port: dPORT,
-          micro_ts: i.micro_ts,
+          micro_ts: microTs,
           source_data: i,
           typeItem: i.typeItem,
           QOS: i.QOS,
@@ -768,8 +776,8 @@ export class TransactionServiceProcessor {
           messageData: {
             codecData,
             id: i.id || '--',
-            create_date: moment(i.micro_ts).format('YYYY-MM-DD'),
-            timeSeconds: moment(i.micro_ts).format('HH:mm:ss.SSS Z'),
+            create_date: moment(microTs).format('YYYY-MM-DD'),
+            timeSeconds: moment(microTs).format('HH:mm:ss.SSS Z'),
             diff: `${diffTs.toFixed(2)} ms`,
             method: i.typeItem === 'HEP-LOG' ? 'HEP-LOG' : (i.sdp
               ? eventName + ` (SDP)${i.msg_info ? ' ' + i.msg_info : ''}`
