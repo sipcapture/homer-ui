@@ -940,7 +940,7 @@ export class TransactionServiceProcessor {
           // type: "report"
           i.type = 'report';
           // uuid: "ecd5d2fb-fb77-11eb-92fb-000019432987"
-          i.uuid = Functions.newGuid();
+          i.uuid = globalThis.crypto.randomUUID();
           // vlan: 0
           i.vlan = 0;
           return i;

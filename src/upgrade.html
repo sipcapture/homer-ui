@@ -38,13 +38,30 @@
             return path;
         }
 
-        function init() {
-            var path = readRedirectPath();
+        function redirectToValidatedPath(path) {
             if (path === '/') {
                 location.replace('/');
                 return;
             }
-            location.replace(path);
+            var anchor = document.createElement('a');
+            anchor.setAttribute('href', path);
+            if (anchor.protocol !== 'http:' && anchor.protocol !== 'https:') {
+                location.replace('/');
+                return;
+            }
+            if (anchor.hostname !== location.hostname || anchor.port !== location.port) {
+                location.replace('/');
+                return;
+            }
+            if (anchor.pathname.indexOf('..') !== -1) {
+                location.replace('/');
+                return;
+            }
+            location.replace(anchor.pathname + anchor.search + anchor.hash);
+        }
+
+        function init() {
+            redirectToValidatedPath(readRedirectPath());
         }
         init();
     </script>
