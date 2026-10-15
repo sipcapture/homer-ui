@@ -12,7 +12,6 @@ import { TranslateService } from '@ngx-translate/core'
 export class UpdateAlertComponent implements OnInit {
     @ViewChild('refreshForm', { static: true }) refreshForm;
     message = '';
-    refreshURL;
     isMessage = false;
     constructor(private updateAlertService: UpdateAlertService,
         public translateService: TranslateService) {
@@ -30,7 +29,6 @@ export class UpdateAlertComponent implements OnInit {
             this.isMessage = upgrade;
             if (upgrade) {
                 this.message = `${message} - (latest version: ${version})`;
-                this.refreshURL = encodeURIComponent(window.location.href);
             }
         } catch (e) {
         }

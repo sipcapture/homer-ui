@@ -6,50 +6,9 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
-    <!-- <META http-equiv="REFRESH" content="0;URL=/"> -->
-
-    <script>
-        function readRedirectPath() {
-            var query = location.search.slice(1);
-            var idx = query.indexOf('URL=');
-            if (idx < 0) {
-                return '/';
-            }
-            var raw;
-            try {
-                raw = decodeURIComponent(decodeURIComponent(query.substring(idx + 4)));
-            } catch (e) {
-                return '/';
-            }
-            if (typeof raw !== 'string') {
-                return '/';
-            }
-            var path = raw.trim();
-            if (!path) {
-                return '/';
-            }
-            // Only allow same-site relative paths (reject protocol-relative and absolute URLs).
-            if (path.charAt(0) !== '/' || path.charAt(1) === '/') {
-                return '/';
-            }
-            if (path.indexOf(':') !== -1) {
-                return '/';
-            }
-            return path;
-        }
-
-        function init() {
-            var path = readRedirectPath();
-            if (path === '/') {
-                location.replace('/');
-                return;
-            }
-            location.replace(path);
-        }
-        init();
-    </script>
+    <meta http-equiv="refresh" content="0;URL=/" />
 </head>
 
-<body onload="init()"></body>
+<body></body>
 
 </html>
