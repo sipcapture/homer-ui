@@ -13,6 +13,9 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   run_tests:
@@ -32,6 +35,8 @@ jobs:
       - run: npm run build --if-present
   bump_version:
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master'  }}
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
