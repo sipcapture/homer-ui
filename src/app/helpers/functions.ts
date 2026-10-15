@@ -6,12 +6,20 @@ export class Functions {
   static logTime = 0;
   // Alias Mapping Field List
   static amfList = ['server_type_in', 'server_type_out', 'ipgroup_in', 'ipgroup_out', 'source_ip', 'destination_ip', 'IPs'];
-  static newGuid() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-      const r: any = Math.random() * 16 | 0;
-      const v = c === 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
+  static newGuid(): string {
+    const cryptoRef = typeof globalThis !== 'undefined' ? globalThis.crypto : undefined;
+    if (cryptoRef?.randomUUID) {
+      return cryptoRef.randomUUID();
+    }
+    if (!cryptoRef?.getRandomValues) {
+      throw new Error('Secure random number generation is not available');
+    }
+    const bytes = new Uint8Array(16);
+    cryptoRef.getRandomValues(bytes);
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+    return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
   }
   static protoCheck(protocol: number) {
     return {
