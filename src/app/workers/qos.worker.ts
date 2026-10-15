@@ -799,12 +799,43 @@ class QosProcessor {
 
 const qp = new QosProcessor();
 
+const QOS_WORKER_COMMANDS = new Set([
+  'init',
+  'onChangeRTP',
+  'onChangeRTCP',
+  'onChangeCheckBoxRTP',
+  'onChangeCheckBoxRTCP',
+]);
+
 addEventListener('message', ({ data }) => {
   const { metaData, srcdata } = JSON.parse(data);
 
   if (metaData && metaData.workerCommand) {
-
-    qp[metaData.workerCommand](srcdata, metaData.mosFraction);
+    const command = metaData.workerCommand;
+    if (!QOS_WORKER_COMMANDS.has(command)) {
+      postMessage(JSON.stringify({ error: 'invalid workerCommand' }));
+      return;
+    }
+    switch (command) {
+      case 'init':
+        qp.init(srcdata, metaData.mosFraction);
+        break;
+      case 'onChangeRTP':
+        qp.onChangeRTP(srcdata);
+        break;
+      case 'onChangeRTCP':
+        qp.onChangeRTCP(srcdata);
+        break;
+      case 'onChangeCheckBoxRTP':
+        qp.onChangeCheckBoxRTP();
+        break;
+      case 'onChangeCheckBoxRTCP':
+        qp.onChangeCheckBoxRTCP();
+        break;
+      default:
+        postMessage(JSON.stringify({ error: 'invalid workerCommand' }));
+        return;
+    }
 
     const response = JSON.stringify(qp);
     postMessage(response);

@@ -9,10 +9,36 @@
     <!-- <META http-equiv="REFRESH" content="0;URL=/"> -->
 
     <script>
+        function safeRedirectUrl(raw) {
+            if (!raw || typeof raw !== 'string') {
+                return '/';
+            }
+            var trimmed = raw.trim();
+            if (trimmed.charAt(0) === '/' && trimmed.charAt(1) !== '/') {
+                return trimmed;
+            }
+            try {
+                var target = new URL(trimmed, location.origin);
+                if (target.origin !== location.origin) {
+                    return '/';
+                }
+                if (target.protocol !== 'http:' && target.protocol !== 'https:') {
+                    return '/';
+                }
+                return target.pathname + target.search + target.hash;
+            } catch (e) {
+                return '/';
+            }
+        }
+
         function init() {
-            var redirectUrl = decodeURIComponent(decodeURIComponent(location.search.slice(1).split('URL=')[1]));
-            redirectUrl = redirectUrl || '/';
-            document.location.href = redirectUrl;
+            var query = location.search.slice(1);
+            var raw = '';
+            var parts = query.split('URL=');
+            if (parts.length > 1) {
+                raw = decodeURIComponent(decodeURIComponent(parts[1]));
+            }
+            document.location.assign(safeRedirectUrl(raw));
         }
         init();
     </script>

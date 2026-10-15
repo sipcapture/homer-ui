@@ -290,7 +290,7 @@ export function passwordValidator(
   characterRequirements: CharacterRequirements
 ): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    const specialCharaterRegex = /[\*\.!@#$%^&(){}[\]:;<>,.?\/~_+-=|\\]/;
+    const specialCharaterRegex = /[!@#$%^&*()[\]{}:;<>.,?/~_+\-=|\\]/;
     const hasSpecial = !characterRequirements.special || specialCharaterRegex.test(control.value);
     const lowercaseRegex = /[a-z]/;
     const hasLowercase = !characterRequirements.lowercase || lowercaseRegex.test(control.value);

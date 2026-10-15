@@ -555,7 +555,7 @@ export class TransactionServiceProcessor {
               i.destination_port ? `${dIP}:${i.destination_port}` : dIP,
             ];
           } catch (err) {
-            console.log(i, err);
+            console.error('reCheckHost: failed to parse message host', err);
           }
           return [];
         })
