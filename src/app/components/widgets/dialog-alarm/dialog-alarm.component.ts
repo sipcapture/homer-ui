@@ -4,6 +4,7 @@ import { Functions } from '@app/helpers/functions';
 import { PreferenceAdvancedService } from '@app/services';
 import { TranslateService } from '@ngx-translate/core'
 @Component({
+    standalone: false,
     selector: 'app-dialog-alarm',
     templateUrl: './dialog-alarm.component.html',
     styleUrls: ['./dialog-alarm.component.scss'],

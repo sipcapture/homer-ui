@@ -2,6 +2,7 @@ import { Component, OnInit, Input, ChangeDetectionStrategy, ChangeDetectorRef, E
 import { Functions } from '@app/helpers/functions';
 
 @Component({
+    standalone: false,
   selector: 'app-tab-logs',
   templateUrl: './tab-logs.component.html',
   styleUrls: ['./tab-logs.component.scss'],

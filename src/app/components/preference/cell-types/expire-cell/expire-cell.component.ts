@@ -8,6 +8,7 @@ import {
 import { MatColumnDef, MatCellDef, MatTable } from '@angular/material/table';
 import  moment from 'moment';
 @Component({
+    standalone: false,
   selector: 'app-expire-cell',
   templateUrl: './expire-cell.component.html',
   styleUrls: ['./expire-cell.component.scss'],

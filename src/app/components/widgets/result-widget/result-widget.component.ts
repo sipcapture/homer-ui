@@ -19,6 +19,7 @@ import { IWidget } from '../IWidget';
 import { SettingResultWidgetComponent } from './setting-result-widget.component';
 
 @Component({
+    standalone: false,
     selector: 'app-result-widget',
     templateUrl: './result-widget.component.html',
     styleUrls: ['./result-widget.component.scss'],

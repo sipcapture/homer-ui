@@ -8,6 +8,7 @@ import { DialogAlarmComponent } from '../dialog-alarm/dialog-alarm.component';
 import { PrometheusService } from '@app/services/prometheus.service';
 import { TranslateService } from '@ngx-translate/core'
 @Component({
+    standalone: false,
     selector: 'app-setting-prometheus-widget-component',
     templateUrl: 'setting-prometheus-widget.component.html',
     styleUrls: ['./setting-prometheus-widget.component.scss'],

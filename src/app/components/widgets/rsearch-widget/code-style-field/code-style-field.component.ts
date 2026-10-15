@@ -14,6 +14,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { SearchRemoteService, PreferenceAdvancedService } from '@app/services';
 
 @Component({
+    standalone: false,
     selector: 'app-code-style-field',
     templateUrl: './code-style-field.component.html',
     styleUrls: ['./code-style-field.component.scss'],

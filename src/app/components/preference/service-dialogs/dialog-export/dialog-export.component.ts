@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AuthenticationService } from '@app/services';
 
 @Component({
+    standalone: false,
     selector: 'app-dialog-export',
     templateUrl: './dialog-export.component.html',
     styleUrls: ['./dialog-export.component.scss'],

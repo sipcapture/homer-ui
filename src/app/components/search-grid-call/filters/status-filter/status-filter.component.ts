@@ -14,6 +14,7 @@ import { ConstValue, UserConstValue } from '@app/models';
 type valueGetter = (rowNode: IRowNode | ValueGetterParams) => any
 type FilterParams = Omit<IFilterParams, 'valueGetter'> & { valueGetter: valueGetter };
 @Component({
+    standalone: false,
     selector: 'app-status-filter',
     templateUrl: 'status-filter.component.html',
     styleUrls: ['status-filter.component.scss']
@@ -37,8 +38,8 @@ export class StatusFilterComponent implements IFilterAngularComp {
                 `${hepid}_${profile}` === (ls?.protocol_id || '60_call_h20')) || {};
 
         this.statusMapping = fields_mapping.find(field => field.id === 'status').form_default;
-        this.params = params;
-        this.valueGetter = params.valueGetter;
+        this.params = params as FilterParams;
+        this.valueGetter = (params as FilterParams).valueGetter;
     }
 
     isFilterActive(): boolean {

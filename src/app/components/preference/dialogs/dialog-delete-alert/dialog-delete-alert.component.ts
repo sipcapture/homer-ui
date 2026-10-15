@@ -4,6 +4,7 @@ import { AlertService } from '@app/services';
 import { TranslateService } from '@ngx-translate/core'
 
 @Component({
+    standalone: false,
     selector: 'app-dialog-delete-alert',
     templateUrl: './dialog-delete-alert.component.html',
     styleUrls: ['./dialog-delete-alert.component.scss'],

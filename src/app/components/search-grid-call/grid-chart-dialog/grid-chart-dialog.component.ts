@@ -37,6 +37,7 @@ export interface GridChartConfig {
 }
 
 @Component({
+    standalone: false,
     selector: 'app-grid-chart-dialog',
     templateUrl: 'grid-chart-dialog.component.html',
     styleUrls: ['./grid-chart-dialog.component.scss'],
@@ -151,11 +152,9 @@ export class DialogChartGridDialogComponent
                 duration: 250,
             },
             scales: {
-                yAxes: [
-                    {
-                        stacked: false,
-                    },
-                ],
+                y: {
+                    stacked: false,
+                },
             },
         },
         chartLegend: true,

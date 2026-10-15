@@ -14,6 +14,7 @@ export interface ExportData {
 }
 
 @Component({
+    standalone: false,
     selector: 'app-export-dialog',
     templateUrl: 'export-dialog.component.html',
     styleUrls: ['./export-dialog.component.scss'],

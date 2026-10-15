@@ -50,6 +50,7 @@ interface SearchFieldItem {
 }
 
 @Component({
+    standalone: false,
   selector: 'app-protosearch-widget',
   templateUrl: './protosearch-widget.component.html',
   styleUrls: ['./protosearch-widget.component.scss'],
@@ -1236,7 +1237,9 @@ export class ProtosearchWidgetComponent implements IWidget, OnInit, OnDestroy, A
       this.targetResultsContainerValue.setValue(
         !selectedFields.length
           ? [firstWidget]
-          : [this.defaultContainer] || [firstWidget]
+          : this.defaultContainer
+            ? [this.defaultContainer]
+            : [firstWidget]
       );
     }
     this.fields.forEach((i) => {

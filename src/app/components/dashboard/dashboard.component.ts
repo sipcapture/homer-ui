@@ -36,12 +36,12 @@ import { ConstValue, UserConstValue } from '../../models/const-value.model';
 import { DateTimeRangeService, DateTimeTick, Timestamp } from '@app/services/data-time-range.service';
 import { UserSecurityService } from '@app/services/user-security.service';
 import { AuthenticationService } from '@app/services/authentication.service';
-import { NgxQrcodeElementTypes, NgxQrcodeErrorCorrectionLevels } from '@techiediaries/ngx-qrcode';
 import { environment } from '@environments/environment';
 import { TranslateService } from '@ngx-translate/core'
 
 
 @Component({
+    standalone: false,
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
@@ -104,8 +104,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   prevWidgArray: any;
   tabsObj: any;
   isQrShare = true;
-  qrElementType = NgxQrcodeElementTypes.URL;
-  qrCorrectionLevel = NgxQrcodeErrorCorrectionLevels.HIGH;
+  qrCorrectionLevel: 'L' | 'M' | 'Q' | 'H' = 'H';
   qrValue = '';
   isLoaded = false;
   isFirstLoadOfDashboard = true;
@@ -1029,7 +1028,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
       width: '650px', data: {
         shared: _d.shared,
         id: _d.id,
-        qrElementType: this.qrElementType,
         qrCorrectionLevel: this.qrCorrectionLevel,
         qrValue: '',
       }

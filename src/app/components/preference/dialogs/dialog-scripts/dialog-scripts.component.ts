@@ -6,6 +6,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 // import 'brace/theme/github';
 import { TranslateService } from '@ngx-translate/core'
 @Component({
+    standalone: false,
     selector: 'app-dialog-scripts',
     templateUrl: './dialog-scripts.component.html',
     styleUrls: ['./dialog-scripts.component.scss'],

@@ -19,6 +19,7 @@ export interface GeneralIframeConfig {
 }
 
 @Component({
+    standalone: false,
     selector: 'app-general-iframe-widget',
     templateUrl: './general-iframe-widget.component.html',
     styleUrls: ['./general-iframe-widget.component.scss'],

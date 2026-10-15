@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SettingResultChartWidgetComponent } from './setting-result-chart-widget.component';
 
 @Component({
+    standalone: false,
     selector: 'app-result-chart-widget',
     templateUrl: './result-chart-widget.component.html',
     styleUrls: ['./result-chart-widget.component.scss'],

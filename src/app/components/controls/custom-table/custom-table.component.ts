@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Functions } from '@app/helpers/functions';
 
 @Component({
+    standalone: false,
     selector: 'app-custom-table',
     templateUrl: './custom-table.component.html',
     styleUrls: ['./custom-table.component.css'],

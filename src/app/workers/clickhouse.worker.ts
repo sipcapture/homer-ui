@@ -96,12 +96,12 @@ class ClickhouseProcessor {
     let options = inData.options;
     let isFill;
     if (chartType === 'area') {
-      options.scales.yAxes[0].stacked = true;
+      options.scales.y.stacked = true;
       isFill = true;
       chartType = 'line';
     } else {
       isFill = false;
-      options.scales.yAxes[0].stacked = false;
+      options.scales.y.stacked = false;
     }
     const noChartData = data.length === 0;
     let chartLabels = [];

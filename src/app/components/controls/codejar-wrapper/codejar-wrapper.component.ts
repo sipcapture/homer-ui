@@ -6,6 +6,7 @@ import {
 import { CodeJarContainer } from 'ngx-codejar';
 
 @Component({
+    standalone: false,
     selector: 'app-codejar-wrapper',
     templateUrl: './codejar-wrapper.component.html',
     styleUrls: ['./codejar-wrapper.component.scss'],

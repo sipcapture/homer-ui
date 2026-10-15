@@ -28,6 +28,7 @@ import { PreferencesComponentMapping } from '@app/models/preferences-component-m
 import { Functions } from '@app/helpers/functions';
 
 @Component({
+    standalone: false,
   selector: 'app-page-mapping',
   templateUrl: './page-mapping.component.html',
   styleUrls: ['./page-mapping.component.scss']

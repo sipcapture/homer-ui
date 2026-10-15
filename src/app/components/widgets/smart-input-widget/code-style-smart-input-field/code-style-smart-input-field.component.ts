@@ -15,6 +15,7 @@ import { lastValueFrom } from 'rxjs';
 import { QueryHistoryService } from '../query-history.service';
 
 @Component({
+    standalone: false,
   selector: 'app-code-style-smart-input-field',
   templateUrl: './code-style-smart-input-field.component.html',
   styleUrls: ['./code-style-smart-input-field.component.scss'],

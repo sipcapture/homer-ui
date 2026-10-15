@@ -3,6 +3,7 @@ import { ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular
 import { MatColumnDef, MatTable } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core'
 @Component({
+    standalone: false,
     selector: 'app-active-cell',
     templateUrl: './active-cell.component.html',
     styleUrls: ['./active-cell.component.scss']

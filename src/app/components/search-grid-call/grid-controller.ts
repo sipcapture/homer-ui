@@ -4,6 +4,7 @@ import { Functions, getStorage, setStorage } from '@app/helpers/functions';
 import { ConstValue, UserConstValue } from './../../models/const-value.model';
 
 @Component({
+    standalone: false,
     template: ''
 })
 export class GridController {

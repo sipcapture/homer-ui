@@ -5,6 +5,7 @@ import { DialogSettingsGridDialog } from '../grid-settings-dialog/grid-settings-
 
 
 @Component({
+    standalone: false,
     template: `
         <div class="user-actions">
             <a (click)="onCheckAllClick()" class="material-icons md-18">done_outline</a>

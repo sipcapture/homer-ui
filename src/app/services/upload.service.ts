@@ -1,10 +1,4 @@
-import {
-  HttpClient,
-  HttpEvent,
-  HttpHeaders,
-  HttpErrorResponse,
-  HttpEventType,
-} from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHeaders, HttpErrorResponse, HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '@environments/environment';
 

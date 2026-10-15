@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core'
 import moment from 'moment';
 import { lastValueFrom } from 'rxjs';
 @Component({
+    standalone: false,
   selector: 'app-dialog-users',
   templateUrl: './dialog-users.component.html',
   styleUrls: ['./dialog-users.component.scss'],

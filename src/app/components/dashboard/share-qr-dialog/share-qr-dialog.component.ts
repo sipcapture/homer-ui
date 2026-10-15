@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AlertService, DashboardService, } from '@app/services';
 import { TranslateService } from '@ngx-translate/core';
 @Component({
+    standalone: false,
     selector: 'app-share-qr-dialog',
     templateUrl: './share-qr-dialog.component.html',
     styleUrls: ['./share-qr-dialog.component.scss'],
@@ -11,7 +12,6 @@ import { TranslateService } from '@ngx-translate/core';
 export class ShareQrDialogComponent {
     dashboardLink;
     dashboardId;
-    elementType;
     correctionLevel;
     value;
     id;
@@ -39,7 +39,6 @@ export class ShareQrDialogComponent {
             });
         this.shared = data.shared;
         this.id = data.id;
-        this.elementType = data.qrElementType;
         this.correctionLevel = data.qrCorrectionLevel;
         this.value = window.location.href;
 

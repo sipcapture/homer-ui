@@ -27,6 +27,7 @@ import { AgentRequestModel } from '@app/models/agent-request-model';
 import  moment from 'moment';
 
 @Component({
+    standalone: false,
   selector: 'app-detail-dialog',
   templateUrl: './detail-dialog.component.html',
   styleUrls: ['./detail-dialog.component.scss'],

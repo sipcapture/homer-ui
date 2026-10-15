@@ -44,6 +44,7 @@ export interface GroupedSelectList {
 }
 
 @Component({
+    standalone: false,
     selector: 'app-setting-influxdbchart-widget-component',
     templateUrl: 'setting-influxdbchart-widget.component.html',
     styleUrls: ['./setting-influxdbchart-widget.component.scss'],

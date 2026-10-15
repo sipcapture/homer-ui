@@ -26,6 +26,7 @@ import { AlertService, AuthenticationService } from '@app/services';
 import { PreferencesComponentMapping } from '@app/models/preferences-component-mapping';
 import { Functions } from '@app/helpers/functions';
 @Component({
+    standalone: false,
   selector: 'app-page-advanced-settings',
   templateUrl: './page-advanced-settings.component.html',
   styleUrls: ['./page-advanced-settings.component.scss']

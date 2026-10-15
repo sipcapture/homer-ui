@@ -29,6 +29,7 @@ import { PreferencesComponentMapping } from '@app/models/preferences-component-m
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
+    standalone: false,
     selector: 'app-page-system-overview',
     templateUrl: './page-system-overview.component.html',
     styleUrls: ['./page-system-overview.component.scss'],

@@ -4,6 +4,7 @@ import { AlertService } from '@app/services';
 import { TranslateService } from '@ngx-translate/core'
 
 @Component({
+    standalone: false,
     selector: 'app-settings-ace-editor-widget-component',
     templateUrl: 'settings-ace-editor-widget.component.html',
     styleUrls: ['./settings-ace-editor-widget.component.scss'],

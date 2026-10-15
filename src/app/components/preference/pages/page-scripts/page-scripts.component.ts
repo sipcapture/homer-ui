@@ -29,6 +29,7 @@ import { Functions } from '@app/helpers/functions';
 
 
 @Component({
+    standalone: false,
   selector: 'app-page-scripts',
   templateUrl: './page-scripts.component.html',
   styleUrls: ['./page-scripts.component.scss']

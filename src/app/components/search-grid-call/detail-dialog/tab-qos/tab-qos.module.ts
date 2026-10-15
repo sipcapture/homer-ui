@@ -1,4 +1,4 @@
-import { ChartsModule } from '@xirenec/ng2-charts';
+import { NgChartsModule } from 'ng2-charts';
 import { FormsModule } from '@angular/forms';
 import { HomerMaterialModule } from '@app/app.material-module';
 import { NgModule } from '@angular/core';
@@ -10,7 +10,7 @@ import { TabQosComponent } from './tab-qos.component';
     CommonModule,
     HomerMaterialModule,
     FormsModule,
-    ChartsModule,
+    NgChartsModule,
   ],
   declarations: [TabQosComponent],
   exports: [TabQosComponent]
