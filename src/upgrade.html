@@ -9,36 +9,42 @@
     <!-- <META http-equiv="REFRESH" content="0;URL=/"> -->
 
     <script>
-        function safeRedirectUrl(raw) {
-            if (!raw || typeof raw !== 'string') {
+        function readRedirectPath() {
+            var query = location.search.slice(1);
+            var idx = query.indexOf('URL=');
+            if (idx < 0) {
                 return '/';
             }
-            var trimmed = raw.trim();
-            if (trimmed.charAt(0) === '/' && trimmed.charAt(1) !== '/') {
-                return trimmed;
-            }
+            var raw;
             try {
-                var target = new URL(trimmed, location.origin);
-                if (target.origin !== location.origin) {
-                    return '/';
-                }
-                if (target.protocol !== 'http:' && target.protocol !== 'https:') {
-                    return '/';
-                }
-                return target.pathname + target.search + target.hash;
+                raw = decodeURIComponent(decodeURIComponent(query.substring(idx + 4)));
             } catch (e) {
                 return '/';
             }
+            if (typeof raw !== 'string') {
+                return '/';
+            }
+            var path = raw.trim();
+            if (!path) {
+                return '/';
+            }
+            // Only allow same-site relative paths (reject protocol-relative and absolute URLs).
+            if (path.charAt(0) !== '/' || path.charAt(1) === '/') {
+                return '/';
+            }
+            if (path.indexOf(':') !== -1) {
+                return '/';
+            }
+            return path;
         }
 
         function init() {
-            var query = location.search.slice(1);
-            var raw = '';
-            var parts = query.split('URL=');
-            if (parts.length > 1) {
-                raw = decodeURIComponent(decodeURIComponent(parts[1]));
+            var path = readRedirectPath();
+            if (path === '/') {
+                location.replace('/');
+                return;
             }
-            document.location.assign(safeRedirectUrl(raw));
+            location.replace(path);
         }
         init();
     </script>
