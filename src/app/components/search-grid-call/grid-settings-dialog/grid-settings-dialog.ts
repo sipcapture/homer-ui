@@ -58,8 +58,8 @@ export class DialogSettingsGridDialog {
         this.protocol_id = data.protocol_id;
         this.id = data.idParent;
         if (
-            typeof this.apiColumn?.getAllColumns() !== 'undefined' &&
-            this.apiColumn.getAllColumns() !== null
+            typeof this.apiColumn?.getAllGridColumns() !== 'undefined' &&
+            this.apiColumn.getAllGridColumns() !== null
         ) {
             Object.values(this.apiColumn.getAllGridColumns() as Object)
                 .filter((column) => !['', 'id'].includes(column.colDef.field))
@@ -67,7 +67,7 @@ export class DialogSettingsGridDialog {
                     this.allColumnIds.push({
                         name: column.colDef.headerName,
                         field: column.colDef.field,
-                        selected: column.visible,
+                        selected: column.isVisible(),
                         idx: index
                     })
                 );
@@ -81,19 +81,19 @@ export class DialogSettingsGridDialog {
         }
     }
     onUpdateProto({ event: { container } }: any) {
-        if (this.apiColumn.getAllColumns()) {
+        if (this.apiColumn.getAllGridColumns()) {
             const activeListView = container.id === 'activeListView' ? container : null;
             const inactiveListView = container.id === 'inactiveListView' ? container : null;
             const columnState = this.apiColumn.getColumnState();
             const setVisible = (fName, bool) => {
                 if (columnState.find(({ colId }) => colId === fName)?.hide === bool) {
-                    this.apiColumn.setColumnVisible(fName, bool);
+                    this.apiColumn.setColumnsVisible([fName], bool);
                 }
             };
             inactiveListView?.data.forEach(({ field, selected }) => setVisible(field, selected));
             activeListView?.data.forEach(({ field, selected }, key) => {
                 setVisible(field, selected);
-                this.apiColumn.moveColumn(field, key + 1);
+                this.apiColumn.moveColumns([field], key + 1);
             });
 
             const id = (this.id ? `-${this.id}` : '') + `-${this.protocol_id}`;
@@ -116,8 +116,8 @@ export class DialogSettingsGridDialog {
     }
     private autoSizeAll(skipHeader) {
         const allColumnIds = [];
-        this.apiColumn.getAllColumns().forEach(function (column) {
-            allColumnIds.push(column.colId);
+        this.apiColumn.getAllGridColumns().forEach(function (column) {
+            allColumnIds.push(column.getColId());
         });
         this.apiColumn.autoSizeColumns(allColumnIds, skipHeader);
     }

@@ -23,13 +23,13 @@ export class SettingButtonComponent implements ICellRendererAngularComp {
     this.params = params;
     this.callid = this.params.value || null;
     this.headerName = this.params.displayName || '';
-    this.apiColumn = this.params.columnApi;
-    Object.values(this.params.columnApi.getAllGridColumns() as Object)
+    this.apiColumn = this.params.api;
+    Object.values(this.params.api.getAllGridColumns() as Object)
       .filter((column) => !['', 'id'].includes(column.colDef.field))
       .forEach((column, index) => this.allColumnIds.push({
         name: column.colDef.headerName || column.colDef.field,
         field: column.colDef.field,
-        selected: column.visible,
+        selected: column.isVisible(),
         idx: index
       }));
     this.cdr.detectChanges();
@@ -44,19 +44,19 @@ export class SettingButtonComponent implements ICellRendererAngularComp {
     this.cdr.detectChanges();
   }
   onUpdateList({ event: { container } }: any) {
-    if (this.apiColumn.getAllColumns()) {
+    if (this.apiColumn.getAllGridColumns()) {
       const activeListView = container.id === 'activeListView' ? container : null;
       const inactiveListView = container.id === 'inactiveListView' ? container : null;
       const columnState = this.apiColumn.getColumnState();
       const setVisible = (fName, bool) => {
         if (columnState.find(({ colId }) => colId === fName)?.hide === bool) {
-          this.apiColumn.setColumnVisible(fName, bool);
+          this.apiColumn.setColumnsVisible([fName], bool);
         }
       };
       inactiveListView?.data.forEach(({ field, selected }) => setVisible(field, selected));
       activeListView?.data.forEach(({ field, selected }, key) => {
         setVisible(field, selected);
-        this.apiColumn.moveColumn(field, key + 1);
+        this.apiColumn.moveColumns([field], key + 1);
       });
       setTimeout(() => emitWindowResize(), 100);
     }

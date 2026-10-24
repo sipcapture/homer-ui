@@ -67,10 +67,9 @@ export class SearchGridCallComponent
     implements OnInit, OnDestroy, AfterViewInit {
     override gridApi;
     override gridColumnApi;
-    columnApi;
     override _id: string = null;
     public context;
-    public frameworkComponents;
+    public components;
     isSearchPanel = false;
     @Input() source = 'resultPage';
     @Input() override inChartContainer = false;
@@ -250,7 +249,7 @@ export class SearchGridCallComponent
         }];
 
         this.context = { componentParent: this };
-        this.frameworkComponents = {
+        this.components = {
             columnActionRenderer: ColumnActionRenderer,
             columnCallidRenderer: ColumnCallidRenderer,
             columnUuidRenderer: ColumnUuidRenderer,
@@ -859,7 +858,7 @@ export class SearchGridCallComponent
         const statusFormDefaults = this.context.componentParent.statusFormDefaults;
         const filter = this.context.componentParent.filterCleaned;
         const regex = this.context.componentParent.filterRegex;
-        const columns = this.columnApi.getAllDisplayedColumns().map(({ colDef }) => colDef.field).filter(column => column !== '')
+        const columns = this.gridApi?.getAllDisplayedColumns()?.map(({ colDef }) => colDef.field).filter(column => column !== '') || [];
         return Object.keys(node.data).some(item => {
             if (!columns.includes(item)) {
 
@@ -1079,7 +1078,7 @@ export class SearchGridCallComponent
 
     public onGridReady(params) {
         this.gridApi = params.api;
-        this.gridColumnApi = params.columnApi;
+        this.gridColumnApi = params.api;
         this.totalPages = this.gridApi.paginationGetRowCount();
         this.updateAgGridSizing();
         if (this.inChartContainer) {
@@ -1599,7 +1598,7 @@ export class SearchGridCallComponent
         this.arrChartWindow.splice(id, 1);
     }
     sortChanged(event) {
-        const sortState = Functions.cloneObject(event.columnApi.getColumnState());
+        const sortState = Functions.cloneObject(event.api.getColumnState());
         const id = (this.id ? `-${this.id}` : '') + `-${this.localData.protocol_id}`;
         setStorage(UserConstValue.RESULT_STATE + id, sortState);
     }

@@ -29,11 +29,11 @@
         <mat-radio-button value="XLSX">{{'exportDialog.XLSX' | translate }}</mat-radio-button>
     </mat-radio-group>
 
-    <app-drag-drop-list *ngIf="apiColumn.getAllColumns() !== 'undefined' && this.apiColumn.getAllColumns() !== null"
+    <app-drag-drop-list *ngIf="apiColumn.getAllGridColumns() !== 'undefined' && this.apiColumn.getAllGridColumns() !== null"
         [list]="allColumnIds"
         (change)="onUpdateProto($event)"
     ></app-drag-drop-list>
-    <div *ngIf="apiColumn.getAllColumns() === 'undefined' || this.apiColumn.getAllColumns() === null">
+    <div *ngIf="apiColumn.getAllGridColumns() === 'undefined' || this.apiColumn.getAllGridColumns() === null">
         {{'exportDialog.pleaseMakeSearch' | translate }}
      </div>
 </div>
@@ -41,5 +41,5 @@
     <button mat-raised-button (click)="onNoClick()">{{'exportDialog.Cancel' | translate }}</button>
     <button mat-raised-button 
     color=primary (click)='export()' 
-    [disabled]="apiColumn.getAllColumns() === 'undefined' || this.apiColumn.getAllColumns() === null">{{'exportDialog.Export' | translate }}</button>
+    [disabled]="apiColumn.getAllGridColumns() === 'undefined' || this.apiColumn.getAllGridColumns() === null">{{'exportDialog.Export' | translate }}</button>
 </div>

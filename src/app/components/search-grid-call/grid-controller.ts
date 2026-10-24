@@ -91,12 +91,12 @@ export class GridController {
                 column.resizable = true;
             });
             this.sizeToFit();
-            this.gridOptions?.api?.setColumnDefs(this.columnDefs);
+            this.gridApi?.setGridOption('columnDefs', this.columnDefs);
         } else {
             this.columnDefs?.forEach(column => {
                 column.resizable = true;
             });
-            this.gridOptions?.api?.setColumnDefs(this.columnDefs);
+            this.gridApi?.setGridOption('columnDefs', this.columnDefs);
         }
         if (this.agGridSizeControl.selectedType === 'sizeColumnsToFit') {
             setTimeout(() => {
@@ -120,13 +120,13 @@ export class GridController {
     }
 
     public autoSizeAll(skipHeader) {
-        if (!this.gridColumnApi) {
+        if (!this.gridApi?.getAllGridColumns) {
             return;
         }
         const allColumnIds = [];
-        this.gridColumnApi.getAllColumns().forEach(({ colId }) => {
-            allColumnIds.push(colId);
+        this.gridApi.getAllGridColumns().forEach((column) => {
+            allColumnIds.push(column.getColId());
         });
-        this.gridColumnApi.autoSizeColumns(allColumnIds, skipHeader);
+        this.gridApi.autoSizeColumns(allColumnIds, skipHeader);
     }
 }

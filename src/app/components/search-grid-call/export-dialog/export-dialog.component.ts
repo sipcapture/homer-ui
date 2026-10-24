@@ -56,13 +56,13 @@ export class ExportDialogComponent implements OnInit {
         this.mappings = data.mappings;
         this.id = data.idParent;
         this.protocol = data.protocol;
-        if (typeof this.apiColumn?.getAllColumns() !== 'undefined' && this.apiColumn.getAllColumns() !== null) {
-            Object.values(this.apiColumn.getAllColumns() as Object)
+        if (typeof this.apiColumn?.getAllGridColumns() !== 'undefined' && this.apiColumn.getAllGridColumns() !== null) {
+            Object.values(this.apiColumn.getAllGridColumns() as Object)
                 .filter(column => !['', 'id'].includes(column.colDef.field))
                 .forEach(column => this.allColumnIds.push({
                     name: column.colDef.headerName,
                     field: column.colDef.field,
-                    selected: column.visible
+                    selected: column.isVisible()
                 }));
             this.allColumnIds = this.allColumnIds
                 .map(i => JSON.stringify(i))
@@ -74,7 +74,7 @@ export class ExportDialogComponent implements OnInit {
         }
     }
     ngOnInit() {
-        if (typeof this.apiColumn?.getAllColumns() !== 'undefined' && this.apiColumn.getAllColumns() !== null) {
+        if (typeof this.apiColumn?.getAllGridColumns() !== 'undefined' && this.apiColumn.getAllGridColumns() !== null) {
             for (let i = 0; i < this._bufferData.length; i++) {
                 if (this._bufferData[i].selected) {
                     this.exportColumns.push(this._bufferData[i].field);
@@ -87,7 +87,7 @@ export class ExportDialogComponent implements OnInit {
         this.cdr.detectChanges();
     }
     onUpdateProto(event) {
-        if (typeof this.apiColumn?.getAllColumns() !== 'undefined' && this.apiColumn.getAllColumns() !== null) {
+        if (typeof this.apiColumn?.getAllGridColumns() !== 'undefined' && this.apiColumn.getAllGridColumns() !== null) {
             const objField = event.find(i => {
                 const k = this._bufferData.find(j => i.name === j.name);
                 return i.selected !== k.selected;
@@ -104,7 +104,7 @@ export class ExportDialogComponent implements OnInit {
         }
     }
     formatData(param) {
-        if (param.column.colId === 'create_date') {
+        if (param.column.getColId() === 'create_date') {
             if (this.params.isFormatted) {
                 const formattedValue = moment(param.value, 'x').format('YYYY-MM-DD HH:mm:ss.SSS ZZ');
                 return formattedValue;
@@ -112,7 +112,7 @@ export class ExportDialogComponent implements OnInit {
                 const formattedValue = moment(param.value, 'x').format('X');
                 return formattedValue;
             }
-        } else if (param.column.colId === 'status' && this.params.convertStatus) {
+        } else if (param.column.getColId() === 'status' && this.params.convertStatus) {
 
             if (this.mappings) {
                 const statusMap = this.mappings.find((f: any) => f.id === 'status');
@@ -124,9 +124,9 @@ export class ExportDialogComponent implements OnInit {
             } else {
                 return param.value;
             }
-        } else if (param.column.colId === 'mos') {
+        } else if (param.column.getColId() === 'mos') {
             return param.value / 100;
-        } else if (param.column.colId === 'duration') {
+        } else if (param.column.getColId() === 'duration') {
             return Functions.secondsToHour(param.value || 0);
         } else {
             return param.value;
