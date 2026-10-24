@@ -14,16 +14,16 @@
 
   <hr />
 
-  <app-drag-drop-list *ngIf="apiColumn.getAllColumns() !== 'undefined' && this.apiColumn.getAllColumns() !== null"
+  <app-drag-drop-list *ngIf="apiColumn.getAllGridColumns() !== 'undefined' && this.apiColumn.getAllGridColumns() !== null"
     [list]="allColumnIds"
     (order)="onUpdateProto($event)"
   ></app-drag-drop-list>
-   <div *ngIf="apiColumn.getAllColumns() === 'undefined' || this.apiColumn.getAllColumns() === null">
+   <div *ngIf="apiColumn.getAllGridColumns() === 'undefined' || this.apiColumn.getAllGridColumns() === null">
       Please make a search to access settings
    </div>
 </div>
 
 <div mat-dialog-actions style="float: right; margin-bottom: 0rem;"> 
   <!-- <button  mat-raised-button (click)="onNoClick()">{{'LINK.buttons.cancel' | translate}}</button> -->
-  <button mat-raised-button color=primary [mat-dialog-close]="data" cdkFocusInitial [disabled]="apiColumn.getAllColumns() === 'undefined' || this.apiColumn.getAllColumns() === null">{{'LINK.buttons.save' | translate}}</button>
+  <button mat-raised-button color=primary [mat-dialog-close]="data" cdkFocusInitial [disabled]="apiColumn.getAllGridColumns() === 'undefined' || this.apiColumn.getAllGridColumns() === null">{{'LINK.buttons.save' | translate}}</button>
 </div>

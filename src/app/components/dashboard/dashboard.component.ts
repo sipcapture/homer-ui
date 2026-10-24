@@ -502,8 +502,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     if (this.dashboardArray?.length) {
       this.dashboardArray.forEach(item => item.output = {
-        changeSettings: this.onChangeWidget.bind(this),
-        deleteWidget: this.removeItem.bind([null, this])
+        changeSettings: this.onChangeWidget.bind(this)
       });
       this.dashboardCollection.data.widgets = this.dashboardArray;
 

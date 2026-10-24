@@ -17,7 +17,7 @@ export class CustomAgGridComponent implements OnInit {
     };
     agColumnDefs: any[] = [];
     _details = [];
-    frameworkComponents: any;
+    components: any;
     gridOptions: GridOptions = <GridOptions>{
         defaultColDef: {
             sortable: true,
@@ -124,7 +124,7 @@ export class CustomAgGridComponent implements OnInit {
         this.gridApi = params.api;
     }
     constructor(private cdr: ChangeDetectorRef) {
-        this.frameworkComponents = {
+        this.components = {
             settings: SettingButtonComponent
         };
     }

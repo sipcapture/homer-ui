@@ -238,16 +238,16 @@ export class DialogChartGridDialogComponent
         this.gridData = [];
         // this.id = data.idParent;
         if (
-            typeof this.apiColumn?.getAllColumns() !== 'undefined' &&
-            this.apiColumn.getAllColumns() !== null
+            typeof this.apiColumn?.getAllGridColumns() !== 'undefined' &&
+            this.apiColumn.getAllGridColumns() !== null
         ) {
-            Object.values(this.apiColumn.getAllColumns() as Object)
+            Object.values(this.apiColumn.getAllGridColumns() as Object)
                 .filter((column) => !['', 'id'].includes(column.colDef.field))
                 .forEach((column) =>
                     this.allColumnIds.push({
                         name: column.colDef.headerName,
                         field: column.colDef.field,
-                        selected: column.visible,
+                        selected: column.isVisible(),
                     })
                 );
             this.allColumnIds = this.allColumnIds
