@@ -88,7 +88,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "20.3.40",
-    "@angular/cli": "20.3.40",
+    "@angular/cli": "22.2.3",
     "@angular/compiler-cli": "20.3.34",
     "@types/highlight.js": "^10.1.0",
     "@types/jasmine": "^3.8.2",
